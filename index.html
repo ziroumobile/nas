@@ -57,6 +57,7 @@ button.danger{background:#dc2626}
 #perr{color:#fbbf24;margin:10px 2px 0}
 .seg{display:inline-flex}.seg button{border-radius:0;border-left-width:0}.seg button:first-child{border-radius:8px 0 0 8px;border-left-width:1px}.seg button:last-child{border-radius:0 8px 8px 0}
 .nine{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding-top:8px;border-top:1px solid var(--bd)}
+@media(min-width:700px){.nine{grid-template-columns:repeat(5,1fr)}} /* phone: 3 per row, computer: 5 per row */
 .cell{position:relative;aspect-ratio:1;overflow:hidden;border-radius:4px;background:var(--bd)}
 .cell .thumbA{position:absolute;inset:0}
 .cell .thumbA img,.cell .ico{width:100%;height:100%;border-radius:0;object-fit:cover;font-size:30px}
@@ -92,7 +93,7 @@ button.danger{background:#dc2626}
   </div>
   <div class="bar">上傳到：<select id="target"></select></div>
   <div class="bar">
-    <span class="seg"><button class="ghost" id="vlist">☰ 列表</button><button class="ghost" id="vgrid">▦ 圖示</button><button class="ghost" id="vnine">▩ 九宮格</button></span>
+    <span class="seg"><button class="ghost" id="vlist">☰ 列表</button><button class="ghost" id="vgrid">▦ 大圖示</button><button class="ghost" id="vnine">▩ 中圖示</button></span>
     排序：<select id="sort"><option value="name">名稱</option><option value="date">更新日期</option><option value="size">大小</option></select>
     <button class="ghost" id="order"></button>
     <button class="ghost" id="selmode">☑ 選取</button>
