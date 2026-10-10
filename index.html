@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>我的 NAS</title>
 <style>
 :root{--bg:#f5f6f8;--card:#fff;--fg:#1c1e21;--mut:#6b7280;--ac:#2563eb;--bd:#e5e7eb}
@@ -45,6 +47,14 @@ button.on{background:var(--ac);color:#fff}
 #selbar[hidden]{display:none}
 body.selecting .wrap{padding-bottom:90px}
 button.danger{background:#dc2626}
+#player{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:30;display:flex;align-items:center;justify-content:center}
+#player[hidden]{display:none}
+.pbox{width:min(1100px,100%);padding:10px}
+.ptop{display:flex;gap:8px;align-items:center;margin-bottom:8px;color:#fff}
+#ptitle{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ptop .btn{text-decoration:none;padding:6px 12px}
+#pv{width:100%;max-height:82vh;background:#000;border-radius:8px}
+#perr{color:#fbbf24;margin:10px 2px 0}
 .seg{display:inline-flex}.seg button{border-radius:0;border-left-width:0}.seg button:first-child{border-radius:8px 0 0 8px;border-left-width:1px}.seg button:last-child{border-radius:0 8px 8px 0}
 .nine{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding-top:8px;border-top:1px solid var(--bd)}
 .cell{position:relative;aspect-ratio:1;overflow:hidden;border-radius:4px;background:var(--bd)}
@@ -91,6 +101,13 @@ button.danger{background:#dc2626}
   <div id="ups"></div>
   <div id="list"></div>
 </div>
+<div id="player" hidden>
+  <div class="pbox">
+    <div class="ptop"><span id="ptitle"></span><a id="pdl" class="btn">下載</a><button class="ghost" id="pclose">✕ 關閉</button></div>
+    <video id="pv" controls playsinline preload="metadata"></video>
+    <p id="perr" hidden>這個瀏覽器無法播放此影片格式（例如 iPhone 的 HEVC .mov），請按「下載」後用播放器開啟。</p>
+  </div>
+</div>
 <div id="selbar" hidden>
   <b id="selcount">已選 0 個</b>
   <button class="ghost" id="selall">全選</button>
@@ -99,7 +116,7 @@ button.danger{background:#dc2626}
   <button class="danger" id="seldel" hidden>刪除選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
@@ -168,9 +185,9 @@ $('#sort').onchange=e=>{sortBy=e.target.value;asc=sortBy==='name';setPref()}; //
 $('#order').onclick=()=>{asc=!asc;setPref()};
 const ICON={image:'🖼',video:'🎬',file:'📄'};
 function thumbErr(img){const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.k==='video'?'🎬':'🖼';img.replaceWith(d)}
-function media(x){
+function media(x,k){
   const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-k="${x.kind}" src="${API+x.thumb}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
-  return `<a class="thumbA" href="${API+x.url}" target="_blank" rel="noopener">${inner}${x.kind==='video'?'<span class="play">▶</span>':''}</a>`;
+  return `<a class="thumbA" href="${API+x.url}" target="_blank" rel="noopener"${x.kind==='video'?` data-vid="${esc(k)}"`:''}>${inner}${x.kind==='video'?'<span class="play">▶</span>':''}</a>`;
 }
 // selection: pick many files to download, or (admin only) delete
 let selMode=false;const selected=new Set();const keyOf=(f,n)=>f+'/'+n;
@@ -187,11 +204,11 @@ function fileItem(f,x){
   const u=API+x.url,k=keyOf(f.name,x.name),sel=selected.has(k)?' sel':'';
   const del=me.admin?`<button class="del" data-f="${esc(f.name)}" data-n="${esc(x.name)}">刪除</button>`:'';
   const meta=`${fmt(x.size)} · 更新 ${new Date(x.mtime).toLocaleDateString()} ${new Date(x.mtime).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`;
-  if(view==='nine')return `<div class="cell${sel}" data-k="${esc(k)}" title="${esc(x.name)}"><span class="chk"></span>${media(x)}<div class="cn">${esc(x.name)}</div></div>`;
-  if(view==='grid')return `<div class="tile${sel}" data-k="${esc(k)}"><span class="chk"></span>${media(x)}<div class="tn" title="${esc(x.name)}">${esc(x.name)}</div><small>${meta}</small><small>${esc(x.owner)}</small>
+  if(view==='nine')return `<div class="cell${sel}" data-k="${esc(k)}" title="${esc(x.name)}"><span class="chk"></span>${media(x,k)}<div class="cn">${esc(x.name)}</div></div>`;
+  if(view==='grid')return `<div class="tile${sel}" data-k="${esc(k)}"><span class="chk"></span>${media(x,k)}<div class="tn" title="${esc(x.name)}">${esc(x.name)}</div><small>${meta}</small><small>${esc(x.owner)}</small>
     <div class="ta"><a class="btn" href="${u}&dl=1">下載</a>${del}</div></div>`;
-  return `<div class="row${sel}" data-k="${esc(k)}"><span class="chk"></span>${media(x)}
-    <div class="info"><a href="${u}" target="_blank" rel="noopener">${esc(x.name)}</a><small>${meta} · ${esc(x.owner)}</small></div>
+  return `<div class="row${sel}" data-k="${esc(k)}"><span class="chk"></span>${media(x,k)}
+    <div class="info"><a href="${u}" target="_blank" rel="noopener"${x.kind==='video'?` data-vid="${esc(k)}"`:''}>${esc(x.name)}</a><small>${meta} · ${esc(x.owner)}</small></div>
     <a class="btn" href="${u}&dl=1" style="padding:4px 10px;text-decoration:none">下載</a>${del}</div>`;
 }
 function render(force){
@@ -250,8 +267,23 @@ $('#list').onclick=async e=>{
   if(selMode&&!e.target.closest('a.btn')){ // in select mode a tap toggles the item instead of opening it
     const it=e.target.closest('[data-k]');
     if(it){e.preventDefault();setSel(it.dataset.k,!selected.has(it.dataset.k));updateSelUI()}
+    return;
   }
+  const v=e.target.closest('a[data-vid]');
+  if(v){e.preventDefault();playVideo(v.dataset.vid)} // videos play in the page; the download button still downloads
 };
+function playVideo(k){
+  const x=fileByKey(k);if(!x)return;
+  const v=$('#pv');
+  $('#ptitle').textContent=x.name;$('#pdl').href=API+x.url+'&dl=1';$('#perr').hidden=true;
+  v.poster=x.thumb?API+x.thumb:'';v.src=API+x.url;$('#player').hidden=false;
+  v.play().catch(()=>{}); // autoplay may be refused; the controls are there
+}
+function closePlayer(){const v=$('#pv');v.pause();v.removeAttribute('src');v.load();$('#player').hidden=true}
+$('#pv').addEventListener('error',()=>{if($('#pv').getAttribute('src'))$('#perr').hidden=false});
+$('#pclose').onclick=closePlayer;
+$('#player').onclick=e=>{if(e.target.id==='player')closePlayer()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#player').hidden)closePlayer()});
 async function delFolder(name){
   if(!me.admin)return;
   if(!confirm(`確定要刪除資料夾「${name}」以及裡面所有檔案嗎？此動作無法復原。`))return;
