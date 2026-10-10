@@ -33,6 +33,18 @@ details.fold[open]>summary::before{content:"▾"}
 #err{color:#dc2626;margin:0 0 8px;min-height:1em}
 #off{background:#fef3c7;color:#92400e;border-radius:8px;padding:10px;margin-bottom:12px}
 .empty{color:var(--mut);padding:10px 0;border-top:1px solid var(--bd)}
+button.on{background:var(--ac);color:#fff}
+.seg{display:inline-flex}.seg button{border-radius:0}.seg button:first-child{border-radius:8px 0 0 8px}.seg button:last-child{border-radius:0 8px 8px 0;border-left:0}
+.thumbA{position:relative;display:block;flex:none}
+.play{position:absolute;right:3px;bottom:3px;background:rgba(0,0,0,.6);color:#fff;border-radius:4px;font-size:10px;padding:1px 4px;pointer-events:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding-top:8px;border-top:1px solid var(--bd)}
+.tile{background:var(--bg);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.tile .thumbA{aspect-ratio:16/10;background:var(--bd)}
+.tile .thumbA img,.tile .thumbA .ico{width:100%;height:100%;border-radius:0;object-fit:cover;font-size:34px}
+.tile .tn{padding:6px 8px 0;font-weight:500;font-size:13px;line-height:1.3;word-break:break-all;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tile small{padding:0 8px;color:var(--mut);font-size:12px}
+.tile .ta{display:flex;gap:6px;padding:6px 8px 8px;margin-top:auto}
+.tile .ta .btn,.tile .ta button{padding:3px 9px;font-size:12px;text-decoration:none}
 </style></head><body><div class="wrap">
 <div id="login" class="card" hidden>
   <h1 style="margin-bottom:14px">登入 NAS</h1>
@@ -50,6 +62,11 @@ details.fold[open]>summary::before{content:"▾"}
     <button class="ghost" id="setpw" hidden>🔑 編輯密碼</button>
   </div>
   <div class="bar">上傳到：<select id="target"></select></div>
+  <div class="bar">
+    <span class="seg"><button class="ghost" id="vlist">☰ 項目</button><button class="ghost" id="vgrid">▦ 圖示</button></span>
+    排序：<select id="sort"><option value="name">名稱</option><option value="date">更新日期</option><option value="size">大小</option></select>
+    <button class="ghost" id="order"></button>
+  </div>
   <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" type="file" multiple hidden></div>
   <div id="ups"></div>
   <div id="list"></div>
@@ -103,20 +120,56 @@ function drawTarget(){
   $('#target').innerHTML=names.map(n=>`<option value="${esc(n)}"${n===target?' selected':''}>${esc(n)}${n===device?'（此裝置）':''}</option>`).join('');
 }
 $('#target').onchange=e=>target=e.target.value;
+// view mode and sorting, remembered per browser
+let view=ls.get('nas_view')==='list'?'list':'grid',sortBy=['name','date','size'].includes(ls.get('nas_sort'))?ls.get('nas_sort'):'date',asc=ls.get('nas_asc')==='1',lastSig='';
+const cmpName=(a,b)=>a.name.localeCompare(b.name,'zh-Hant',{numeric:true});
+const CMP={name:cmpName,date:(a,b)=>a.mtime-b.mtime,size:(a,b)=>a.size-b.size};
+const dir=n=>(asc?1:-1)*n;
+const sortFiles=fs=>[...fs].sort((a,b)=>dir(CMP[sortBy](a,b))||cmpName(a,b));
+function sortFolders(){ // folders follow the same rule: by name, by newest file, or by total size
+  const key=f=>sortBy==='date'?Math.max(0,...f.files.map(x=>x.mtime)):f.files.reduce((s,x)=>s+x.size,0);
+  return [...folders].sort((a,b)=>sortBy==='name'?dir(cmpName(a,b)):dir(key(a)-key(b))||cmpName(a,b));
+}
+function syncToolbar(){
+  $('#vlist').classList.toggle('on',view==='list');$('#vgrid').classList.toggle('on',view==='grid');
+  $('#sort').value=sortBy;$('#order').textContent=asc?'↑ 由小到大':'↓ 由大到小';
+}
+const setPref=()=>{ls.set('nas_view',view);ls.set('nas_sort',sortBy);ls.set('nas_asc',asc?'1':'0');syncToolbar();render(true)};
+$('#vlist').onclick=()=>{view='list';setPref()};$('#vgrid').onclick=()=>{view='grid';setPref()};
+$('#sort').onchange=e=>{sortBy=e.target.value;asc=sortBy==='name';setPref()}; // names read A→Z, dates/sizes newest/biggest first
+$('#order').onclick=()=>{asc=!asc;setPref()};
+const ICON={image:'🖼',video:'🎬',file:'📄'};
+function thumbErr(img){const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.k==='video'?'🎬':'🖼';img.replaceWith(d)}
+function media(x){
+  const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-k="${x.kind}" src="${API+x.thumb}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
+  return `<a class="thumbA" href="${API+x.url}" target="_blank" rel="noopener">${inner}${x.kind==='video'?'<span class="play">▶</span>':''}</a>`;
+}
+function fileItem(f,x){
+  const u=API+x.url,can=me.admin||x.owner===me.name;
+  const del=can?`<button class="del" data-f="${esc(f.name)}" data-n="${esc(x.name)}">刪除</button>`:'';
+  const meta=`${fmt(x.size)} · 更新 ${new Date(x.mtime).toLocaleDateString()} ${new Date(x.mtime).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`;
+  if(view==='grid')return `<div class="tile">${media(x)}<div class="tn" title="${esc(x.name)}">${esc(x.name)}</div><small>${meta}</small><small>${esc(x.owner)}</small>
+    <div class="ta"><a class="btn" href="${u}&dl=1">下載</a>${del}</div></div>`;
+  return `<div class="row">${media(x)}
+    <div class="info"><a href="${u}" target="_blank" rel="noopener">${esc(x.name)}</a><small>${meta} · ${esc(x.owner)}</small></div>
+    <a class="btn" href="${u}&dl=1" style="padding:4px 10px;text-decoration:none">下載</a>${del}</div>`;
+}
+function render(force){
+  const sig=JSON.stringify([folders,view,sortBy,asc,API]);
+  if(!force&&sig===lastSig)return; // nothing changed: leave the DOM (and loaded thumbnails) alone
+  lastSig=sig;
+  $('#list').innerHTML=folders.length?sortFolders().map(f=>{
+    const items=sortFiles(f.files).map(x=>fileItem(f,x)).join('');
+    const body=!f.files.length?'<div class="empty">（空資料夾）</div>':view==='grid'?`<div class="grid">${items}</div>`:items;
+    return `<details class="fold card" data-f="${esc(f.name)}"${closed.has(f.name)?'':' open'}><summary><span class="fname">📂 ${esc(f.name)} <span class="cnt">${f.files.length} 個檔案</span></span>
+      <button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button></summary>${body}</details>`}).join(''):'<div class="card" style="color:var(--mut);text-align:center">還沒有資料夾，上傳檔案會自動建立「'+esc(device)+'」</div>';
+}
 async function refresh(){
   let r;try{r=await api('/api/files')}catch{$('#off').hidden=false;return}
   if(!r.ok)return;$('#off').hidden=true;
-  folders=await r.json();drawTarget();
-  $('#list').innerHTML=folders.length?folders.map(f=>{
-    const rows=f.files.length?f.files.map(x=>{
-      const u=API+x.url,img=/\.(png|jpe?g|gif|webp)$/i.test(x.name);
-      return `<div class="row">${img?`<img class="ico" loading="lazy" src="${u}">`:`<div class="ico">📄</div>`}
-      <div class="info"><a href="${u}" target="_blank" rel="noopener">${esc(x.name)}</a><small>${fmt(x.size)} · ${esc(x.owner)} · ${new Date(x.time).toLocaleString()}</small></div>
-      <a class="btn" href="${u}&dl=1" style="padding:4px 10px;text-decoration:none">下載</a>
-      ${me.admin||x.owner===me.name?`<button class="del" data-f="${esc(f.name)}" data-n="${esc(x.name)}">刪除</button>`:''}</div>`}).join(''):'<div class="empty">（空資料夾）</div>';
-    return `<details class="fold card" data-f="${esc(f.name)}"${closed.has(f.name)?'':' open'}><summary><span class="fname">📂 ${esc(f.name)} <span class="cnt">${f.files.length} 個檔案</span></span>
-      <button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button></summary>${rows}</details>`}).join(''):'<div class="card" style="color:var(--mut);text-align:center">還沒有資料夾，上傳檔案會自動建立「'+esc(device)+'」</div>';
+  folders=await r.json();drawTarget();render(false);
 }
+syncToolbar();
 $('#list').addEventListener('toggle',e=>{const f=e.target.dataset?.f;if(!f||!e.target.matches('details.fold'))return;
   e.target.open?closed.delete(f):closed.add(f);ls.set('nas_closed',JSON.stringify([...closed]))},true);
 $('#list').onclick=async e=>{
@@ -162,7 +215,7 @@ async function sendChunk(j,offset,onprog){
   if(!API)await findApi();const t=await token();
   return new Promise(res=>{
     const x=new XMLHttpRequest();
-    x.open('PUT',`${API}/api/upload-chunk?folder=${encodeURIComponent(j.folder)}&name=${encodeURIComponent(j.file.name)}&id=${j.id}&offset=${offset}&total=${j.file.size}`);
+    x.open('PUT',`${API}/api/upload-chunk?folder=${encodeURIComponent(j.folder)}&name=${encodeURIComponent(j.file.name)}&id=${j.id}&offset=${offset}&total=${j.file.size}&mtime=${j.file.lastModified||0}`);
     x.setRequestHeader('Authorization','Bearer '+t);
     x.upload.onprogress=e=>onprog(e.loaded);
     x.onload=()=>{let b={};try{b=JSON.parse(x.responseText)}catch{}res({status:x.status,body:b})};
