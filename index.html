@@ -34,6 +34,17 @@ details.fold[open]>summary::before{content:"▾"}
 #off{background:#fef3c7;color:#92400e;border-radius:8px;padding:10px;margin-bottom:12px}
 .empty{color:var(--mut);padding:10px 0;border-top:1px solid var(--bd)}
 button.on{background:var(--ac);color:#fff}
+.selecting .tile,.selecting .row{cursor:pointer}
+.chk{display:none;flex:none;width:22px;height:22px;border:2px solid var(--mut);border-radius:6px;place-items:center;font-size:14px;line-height:1;color:#fff;background:var(--card)}
+.selecting .chk{display:grid}
+.tile{position:relative}.tile .chk{position:absolute;top:6px;left:6px;z-index:2}
+.sel>.chk,.sel .chk{background:var(--ac);border-color:var(--ac)}
+.sel>.chk::after,.sel .chk::after{content:"✓"}
+.tile.sel{outline:3px solid var(--ac)}.row.sel{background:rgba(37,99,235,.12)}
+#selbar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:10px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;z-index:10;box-shadow:0 -2px 10px rgba(0,0,0,.15)}
+#selbar[hidden]{display:none}
+body.selecting .wrap{padding-bottom:90px}
+button.danger{background:#dc2626}
 .seg{display:inline-flex}.seg button{border-radius:0}.seg button:first-child{border-radius:8px 0 0 8px}.seg button:last-child{border-radius:0 8px 8px 0;border-left:0}
 .thumbA{position:relative;display:block;flex:none}
 .play{position:absolute;right:3px;bottom:3px;background:rgba(0,0,0,.6);color:#fff;border-radius:4px;font-size:10px;padding:1px 4px;pointer-events:none}
@@ -66,10 +77,19 @@ button.on{background:var(--ac);color:#fff}
     <span class="seg"><button class="ghost" id="vlist">☰ 項目</button><button class="ghost" id="vgrid">▦ 圖示</button></span>
     排序：<select id="sort"><option value="name">名稱</option><option value="date">更新日期</option><option value="size">大小</option></select>
     <button class="ghost" id="order"></button>
+    <button class="ghost" id="selmode">☑ 選取</button>
   </div>
   <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" type="file" multiple hidden></div>
   <div id="ups"></div>
   <div id="list"></div>
+</div>
+<div id="selbar" hidden>
+  <b id="selcount">已選 0 個</b>
+  <button class="ghost" id="selall">全選</button>
+  <button class="ghost" id="selnone">清除選取</button>
+  <button id="seldl">下載選取</button>
+  <button class="danger" id="seldel" hidden>刪除選取</button>
+  <button class="ghost" id="selexit">完成</button>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
@@ -144,42 +164,87 @@ function media(x){
   const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-k="${x.kind}" src="${API+x.thumb}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
   return `<a class="thumbA" href="${API+x.url}" target="_blank" rel="noopener">${inner}${x.kind==='video'?'<span class="play">▶</span>':''}</a>`;
 }
+// selection: pick many files to download, or (admin only) delete
+let selMode=false;const selected=new Set();const keyOf=(f,n)=>f+'/'+n;
+const splitKey=k=>{const i=k.indexOf('/');return{folder:k.slice(0,i),name:k.slice(i+1)}};
+function allKeys(){return folders.flatMap(f=>f.files.map(x=>keyOf(f.name,x.name)))}
+function fileByKey(k){const{folder,name}=splitKey(k);return folders.find(f=>f.name===folder)?.files.find(x=>x.name===name)}
+function updateSelUI(){
+  document.body.classList.toggle('selecting',selMode);
+  $('#selbar').hidden=!selMode;$('#selmode').classList.toggle('on',selMode);
+  $('#selcount').textContent='已選 '+selected.size+' 個';
+  $('#seldel').hidden=!me?.admin;$('#seldel').disabled=$('#seldl').disabled=$('#selnone').disabled=!selected.size;
+}
 function fileItem(f,x){
-  const u=API+x.url,can=me.admin||x.owner===me.name;
-  const del=can?`<button class="del" data-f="${esc(f.name)}" data-n="${esc(x.name)}">刪除</button>`:'';
+  const u=API+x.url,k=keyOf(f.name,x.name),sel=selected.has(k)?' sel':'';
+  const del=me.admin?`<button class="del" data-f="${esc(f.name)}" data-n="${esc(x.name)}">刪除</button>`:'';
   const meta=`${fmt(x.size)} · 更新 ${new Date(x.mtime).toLocaleDateString()} ${new Date(x.mtime).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`;
-  if(view==='grid')return `<div class="tile">${media(x)}<div class="tn" title="${esc(x.name)}">${esc(x.name)}</div><small>${meta}</small><small>${esc(x.owner)}</small>
+  if(view==='grid')return `<div class="tile${sel}" data-k="${esc(k)}"><span class="chk"></span>${media(x)}<div class="tn" title="${esc(x.name)}">${esc(x.name)}</div><small>${meta}</small><small>${esc(x.owner)}</small>
     <div class="ta"><a class="btn" href="${u}&dl=1">下載</a>${del}</div></div>`;
-  return `<div class="row">${media(x)}
+  return `<div class="row${sel}" data-k="${esc(k)}"><span class="chk"></span>${media(x)}
     <div class="info"><a href="${u}" target="_blank" rel="noopener">${esc(x.name)}</a><small>${meta} · ${esc(x.owner)}</small></div>
     <a class="btn" href="${u}&dl=1" style="padding:4px 10px;text-decoration:none">下載</a>${del}</div>`;
 }
 function render(force){
-  const sig=JSON.stringify([folders,view,sortBy,asc,API]);
+  const sig=JSON.stringify([folders,view,sortBy,asc,API,selMode,!!me?.admin]);
   if(!force&&sig===lastSig)return; // nothing changed: leave the DOM (and loaded thumbnails) alone
   lastSig=sig;
   $('#list').innerHTML=folders.length?sortFolders().map(f=>{
     const items=sortFiles(f.files).map(x=>fileItem(f,x)).join('');
     const body=!f.files.length?'<div class="empty">（空資料夾）</div>':view==='grid'?`<div class="grid">${items}</div>`:items;
+    const tools=(selMode&&f.files.length?`<button class="ghost" data-selfolder="${esc(f.name)}" style="padding:4px 10px">全選</button>`:'')
+      +(me.admin?`<button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button>`:'');
     return `<details class="fold card" data-f="${esc(f.name)}"${closed.has(f.name)?'':' open'}><summary><span class="fname">📂 ${esc(f.name)} <span class="cnt">${f.files.length} 個檔案</span></span>
-      <button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button></summary>${body}</details>`}).join(''):'<div class="card" style="color:var(--mut);text-align:center">還沒有資料夾，上傳檔案會自動建立「'+esc(device)+'」</div>';
+      ${tools}</summary>${body}</details>`}).join(''):'<div class="card" style="color:var(--mut);text-align:center">還沒有資料夾，上傳檔案會自動建立「'+esc(device)+'」</div>';
+  updateSelUI();
 }
 async function refresh(){
   let r;try{r=await api('/api/files')}catch{$('#off').hidden=false;return}
   if(!r.ok)return;$('#off').hidden=true;
-  folders=await r.json();drawTarget();render(false);
+  folders=await r.json();drawTarget();
+  const have=new Set(allKeys());for(const k of selected)if(!have.has(k))selected.delete(k); // files that vanished
+  render(false);updateSelUI();
 }
 syncToolbar();
+function setSel(k,on){on?selected.add(k):selected.delete(k);
+  for(const el of document.querySelectorAll('[data-k]'))if(el.dataset.k===k)el.classList.toggle('sel',on)}
+$('#selmode').onclick=()=>{selMode=!selMode;if(!selMode)selected.clear();render(true)};
+$('#selexit').onclick=()=>{selMode=false;selected.clear();render(true)};
+$('#selall').onclick=()=>{allKeys().forEach(k=>setSel(k,true));updateSelUI()};
+$('#selnone').onclick=()=>{[...selected].forEach(k=>setSel(k,false));updateSelUI()};
+function selectFolder(name){folders.find(f=>f.name===name)?.files.forEach(x=>setSel(keyOf(name,x.name),true));updateSelUI()}
+$('#seldl').onclick=async()=>{ // browsers may ask to allow multiple downloads the first time
+  for(const k of [...selected]){const x=fileByKey(k);if(!x)continue;
+    const a=document.createElement('a');a.href=API+x.url+'&dl=1';document.body.appendChild(a);a.click();a.remove();
+    await new Promise(r=>setTimeout(r,700))}
+};
+$('#seldel').onclick=()=>deleteItems([...selected].map(splitKey),`確定要刪除選取的 ${selected.size} 個檔案嗎？此動作無法復原。`);
+async function deleteItems(items,msg){ // admin only; the server checks too. One edit-password prompt covers the whole batch.
+  if(!me.admin||!items.length||!confirm(msg))return;
+  const pw=prompt('請輸入編輯密碼');if(pw===null)return;
+  const r=await api('/api/delete-files',{method:'POST',headers:{'X-Edit-Password':pw},body:JSON.stringify({items})});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok)return alert(j.error||'刪除失敗');
+  items.forEach(i=>selected.delete(keyOf(i.folder,i.name)));
+  await refresh();render(true);
+}
 $('#list').addEventListener('toggle',e=>{const f=e.target.dataset?.f;if(!f||!e.target.matches('details.fold'))return;
   e.target.open?closed.delete(f):closed.add(f);ls.set('nas_closed',JSON.stringify([...closed]))},true);
 $('#list').onclick=async e=>{
-  const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.delfolder){e.preventDefault();return delFolder(b.dataset.delfolder)}
-  if(b.dataset.n&&confirm('刪除 '+b.dataset.n+'？')){
-    const r=await api(`/api/file?folder=${encodeURIComponent(b.dataset.f)}&name=${encodeURIComponent(b.dataset.n)}`,{method:'DELETE'});
-    if(!r.ok)alert((await r.json()).error);refresh()}
+  const b=e.target.closest('button');
+  if(b){
+    if(b.dataset.selfolder){e.preventDefault();return selectFolder(b.dataset.selfolder)}
+    if(b.dataset.delfolder){e.preventDefault();return delFolder(b.dataset.delfolder)}
+    if(b.dataset.n)return deleteItems([{folder:b.dataset.f,name:b.dataset.n}],`確定要刪除「${b.dataset.n}」嗎？`);
+    return;
+  }
+  if(selMode&&!e.target.closest('a.btn')){ // in select mode a tap toggles the item instead of opening it
+    const it=e.target.closest('[data-k]');
+    if(it){e.preventDefault();setSel(it.dataset.k,!selected.has(it.dataset.k));updateSelUI()}
+  }
 };
 async function delFolder(name){
+  if(!me.admin)return;
   if(!confirm(`確定要刪除資料夾「${name}」以及裡面所有檔案嗎？此動作無法復原。`))return;
   const pw=prompt('請輸入編輯密碼');if(pw===null)return;
   const r=await api('/api/folder?name='+encodeURIComponent(name),{method:'DELETE',headers:{'X-Edit-Password':pw}});
