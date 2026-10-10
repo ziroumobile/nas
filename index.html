@@ -144,16 +144,40 @@ $('#setpw').onclick=async()=>{
   const r=await api('/api/edit-password',{method:'PUT',body:JSON.stringify({current:cur,new:nw})});
   if(r.ok){me.hasEditPassword=true;alert('編輯密碼已更新')}else alert((await r.json()).error);
 };
-async function upload(file,folder){
+// Uploads run through a queue (2 at a time) with automatic retry; failures show a reason + retry button.
+const queue=[];let running=0;const MAX_PAR=2,MAX_TRY=3;
+function enqueue(file,folder){
   const d=document.createElement('div');d.className='card';d.style.marginBottom='8px';
-  d.innerHTML=`<div>${esc(file.name)} → ${esc(folder)} <small class="s"></small></div><div class="prog"><i></i></div>`;$('#ups').prepend(d);
-  if(!API)await findApi();const t=await token();
-  const x=new XMLHttpRequest();x.open('PUT',API+'/api/upload?folder='+encodeURIComponent(folder)+'&name='+encodeURIComponent(file.name));x.setRequestHeader('Authorization','Bearer '+t);
-  x.upload.onprogress=e=>{d.querySelector('i').style.width=(e.loaded/e.total*100)+'%';d.querySelector('.s').textContent=Math.round(e.loaded/e.total*100)+'%'};
-  x.onload=()=>{if(x.status===200){d.remove();refresh()}else d.querySelector('.s').textContent='失敗 '+x.status};
-  x.onerror=()=>d.querySelector('.s').textContent='失敗';x.send(file);
+  d.innerHTML=`<div>${esc(file.name)} → ${esc(folder)} <small class="s">等待中</small> <button class="ghost rt" hidden style="padding:2px 8px">重試</button></div><div class="prog"><i></i></div>`;
+  $('#ups').prepend(d);
+  const job={file,folder,d,tries:0};
+  d.querySelector('.rt').onclick=()=>{d.querySelector('.rt').hidden=true;job.tries=0;queue.push(job);pump()};
+  queue.push(job);pump();
 }
-const pick=fl=>{const f=target;[...fl].forEach(x=>upload(x,f))};
+function pump(){while(running<MAX_PAR&&queue.length){running++;runJob(queue.shift()).finally(()=>{running--;pump()})}}
+async function runJob(j){
+  const s=j.d.querySelector('.s'),bar=j.d.querySelector('i');
+  for(j.tries=1;j.tries<=MAX_TRY;j.tries++){
+    s.textContent=j.tries>1?`重試中（第 ${j.tries} 次）`:'上傳中';bar.style.width='0';
+    const err=await new Promise(async res=>{
+      if(!API)await findApi();const t=await token();
+      const x=new XMLHttpRequest();
+      x.open('PUT',API+'/api/upload?folder='+encodeURIComponent(j.folder)+'&name='+encodeURIComponent(j.file.name));
+      x.setRequestHeader('Authorization','Bearer '+t);
+      x.upload.onprogress=e=>{if(e.lengthComputable){bar.style.width=(e.loaded/e.total*100)+'%';s.textContent=Math.round(e.loaded/e.total*100)+'%'+(j.tries>1?`（第 ${j.tries} 次）`:'')}};
+      x.onload=()=>res(x.status===200?null:`伺服器回應 ${x.status}`+(x.status===401?'（登入過期，請重新整理）':''));
+      x.onerror=()=>res('網路中斷或連不到主機');
+      x.ontimeout=()=>res('逾時');
+      x.send(j.file);
+    });
+    if(!err){j.d.remove();refresh();return}
+    s.textContent='失敗：'+err;
+    if(err.includes('401'))break;
+    await new Promise(r=>setTimeout(r,2000*j.tries));await findApi(); // tunnel may have restarted
+  }
+  j.d.querySelector('.rt').hidden=false;
+}
+const pick=fl=>{const f=target;[...fl].forEach(x=>enqueue(x,f))};
 $('#drop').onclick=()=>$('#f').click();$('#f').onchange=e=>{pick(e.target.files);e.target.value=''};
 $('#drop').ondragover=e=>{e.preventDefault();$('#drop').classList.add('over')};
 $('#drop').ondragleave=()=>$('#drop').classList.remove('over');
