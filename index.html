@@ -155,25 +155,43 @@ function enqueue(file,folder){
   queue.push(job);pump();
 }
 function pump(){while(running<MAX_PAR&&queue.length){running++;runJob(queue.shift()).finally(()=>{running--;pump()})}}
+// Files go up in 48MB pieces (stays under Cloudflare's per-request size cap); a dropped connection resumes from the last byte the PC has.
+const CHUNK=48*1024*1024;
+const newId=()=>[...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,'0')).join('');
+async function sendChunk(j,offset,onprog){
+  if(!API)await findApi();const t=await token();
+  return new Promise(res=>{
+    const x=new XMLHttpRequest();
+    x.open('PUT',`${API}/api/upload-chunk?folder=${encodeURIComponent(j.folder)}&name=${encodeURIComponent(j.file.name)}&id=${j.id}&offset=${offset}&total=${j.file.size}`);
+    x.setRequestHeader('Authorization','Bearer '+t);
+    x.upload.onprogress=e=>onprog(e.loaded);
+    x.onload=()=>{let b={};try{b=JSON.parse(x.responseText)}catch{}res({status:x.status,body:b})};
+    x.onerror=()=>res({status:0});x.ontimeout=()=>res({status:0});
+    x.send(j.file.slice(offset,Math.min(offset+CHUNK,j.file.size)));
+  });
+}
 async function runJob(j){
-  const s=j.d.querySelector('.s'),bar=j.d.querySelector('i');
-  for(j.tries=1;j.tries<=MAX_TRY;j.tries++){
-    s.textContent=j.tries>1?`重試中（第 ${j.tries} 次）`:'上傳中';bar.style.width='0';
-    const err=await new Promise(async res=>{
-      if(!API)await findApi();const t=await token();
-      const x=new XMLHttpRequest();
-      x.open('PUT',API+'/api/upload?folder='+encodeURIComponent(j.folder)+'&name='+encodeURIComponent(j.file.name));
-      x.setRequestHeader('Authorization','Bearer '+t);
-      x.upload.onprogress=e=>{if(e.lengthComputable){bar.style.width=(e.loaded/e.total*100)+'%';s.textContent=Math.round(e.loaded/e.total*100)+'%'+(j.tries>1?`（第 ${j.tries} 次）`:'')}};
-      x.onload=()=>res(x.status===200?null:`伺服器回應 ${x.status}`+(x.status===401?'（登入過期，請重新整理）':''));
-      x.onerror=()=>res('網路中斷或連不到主機');
-      x.ontimeout=()=>res('逾時');
-      x.send(j.file);
-    });
-    if(!err){j.d.remove();refresh();return}
-    s.textContent='失敗：'+err;
-    if(err.includes('401'))break;
-    await new Promise(r=>setTimeout(r,2000*j.tries));await findApi(); // tunnel may have restarted
+  const s=j.d.querySelector('.s'),bar=j.d.querySelector('i'),total=j.file.size;
+  j.id=j.id||newId();j.offset=j.offset||0;
+  const show=(done,note)=>{const p=total?Math.min(100,done/total*100):100;bar.style.width=p+'%';s.textContent=Math.round(p)+'%'+(note||'')};
+  let fails=0;
+  if(j.offset>0){const r=await api(`/api/upload-status?folder=${encodeURIComponent(j.folder)}&id=${j.id}`).catch(()=>null);if(r?.ok)j.offset=(await r.json()).received}
+  while(true){
+    show(j.offset,fails?`（重試 ${fails}/${MAX_TRY}）`:'');
+    const r=await sendChunk(j,j.offset,l=>show(j.offset+l,fails?`（重試 ${fails}/${MAX_TRY}）`:''));
+    if(r.status===200&&(r.body.done||Number.isFinite(r.body.received))){
+      fails=0;
+      if(r.body.done){j.d.remove();refresh();return}
+      j.offset=r.body.received;continue;
+    }
+    if(r.status===409){j.offset=r.body.received;continue} // server has a different amount; resync
+    if(r.status===401){s.textContent='失敗：登入過期，請重新整理頁面';break}
+    const why=r.status?`伺服器回應 ${r.status}`+(r.body?.error?`（${r.body.error}）`:''):'網路中斷或連不到主機';
+    if(++fails>MAX_TRY){s.textContent='失敗：'+why;break}
+    s.textContent=`${why}，重試中 ${fails}/${MAX_TRY}`;
+    await new Promise(r=>setTimeout(r,2000*fails));await findApi(); // tunnel may have restarted
+    const st=await api(`/api/upload-status?folder=${encodeURIComponent(j.folder)}&id=${j.id}`).catch(()=>null);
+    if(st?.ok)j.offset=(await st.json()).received; // resume from what the PC actually has
   }
   j.d.querySelector('.rt').hidden=false;
 }
