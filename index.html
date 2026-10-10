@@ -45,7 +45,15 @@ button.on{background:var(--ac);color:#fff}
 #selbar[hidden]{display:none}
 body.selecting .wrap{padding-bottom:90px}
 button.danger{background:#dc2626}
-.seg{display:inline-flex}.seg button{border-radius:0}.seg button:first-child{border-radius:8px 0 0 8px}.seg button:last-child{border-radius:0 8px 8px 0;border-left:0}
+.seg{display:inline-flex}.seg button{border-radius:0;border-left-width:0}.seg button:first-child{border-radius:8px 0 0 8px;border-left-width:1px}.seg button:last-child{border-radius:0 8px 8px 0}
+.nine{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding-top:8px;border-top:1px solid var(--bd)}
+.cell{position:relative;aspect-ratio:1;overflow:hidden;border-radius:4px;background:var(--bd)}
+.cell .thumbA{position:absolute;inset:0}
+.cell .thumbA img,.cell .ico{width:100%;height:100%;border-radius:0;object-fit:cover;font-size:30px}
+.cell .cn{position:absolute;left:0;right:0;bottom:0;padding:14px 5px 3px;background:linear-gradient(transparent,rgba(0,0,0,.7));color:#fff;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+.cell .chk{position:absolute;top:4px;left:4px;z-index:2}
+.cell.sel{outline:3px solid var(--ac);outline-offset:-3px}
+.selecting .cell{cursor:pointer}
 .thumbA{position:relative;display:block;flex:none}
 .play{position:absolute;right:3px;bottom:3px;background:rgba(0,0,0,.6);color:#fff;border-radius:4px;font-size:10px;padding:1px 4px;pointer-events:none}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding-top:8px;border-top:1px solid var(--bd)}
@@ -74,7 +82,7 @@ button.danger{background:#dc2626}
   </div>
   <div class="bar">上傳到：<select id="target"></select></div>
   <div class="bar">
-    <span class="seg"><button class="ghost" id="vlist">☰ 項目</button><button class="ghost" id="vgrid">▦ 圖示</button></span>
+    <span class="seg"><button class="ghost" id="vlist">☰ 列表</button><button class="ghost" id="vgrid">▦ 圖示</button><button class="ghost" id="vnine">▩ 九宮格</button></span>
     排序：<select id="sort"><option value="name">名稱</option><option value="date">更新日期</option><option value="size">大小</option></select>
     <button class="ghost" id="order"></button>
     <button class="ghost" id="selmode">☑ 選取</button>
@@ -141,7 +149,7 @@ function drawTarget(){
 }
 $('#target').onchange=e=>target=e.target.value;
 // view mode and sorting, remembered per browser
-let view=ls.get('nas_view')==='list'?'list':'grid',sortBy=['name','date','size'].includes(ls.get('nas_sort'))?ls.get('nas_sort'):'date',asc=ls.get('nas_asc')==='1',lastSig='';
+let view=['list','grid','nine'].includes(ls.get('nas_view'))?ls.get('nas_view'):'grid',sortBy=['name','date','size'].includes(ls.get('nas_sort'))?ls.get('nas_sort'):'date',asc=ls.get('nas_asc')==='1',lastSig='';
 const cmpName=(a,b)=>a.name.localeCompare(b.name,'zh-Hant',{numeric:true});
 const CMP={name:cmpName,date:(a,b)=>a.mtime-b.mtime,size:(a,b)=>a.size-b.size};
 const dir=n=>(asc?1:-1)*n;
@@ -151,11 +159,11 @@ function sortFolders(){ // folders follow the same rule: by name, by newest file
   return [...folders].sort((a,b)=>sortBy==='name'?dir(cmpName(a,b)):dir(key(a)-key(b))||cmpName(a,b));
 }
 function syncToolbar(){
-  $('#vlist').classList.toggle('on',view==='list');$('#vgrid').classList.toggle('on',view==='grid');
+  $('#vlist').classList.toggle('on',view==='list');$('#vgrid').classList.toggle('on',view==='grid');$('#vnine').classList.toggle('on',view==='nine');
   $('#sort').value=sortBy;$('#order').textContent=asc?'↑ 由小到大':'↓ 由大到小';
 }
 const setPref=()=>{ls.set('nas_view',view);ls.set('nas_sort',sortBy);ls.set('nas_asc',asc?'1':'0');syncToolbar();render(true)};
-$('#vlist').onclick=()=>{view='list';setPref()};$('#vgrid').onclick=()=>{view='grid';setPref()};
+$('#vlist').onclick=()=>{view='list';setPref()};$('#vgrid').onclick=()=>{view='grid';setPref()};$('#vnine').onclick=()=>{view='nine';setPref()};
 $('#sort').onchange=e=>{sortBy=e.target.value;asc=sortBy==='name';setPref()}; // names read A→Z, dates/sizes newest/biggest first
 $('#order').onclick=()=>{asc=!asc;setPref()};
 const ICON={image:'🖼',video:'🎬',file:'📄'};
@@ -179,6 +187,7 @@ function fileItem(f,x){
   const u=API+x.url,k=keyOf(f.name,x.name),sel=selected.has(k)?' sel':'';
   const del=me.admin?`<button class="del" data-f="${esc(f.name)}" data-n="${esc(x.name)}">刪除</button>`:'';
   const meta=`${fmt(x.size)} · 更新 ${new Date(x.mtime).toLocaleDateString()} ${new Date(x.mtime).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`;
+  if(view==='nine')return `<div class="cell${sel}" data-k="${esc(k)}" title="${esc(x.name)}"><span class="chk"></span>${media(x)}<div class="cn">${esc(x.name)}</div></div>`;
   if(view==='grid')return `<div class="tile${sel}" data-k="${esc(k)}"><span class="chk"></span>${media(x)}<div class="tn" title="${esc(x.name)}">${esc(x.name)}</div><small>${meta}</small><small>${esc(x.owner)}</small>
     <div class="ta"><a class="btn" href="${u}&dl=1">下載</a>${del}</div></div>`;
   return `<div class="row${sel}" data-k="${esc(k)}"><span class="chk"></span>${media(x)}
@@ -191,7 +200,7 @@ function render(force){
   lastSig=sig;
   $('#list').innerHTML=folders.length?sortFolders().map(f=>{
     const items=sortFiles(f.files).map(x=>fileItem(f,x)).join('');
-    const body=!f.files.length?'<div class="empty">（空資料夾）</div>':view==='grid'?`<div class="grid">${items}</div>`:items;
+    const body=!f.files.length?'<div class="empty">（空資料夾）</div>':view==='grid'?`<div class="grid">${items}</div>`:view==='nine'?`<div class="nine">${items}</div>`:items;
     const tools=(selMode&&f.files.length?`<button class="ghost" data-selfolder="${esc(f.name)}" style="padding:4px 10px">全選</button>`:'')
       +(me.admin?`<button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button>`:'');
     return `<details class="fold card" data-f="${esc(f.name)}"${closed.has(f.name)?'':' open'}><summary><span class="fname">📂 ${esc(f.name)} <span class="cnt">${f.files.length} 個檔案</span></span>
