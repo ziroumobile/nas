@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>我的 NAS</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--fg:#1c1e21;--mut:#6b7280;--ac:#2563eb;--bd:#e5e7eb}
+@media(prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--fg:#e8eaed;--mut:#9aa0a6;--ac:#60a5fa;--bd:#2a2e37}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px system-ui,"Noto Sans TC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+h1{font-size:20px;margin:0}
+button,.btn{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer}
+button.ghost{background:transparent;color:var(--ac);border:1px solid var(--bd)}
+button.del{background:transparent;color:#dc2626;border:1px solid var(--bd);padding:4px 10px}
+input[type=email],input[type=password]{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg);font:inherit;margin-bottom:10px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px}
+#login{max-width:340px;margin:12vh auto}
+#drop{border:2px dashed var(--bd);border-radius:12px;padding:22px;text-align:center;color:var(--mut);margin-bottom:12px;cursor:pointer}
+#drop.over{border-color:var(--ac);color:var(--ac)}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--bd)}
+.row:first-child{border-top:0}
+.ico{width:44px;height:44px;border-radius:8px;background:var(--bg);object-fit:cover;flex:none;display:grid;place-items:center;font-size:20px}
+.info{flex:1;min-width:0}.info a{color:var(--fg);text-decoration:none;font-weight:500;word-break:break-all}
+.info small{display:block;color:var(--mut)}
+.prog{height:6px;background:var(--bd);border-radius:3px;margin:4px 0;overflow:hidden}.prog i{display:block;height:100%;background:var(--ac);width:0}
+#err{color:#dc2626;margin:0 0 8px;min-height:1em}
+#off{background:#fef3c7;color:#92400e;border-radius:8px;padding:10px;margin-bottom:12px}
+</style></head><body><div class="wrap">
+<div id="login" class="card" hidden>
+  <h1 style="margin-bottom:14px">登入 NAS</h1>
+  <p id="err"></p>
+  <input id="u" type="email" placeholder="Email" autocomplete="username">
+  <input id="p" type="password" placeholder="密碼" autocomplete="current-password">
+  <button id="go" style="width:100%">登入</button>
+</div>
+<div id="app" hidden>
+  <header><h1>📁 我的 NAS</h1><div><span id="who" style="color:var(--mut);margin-right:8px"></span><button class="ghost" id="out">登出</button></div></header>
+  <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
+  <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" type="file" multiple hidden></div>
+  <div id="ups"></div>
+  <div class="card" id="list"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script>
+const $=s=>document.querySelector(s);let me=null,API='';
+const sb=supabase.createClient(NAS_CONFIG.supabaseUrl,NAS_CONFIG.supabaseAnonKey);
+const fmt=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':n<1073741824?(n/1048576).toFixed(1)+' MB':(n/1073741824).toFixed(2)+' GB';
+const esc=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function token(){const{data}=await sb.auth.getSession();return data.session?.access_token}
+async function findApi(){ // the PC's tunnel URL is published to url.json by start.ps1
+  try{const r=await fetch('url.json?t='+Date.now());API=(await r.json()).url.replace(/\/$/,'')}catch{API=''}
+}
+async function api(path,o={}){
+  if(!API)await findApi();
+  const t=await token();
+  o.headers=Object.assign({Authorization:'Bearer '+t},o.headers||{});
+  try{return await fetch(API+path,o)}
+  catch{await findApi();return fetch(API+path,o)} // tunnel may have restarted
+}
+async function init(){
+  const t=await token();
+  if(!t){$('#login').hidden=false;$('#app').hidden=true;return}
+  $('#login').hidden=true;$('#app').hidden=false;
+  let r;try{r=await api('/api/me')}catch{$('#off').hidden=false;return}
+  if(!r.ok){$('#off').hidden=r.status===401;if(r.status===401){await sb.auth.signOut();return init()}return}
+  $('#off').hidden=true;me=await r.json();$('#who').textContent=me.name;refresh();
+}
+$('#go').onclick=async()=>{
+  const{error}=await sb.auth.signInWithPassword({email:$('#u').value.trim(),password:$('#p').value});
+  if(error)$('#err').textContent='帳號或密碼錯誤';else{$('#err').textContent='';init()}
+};
+$('#p').onkeydown=e=>{if(e.key==='Enter')$('#go').click()};
+$('#out').onclick=async()=>{await sb.auth.signOut();location.reload()};
+async function refresh(){
+  let r;try{r=await api('/api/files')}catch{$('#off').hidden=false;return}
+  if(!r.ok)return;$('#off').hidden=true;
+  const fs=await r.json();
+  $('#list').innerHTML=fs.length?fs.map(f=>{
+    const u=API+f.url,img=/\.(png|jpe?g|gif|webp)$/i.test(f.name);
+    return `<div class="row">${img?`<img class="ico" loading="lazy" src="${u}">`:`<div class="ico">📄</div>`}
+    <div class="info"><a href="${u}" target="_blank" rel="noopener">${esc(f.name)}</a><small>${fmt(f.size)} · ${esc(f.owner)} · ${new Date(f.time).toLocaleString()}</small></div>
+    <a class="btn" href="${u}&dl=1" style="padding:4px 10px;text-decoration:none">下載</a>
+    ${me.admin||f.owner===me.name?`<button class="del" data-n="${esc(f.name)}">刪除</button>`:''}</div>`}).join(''):'<p style="color:var(--mut);text-align:center">還沒有檔案</p>';
+}
+$('#list').onclick=async e=>{const n=e.target.dataset.n;if(n&&confirm('刪除 '+n+'？')){await api('/api/file?name='+encodeURIComponent(n),{method:'DELETE'});refresh()}};
+async function upload(file){
+  const d=document.createElement('div');d.className='card';d.style.marginBottom='8px';
+  d.innerHTML=`<div>${esc(file.name)} <small class="s"></small></div><div class="prog"><i></i></div>`;$('#ups').prepend(d);
+  if(!API)await findApi();const t=await token();
+  const x=new XMLHttpRequest();x.open('PUT',API+'/api/upload?name='+encodeURIComponent(file.name));x.setRequestHeader('Authorization','Bearer '+t);
+  x.upload.onprogress=e=>{d.querySelector('i').style.width=(e.loaded/e.total*100)+'%';d.querySelector('.s').textContent=Math.round(e.loaded/e.total*100)+'%'};
+  x.onload=()=>{if(x.status===200){d.remove();refresh()}else d.querySelector('.s').textContent='失敗 '+x.status};
+  x.onerror=()=>d.querySelector('.s').textContent='失敗';x.send(file);
+}
+const pick=fl=>[...fl].forEach(upload);
+$('#drop').onclick=()=>$('#f').click();$('#f').onchange=e=>{pick(e.target.files);e.target.value=''};
+$('#drop').ondragover=e=>{e.preventDefault();$('#drop').classList.add('over')};
+$('#drop').ondragleave=()=>$('#drop').classList.remove('over');
+$('#drop').ondrop=e=>{e.preventDefault();$('#drop').classList.remove('over');pick(e.dataTransfer.files)};
+setInterval(()=>{if(me&&!document.hidden)refresh()},10000);
+init();
+</script></div></body></html>
