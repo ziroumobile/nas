@@ -160,3 +160,8 @@ html.ios #selbar button:active{background:rgba(120,120,128,.5)!important}
 html.ios #sbtn{background:rgba(120,120,128,.28)!important;background-image:none!important;color:#0a84ff!important;border-radius:50%!important;width:40px;height:40px;padding:0!important;
   box-shadow:inset 0 1px 1.5px var(--g-hi),var(--g-shadow)!important}
 html.ios .srch input{-webkit-appearance:none;appearance:none;border-radius:999px;background:var(--g-fill);-webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);font-size:16px}
+
+/* keep the status-bar area clean: nothing scrolls visibly behind the clock / battery */
+html.ios body::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top);background:#000;z-index:60;pointer-events:none}
+html.ios .wrap{padding-top:calc(env(safe-area-inset-top) + 12px)}
+html.ios #app>header{margin-bottom:6px}
