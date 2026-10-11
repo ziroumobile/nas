@@ -58,6 +58,13 @@ body.selecting .wrap{padding-bottom:100px}
 #vtitle{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #vpos{color:#9ca3af;font-size:13px;white-space:nowrap}
 .vtop .btn{padding:6px 12px}
+#vinfop{position:absolute;top:calc(56px + env(safe-area-inset-top));right:10px;width:min(360px,calc(100% - 20px));max-height:calc(100% - 80px - env(safe-area-inset-top));overflow:auto;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:12px;padding:12px 14px;z-index:52;box-shadow:0 8px 30px rgba(0,0,0,.5);font-size:14px}
+#vinfop[hidden]{display:none}
+#vinfop h4{margin:0 0 8px;font-size:15px}
+#vinfop .ir{display:flex;gap:10px;padding:5px 0;border-top:1px solid #374151}
+#vinfop .ir:first-of-type{border-top:0}
+#vinfop .ik{flex:none;width:76px;color:#9ca3af}
+#vinfop .iv{flex:1;min-width:0;word-break:break-all}
 #vstage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 8px calc(8px + env(safe-area-inset-bottom));position:relative}
 #vstage img.vimg{max-width:100%;max-height:100%;object-fit:contain}
 #vstage video{max-width:100%;max-height:100%;background:#000;border-radius:6px}
@@ -90,8 +97,9 @@ body.selecting .wrap{padding-bottom:100px}
   <div class="card" id="list"></div>
 </div>
 <div id="viewer" hidden>
-  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><a id="vdlj" class="btn" hidden title="下載轉好的 JPG 版本（不能開 HEIC 的裝置用這個）">JPG</a><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div>
+  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><button class="ghost" id="vinfo" style="color:#fff" title="檔案資訊">ℹ️ 資訊</button><a id="vdlj" class="btn" hidden title="下載轉好的 JPG 版本（不能開 HEIC 的裝置用這個）">JPG</a><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div>
   <div id="vstage"></div>
+  <div id="vinfop" hidden></div>
   <button class="vnav" id="vprev" aria-label="上一個">‹</button><button class="vnav" id="vnext" aria-label="下一個">›</button>
 </div>
 <div id="selbar" hidden>
@@ -106,6 +114,7 @@ body.selecting .wrap{padding-bottom:100px}
 const $=s=>document.querySelector(s);
 const id=location.hash.slice(1);let API='',files=[];
 const fmt=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':n<1073741824?(n/1048576).toFixed(1)+' MB':(n/1073741824).toFixed(2)+' GB';
+const fmtTotal=n=>n>=1073741824?(n/1073741824).toFixed(2)+' GB':n>0&&n<104858?'<0.1 MB':(n/1048576).toFixed(1)+' MB'; // GB from 1 GB up, otherwise MB
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function findApi(){try{const r=await fetch('url.json?t='+Date.now());API=(await r.json()).url.replace(/\/$/,'')}catch{API=''}}
 // open(undefined) just asks whether a password is needed (shares made without one open straight away); open(pw) tries the password
@@ -121,7 +130,7 @@ async function openShare(pw){
     $('#pw').value='';files=j.files;
     $('#gate').hidden=true;$('#app').hidden=false;
     $('#title').textContent=j.type==='folder'?'📁 '+j.title:`📄 分享的檔案（${files.length} 個）`;
-    $('#sub').textContent=files.length+' 個檔案'+(j.expires?' · 分享有效至 '+new Date(j.expires).toLocaleString():'');
+    $('#sub').textContent=files.length+' 個檔案 · 共 '+fmtTotal(files.reduce((s,x)=>s+x.size,0))+(j.expires?' · 分享有效至 '+new Date(j.expires).toLocaleString():'');
     document.title=j.type==='folder'?j.title+' - 檔案分享':'檔案分享';
     render();
   }catch{$('#gsub').textContent='';$('#err').textContent='連不到主機，可能是電腦沒開機，請稍後再試'}
@@ -173,34 +182,48 @@ let vlist=[],vi=0,vseq=0,vOpen=false;
 const extOf=n=>(n.match(/\.([^.]+)$/)||[])[1]?.toLowerCase()||'';
 function openViewer(i){vi=i;if(!vOpen){vOpen=true;history.pushState({viewer:1},'')}$('#viewer').hidden=false;document.body.style.overflow='hidden';showViewer()}
 function stopMedia(){for(const m of $('#vstage').querySelectorAll('video,audio')){m.pause();m.removeAttribute('src');m.load()}}
+// file info panel (the ℹ️ button). Visitors only see facts about the file itself: no uploader, no folder, no upload time.
+let vmeta={};
+const fmtDur=s=>{if(!Number.isFinite(s))return'';s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return(h?h+':'+String(m).padStart(2,'0'):m)+':'+String(r).padStart(2,'0')};
+function renderInfo(){
+  const p=$('#vinfop');if(p.hidden||!vlist[vi])return;
+  const x=vlist[vi],ext=extOf(x.name),label=x.kind==='image'?'圖片':x.kind==='video'?'影片':ext==='mp3'||ext==='wav'?'音訊':ext==='pdf'?'PDF 文件':ext==='txt'?'文字檔':'檔案';
+  const rows=[['名稱',x.name],['類型',label+(ext?'（'+ext.toUpperCase()+'）':'')],['大小',`${fmt(x.size)}（${x.size.toLocaleString()} 位元組）`],['更新日期',new Date(x.mtime).toLocaleString()]];
+  if(vmeta.w&&vmeta.h)rows.push(['解析度',`${vmeta.w} × ${vmeta.h}（${(vmeta.w*vmeta.h/1e6).toFixed(1)} 百萬畫素）`]);
+  if(vmeta.dur)rows.push(['長度',fmtDur(vmeta.dur)]);
+  if(x.preview)rows.push(['備註','HEIC 照片：預覽使用轉好的 JPG，下載的是原檔']);
+  p.innerHTML='<h4>ℹ️ 檔案資訊</h4>'+rows.map(([a,b])=>`<div class="ir"><span class="ik">${a}</span><span class="iv">${esc(b)}</span></div>`).join('');
+}
+$('#vinfo').onclick=()=>{const p=$('#vinfop');p.hidden=!p.hidden;renderInfo()};
 function showViewer(){
   const x=vlist[vi],seq=++vseq,st=$('#vstage'),u=API+x.url,ext=extOf(x.name);
-  stopMedia();st.innerHTML='';
+  stopMedia();st.innerHTML='';vmeta={};renderInfo();
   $('#vtitle').textContent=x.name;$('#vpos').textContent=`${vi+1} / ${vlist.length}`;$('#vdl').href=u+'&dl=1';
   $('#vdlj').hidden=!x.preview;if(x.preview)$('#vdlj').href=API+x.preview+'&dl=1'; // HEIC/HEIF: viewed as a JPEG copy; "下載" still gives the untouched original
   $('#vprev').hidden=$('#vnext').hidden=vlist.length<2;
   const msg=(html,cls)=>{const d=document.createElement('div');d.className='vmsg '+(cls||'');d.innerHTML=html;st.append(d)};
   if(x.kind==='image'){
     const img=document.createElement('img');img.className='vimg';img.alt=x.name;if(x.thumb)img.src=API+x.thumb;st.append(img);
-    const full=new Image();full.onload=()=>{if(seq===vseq)img.src=full.src};full.src=x.preview?API+x.preview:u;
+    const full=new Image();full.onload=()=>{if(seq===vseq){img.src=full.src;vmeta={w:full.naturalWidth,h:full.naturalHeight};renderInfo()}};full.src=x.preview?API+x.preview:u;
   }else if(x.kind==='video'){
     const v=document.createElement('video');v.controls=true;v.playsInline=true;v.preload='metadata';if(x.thumb)v.poster=API+x.thumb;
     v.addEventListener('error',()=>{if(seq===vseq&&v.getAttribute('src'))msg('這個瀏覽器無法播放此影片格式，請按右上角「下載」。','warn')});
+    v.addEventListener('loadedmetadata',()=>{if(seq===vseq){vmeta={w:v.videoWidth,h:v.videoHeight,dur:v.duration};renderInfo()}});
     v.src=u;st.append(v);v.play().catch(()=>{});
   }else if(ext==='mp3'||ext==='wav'){
-    msg('<div class="big">🎵</div>'+esc(x.name));const a=document.createElement('audio');a.controls=true;a.src=u;st.append(a);a.play().catch(()=>{});
+    msg('<div class="big">🎵</div>'+esc(x.name));const a=document.createElement('audio');a.controls=true;a.addEventListener('loadedmetadata',()=>{if(seq===vseq){vmeta={dur:a.duration};renderInfo()}});a.src=u;st.append(a);a.play().catch(()=>{});
   }else if(ext==='pdf'){const fr=document.createElement('iframe');fr.src=u;st.append(fr)}
   else if(ext==='txt'){
     msg('載入中…');
     fetch(u).then(r=>r.text()).then(t=>{if(seq!==vseq)return;st.innerHTML='';const p=document.createElement('pre');p.textContent=t.length>300000?t.slice(0,300000)+'\n\n…（內容過長，只顯示前 300KB）':t;st.append(p)}).catch(()=>{if(seq===vseq){st.innerHTML='';msg('無法載入文字內容','warn')}});
   }else msg(`<div class="big">📄</div>${esc(x.name)}<br>${fmt(x.size)}<br>此檔案類型無法預覽，請按右上角「下載」。`);
 }
-function closeViewer(fromPop){if(!vOpen)return;vOpen=false;vseq++;stopMedia();$('#vstage').innerHTML='';$('#viewer').hidden=true;document.body.style.overflow='';if(!fromPop&&history.state?.viewer)history.back()}
+function closeViewer(fromPop){if(!vOpen)return;vOpen=false;vseq++;stopMedia();$('#vstage').innerHTML='';$('#viewer').hidden=true;$('#vinfop').hidden=true;document.body.style.overflow='';if(!fromPop&&history.state?.viewer)history.back()}
 const vgo=d=>{if(vlist.length<2)return;vi=(vi+d+vlist.length)%vlist.length;showViewer()};
 $('#vclose').onclick=()=>closeViewer();$('#vprev').onclick=()=>vgo(-1);$('#vnext').onclick=()=>vgo(1);
 $('#vstage').onclick=e=>{if(e.target.id==='vstage')closeViewer()};
 addEventListener('popstate',()=>closeViewer(true));
-document.addEventListener('keydown',e=>{if(!vOpen)return;if(e.key==='Escape')closeViewer();else if(e.key==='ArrowLeft')vgo(-1);else if(e.key==='ArrowRight')vgo(1)});
+document.addEventListener('keydown',e=>{if(!vOpen)return;if(e.key==='Escape'){if(!$('#vinfop').hidden)$('#vinfop').hidden=true;else closeViewer()}else if(e.key==='ArrowLeft')vgo(-1);else if(e.key==='ArrowRight')vgo(1)});
 let tx=0,ty=0;
 $('#vstage').addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
 $('#vstage').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
