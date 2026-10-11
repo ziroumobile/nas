@@ -75,7 +75,7 @@ details.fold>summary{flex-wrap:wrap;row-gap:8px}
 #dock button:active,#dock button.act{background:rgba(0,0,0,.35)}
 body.selecting #dock,body.selecting .srch,body.searching #dock{display:none}
 #dock button.txt{width:auto;padding:0 18px;font:inherit;font-size:16px;font-weight:600}
-#selmode{display:none!important}
+#selmode,#newf{display:none!important}
 @media(max-width:420px){#dock button{width:50px}#dock button.txt{padding:0 12px}}
 .wrap{padding-bottom:110px}
 /* icon views: medium = 3 per row on phone / 5 on computer; small = 5 per row on phone / 8 on computer */
@@ -358,6 +358,13 @@ function setSel(k,on){on?selected.add(k):selected.delete(k);
   inp.onblur=()=>setTimeout(()=>{if(box.classList.contains('open'))closeS()},120);   // keyboard dismissed -> dock again
   inp.onkeydown=e=>{if(e.key==='Escape'||e.key==='Enter')closeS()};
   const vv=window.visualViewport;if(vv){const f=()=>document.documentElement.style.setProperty('--kb',Math.max(0,innerHeight-vv.height-vv.offsetTop)+'px');vv.addEventListener('resize',f);vv.addEventListener('scroll',f);f()}}
+{let pm=null;const closePm=()=>{if(pm){const m=pm;pm=null;m.classList.add('out');setTimeout(()=>m.remove(),170)}};
+  $('#dup').onclick=e=>{e.stopPropagation();if(pm){closePm();return}
+    const m=document.createElement('div');m.className='gmenu';pm=m;
+    for(const[t,f]of[['⬆ 上傳檔案',()=>$('#f').click()],['📁 新增資料夾',()=>$('#newf').click()]]){const d=document.createElement('div');d.textContent=t;d.onclick=ev=>{ev.stopPropagation();closePm();f()};m.appendChild(d)}
+    document.body.appendChild(m);const r=$('#dup').getBoundingClientRect(),w=m.offsetWidth,h=m.offsetHeight;
+    const left=Math.max(8,Math.min(r.left+r.width/2-w/2,innerWidth-w-8));m.style.left=left+'px';m.style.top=(r.top-h-10)+'px';m.style.transformOrigin='bottom center'};
+  document.addEventListener('pointerdown',e=>{if(pm&&!e.target.closest('.gmenu')&&!e.target.closest('#dup'))closePm()},true)}
 $('#dsel').onclick=()=>$('#selmode').click();
 $('#selmode').onclick=()=>{selMode=!selMode;if(!selMode)selected.clear();render(true)};
 $('#selexit').onclick=()=>{selMode=false;selected.clear();render(true)};
@@ -735,7 +742,6 @@ async function runJob(j){
 }
 const pick=fl=>{const f=target;[...fl].forEach(x=>enqueue(x,f))};
 $('#drop').onclick=()=>$('#f').click();$('#f').onchange=e=>{pick(e.target.files);e.target.value=''};
-$('#dup').onclick=()=>$('#f').click();
 $('#drop').ondragover=e=>{e.preventDefault();$('#drop').classList.add('over')};
 $('#drop').ondragleave=()=>$('#drop').classList.remove('over');
 $('#drop').ondrop=e=>{e.preventDefault();$('#drop').classList.remove('over');pick(e.dataTransfer.files)};
