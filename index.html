@@ -141,7 +141,8 @@ body.selecting .wrap{padding-bottom:100px}
 .merr{color:#dc2626;min-height:1.2em;margin:6px 0 0}
 .mwarn{background:#fef3c7;color:#92400e;border-radius:8px;padding:8px 10px;font-size:13px;margin-top:10px;line-height:1.5}
 .srow{border-top:1px solid var(--bd);padding:10px 0}.srow:first-of-type{border-top:0}
-.sth{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+.sth{display:grid;grid-template-rows:repeat(2,64px);grid-auto-flow:column;grid-auto-columns:64px;gap:4px;margin:6px 0;overflow-x:auto;padding-bottom:4px}
+.mhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}.mhead h3{margin:0}
 .sc{position:relative;display:block;width:64px;height:64px;border-radius:6px;overflow:hidden;background:var(--bd);flex:none}
 .sc img,.sc .ico{width:100%;height:100%;object-fit:cover;border-radius:0;font-size:22px}
 .srow b{word-break:break-all}.srow small{display:block;color:var(--mut);margin:2px 0 6px}
@@ -160,7 +161,7 @@ body.selecting .wrap{padding-bottom:100px}
   <header><h1>📁 我的 NAS</h1></header>
   <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></span>
   <nav id="dock"><button id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button><button id="dflt" type="button" aria-label="篩選" title="篩選"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M7 12h10M10 17h4"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
-  <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button><button class="ghost" id="out">登出</button></div><div class="mbtns"><button class="ghost" id="setclose">完成</button></div></div></div>
+  <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button></div><div class="mbtns" style="justify-content:space-between"><button class="ghost" id="out">登出</button><button class="ghost" id="setclose">完成</button></div></div></div>
   <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
   <div class="bar">
     <span>此裝置：<b id="dev"></b></span><button class="ghost" id="rename">改名</button>
@@ -557,7 +558,7 @@ async function sharesManager(){ // every share: link, password (after entering t
   };
   const pwCell=s=>!s.hasPassword?'<span style="color:#b45309">（沒有設密碼：任何人有連結就能開啟）</span>':!s.pwStored?'<span style="color:var(--mut)">（未儲存）</span>':revealed?(revealed[s.id]==null?'<span style="color:var(--mut)">（無法解密）</span>':`<code style="user-select:all;font-size:15px">${esc(revealed[s.id])}</code> <button class="ghost" data-copypw="${esc(s.id)}" style="padding:2px 8px">複製密碼</button>`):'<code>••••••••</code>';
   const draw=()=>{
-    showModal(`<h3>🔗 已分享連結（${list.length}）</h3><p class="sub">對方開啟連結（有設密碼的要先輸入密碼）後可檢視與下載，唯讀。點縮圖可以直接預覽。撤銷後連結立刻失效，對方已經打開的下載連結也一併失效。密碼要輸入編輯密碼才會顯示。</p>
+    showModal(`<div class="mhead"><h3>🔗 已分享連結（${list.length}）</h3><button class="ghost" id="sx">關閉</button></div><p class="sub">對方開啟連結（有設密碼的要先輸入密碼）後可檢視與下載，唯讀。點縮圖可以直接預覽。撤銷後連結立刻失效，對方已經打開的下載連結也一併失效。密碼要輸入編輯密碼才會顯示。</p>
       ${list.some(s=>s.hasPassword)?`<div class="mbtns" style="margin:0 0 6px">${revealed?'<button class="ghost" data-hide="1">🙈 隱藏密碼</button>':'<button data-reveal="1">🔑 顯示密碼</button>'}</div>`:''}`+
       (list.length?list.map(s=>`<div class="srow"><b>${s.type==='folder'?'📁 資料夾「'+esc(s.folder)+'」· '+s.count+' 個檔案（即時）':'📄 '+s.count+' 個檔案'}</b>
         ${thumbs(s)}
@@ -566,7 +567,7 @@ async function sharesManager(){ // every share: link, password (after entering t
         <div style="margin:4px 0">密碼：${pwCell(s)}</div>
         <div style="margin:4px 0">有效期限：${s.expires?when(s.expires)+'（'+left(s.expires)+'）':'永久有效'}</div>
         <button class="del" data-revoke="${esc(s.id)}" style="margin-top:4px">撤銷這個分享</button></div>`).join(''):'<p class="sub">目前沒有任何分享。</p>')+
-      '<div class="mbtns"><button class="ghost" id="sx">關閉</button></div>');
+      '');
     $('#sx').onclick=closeModal;
     $('#mbox').onclick=async e=>{
       const pv=e.target.closest('a[data-pv]');
