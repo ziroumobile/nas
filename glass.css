@@ -394,3 +394,7 @@ html.android #dock button{color:#fff!important}
 /* drag handle: white-grey lines on a light pill, impossible to miss */
 .grip{background-color:rgba(255,255,255,.14)!important;background-image:linear-gradient(#e5e7eb,#e5e7eb),linear-gradient(#e5e7eb,#e5e7eb),linear-gradient(#e5e7eb,#e5e7eb)!important;
   background-size:24px 4px,24px 4px,24px 4px!important;background-position:center 14px,center 22px,center 30px!important;background-repeat:no-repeat!important;opacity:1!important;filter:none!important}
+
+/* drag handle as an SVG image (a phone browser's "force dark" repaints plain CSS colours but leaves images alone) */
+.grip{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cg stroke='%23f3f4f6' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M3 6h20M3 13h20M3 20h20'/%3E%3C/g%3E%3C/svg%3E")!important;
+  background-size:26px 26px!important;background-position:center!important;background-repeat:no-repeat!important;background-color:rgba(255,255,255,.12)!important}
