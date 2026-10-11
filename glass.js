@@ -272,8 +272,9 @@ void main(){
     let top = r.bottom + 6, up = false; if (top + h > innerHeight - 8 && r.top - h - 6 > 8) { top = r.top - h - 6; up = true; }
     m.style.left = left + 'px'; m.style.top = top + 'px'; m.style.transformOrigin = (up ? 'bottom ' : 'top ') + Math.max(20, r.left + r.width / 2 - left) + 'px';
   }
-  if (document.documentElement.classList.contains('ios')) {
+  {   // dark drop-down menus on every platform (the native list is white on Windows)
     document.addEventListener('pointerdown', e => {                  // grey flash on touch, long enough to see even on a quick tap
+      if (!document.documentElement.classList.contains('ios')) return;
       const b = e.target.closest && e.target.closest('button,a.btn,select'); if (!b || b.closest('.seg')) return;
       b.classList.add('gpress'); const t0 = Date.now();
       const off = () => { document.removeEventListener('pointerup', off, true); document.removeEventListener('pointercancel', off, true); setTimeout(() => b.classList.remove('gpress'), Math.max(0, 180 - (Date.now() - t0))); };
