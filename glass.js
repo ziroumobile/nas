@@ -175,7 +175,7 @@ void main(){
   function trackHot(s, cx) { const k = s.nearest(cx); if (k !== s.hot) setHot(s, k); }
   function step(s, dt) {
     const L = s.lens; let moving = false;
-    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 520, 38], ['w', 'vw', 'tw', 520, 38], ['grow', 'vg', 'tg', 900, 48], ['mag', 'vm', 'tm', 900, 48]]) {
+    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 1000, 50], ['w', 'vw', 'tw', 1000, 50], ['grow', 'vg', 'tg', 900, 48], ['mag', 'vm', 'tm', 900, 48]]) {
       [L[k], L[v]] = spring(L[k], L[v], L[t], dt, kk, cc);
       if (Math.abs(L[t] - L[k]) > (k === 'mag' ? 0.002 : 0.25) || Math.abs(L[v]) > (k === 'mag' ? 0.02 : 4)) moving = true;
     }
@@ -234,7 +234,7 @@ void main(){
       if (!d.started) return;                                        // a plain tap: the button's own click does the work
       const rect = seg.getBoundingClientRect();
       const k = e && e.type === 'pointerup' ? nearest(e.clientX - rect.left - seg.clientLeft) : selected(s);
-      const wait = s.gl && s.lens ? Math.max(0, 170 - (Date.now() - d.t0)) : 0;   // a quick tap still shows the lens swelling before it lands
+      const wait = s.gl && s.lens ? Math.max(0, 230 - (Date.now() - d.t0)) : 0;   // a quick tap still shows the lens swelling before it lands
       s.suppressClick = true; setTimeout(() => { s.suppressClick = false; }, wait + 80);
       if (wait) { const t = e ? target(e) : null; if (t && s.lens) { s.lens.tx = t.cx; s.lens.tw = t.w; } s.hold = true; setTimeout(() => { s.hold = false; release(k); }, wait); } else release(k);
     };

@@ -35,7 +35,7 @@ html.ios{--seg-fg:#fff;--seg-blue:#0a84ff}
 html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn){
   position:relative;border-radius:999px;transition:transform .32s cubic-bezier(.2,.9,.3,1.35),background-color .2s,box-shadow .2s;
 }
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn):active{transform:none;background-color:rgba(120,120,128,.5)!important}   /* touched: greys for a moment, like the iOS menu button */
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn):not(.seg button):active{transform:none;background-color:rgba(120,120,128,.5)!important}   /* touched: greys for a moment, like the iOS menu button */
 html.ios button.ghost:not(.del):not(.danger),html.ios a.btn.ghost,html.ios .bar select{color:var(--seg-fg)!important}
 html.ios button.del,html.ios button.danger{color:#ff453a!important}
 html.ios button.danger{color:#fff!important}   /* only the view switch uses blue; other buttons stay white */
