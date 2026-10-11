@@ -190,7 +190,7 @@ body.selecting .wrap{padding-bottom:100px}
 <div id="selbar" hidden>
   <b id="selcount">已選 0 個</b>
   <button class="ghost" id="selall">全選</button>
-  <button class="ghost" id="selnone">清除選取</button>
+  <button class="ghost" id="selnone">取消選取</button>
   <button id="seldl">下載選取</button>
   <button id="selshare" hidden>🔗 分享選取</button>
   <button class="danger" id="seldel" hidden>刪除選取</button>
@@ -342,8 +342,8 @@ if(document.documentElement.classList.contains('ios')||matchMedia('(max-width:69
   const bar1=$('#newf').parentElement,mk=()=>{const d=document.createElement('div');d.className='bar';return d};
   $('#dev').parentElement.style.display='none';$('#rename').style.display='none';
   const up=$('#target').parentElement,w=document.createElement('span');w.append('上傳到：',$('#target'));up.remove();
-  const sb=$('.seg').parentElement,segBar=mk();segBar.classList.add('segrow');segBar.append('顯示方式：',$('.seg'));sb.after(segBar);
-  const last=mk();last.append(w,$('#selmode'));segBar.after(last);
+  const sb=$('.seg').parentElement,segBar=mk();segBar.classList.add('segrow');segBar.append('顯示方式：',$('.seg'));sb.before(segBar);
+  const last=mk();last.append(w,$('#selmode'));segBar.before(last);   // order: upload target / view switch / sort
   const sbar=$('#selbar'),top=document.createElement('div'),bot=document.createElement('div');top.className='seltop';bot.className='selbot';   // select mode: close + bulk actions on top, share / download as round icons in the bottom corners
   top.append($('#selcount'),$('#selnone'),$('#seldel'),$('#selall'),$('#selexit'));bot.append($('#selshare'),$('#seldl'));sbar.append(top,bot);
   $('#selshare').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14.5V3.5M8 7l4-4 4 4"/><path d="M7.5 10H6.5a2.5 2.5 0 0 0-2.5 2.5v6A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5v-6A2.5 2.5 0 0 0 17.5 10h-1"/></svg>';$('#selshare').setAttribute('aria-label','分享選取');
@@ -373,10 +373,10 @@ function setSel(k,on){on?selected.add(k):selected.delete(k);
   const vv=window.visualViewport;if(vv){const f=()=>document.documentElement.style.setProperty('--kb',Math.max(0,innerHeight-vv.height-vv.offsetTop)+'px');vv.addEventListener('resize',f);vv.addEventListener('scroll',f);f()}}
 {let pm=null;const closePm=()=>{if(pm){const m=pm;pm=null;m.classList.add('out');setTimeout(()=>m.remove(),170)}};
   $('#dup').onclick=e=>{e.stopPropagation();if(pm){closePm();return}
-    const m=document.createElement('div');m.className='gmenu';pm=m;
+    const m=document.createElement('div');m.className='gmenu';m.style.visibility='hidden';pm=m;
     for(const[t,f]of[['⬆ 上傳檔案',()=>$('#f').click()],['📁 新增資料夾',()=>$('#newf').click()]]){const d=document.createElement('div');d.textContent=t;d.onclick=ev=>{ev.stopPropagation();closePm();f()};m.appendChild(d)}
     document.body.appendChild(m);const r=$('#dup').getBoundingClientRect(),w=m.offsetWidth,h=m.offsetHeight;
-    const left=Math.max(8,Math.min(r.left+r.width/2-w/2,innerWidth-w-8));m.style.left=left+'px';m.style.top=(r.top-h-10)+'px';m.style.transformOrigin='bottom center'};
+    const left=Math.max(8,Math.min(r.left+r.width/2-w/2,innerWidth-w-8));m.style.left=left+'px';m.style.top=(r.top-h-10)+'px';m.style.transformOrigin=(r.left+r.width/2-left)+'px bottom';m.style.visibility='visible'};
   document.addEventListener('pointerdown',e=>{if(pm&&!e.target.closest('.gmenu')&&!e.target.closest('#dup'))closePm()},true)}
 $('#dsel').onclick=()=>$('#selmode').click();
 $('#selmode').onclick=()=>{selMode=!selMode;if(!selMode)selected.clear();render(true)};

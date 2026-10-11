@@ -315,3 +315,9 @@ html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 68px)}
 html.ios .seltop{top:calc(env(safe-area-inset-top) + 4px)}
 html.ios #topband{height:calc(env(safe-area-inset-top) + 64px)}
 html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 76px)}
+
+/* dock: clearer glass, as see-through as the view-switch bar */
+#dock{background:rgba(255,255,255,.012)!important;-webkit-backdrop-filter:blur(1.5px) saturate(160%)!important;backdrop-filter:blur(1.5px) saturate(160%)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 10px 28px rgba(0,0,0,.35)!important}
+/* settings buttons also grey out while pressed */
+#setpanel #setbody button:active,#setpanel .mbtns button:active,#setpanel #setbody button.gpress,#setpanel .mbtns button.gpress{background:rgba(120,120,128,.5)!important}
