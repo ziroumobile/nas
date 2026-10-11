@@ -212,7 +212,7 @@ void main(){
     seg.addEventListener('pointerdown', e => {
       if (e.button > 0) return; s.drag = { id: e.pointerId, x0: e.clientX, started: false };
       if (!s.gl) return;
-      s.drag.started = true; try { seg.setPointerCapture(e.pointerId); } catch { }   // the lens swells the moment it is touched, no drag needed
+      s.drag.started = true;   // the lens swells the moment it is touched, no drag needed
       if (!s.active) startLens(s);
       const t = target(e); s.lens.tx = t.cx; s.lens.tw = t.w; s.lens.tg = GROW; s.lens.tm = MAG; if (!s.running) loop(s);
     });
@@ -249,6 +249,35 @@ void main(){
   window.glassSegSync = () => switches.forEach(s => { if (s.active) return; placePill(s, selected(s), true); makeTexture(s); });
 
   const init = () => document.querySelectorAll('.seg').forEach(build);
+  // ---------- drop-down menus (replace the native <select> list, which iOS draws far from the button) ----------
+  let gm = null;
+  function closeMenu() { if (!gm) return; const m = gm; gm = null; m.classList.add('out'); setTimeout(() => m.remove(), 170); }
+  function openMenu(sel) {
+    closeMenu();
+    const m = document.createElement('div'); m.className = 'gmenu'; gm = m;
+    [...sel.options].forEach(o => {
+      const d = document.createElement('div'); d.textContent = o.textContent; if (o.value === sel.value) d.className = 'cur';
+      d.addEventListener('click', e => { e.stopPropagation(); if (sel.value !== o.value) { sel.value = o.value; sel.dispatchEvent(new Event('change', { bubbles: true })); } closeMenu(); });
+      m.appendChild(d);
+    });
+    document.body.appendChild(m);
+    const r = sel.getBoundingClientRect(), w = m.offsetWidth, h = m.offsetHeight;
+    const left = Math.max(8, Math.min(r.left, innerWidth - w - 8));
+    let top = r.bottom + 6, up = false; if (top + h > innerHeight - 8 && r.top - h - 6 > 8) { top = r.top - h - 6; up = true; }
+    m.style.left = left + 'px'; m.style.top = top + 'px'; m.style.transformOrigin = (up ? 'bottom ' : 'top ') + Math.max(20, r.left + r.width / 2 - left) + 'px';
+  }
+  if (document.documentElement.classList.contains('ios')) {
+    document.addEventListener('pointerdown', e => {                  // grey flash on touch, long enough to see even on a quick tap
+      const b = e.target.closest && e.target.closest('button,a.btn,select'); if (!b || b.closest('.seg')) return;
+      b.classList.add('gpress'); const t0 = Date.now();
+      const off = () => { document.removeEventListener('pointerup', off, true); document.removeEventListener('pointercancel', off, true); setTimeout(() => b.classList.remove('gpress'), Math.max(0, 180 - (Date.now() - t0))); };
+      document.addEventListener('pointerup', off, true); document.addEventListener('pointercancel', off, true);
+    }, true);
+    const stop = e => { const t = e.target.closest && e.target.closest('select'); if (t) { e.preventDefault(); if (e.type === 'click') { e.stopPropagation(); gm ? closeMenu() : openMenu(t); } } };
+    ['pointerdown', 'mousedown', 'touchstart', 'click'].forEach(ev => document.addEventListener(ev, stop, { capture: true, passive: false }));
+    document.addEventListener('pointerdown', e => { if (gm && !e.target.closest('.gmenu') && !e.target.closest('select')) closeMenu(); }, true);
+    addEventListener('scroll', closeMenu, true);
+  }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   addEventListener('resize', () => switches.forEach(s => { if (!s.active) relayout(s); }));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => switches.forEach(s => { if (!s.active) relayout(s); }));
