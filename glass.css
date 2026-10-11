@@ -280,3 +280,6 @@ html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 58px)}
 
 /* dock = clear liquid glass (light blur, see-through, refracts what is behind it), NOT frosted; only the select-mode top band is gaussian blur */
 #dock{-webkit-backdrop-filter:blur(3px) saturate(175%) brightness(1.12);backdrop-filter:blur(3px) saturate(175%) brightness(1.12);background:rgba(255,255,255,.04)}
+
+/* select mode: the blur band reaches the very top (behind the clock too), so the black status-bar mask steps aside */
+html.ios body.selecting::before{background:transparent}
