@@ -22,7 +22,7 @@ void main(){
   vec2 p=px-c;float d=sdRR(p,hs,r);                                         // signed distance to the lens shape (<0 inside)
   float aa=1./u_dpr;
   float inside=1.-smoothstep(-aa,aa,d);
-  float shadow=exp(-max(d,0.)/8.)*.42*u_lift*(1.-inside);                   // soft drop shadow outside the lens
+  float shadow=exp(-max(d,0.)/8.)*.30*u_lift*(1.-inside);                   // soft drop shadow outside the lens
   if(d>SPADCUT){gl_FragColor=vec4(0.);return;}
   vec2 e=vec2(.75,0.);
   vec2 g=vec2(sdRR(p+e.xy,hs,r)-sdRR(p-e.xy,hs,r),sdRR(p+e.yx,hs,r)-sdRR(p-e.yx,hs,r));g=g/(length(g)+1e-4);   // outward direction
@@ -38,7 +38,7 @@ void main(){
   float edge=(1.-smoothstep(0.,1.6,-d))*(.55+.45*lightDir)*u_lift;          // hairline highlight right at the edge
   float sheen=smoothstep(.2,-.9,p.y/hs.y)*(1.-s)*.07*u_lift;
   if(u_dark>.5){
-    col=col*(1.+.04*u_lift)+u_tint*(.02*u_lift)+vec3(rim*.50+edge*.55+sheen);            // dark page: light rim on the glass
+    col=col*(1.+.03*u_lift)+vec3((1.-smoothstep(0.,1.4,-d))*.10*u_lift+rim*.04);   // same thin, even edge as every other glass piece            // dark page: light rim on the glass
   }else{
     float lit=max(lightDir,0.),shade=max(-lightDir,0.),r3=pow(s,3.);                     // light page: white highlight on the lit side, a soft shade on the other
     col=col*(1.-.22*r3*shade*u_lift-.03*s*u_lift)+vec3(r3*lit*.60*u_lift+edge*lit*.35*u_lift);

@@ -234,3 +234,7 @@ html.ios .seg-pill{box-shadow:none}
 html.ios body::before{content:"";position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top) + 40px);background:#000;z-index:60;pointer-events:none}
 html.ios .wrap{padding-top:calc(env(safe-area-inset-top) + 48px)}
 html.ios #app>header{margin-bottom:6px}
+
+/* the swelling lens may poke past the screen edge: clip it, otherwise iOS zooms the whole page out to fit it */
+html.ios,html.ios body{overflow-x:clip}
+html.ios .wrap{overflow-x:clip}
