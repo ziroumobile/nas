@@ -206,6 +206,8 @@ body.mlock{position:fixed;left:0;right:0;overflow:hidden}#modal,#setpanel{oversc
 <script src="glass.js?v=20261011h"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
+// macOS (Safari "Add to Dock"): a full-bleed icon gets a white plate behind it, so give Macs a squircle icon with its own transparent margin (iPhone keeps the full-bleed one)
+if(/Macintosh/.test(navigator.userAgent)&&!(navigator.maxTouchPoints>1)){const l=document.querySelector('link[rel=apple-touch-icon]');if(l)l.href='icons/icon-mac-1024.png'}
 const sb=supabase.createClient(NAS_CONFIG.supabaseUrl,NAS_CONFIG.supabaseAnonKey);
 const fmt=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':n<1073741824?(n/1048576).toFixed(1)+' MB':(n/1073741824).toFixed(2)+' GB';
 // totals: GB from 1 GB up, otherwise MB
