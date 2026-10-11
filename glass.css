@@ -363,3 +363,13 @@ html.ios #modal button:active{background:rgba(120,120,128,.5)!important}
   background:rgba(40,40,44,.96);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 12px 30px rgba(0,0,0,.5);white-space:nowrap}
 #savepill button{border-radius:999px;border:0;padding:9px 18px;font:inherit;background:#0a84ff;color:#fff}
 #savepill button.ghost{background:rgba(120,120,128,.3);padding:9px 14px}
+
+/* Android: no backdrop blur (it leaves a bright halo around every control there); plain translucent fills instead */
+html.android :is(button,select,.seg,#dock,a.btn,.srch input,#savepill,.gmenu){-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.android :is(button.ghost,select,.seg,#dock){background-color:rgba(255,255,255,.07)}
+html.android{--g-shadow:0 4px 10px rgba(0,0,0,.35)}
+/* folder-card buttons: smaller so 置頂 / 分享 / 刪除資料夾 stay on one row on phones */
+.ftools{gap:5px;flex-wrap:wrap}
+.ftools button,.ftools .del{padding:4px 9px!important;font-size:13px!important;white-space:nowrap}
+/* the drag handle: bright and clearly visible */
+.grip{background-image:linear-gradient(#fff,#fff),linear-gradient(#fff,#fff),linear-gradient(#fff,#fff)!important;opacity:.9}
