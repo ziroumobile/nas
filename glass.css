@@ -324,3 +324,6 @@ html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 76px)}
 
 /* windows (settings / shared links / dialogs) sit above the fixed title bar and select-mode layers, and start below the status bar */
 html.ios #modal,html.ios #setpanel{z-index:90;padding-top:calc(env(safe-area-inset-top) + 12px);padding-bottom:calc(env(safe-area-inset-bottom) + 12px)}
+
+/* a finger that drifts a little while tapping the dock / floating bars must not scroll the page underneath */
+#dock,#dock button,.srch,.seltop,.selbot,#topband{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
