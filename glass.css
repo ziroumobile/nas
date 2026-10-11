@@ -327,3 +327,5 @@ html.ios #modal,html.ios #setpanel{z-index:90;padding-top:calc(env(safe-area-ins
 
 /* a finger that drifts a little while tapping the dock / floating bars must not scroll the page underneath */
 #dock,#dock button,.srch,.seltop,.selbot,#topband{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+
+.gmenu.dockmenu{position:absolute;bottom:calc(100% + 12px);top:auto;-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(36,36,40,.94)}

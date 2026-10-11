@@ -381,8 +381,8 @@ function setSel(k,on){on?selected.add(k):selected.delete(k);
   $('#dup').onclick=e=>{e.stopPropagation();if(pm){closePm();return}
     const m=document.createElement('div');m.className='gmenu';m.style.visibility='hidden';pm=m;
     for(const[t,f]of[['⬆ 上傳檔案',()=>$('#f').click()],['📁 新增資料夾',()=>$('#newf').click()]]){const d=document.createElement('div');d.textContent=t;d.onclick=ev=>{ev.stopPropagation();closePm();f()};m.appendChild(d)}
-    document.body.appendChild(m);const r=$('#dup').getBoundingClientRect(),w=m.offsetWidth,h=m.offsetHeight;
-    const left=Math.max(8,Math.min(r.left+r.width/2-w/2,innerWidth-w-8));m.style.left=left+'px';m.style.top=(r.top-h-10)+'px';m.style.transformOrigin=(r.left+r.width/2-left)+'px bottom';m.style.visibility='visible'};
+    $('#dock').appendChild(m);   // lives inside the (fixed) dock, so it can never change the page's height or scroll position
+    const du=$('#dup'),w=m.offsetWidth;m.className='gmenu dockmenu';m.style.left=(du.offsetLeft+du.offsetWidth/2-w/2)+'px';m.style.transformOrigin='50% 100%';m.style.visibility='visible'};
   document.addEventListener('pointerdown',e=>{if(pm&&!e.target.closest('.gmenu')&&!e.target.closest('#dup'))closePm()},true)}
 $('#dflt').onclick=()=>{const on=document.body.classList.toggle('reorder');$('#dflt').classList.toggle('act',on)}; // the drag handles only show while this is on
 $('#dsel').onclick=()=>$('#selmode').click();
