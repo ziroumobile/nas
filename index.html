@@ -350,7 +350,7 @@ if(document.documentElement.classList.contains('ios')||matchMedia('(max-width:69
 if(!document.documentElement.classList.contains('ios')&&matchMedia('(min-width:700px)').matches){
   const b1=$('#newf').parentElement;$('#dev').parentElement.style.display='none';$('#rename').style.display='none';
   const up=$('#target').parentElement,w=document.createElement('span');w.append('上傳到：',$('#target'));b1.insertBefore(w,$('#newf'));up.remove();
-  const sb=$('.seg').parentElement,nb=document.createElement('div');nb.className='bar';nb.append($('.seg'));sb.after(nb);
+  const sb=$('.seg').parentElement,nb=document.createElement('div');nb.className='bar';nb.append('顯示方式：',$('.seg'));sb.after(nb);
 }
 function setSel(k,on){on?selected.add(k):selected.delete(k);
   for(const el of document.querySelectorAll('[data-k]'))if(el.dataset.k===k)el.classList.toggle('sel',on)}

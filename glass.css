@@ -222,3 +222,15 @@ html.ios #dock{box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 12px 34px rgba
 html.ios .vnav{box-shadow:0 8px 22px rgba(0,0,0,.4)}
 html.ios .seg-pill{box-shadow:none}
 @media(prefers-color-scheme:light){html.ios{--g-rim:linear-gradient(rgba(60,60,67,.14),rgba(60,60,67,.14));--g-sheen:none;--g-inner:rgba(255,255,255,0);--g-hi:rgba(255,255,255,0);--g-lo:rgba(255,255,255,0)}}
+
+/* settings window buttons: flat neutral pills, text centred (no blue-ish glass tint) */
+#setpanel #setbody button,#setpanel .mbtns button{background:rgba(255,255,255,.07)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  border:1px solid rgba(255,255,255,.1)!important;box-shadow:none!important;text-align:center!important;justify-content:center!important;display:flex;align-items:center}
+#setpanel .mbtns button{display:inline-flex}
+#setpanel button::before,#setpanel button::after{display:none!important}
+#setpanel #setbody button{width:100%}
+
+/* status-bar area: a solid black mask taller than the system's top blur, so scrolling text never shows blurred behind the clock */
+html.ios body::before{content:"";position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top) + 40px);background:#000;z-index:60;pointer-events:none}
+html.ios .wrap{padding-top:calc(env(safe-area-inset-top) + 48px)}
+html.ios #app>header{margin-bottom:6px}
