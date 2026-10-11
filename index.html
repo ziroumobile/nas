@@ -393,19 +393,33 @@ $('#selnone').onclick=()=>{[...selected].forEach(k=>setSel(k,false));updateSelUI
 function selectFolder(name){folders.find(f=>f.name===name)?.files.forEach(x=>setSel(keyOf(name,x.name),true));updateSelUI()}
 // iPhone / iPad: a link to the API (another site) opens "Open in Safari?" and the file is lost. So fetch the file here and save it as a blob (files over ~600 MB can't be held in memory -> normal link).
 const IOS=document.documentElement.classList.contains('ios'),BLOB_MAX=600*1024*1024;
+// after the download finishes, show a "save" pill: tapping it (a fresh tap, which iOS requires) opens the share sheet with 儲存到檔案 / 儲存影像
+function offerSave(files){
+  files=files.filter(Boolean);if(!files.length)return;
+  document.querySelector('#savepill')?.remove();
+  const p=document.createElement('div');p.id='savepill';
+  p.innerHTML=`<span>已下載 ${files.length} 個檔案</span><button id="savego">儲存</button><button id="saveno" class="ghost">✕</button>`;document.body.appendChild(p);
+  $('#saveno').onclick=()=>p.remove();
+  $('#savego').onclick=async()=>{
+    try{if(navigator.canShare&&navigator.canShare({files})){await navigator.share({files});p.remove();return}}catch(e){if(e&&e.name==='AbortError')return}
+    for(const f of files){const u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),120000);await new Promise(r=>setTimeout(r,500))}
+    p.remove()};
+}
 async function dlFile(url,name,btn){
   if(btn){btn.disabled=true;btn.style.opacity='.5'}
   try{const r=await fetch(url);if(!r.ok)throw 0;const total=+r.headers.get('content-length')||0,rd=r.body.getReader(),parts=[];let got=0;
     for(;;){const{done,value}=await rd.read();if(done)break;parts.push(value);got+=value.length;if(btn&&btn.dataset.pct!==undefined&&total)btn.textContent=Math.floor(got/total*100)+'%'}
-    const u=URL.createObjectURL(new Blob(parts)),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),120000)}
-  catch{alert('下載失敗：'+name)}
+    return new File(parts,name,{type:r.headers.get('content-type')||'application/octet-stream'})}
+  catch{alert('下載失敗：'+name);return null}
   finally{if(btn){btn.disabled=false;btn.style.opacity='';if(btn.dataset.pct!==undefined)btn.textContent=btn.dataset.pct}}
 }
 $('#seldl').onclick=async()=>{ // browsers may ask to allow multiple downloads the first time
+  const got=[];
   for(const k of [...selected]){const x=fileByKey(k);if(!x)continue;
-    if(IOS&&x.size<=BLOB_MAX){await dlFile(API+x.url+'&dl=1',x.name,$('#seldl'));continue}
+    if(IOS&&x.size<=BLOB_MAX){got.push(await dlFile(API+x.url+'&dl=1',x.name,$('#seldl')));continue}
     const a=document.createElement('a');a.href=API+x.url+'&dl=1';document.body.appendChild(a);a.click();a.remove();
     await new Promise(r=>setTimeout(r,700))}
+  if(got.length)offerSave(got);
 };
 $('#seldel').onclick=()=>deleteItems([...selected].map(splitKey),`確定要刪除選取的 ${selected.size} 個檔案嗎？此動作無法復原。`);
 async function deleteItems(items,msg){ // admin only; the server checks too. One edit-password prompt covers the whole batch.
@@ -693,7 +707,7 @@ function closeViewer(fromPop){
   if(!fromPop&&history.state?.viewer)history.back();
 }
 const vgo=d=>{if(vlist.length<2)return;vi=(vi+d+vlist.length)%vlist.length;showViewer()};
-$('#vdl').dataset.pct='下載';$('#vdl').onclick=e=>{const x=window.__vx;if(IOS&&x&&x.size<=BLOB_MAX){e.preventDefault();dlFile($('#vdl').href,x.name,$('#vdl'))}};
+$('#vdl').dataset.pct='下載';$('#vdl').onclick=e=>{const x=window.__vx;if(IOS&&x&&x.size<=BLOB_MAX){e.preventDefault();dlFile($('#vdl').href,x.name,$('#vdl')).then(f=>f&&offerSave([f]))}};
 $('#vclose').onclick=()=>closeViewer();$('#vback').onclick=()=>closeViewer();$('#vprev').onclick=()=>vgo(-1);$('#vnext').onclick=()=>vgo(1);
 $('#vstage').onclick=e=>{if(e.target.id==='vstage')closeViewer()};
 addEventListener('popstate',()=>closeViewer(true));
