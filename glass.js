@@ -192,9 +192,11 @@ void main(){
   }
   function finishLens(s) {                                           // lens has settled into its option: swap back to the resting pill
     s.canvas.classList.remove('on'); s.active = false; s.lens = null;
-    s.seg.classList.remove('dragging'); setHot(s, -1, true);
-    placePill(s, selected(s), false); s.pill.classList.remove('hidden');
-    makeTexture(s);
+    const pk = s.pendingK; s.pendingK = null;                        // the (heavy) view switch runs only now, after the lens has landed, so it can't stutter the animation
+    s.seg.classList.remove('dragging'); if (pk == null) setHot(s, -1, true);
+    placePill(s, pk == null ? selected(s) : pk, false); s.pill.classList.remove('hidden');
+    if (pk == null) makeTexture(s);
+    else setTimeout(() => { const sc = s.suppressClick; s.suppressClick = false; s.btns[pk].click(); s.suppressClick = sc; setHot(s, -1, true); }, 16);
   }
 
   // ---------- interaction ----------
@@ -242,7 +244,7 @@ void main(){
       const changed = k !== selected(s), g = geom(s)[k];
       if (s.gl && s.lens) { s.lens.tx = g.l + g.w / 2; s.lens.tw = g.w; s.lens.tg = 0; s.lens.tm = 1; loop(s); }   // spring into the slot, then finishLens
       else { s.active = false; s.pill.classList.remove('noanim'); seg.classList.remove('dragging'); setHot(s, -1, true); }
-      if (changed) { const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; }                                // choose through the normal handler
+      if (changed) { if (s.lens) s.pendingK = k; else { const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; } }                                // choose through the normal handler
       if (!s.lens) placePill(s, selected(s), true);
     };
     seg.addEventListener('pointerup', end); seg.addEventListener('pointercancel', end);
