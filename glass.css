@@ -152,3 +152,6 @@ html.ios #selbar button:not(.ghost):not(.del):not(.danger),html.ios #selbar butt
   box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),inset 0 -1px 1.5px var(--g-lo),var(--g-shadow)}
 html.ios #selbar button.danger{color:#ff453a!important}
 html.ios body.selecting .wrap{padding-bottom:150px}
+html.ios #selbar button{background:var(--g-fill)!important;background-image:none!important;border:1px solid transparent!important;
+  box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),inset 0 -1px 1.5px var(--g-lo),var(--g-shadow)!important}
+html.ios #selbar button:active{background:rgba(120,120,128,.5)!important}
