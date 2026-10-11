@@ -96,7 +96,7 @@ void main(){
     const g = s.gl; if (!g) return;
     const W = s.seg.clientWidth, H = s.seg.clientHeight, T = TPAD;
     const c = s.tex2d || (s.tex2d = document.createElement('canvas'));
-    c.width = Math.ceil((W + 2 * T) * DPR); c.height = Math.ceil((H + 2 * T) * DPR);
+    const cw = Math.ceil((W + 2 * T) * DPR), ch = Math.ceil((H + 2 * T) * DPR); if (c.width !== cw || c.height !== ch) { c.width = cw; c.height = ch; }
     const x = c.getContext('2d'); x.setTransform(DPR, 0, 0, DPR, 0, 0);
     x.fillStyle = getComputedStyle(document.body).backgroundColor || '#111318'; x.fillRect(0, 0, W + 2 * T, H + 2 * T);
     const sc = getComputedStyle(s.seg);
@@ -234,7 +234,7 @@ void main(){
       if (!d.started) return;                                        // a plain tap: the button's own click does the work
       const rect = seg.getBoundingClientRect();
       const k = e && e.type === 'pointerup' ? nearest(e.clientX - rect.left - seg.clientLeft) : selected(s);
-      const wait = s.gl && s.lens ? Math.max(0, 230 - (Date.now() - d.t0)) : 0;   // a quick tap still shows the lens swelling before it lands
+      const wait = s.gl && s.lens ? Math.max(0, 110 - (Date.now() - d.t0)) : 0;   // a quick tap still shows the lens swelling before it lands
       s.suppressClick = true; setTimeout(() => { s.suppressClick = false; }, wait + 80);
       if (wait) { const t = e ? target(e) : null; if (t && s.lens) { s.lens.tx = t.cx; s.lens.tw = t.w; } s.hold = true; setTimeout(() => { s.hold = false; release(k); }, wait); } else release(k);
     };
