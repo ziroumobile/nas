@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="glass.css">
-<script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(matchMedia('(prefers-color-scheme: dark)').matches){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
+<script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(matchMedia('(prefers-color-scheme: dark)').matches){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -392,7 +392,7 @@ $('#selall').onclick=()=>{allKeys().forEach(k=>setSel(k,true));updateSelUI()};
 $('#selnone').onclick=()=>{[...selected].forEach(k=>setSel(k,false));updateSelUI()};
 function selectFolder(name){folders.find(f=>f.name===name)?.files.forEach(x=>setSel(keyOf(name,x.name),true));updateSelUI()}
 // iPhone / iPad: a link to the API (another site) opens "Open in Safari?" and the file is lost. So fetch the file here and save it as a blob (files over ~600 MB can't be held in memory -> normal link).
-const IOS=document.documentElement.classList.contains('ios'),BLOB_MAX=600*1024*1024;
+const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),BLOB_MAX=600*1024*1024;
 // after the download finishes, show a "save" pill: tapping it (a fresh tap, which iOS requires) opens the share sheet with 儲存到檔案 / 儲存影像
 function offerSave(files){
   files=files.filter(Boolean);if(!files.length)return;
