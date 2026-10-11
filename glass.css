@@ -143,3 +143,12 @@ html.ios #selbar button.del{color:#ff453a!important}
 html.ios #selbar button.danger{color:#fff!important}
 html.ios body.selecting .wrap{padding-bottom:170px}
 @media(prefers-color-scheme:light){html.ios #selbar{background:rgba(250,250,252,.6)}html.ios #selbar>span,html.ios #selbar>b,html.ios #selbar #selcount{color:#1c1e21}html.ios #selbar button.ghost{color:#1c1e21!important}}
+
+/* selection bar: pinned to the very bottom; every button is the same grey glass, with blue / red text for the main / delete actions */
+html.ios #selbar{left:0;right:0;bottom:0;border-radius:26px 26px 0 0;padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
+html.ios #selbar button:not(.ghost):not(.del):not(.danger),html.ios #selbar button.danger{
+  background:var(--g-fill);color:#0a84ff!important;border:1px solid transparent;
+  -webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);
+  box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),inset 0 -1px 1.5px var(--g-lo),var(--g-shadow)}
+html.ios #selbar button.danger{color:#ff453a!important}
+html.ios body.selecting .wrap{padding-bottom:150px}
