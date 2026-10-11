@@ -297,3 +297,7 @@ html.ios body.selecting #app>header{visibility:hidden}
 html.ios #topsent{display:none!important}
 /* select mode: a slimmer blur band, just the button row */
 html.ios #topband{height:calc(env(safe-area-inset-top) + 46px)}
+
+/* select mode top band: plain solid black instead of blur */
+html.ios #topband{background:#000!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.ios body.selecting::before{background:#000}
