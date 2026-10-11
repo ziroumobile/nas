@@ -183,7 +183,7 @@ body.mlock{position:fixed;left:0;right:0;overflow:hidden}#modal,#setpanel{oversc
   <div id="list"></div>
 </div>
 <div id="viewer" hidden>
-  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><div class="vbtns"><button class="ghost" id="vshare" hidden style="color:#fff">🔗 分享</button><button class="ghost" id="vdel" hidden style="color:#f87171">🗑 刪除</button><button class="ghost" id="vinfo" style="color:#fff" title="檔案資訊">ℹ️ 資訊</button><a id="vdlj" class="btn" hidden title="下載轉好的 JPG 版本（不能開 HEIC 的裝置用這個）">JPG</a><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div></div>
+  <div class="vtop"><div class="vbtns" style="flex:none"><button class="ghost" id="vback">‹ 返回</button></div><span id="vtitle"></span><span id="vpos"></span><div class="vbtns"><button class="ghost" id="vshare" hidden style="color:#fff">🔗 分享</button><button class="ghost del" id="vdel" hidden>刪除</button><button class="ghost" id="vinfo" style="color:#fff" title="檔案資訊">ℹ️ 資訊</button><a id="vdlj" class="btn vlk" hidden title="下載轉好的 JPG 版本（不能開 HEIC 的裝置用這個）">JPG</a><a id="vdl" class="btn vlk">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div></div>
   <div id="vstage"></div>
   <div id="vinfop" hidden></div>
   <button class="vnav" id="vprev" aria-label="上一個">‹</button><button class="vnav" id="vnext" aria-label="下一個">›</button>
@@ -682,7 +682,7 @@ function closeViewer(fromPop){
   if(!fromPop&&history.state?.viewer)history.back();
 }
 const vgo=d=>{if(vlist.length<2)return;vi=(vi+d+vlist.length)%vlist.length;showViewer()};
-$('#vclose').onclick=()=>closeViewer();$('#vprev').onclick=()=>vgo(-1);$('#vnext').onclick=()=>vgo(1);
+$('#vclose').onclick=()=>closeViewer();$('#vback').onclick=()=>closeViewer();$('#vprev').onclick=()=>vgo(-1);$('#vnext').onclick=()=>vgo(1);
 $('#vstage').onclick=e=>{if(e.target.id==='vstage')closeViewer()};
 addEventListener('popstate',()=>closeViewer(true));
 document.addEventListener('keydown',e=>{

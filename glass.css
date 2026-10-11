@@ -329,3 +329,17 @@ html.ios #modal,html.ios #setpanel{z-index:90;padding-top:calc(env(safe-area-ins
 #dock,#dock button,.srch,.seltop,.selbot,#topband{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 
 .gmenu.dockmenu{position:absolute;bottom:calc(100% + 12px);top:auto;-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(36,36,40,.94)}
+
+/* preview window: above the fixed title bar / masks, buttons identical to the home page's (white text, red delete, no blue download) */
+html.ios #viewer{z-index:100}
+.vtop #vtitle{flex:1 1 60px}
+.vbtns a.vlk{border-radius:999px;border:0;color:#fff!important;text-decoration:none;background:rgba(255,255,255,.06);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 6px 18px rgba(0,0,0,.35)}
+html.ios .vbtns a.vlk{background:var(--g-fill)!important;background-image:none!important;border:1px solid transparent;
+  -webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);box-shadow:inset 0 0 14px var(--g-inner),var(--g-shadow)!important}
+html.ios .vbtns a.vlk::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--g-rim);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+html.ios .vbtns a.vlk::after{display:none!important}
+.vbtns a.vlk:active{background:rgba(120,120,128,.5)!important}
+html.ios .vbtns button.ghost{color:#fff!important}html.ios .vbtns button.del{color:#ff453a!important}
+html:not(.ios) .vbtns button.del{color:#f87171!important}
