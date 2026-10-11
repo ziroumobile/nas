@@ -242,7 +242,7 @@ void main(){
       const changed = k !== selected(s), g = geom(s)[k];
       if (s.gl && s.lens) { s.lens.tx = g.l + g.w / 2; s.lens.tw = g.w; s.lens.tg = 0; s.lens.tm = 1; loop(s); }   // spring into the slot, then finishLens
       else { s.active = false; s.pill.classList.remove('noanim'); seg.classList.remove('dragging'); setHot(s, -1, true); }
-      if (changed) s.btns[k].click();                                // choose through the normal handler
+      if (changed) { const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; }                                // choose through the normal handler
       if (!s.lens) placePill(s, selected(s), true);
     };
     seg.addEventListener('pointerup', end); seg.addEventListener('pointercancel', end);
