@@ -64,10 +64,17 @@ details.fold>summary{flex-wrap:wrap;row-gap:8px}
 #off{background:#fef3c7;color:#92400e;border-radius:8px;padding:10px;margin-bottom:12px}
 .empty{color:var(--mut);padding:10px 0;border-top:1px solid var(--bd)}
 .seg{display:inline-flex}.seg button{border-radius:0;border-left-width:0}.seg button:first-child{border-radius:999px 0 0 999px;border-left-width:1px;padding-left:16px}.seg button:last-child{border-radius:0 999px 999px 0;padding-right:16px}
-.srch{display:inline-flex;align-items:center;gap:8px}.srch input{width:0;opacity:0;padding:8px 0;border:1px solid transparent;border-radius:999px;background:var(--card);color:var(--fg);font:inherit;transition:width .25s,opacity .2s,padding .25s;min-width:0}
-.srch.open input{width:min(210px,52vw);opacity:1;padding:8px 14px;border-color:var(--bd)}
-#sbtn{width:38px;height:38px;padding:0;border-radius:50%;background:rgba(120,120,128,.28);color:#60a5fa;display:inline-flex;align-items:center;justify-content:center;flex:none}
-#sbtn svg{width:19px;height:19px}
+.srch{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:31;width:min(360px,calc(100vw - 28px));pointer-events:none;opacity:0;transition:opacity .2s}
+.srch.open{opacity:1;pointer-events:auto}
+.srch input{width:100%;padding:12px 18px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(30,32,38,.72);-webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);color:var(--fg);font:inherit;font-size:16px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+#dock{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;display:flex;gap:4px;padding:7px;border-radius:999px;
+  background:rgba(255,255,255,.06);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 1.5px rgba(255,255,255,.2),0 12px 34px rgba(0,0,0,.5)}
+#dock button{width:64px;height:48px;padding:0;border:0;border-radius:999px;background:transparent;color:var(--fg);display:flex;align-items:center;justify-content:center;transition:background .15s}
+#dock button svg{width:27px;height:27px}
+#dock button:active,#dock button.act{background:rgba(0,0,0,.35)}
+body.selecting #dock,body.selecting .srch{display:none}
+.wrap{padding-bottom:110px}
 /* icon views: medium = 3 per row on phone / 5 on computer; small = 5 per row on phone / 8 on computer */
 .nine{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding-top:8px;border-top:1px solid var(--bd)}
 .nine.small{grid-template-columns:repeat(5,1fr);gap:2px}
@@ -147,7 +154,9 @@ body.selecting .wrap{padding-bottom:100px}
   <button id="go" style="width:100%">登入</button>
 </div>
 <div id="app" hidden>
-  <header><h1>📁 我的 NAS</h1><button id="gear" class="icon" title="設定" aria-label="設定">⚙</button></header>
+  <header><h1>📁 我的 NAS</h1></header>
+  <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></span>
+  <nav id="dock"><button id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
   <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button><button class="ghost" id="out">登出</button></div><div class="mbtns"><button class="ghost" id="setclose">完成</button></div></div></div>
   <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
   <div class="bar">
@@ -161,7 +170,6 @@ body.selecting .wrap{padding-bottom:100px}
     排序：<select id="sort"><option value="name">名稱</option><option value="date">更新日期</option><option value="size">大小</option></select>
     <button class="ghost" id="order"></button>
     <button class="ghost" id="selmode">☑ 選取</button>
-    <span class="srch" id="srch"><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button><input id="sq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></span>
   </div>
   <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" type="file" multiple hidden></div>
   <div id="ups"></div>
@@ -318,7 +326,7 @@ async function refresh(){
 syncToolbar();
 // settings panel (gear, top right)
 {const p=$('#setpanel'),close=()=>{p.hidden=true};
-  $('#gear').onclick=()=>{p.hidden=!p.hidden};$('#setclose').onclick=close;
+  $('#dset').onclick=()=>{p.hidden=!p.hidden};$('#setclose').onclick=close;
   p.addEventListener('click',e=>{if(e.target===p||(e.target.closest('button')&&e.target.id!=='out'))close()},true)}
 // phone layout (iPhone / iPad / Android): title + gear / new folder / sort / view switch / upload target, select / search
 if(document.documentElement.classList.contains('ios')||matchMedia('(max-width:699px)').matches)try{
@@ -327,7 +335,7 @@ if(document.documentElement.classList.contains('ios')||matchMedia('(max-width:69
   const up=$('#target').parentElement,w=document.createElement('span');w.append('上傳到：',$('#target'));up.remove();
   const sb=$('.seg').parentElement,segBar=mk();segBar.append('顯示方式：',$('.seg'));sb.after(segBar);
   const last=mk();last.append(w,$('#selmode'));segBar.after(last);
-  const r7=mk();r7.append($('#srch'));last.after(r7);
+  
 }catch(e){console.error('layout',e)}
 // desktop layout (phones / iOS keep the original): row 1 = upload target + new folder + ..., row 2 = sort / select / search, row 3 = view switch; the device name + rename are hidden
 if(!document.documentElement.classList.contains('ios')&&matchMedia('(min-width:700px)').matches){
@@ -338,7 +346,7 @@ if(!document.documentElement.classList.contains('ios')&&matchMedia('(min-width:7
 function setSel(k,on){on?selected.add(k):selected.delete(k);
   for(const el of document.querySelectorAll('[data-k]'))if(el.dataset.k===k)el.classList.toggle('sel',on)}
 {const box=$('#srch'),inp=$('#sq');let tm;
-  $('#sbtn').onclick=()=>{const open=box.classList.toggle('open');if(open)inp.focus();else if(q){inp.value='';q='';render(false)}};
+  $('#sbtn').onclick=()=>{const open=box.classList.toggle('open');$('#sbtn').classList.toggle('act',open);if(open)inp.focus();else if(q){inp.value='';q='';render(false)}};
   inp.oninput=()=>{clearTimeout(tm);tm=setTimeout(()=>{q=inp.value.trim().toLowerCase().replace(/^./,'');render(false)},150)};
   inp.onkeydown=e=>{if(e.key==='Escape')$('#sbtn').click()}}
 $('#selmode').onclick=()=>{selMode=!selMode;if(!selMode)selected.clear();render(true)};
@@ -717,6 +725,7 @@ async function runJob(j){
 }
 const pick=fl=>{const f=target;[...fl].forEach(x=>enqueue(x,f))};
 $('#drop').onclick=()=>$('#f').click();$('#f').onchange=e=>{pick(e.target.files);e.target.value=''};
+$('#dup').onclick=()=>$('#f').click();
 $('#drop').ondragover=e=>{e.preventDefault();$('#drop').classList.add('over')};
 $('#drop').ondragleave=()=>$('#drop').classList.remove('over');
 $('#drop').ondrop=e=>{e.preventDefault();$('#drop').classList.remove('over');pick(e.dataTransfer.files)};
