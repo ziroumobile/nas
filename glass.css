@@ -283,3 +283,9 @@ html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 58px)}
 
 /* select mode: the blur band reaches the very top (behind the clock too), so the black status-bar mask steps aside */
 html.ios body.selecting::before{background:transparent}
+
+/* blur band as its own element UNDER the button row (so the buttons themselves stay sharp) */
+html.ios .seltop::before{content:none!important;display:none!important}
+html.ios #topband{display:none;position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top) + 56px);z-index:69;pointer-events:none;
+  background:rgba(0,0,0,.4);-webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%)}
+html.ios body.selecting #topband{display:block}
