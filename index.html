@@ -107,13 +107,12 @@ body.selecting .wrap{padding-bottom:100px}
   <button id="go" style="width:100%">登入</button>
 </div>
 <div id="app" hidden>
-  <header><h1>📁 我的 NAS</h1><div><span id="who" style="color:var(--mut);margin-right:8px"></span><button class="ghost" id="out">登出</button></div></header>
+  <header><h1>📁 我的 NAS</h1><div><span id="who" style="color:var(--mut);margin-right:8px"></span><button class="ghost" id="shares" hidden style="margin-right:6px">🔗 已分享連結</button><button class="ghost" id="out">登出</button></div></header>
   <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
   <div class="bar">
     <span>此裝置：<b id="dev"></b></span><button class="ghost" id="rename">改名</button>
     <button class="ghost" id="newf">＋ 新增資料夾</button>
     <button class="ghost" id="setpw" hidden>🔑 編輯密碼</button>
-    <button class="ghost" id="shares" hidden>🔗 分享管理</button>
     <button class="ghost" id="install" hidden>📲 安裝成 App</button>
   </div>
   <div class="bar">上傳到：<select id="target"></select></div>
@@ -128,7 +127,7 @@ body.selecting .wrap{padding-bottom:100px}
   <div id="list"></div>
 </div>
 <div id="viewer" hidden>
-  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><button class="ghost" id="vshare" hidden style="color:#fff">🔗 分享</button><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div>
+  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><button class="ghost" id="vshare" hidden style="color:#fff">🔗 分享</button><button class="ghost" id="vdel" hidden style="color:#f87171">🗑 刪除</button><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div>
   <div id="vstage"></div>
   <button class="vnav" id="vprev" aria-label="上一個">‹</button><button class="vnav" id="vnext" aria-label="下一個">›</button>
 </div>
@@ -174,7 +173,7 @@ async function init(){
   let r;try{r=await api('/api/me')}catch{$('#off').hidden=false;return}
   if(!r.ok){$('#off').hidden=r.status===401;if(r.status===401){await sb.auth.signOut();return init()}return}
   $('#off').hidden=true;me=await r.json();$('#who').textContent=me.name+(me.admin?'（管理員）':'');
-  $('#setpw').hidden=$('#shares').hidden=$('#vshare').hidden=!me.admin;refresh();
+  $('#setpw').hidden=$('#shares').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh();
 }
 $('#go').onclick=async()=>{
   const{error}=await sb.auth.signInWithPassword({email:$('#u').value.trim(),password:$('#p').value});
@@ -275,9 +274,10 @@ async function deleteItems(items,msg){ // admin only; the server checks too. One
   const pw=prompt('請輸入編輯密碼');if(pw===null)return;
   const r=await api('/api/delete-files',{method:'POST',headers:{'X-Edit-Password':pw},body:JSON.stringify({items})});
   const j=await r.json().catch(()=>({}));
-  if(!r.ok)return alert(j.error||'刪除失敗');
+  if(!r.ok){alert(j.error||'刪除失敗');return false}
   items.forEach(i=>selected.delete(keyOf(i.folder,i.name)));
   await refresh();render(true);
+  return true;
 }
 $('#list').addEventListener('toggle',e=>{const f=e.target.dataset?.f;if(!f||!e.target.matches('details.fold'))return;
   e.target.open?closed.delete(f):closed.add(f);ls.set('nas_closed',JSON.stringify([...closed]))},true);
@@ -312,7 +312,7 @@ async function copyText(text,btn){
 }
 function shareDialog(label,payload){
   showModal(`<h3>🔗 建立分享連結</h3><p class="sub">分享內容：${esc(label)}<br>對方<b>不需要登入</b>，開啟連結後輸入你在這裡設定的密碼，就能<b>檢視與下載</b>（唯讀，看不到其他檔案）。</p>
-    <label>分享密碼（至少 6 個字元，只用於這一個連結）</label><input id="sp1" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false">
+    <label>分享密碼（至少 6 個字元，只用於這一個連結；可在「🔗 已分享連結」輸入編輯密碼後查看）</label><input id="sp1" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false">
     <label>再輸入一次</label><input id="sp2" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false">
     <label>連結有效期限</label><select id="sdays"><option value="1">1 天</option><option value="7" selected>7 天</option><option value="30">30 天</option><option value="0">永久（可隨時撤銷）</option></select>
     <p class="merr" id="serr"></p>
@@ -330,36 +330,64 @@ function shareDialog(label,payload){
     showModal(`<h3>✅ 分享連結已建立</h3><p class="sub">分享內容：${esc(label)}</p>
       <label>分享連結</label><input id="slink" type="text" readonly value="${esc(url)}">
       <div class="mbtns"><button id="scopy">複製連結</button>${navigator.share?'<button class="ghost" id="sshare">用其他 App 傳送…</button>':''}<button class="ghost" id="sdone">完成</button></div>
-      <div class="mwarn">請<b>另外</b>把密碼告訴對方（不要和連結放在同一則訊息）。<b>密碼不會被儲存，之後也無法再查看</b>；忘記的話只能撤銷這個連結、重新建立一個。</div>`);
+      <div class="mwarn">請<b>另外</b>把密碼告訴對方（不要和連結放在同一則訊息）。密碼會加密保存在你的電腦上，之後可以到頁面頂端的「🔗 已分享連結」，輸入編輯密碼後再查看。</div>`);
     $('#slink').onfocus=e=>e.target.select();
     $('#scopy').onclick=e=>copyText(url,e.target);$('#sdone').onclick=closeModal;
     if($('#sshare'))$('#sshare').onclick=()=>navigator.share({title:'檔案分享',url}).catch(()=>{});
     if(selMode){selected.clear();selMode=false;render(true)}
   };
 }
-async function sharesManager(){
-  showModal('<h3>🔗 分享管理</h3><p class="sub">載入中…</p>');
-  const r=await api('/api/shares');if(!r.ok)return showModal('<h3>🔗 分享管理</h3><p class="merr">無法載入</p><div class="mbtns"><button class="ghost" id="sx">關閉</button></div>'),$('#sx').onclick=closeModal;
-  const list=await r.json();
+async function sharesManager(){ // every share: link, password (after entering the edit password), expiry, usage; copy / revoke
+  showModal('<h3>🔗 已分享連結</h3><p class="sub">載入中…</p>');
+  let list=[],revealed=null; // revealed passwords live only in this dialog and are dropped when it closes
+  const load=async()=>{const r=await api('/api/shares');if(!r.ok)throw 0;list=await r.json()};
+  try{await load()}catch{showModal('<h3>🔗 已分享連結</h3><p class="merr">無法載入</p><div class="mbtns"><button class="ghost" id="sx">關閉</button></div>');$('#sx').onclick=closeModal;return}
   const when=t=>new Date(t).toLocaleString();
-  showModal(`<h3>🔗 分享管理（${list.length}）</h3><p class="sub">撤銷後，連結立刻失效（已經開啟的對方也無法再下載）。密碼無法查看，忘記請撤銷後重建。</p>`+
-    (list.length?list.map(s=>`<div class="srow"><b>${s.type==='folder'?'📁 資料夾「'+esc(s.folder)+'」':'📄 '+s.count+' 個檔案：'+esc(s.names.join('、'))+(s.count>s.names.length?' …':'')}</b>
-      <small>${s.type==='folder'?s.count+' 個檔案（即時）· ':''}建立 ${when(s.created)} · ${s.expires?'到期 '+when(s.expires):'永久有效'} · 已開啟 ${s.opens} 次${s.lastOpen?'（最近 '+when(s.lastOpen)+'）':''}</small>
-      <button class="ghost" data-copy="${esc(s.id)}" style="padding:4px 10px">複製連結</button> <button class="del" data-revoke="${esc(s.id)}">撤銷</button></div>`).join(''):'<p class="sub">目前沒有任何分享。</p>')+
-    '<div class="mbtns"><button class="ghost" id="sx">關閉</button></div>');
-  $('#sx').onclick=closeModal;
-  $('#mbox').onclick=async e=>{
-    const b=e.target.closest('button');if(!b)return;
-    if(b.dataset.copy)copyText(shareUrl(b.dataset.copy),b);
-    if(b.dataset.revoke&&confirm('確定要撤銷這個分享連結嗎？撤銷後對方就無法再開啟。')){
-      const rr=await api('/api/share?id='+encodeURIComponent(b.dataset.revoke),{method:'DELETE'});
-      if(rr.ok)sharesManager();else alert((await rr.json().catch(()=>({}))).error||'撤銷失敗');
-    }
+  const left=t=>{const ms=t-Date.now();if(ms<=0)return'已到期';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return d?`剩 ${d} 天 ${h} 小時`:h?`剩 ${h} 小時 ${m} 分`:`剩 ${m} 分鐘`};
+  const pwCell=s=>!s.pwStored?'<span style="color:var(--mut)">（未儲存）</span>':revealed?(revealed[s.id]==null?'<span style="color:var(--mut)">（無法解密）</span>':`<code style="user-select:all;font-size:15px">${esc(revealed[s.id])}</code> <button class="ghost" data-copypw="${esc(s.id)}" style="padding:2px 8px">複製密碼</button>`):'<code>••••••••</code>';
+  const draw=()=>{
+    showModal(`<h3>🔗 已分享連結（${list.length}）</h3><p class="sub">對方開啟連結後輸入密碼即可檢視與下載（唯讀）。撤銷後連結立刻失效，對方已經打開的下載連結也一併失效。密碼要輸入編輯密碼才會顯示。</p>
+      ${list.length?`<div class="mbtns" style="margin:0 0 6px">${revealed?'<button class="ghost" data-hide="1">🙈 隱藏密碼</button>':'<button data-reveal="1">🔑 顯示密碼</button>'}</div>`:''}`+
+      (list.length?list.map(s=>`<div class="srow"><b>${s.type==='folder'?'📁 資料夾「'+esc(s.folder)+'」':'📄 '+s.count+' 個檔案：'+esc(s.names.join('、'))+(s.count>s.names.length?' …':'')}</b>
+        <small>${s.type==='folder'?s.count+' 個檔案（即時） · ':''}建立 ${when(s.created)} · 已開啟 ${s.opens} 次${s.lastOpen?'（最近 '+when(s.lastOpen)+'）':''}</small>
+        <div style="display:flex;gap:6px;margin:4px 0"><input type="text" readonly value="${esc(shareUrl(s.id))}" onfocus="this.select()" style="flex:1;min-width:0;padding:6px 8px;font-size:12px;margin:0"><button class="ghost" data-copy="${esc(s.id)}" style="padding:4px 10px;white-space:nowrap">複製連結</button></div>
+        <div style="margin:4px 0">密碼：${pwCell(s)}</div>
+        <div style="margin:4px 0">有效期限：${s.expires?when(s.expires)+'（'+left(s.expires)+'）':'永久有效'}</div>
+        <button class="del" data-revoke="${esc(s.id)}" style="margin-top:4px">撤銷這個分享</button></div>`).join(''):'<p class="sub">目前沒有任何分享。</p>')+
+      '<div class="mbtns"><button class="ghost" id="sx">關閉</button></div>');
+    $('#sx').onclick=closeModal;
+    $('#mbox').onclick=async e=>{
+      const b=e.target.closest('button');if(!b)return;
+      if(b.dataset.copy)return copyText(shareUrl(b.dataset.copy),b);
+      if(b.dataset.copypw)return copyText(revealed[b.dataset.copypw],b);
+      if(b.dataset.hide){revealed=null;return draw()}
+      if(b.dataset.reveal){
+        const pw=prompt('請輸入編輯密碼，以顯示分享密碼');if(pw===null)return;
+        const rr=await api('/api/shares/reveal',{method:'POST',headers:{'X-Edit-Password':pw}});
+        const j=await rr.json().catch(()=>({}));
+        if(!rr.ok)return alert(j.error||'無法顯示');
+        revealed=j.passwords;return draw();
+      }
+      if(b.dataset.revoke&&confirm('確定要撤銷這個分享連結嗎？撤銷後對方就無法再開啟。')){
+        const rr=await api('/api/share?id='+encodeURIComponent(b.dataset.revoke),{method:'DELETE'});
+        if(!rr.ok)return alert((await rr.json().catch(()=>({}))).error||'撤銷失敗');
+        try{await load();draw()}catch{closeModal()}
+      }
+    };
   };
+  draw();
 }
 $('#shares').onclick=sharesManager;
 $('#selshare').onclick=()=>{const items=[...selected].map(splitKey);if(items.length)shareDialog(`${items.length} 個檔案`,{items})};
 $('#vshare').onclick=()=>{const k=vlist[vi]?.k;if(k)shareDialog(`檔案「${splitKey(k).name}」`,{items:[splitKey(k)]})};
+$('#vdel').onclick=async()=>{ // admin: delete the file being previewed (confirm + edit password), then move on to the next one
+  const k=vlist[vi]?.k;if(!k)return;
+  const{folder,name}=splitKey(k);
+  if(!await deleteItems([{folder,name}],`確定要刪除「${name}」嗎？此動作無法復原。`))return;
+  vlist.splice(vi,1);
+  if(!vlist.length)return closeViewer();
+  vi=Math.min(vi,vlist.length-1);showViewer();
+};
 
 // ---- in-page preview: images, video, audio, PDF, text; prev/next within the folder ----
 let vlist=[],vi=0,vseq=0,vOpen=false;
