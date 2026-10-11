@@ -470,7 +470,10 @@ $('#list').addEventListener('pointerdown',e=>{
   const g=e.target.closest('.grip');if(!g||!me?.admin)return;
   e.preventDefault();
   const card=g.closest('details.fold');
+  const top0=card.getBoundingClientRect().top;
   document.body.classList.add('dragmode');card.classList.add('dragging'); // bodies collapse while dragging so the cards are easy to move around
+  const t1=card.getBoundingClientRect().top;
+  if(Math.abs(t1-top0)>.5)scrollBy(0,t1-top0); // the page got shorter when the bodies collapsed: scroll so the card stays under the finger instead of jumping
   const r=card.getBoundingClientRect();
   drag={card,id:e.pointerId,y:e.clientY,grab:Math.min(Math.max(e.clientY-r.top,0),r.height),moved:false}; // grab = where on the card the finger holds it
   addEventListener('pointermove',dragMove);addEventListener('pointerup',dragEnd);addEventListener('pointercancel',dragEnd);
