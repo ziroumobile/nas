@@ -277,3 +277,6 @@ html.ios .seltop::before{content:"";position:fixed;left:0;right:0;top:0;height:c
 html.ios .seltop button{flex:none}
 html.ios .seltop #selexit{flex:none;width:40px;height:40px;min-width:40px;min-height:40px;overflow:visible}
 html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 58px)}
+
+/* dock = clear liquid glass (light blur, see-through, refracts what is behind it), NOT frosted; only the select-mode top band is gaussian blur */
+#dock{-webkit-backdrop-filter:blur(3px) saturate(175%) brightness(1.12);backdrop-filter:blur(3px) saturate(175%) brightness(1.12);background:rgba(255,255,255,.04)}
