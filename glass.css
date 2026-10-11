@@ -1,71 +1,86 @@
-/* iOS "Liquid Glass"-style BUTTONS.
+/* iOS "Liquid Glass" BUTTONS (clear glass: very light fill, bright rim light on two opposite corners, soft inner glow, gentle drop shadow).
    Only active when the page puts class "ios" on <html> (iPhone / iPad, see the small script in <head>); desktop and Android look exactly as before.
    Scope: only the controls outside the folder cards (top bar, toolbar, selection bar, preview toolbar/arrows, dialogs).
-   The page background, cards, panels and everything inside the folder cards (pin / share / delete, file rows) are left exactly as on desktop. */
+   The page background, cards, panels and everything inside the folder cards (pin / share / delete, file rows) are left exactly as on desktop.
+   The 列表 / 中圖示 / 小圖示 switch additionally gets a real refracting glass lens while dragged (glass.js, WebGL). */
 html.ios{
-  --g-fill:rgba(255,255,255,.075);--g-fill2:rgba(255,255,255,.16);
-  --g-rim:rgba(255,255,255,.4);--g-edge:rgba(255,255,255,.13);
-  --g-shadow:0 8px 22px rgba(0,0,0,.45),0 1px 4px rgba(0,0,0,.3);
-  --g-sheen:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.03) 60%);
+  --g-fill:rgba(255,255,255,.055);--g-fill-press:rgba(255,255,255,.14);
+  --g-inner:rgba(255,255,255,.07);--g-hi:rgba(255,255,255,.34);--g-lo:rgba(255,255,255,.12);
+  --g-rim:linear-gradient(145deg,rgba(255,255,255,.78) 0%,rgba(255,255,255,.12) 26%,rgba(255,255,255,.02) 52%,rgba(255,255,255,.10) 76%,rgba(255,255,255,.58) 100%);
+  --g-sheen:radial-gradient(120% 90% at 18% 0%,rgba(255,255,255,.20),rgba(255,255,255,0) 58%);
+  --g-shadow:0 8px 22px rgba(0,0,0,.38),0 1px 3px rgba(0,0,0,.3);
+  --g-glass-blur:blur(3px) saturate(175%) brightness(1.12);
 }
 @media(prefers-color-scheme:light){
   html.ios{
-    --g-fill:rgba(255,255,255,.62);--g-fill2:rgba(255,255,255,.85);
-    --g-rim:rgba(255,255,255,.95);--g-edge:rgba(60,60,67,.14);
-    --g-shadow:0 8px 20px rgba(40,50,120,.14),0 1px 4px rgba(0,0,0,.06);
-    --g-sheen:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.1) 60%);
+    --g-fill:rgba(255,255,255,.42);--g-fill-press:rgba(255,255,255,.72);
+    --g-inner:rgba(255,255,255,.5);--g-hi:rgba(255,255,255,.95);--g-lo:rgba(60,60,67,.10);
+    --g-rim:linear-gradient(145deg,rgba(255,255,255,1) 0%,rgba(255,255,255,.35) 26%,rgba(60,60,67,.10) 52%,rgba(255,255,255,.35) 76%,rgba(255,255,255,.95) 100%);
+    --g-sheen:radial-gradient(120% 90% at 18% 0%,rgba(255,255,255,.8),rgba(255,255,255,0) 58%);
+    --g-shadow:0 8px 20px rgba(40,50,120,.16),0 1px 3px rgba(0,0,0,.08);
+    --g-glass-blur:blur(6px) saturate(170%);
   }
 }
 
-/* ---- buttons that get the glass look (everything listed here is OUTSIDE the folder cards) ---- */
+/* ---- the controls that get the glass look (everything listed here is OUTSIDE the folder cards) ---- */
 html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn){
-  border-radius:999px;transition:transform .3s cubic-bezier(.2,.9,.3,1.35),background-color .2s,box-shadow .2s;
+  position:relative;border-radius:999px;transition:transform .32s cubic-bezier(.2,.9,.3,1.35),background-color .2s,box-shadow .2s;
 }
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn):active{transform:scale(.94)}
-/* primary (filled) buttons: glossy accent glass */
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button:not(.ghost):not(.del):not(.danger),a.btn){
-  background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,0) 55%),var(--ac);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -1px 0 rgba(0,0,0,.1),0 6px 16px rgba(10,132,255,.28)}
-/* outlined buttons: clear glass with a bright rim */
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn):active{transform:scale(.95)}
+/* clear glass: outlined (ghost) and delete buttons */
 html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button.ghost,button.del){
-  background:var(--g-sheen),var(--g-fill);border:1px solid var(--g-edge);
-  box-shadow:inset 0 1px 0 var(--g-rim),inset 0 -1px 0 rgba(255,255,255,.05),var(--g-shadow);
-  -webkit-backdrop-filter:blur(14px) saturate(180%);backdrop-filter:blur(14px) saturate(180%)}
+  background:var(--g-fill);border:1px solid transparent;
+  -webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);
+  box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),inset 0 -1px 1.5px var(--g-lo),var(--g-shadow)}
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button.ghost,button.del):active{background:var(--g-fill-press)}
+/* the lit rim: thin gradient ring, bright where the "light" hits (top-left and bottom-right) */
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button.ghost,button.del,button:not(.ghost):not(.del):not(.danger),button.danger,a.btn)::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--g-rim);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+/* soft sheen across the upper-left of every glass control */
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button.ghost,button.del,button:not(.ghost):not(.del):not(.danger),button.danger,a.btn)::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:var(--g-sheen);opacity:.9}
 html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) button.del{color:#ff453a}
+/* primary / active buttons: tinted glass (same rim and sheen, accent colour showing through) */
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button:not(.ghost):not(.del):not(.danger),a.btn),
+html.ios .bar button.on.ghost,html.ios #selmode.on{
+  background:linear-gradient(180deg,rgba(10,132,255,.78),rgba(10,132,255,.52));color:#fff;border:1px solid transparent;
+  -webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);
+  box-shadow:inset 0 0 14px rgba(255,255,255,.16),inset 0 1px 1.5px rgba(255,255,255,.5),0 8px 20px rgba(10,132,255,.30)}
 html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) button.danger{
-  background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 55%),#ff453a;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 6px 16px rgba(255,69,58,.3)}
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) button.on:not(.ghost){background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,0) 55%),var(--ac)}
-html.ios .bar button.on.ghost,html.ios #selmode.on{background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,0) 55%),var(--ac);color:#fff;border-color:transparent}
-/* drop-down menus in the toolbar look like glass capsules too */
-html.ios .bar select{border-radius:999px;background:var(--g-sheen),var(--g-fill);border:1px solid var(--g-edge);box-shadow:inset 0 1px 0 var(--g-rim),var(--g-shadow);-webkit-backdrop-filter:blur(14px) saturate(180%);backdrop-filter:blur(14px) saturate(180%)}
-/* preview arrows float over the photo: round glass buttons */
-html.ios .vnav{border-radius:50%;width:50px;height:50px;background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,0) 55%),rgba(60,60,68,.4);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 8px 22px rgba(0,0,0,.4)}
+  background:linear-gradient(180deg,rgba(255,69,58,.8),rgba(255,69,58,.55));color:#fff;border:1px solid transparent;
+  box-shadow:inset 0 0 14px rgba(255,255,255,.16),inset 0 1px 1.5px rgba(255,255,255,.5),0 8px 20px rgba(255,69,58,.3)}
+/* drop-down menus in the toolbar */
+html.ios .bar select{border-radius:999px;background:var(--g-fill);border:1px solid var(--g-lo);-webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);
+  box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),var(--g-shadow)}
+/* preview arrows float over the photo: round clear-glass buttons */
+html.ios .vnav{border-radius:50%;width:50px;height:50px;background:rgba(255,255,255,.06);border:1px solid transparent;
+  -webkit-backdrop-filter:blur(6px) saturate(180%) brightness(1.1);backdrop-filter:blur(6px) saturate(180%) brightness(1.1);
+  box-shadow:inset 0 0 14px rgba(255,255,255,.08),inset 0 1px 1.5px rgba(255,255,255,.4),0 8px 22px rgba(0,0,0,.4)}
+html.ios .vnav::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--g-rim);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 html.ios .vnav:active{transform:translateY(-50%) scale(.94)}
 
-/* ---- the 列表 / 中圖示 / 小圖示 switch: a glass capsule with a draggable glass lens (see glass.js) ---- */
+/* ---- the 列表 / 中圖示 / 小圖示 switch ----
+   At rest: a clear-glass track with a glass pill under the chosen label.
+   While dragged: glass.js draws a refracting lens (WebGL) over it; the pill hides so nothing is stacked. */
 html.ios .seg{position:relative;display:inline-flex;padding:3px;border-radius:999px;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
-  background:var(--g-fill);border:1px solid var(--g-edge);box-shadow:inset 0 1px 0 var(--g-rim),var(--g-shadow);
-  -webkit-backdrop-filter:blur(14px) saturate(180%);backdrop-filter:blur(14px) saturate(180%)}
+  background:var(--g-fill);border:1px solid transparent;-webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);
+  box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),inset 0 -1px 1.5px var(--g-lo),var(--g-shadow)}
+html.ios .seg::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--g-rim);z-index:3;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 html.ios .seg button{position:relative;z-index:1;border:0!important;border-radius:999px!important;background:transparent!important;box-shadow:none!important;
   -webkit-backdrop-filter:none!important;backdrop-filter:none!important;transform:none!important;color:var(--fg);transition:color .15s}
-html.ios .seg button.on,html.ios .seg button.glass-hot{color:var(--ac)}
-/* the lens: translucent glass slab that sits over the chosen option and magnifies what is under it */
-html.ios .seg-thumb{position:absolute;left:0;top:0;z-index:2;border-radius:999px;overflow:hidden;pointer-events:none;will-change:transform,width,height;
-  background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.07) 70%);border:1px solid rgba(255,255,255,.3);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -10px 18px rgba(255,255,255,.07),0 6px 16px rgba(0,0,0,.45);
-  -webkit-backdrop-filter:blur(5px) brightness(1.25) saturate(1.7);backdrop-filter:blur(5px) brightness(1.25) saturate(1.7);
-  transition:transform .4s cubic-bezier(.2,.9,.3,1.25),width .4s cubic-bezier(.2,.9,.3,1.25),height .4s cubic-bezier(.2,.9,.3,1.25),box-shadow .25s}
-html.ios .seg-thumb.drag{transition:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 -12px 20px rgba(255,255,255,.1),0 14px 30px rgba(0,0,0,.55)}
-html.ios .seg-thumb.noanim,html.ios .seg-thumb.noanim .seg-lens{transition:none!important}
-/* the lens content: a copy of the labels, shifted so each one sits exactly over its original, then magnified around the lens centre */
-html.ios .seg-lens{position:absolute;left:0;top:0;pointer-events:none;color:#fff;font:inherit;
-  transition:transform .4s cubic-bezier(.2,.9,.3,1.25),transform-origin .4s cubic-bezier(.2,.9,.3,1.25)}
-html.ios .seg-thumb.drag .seg-lens{transition:none}
-html.ios .seg-lens .ll{position:absolute;display:flex;align-items:center;justify-content:center;white-space:nowrap;font:inherit;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.35)}
-/* a glint on the lens that slides with it */
-html.ios .seg-thumb::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:radial-gradient(60% 90% at var(--glint,30%) 0%,rgba(255,255,255,.55),rgba(255,255,255,0) 60%)}
+html.ios .seg button::before,html.ios .seg button::after{display:none!important}
+html.ios .seg button.on{color:var(--fg);font-weight:600}
+html.ios .seg-pill{position:absolute;left:0;top:0;z-index:0;border-radius:999px;pointer-events:none;will-change:transform,width,opacity;
+  background:rgba(255,255,255,.17);box-shadow:inset 0 1px 1.5px rgba(255,255,255,.55),inset 0 -1px 1.5px rgba(255,255,255,.14),inset 0 0 12px rgba(255,255,255,.08),0 3px 10px rgba(0,0,0,.4);
+  transition:transform .4s cubic-bezier(.2,.9,.3,1.25),width .4s cubic-bezier(.2,.9,.3,1.25),opacity .15s}
+@media(prefers-color-scheme:light){html.ios .seg-pill{background:rgba(255,255,255,.85);box-shadow:inset 0 1px 1.5px #fff,0 3px 10px rgba(40,50,120,.18)}}
+html.ios .seg-pill.noanim{transition:none}
+html.ios .seg-pill.hidden{opacity:0}
+html.ios .seg-gl{position:absolute;left:0;top:0;z-index:4;pointer-events:none;display:none}
+html.ios .seg-gl.on{display:block}
 
 /* fallbacks: no backdrop-filter support, or the user asked for less transparency -> solid */
 @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
