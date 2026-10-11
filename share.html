@@ -115,6 +115,7 @@ body.selecting .wrap{padding-bottom:100px}
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
+<script src="glass.js"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
@@ -151,7 +152,7 @@ let view='nine',sortBy='date',asc=false,selMode=false;const selected=new Set();
 const cmpName=(a,b)=>a.name.localeCompare(b.name,'zh-Hant',{numeric:true});
 const CMP={name:cmpName,date:(a,b)=>a.mtime-b.mtime,size:(a,b)=>a.size-b.size};
 const sorted=()=>[...files].sort((a,b)=>(asc?1:-1)*CMP[sortBy](a,b)||cmpName(a,b));
-function syncToolbar(){for(const[v,i]of[['list','#vlist'],['nine','#vnine'],['small','#vsmall']])$(i).classList.toggle('on',view===v);$('#sort').value=sortBy;$('#order').textContent=asc?'↑ 由小到大':'↓ 由大到小';$('#selmode').classList.toggle('on',selMode)}
+function syncToolbar(){for(const[v,i]of[['list','#vlist'],['nine','#vnine'],['small','#vsmall']])$(i).classList.toggle('on',view===v);$('#sort').value=sortBy;$('#order').textContent=asc?'↑ 由小到大':'↓ 由大到小';$('#selmode').classList.toggle('on',selMode);if(window.glassSegSync)glassSegSync()}
 const ICON={image:'🖼',video:'🎬',file:'📄'};
 function thumbErr(img){const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.k==='video'?'🎬':'🖼';img.replaceWith(d)}
 function media(x,i){

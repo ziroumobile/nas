@@ -179,6 +179,7 @@ body.selecting .wrap{padding-bottom:100px}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
+<script src="glass.js"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 const sb=supabase.createClient(NAS_CONFIG.supabaseUrl,NAS_CONFIG.supabaseAnonKey);
@@ -250,6 +251,7 @@ function sortFolders(){
 function syncToolbar(){
   for(const[v,id]of[['list','#vlist'],['nine','#vnine'],['small','#vsmall']])$(id).classList.toggle('on',view===v);
   $('#sort').value=sortBy;$('#order').textContent=asc?'↑ 由小到大':'↓ 由大到小';
+  if(window.glassSegSync)glassSegSync(); // iOS: move the glass lens to the chosen option
 }
 const setPref=()=>{ls.set('nas_view',view);ls.set('nas_sort',sortBy);ls.set('nas_asc',asc?'1':'0');syncToolbar();render(true)};
 $('#vlist').onclick=()=>{view='list';setPref()};$('#vnine').onclick=()=>{view='nine';setPref()};$('#vsmall').onclick=()=>{view='small';setPref()};
