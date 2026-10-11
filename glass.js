@@ -193,10 +193,10 @@ void main(){
   function finishLens(s) {                                           // lens has settled into its option: swap back to the resting pill
     s.canvas.classList.remove('on'); s.active = false; s.lens = null;
     const pk = s.pendingK; s.pendingK = null;                        // the (heavy) view switch runs only now, after the lens has landed, so it can't stutter the animation
-    s.seg.classList.remove('dragging'); if (pk == null) setHot(s, -1, true);
+    if (pk == null) { s.seg.classList.remove('dragging'); setHot(s, -1, true); }
     placePill(s, pk == null ? selected(s) : pk, false); s.pill.classList.remove('hidden');
     if (pk == null) makeTexture(s);
-    else setTimeout(() => { const sc = s.suppressClick; s.suppressClick = false; s.btns[pk].click(); s.suppressClick = sc; setHot(s, -1, true); }, 16);
+    else setTimeout(() => { const sc = s.suppressClick; s.suppressClick = false; s.btns[pk].click(); s.suppressClick = sc; s.seg.classList.remove('dragging'); setHot(s, -1, true); }, 16);
   }
 
   // ---------- interaction ----------
