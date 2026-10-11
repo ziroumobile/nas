@@ -301,3 +301,12 @@ html.ios #topband{height:calc(env(safe-area-inset-top) + 46px)}
 /* select mode top band: plain solid black instead of blur */
 html.ios #topband{background:#000!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 html.ios body.selecting::before{background:#000}
+
+/* select-mode top row: bigger buttons, closer to the round share / download buttons */
+html.ios .seltop{height:54px}
+html.ios .seltop button{height:48px;padding:0 12px!important;font-size:14px;display:inline-flex;align-items:center;justify-content:center}
+html.ios .seltop #selexit{width:52px;height:52px;min-width:52px;min-height:52px}
+html.ios .seltop #selexit svg{width:26px;height:26px}
+html.ios .seltop #selcount{font-size:15px}
+html.ios #topband{height:calc(env(safe-area-inset-top) + 56px)}
+html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 68px)}
