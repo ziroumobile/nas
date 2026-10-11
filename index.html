@@ -391,8 +391,19 @@ $('#selexit').onclick=()=>{selMode=false;selected.clear();render(true)};
 $('#selall').onclick=()=>{allKeys().forEach(k=>setSel(k,true));updateSelUI()};
 $('#selnone').onclick=()=>{[...selected].forEach(k=>setSel(k,false));updateSelUI()};
 function selectFolder(name){folders.find(f=>f.name===name)?.files.forEach(x=>setSel(keyOf(name,x.name),true));updateSelUI()}
+// iPhone / iPad: a link to the API (another site) opens "Open in Safari?" and the file is lost. So fetch the file here and save it as a blob (files over ~600 MB can't be held in memory -> normal link).
+const IOS=document.documentElement.classList.contains('ios'),BLOB_MAX=600*1024*1024;
+async function dlFile(url,name,btn){
+  if(btn){btn.disabled=true;btn.style.opacity='.5'}
+  try{const r=await fetch(url);if(!r.ok)throw 0;const total=+r.headers.get('content-length')||0,rd=r.body.getReader(),parts=[];let got=0;
+    for(;;){const{done,value}=await rd.read();if(done)break;parts.push(value);got+=value.length;if(btn&&btn.dataset.pct!==undefined&&total)btn.textContent=Math.floor(got/total*100)+'%'}
+    const u=URL.createObjectURL(new Blob(parts)),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),120000)}
+  catch{alert('下載失敗：'+name)}
+  finally{if(btn){btn.disabled=false;btn.style.opacity='';if(btn.dataset.pct!==undefined)btn.textContent=btn.dataset.pct}}
+}
 $('#seldl').onclick=async()=>{ // browsers may ask to allow multiple downloads the first time
   for(const k of [...selected]){const x=fileByKey(k);if(!x)continue;
+    if(IOS&&x.size<=BLOB_MAX){await dlFile(API+x.url+'&dl=1',x.name,$('#seldl'));continue}
     const a=document.createElement('a');a.href=API+x.url+'&dl=1';document.body.appendChild(a);a.click();a.remove();
     await new Promise(r=>setTimeout(r,700))}
 };
@@ -654,7 +665,7 @@ $('#vinfo').onclick=()=>{const p=$('#vinfop');p.hidden=!p.hidden;renderInfo()};
 function showViewer(){
   const{x}=vlist[vi],seq=++vseq,st=$('#vstage'),u=API+x.url,ext=extOf(x.name);
   stopMedia();st.innerHTML='';vmeta={};renderInfo();
-  $('#vtitle').textContent=x.name;$('#vpos').textContent=`${vi+1} / ${vlist.length}`;$('#vdl').href=u+'&dl=1';
+  $('#vtitle').textContent=x.name;$('#vpos').textContent=`${vi+1} / ${vlist.length}`;$('#vdl').href=u+'&dl=1';window.__vx=x;
   $('#vdlj').hidden=!x.preview;if(x.preview)$('#vdlj').href=API+x.preview+'&dl=1'; // HEIC/HEIF: the browser shows the JPEG copy; "下載" still gives the untouched original
   $('#vprev').hidden=$('#vnext').hidden=vlist.length<2;
   const msg=(html,cls)=>{const d=document.createElement('div');d.className='vmsg '+(cls||'');d.innerHTML=html;st.append(d);return d};
@@ -682,6 +693,7 @@ function closeViewer(fromPop){
   if(!fromPop&&history.state?.viewer)history.back();
 }
 const vgo=d=>{if(vlist.length<2)return;vi=(vi+d+vlist.length)%vlist.length;showViewer()};
+$('#vdl').dataset.pct='下載';$('#vdl').onclick=e=>{const x=window.__vx;if(IOS&&x&&x.size<=BLOB_MAX){e.preventDefault();dlFile($('#vdl').href,x.name,$('#vdl'))}};
 $('#vclose').onclick=()=>closeViewer();$('#vback').onclick=()=>closeViewer();$('#vprev').onclick=()=>vgo(-1);$('#vnext').onclick=()=>vgo(1);
 $('#vstage').onclick=e=>{if(e.target.id==='vstage')closeViewer()};
 addEventListener('popstate',()=>closeViewer(true));
