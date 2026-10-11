@@ -314,14 +314,14 @@ async function refresh(){
 }
 syncToolbar();
 // iPhone / iPad layout: title / account + log out / shares, new folder, password / view switch / sort / upload target, select, search
-if(document.documentElement.classList.contains('ios')){
+if(document.documentElement.classList.contains('ios'))try{
   const hdr=$('#app>header'),bar1=$('#newf').parentElement,mk=()=>{const d=document.createElement('div');d.className='bar';return d};
-  const rowA=mk();rowA.append($('#who'),$('#out'));$('#who').style.marginRight='0';hdr.after(rowA);
+  const who=$('#who'),rowA=mk();rowA.append(who,$('#out'));who.style.marginRight='0';hdr.after(rowA);
   bar1.insertBefore($('#shares'),$('#newf'));$('#shares').style.marginRight='0';$('#dev').parentElement.style.display='none';$('#rename').style.display='none';
   const up=$('#target').parentElement,w=document.createElement('span');w.append('上傳到：',$('#target'));up.remove();
   const sb=$('.seg').parentElement,segBar=mk();segBar.append($('.seg'));sb.before(segBar);
   const last=mk();last.append(w,$('#selmode'),$('#srch'));sb.after(last);
-}
+}catch(e){console.error('layout',e)}
 // desktop layout (phones / iOS keep the original): row 1 = upload target + new folder + ..., row 2 = sort / select / search, row 3 = view switch; the device name + rename are hidden
 if(!document.documentElement.classList.contains('ios')&&matchMedia('(min-width:700px)').matches){
   const b1=$('#newf').parentElement;$('#dev').parentElement.style.display='none';$('#rename').style.display='none';
