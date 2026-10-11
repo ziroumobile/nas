@@ -806,7 +806,11 @@ addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;
 addEventListener('appinstalled',()=>{deferredInstall=null;syncInstall()});
 $('#install').onclick=()=>{
   if(deferredInstall){deferredInstall.prompt();deferredInstall=null}
-  else alert(/iPhone|iPad/.test(navigator.userAgent)?'iPhone / iPad：點 Safari 下方的「分享」→「加入主畫面」':'請用瀏覽器選單裡的「安裝應用程式」或「加入主畫面」');
+  else{const ua=navigator.userAgent,mac=/Macintosh/.test(navigator.platform+ua)&&!(navigator.maxTouchPoints>1),chrome=/Chrome|Edg|CriOS/.test(ua);
+    alert(/iPhone|iPad/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)?'iPhone / iPad：點 Safari 下方的「分享」→「加入主畫面」'
+      :mac&&!chrome?'Mac（Safari）：選單列「檔案」→「加入 Dock」（需 macOS Sonoma 14 以上）'
+      :mac?'Mac（Chrome / Edge）：網址列右邊的「安裝」圖示，或選單裡的「安裝 NAS」'
+      :'請用瀏覽器選單裡的「安裝應用程式」或「加入主畫面」')}
 };
 syncInstall();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
