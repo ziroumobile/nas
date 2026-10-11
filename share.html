@@ -3,8 +3,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex,nofollow">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
+<link rel="stylesheet" href="glass.css">
+<script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1))document.documentElement.classList.add('ios')}catch(e){}</script>
 <title>檔案分享</title>
 <style>
 :root{--bg:#f5f6f8;--card:#fff;--fg:#1c1e21;--mut:#6b7280;--ac:#2563eb;--bd:#e5e7eb}
@@ -191,7 +193,7 @@ let vmeta={};
 const fmtDur=s=>{if(!Number.isFinite(s))return'';s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return(h?h+':'+String(m).padStart(2,'0'):m)+':'+String(r).padStart(2,'0')};
 function renderInfo(){
   const p=$('#vinfop');if(p.hidden||!vlist[vi])return;
-  $('#viewer').style.setProperty('--vbar',document.querySelector('.vtop').offsetHeight+4+'px'); // the toolbar can be one or two rows tall: keep the panel just below it
+  $('#viewer').style.setProperty('--vbar',document.querySelector('.vtop').getBoundingClientRect().bottom+6+'px'); // the toolbar can be one or two rows tall (and float with margins on iOS): keep the panel just below it
   const x=vlist[vi],ext=extOf(x.name),label=x.kind==='image'?'圖片':x.kind==='video'?'影片':ext==='mp3'||ext==='wav'?'音訊':ext==='pdf'?'PDF 文件':ext==='txt'?'文字檔':'檔案';
   const rows=[['名稱',x.name],['類型',label+(ext?'（'+ext.toUpperCase()+'）':'')],['大小',fmt(x.size)],['更新日期',new Date(x.mtime).toLocaleString()]];
   if(vmeta.w&&vmeta.h)rows.push(['解析度',`${vmeta.w} × ${vmeta.h}（${(vmeta.w*vmeta.h/1e6).toFixed(1)} MP）`]);

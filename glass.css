@@ -1,0 +1,98 @@
+/* iOS "Liquid Glass"-style surfaces.
+   Only active when the page puts class "ios" on <html> (iPhone / iPad, see the small script in <head>); desktop and Android look exactly as before.
+   The idea: translucent, blurred, saturated panels with a bright rim light on the top edge, a soft inner glow, big rounded corners,
+   capsule-shaped controls that squish a little when pressed, and a faint colourful backdrop so there is something for the glass to refract. */
+html.ios{
+  --g-fill:rgba(255,255,255,.58);--g-fill2:rgba(255,255,255,.80);
+  --g-rim:rgba(255,255,255,.95);--g-rim2:rgba(255,255,255,.4);--g-line:rgba(60,60,67,.13);
+  --g-shadow:0 14px 34px rgba(40,50,120,.16),0 2px 8px rgba(0,0,0,.06);
+  --g-blur:blur(22px) saturate(185%);
+  --g-sheen:linear-gradient(135deg,rgba(255,255,255,.55),rgba(255,255,255,0) 45%);
+  --g-dash:rgba(60,60,67,.32);
+}
+@media(prefers-color-scheme:dark){
+  html.ios{
+    --g-fill:rgba(255,255,255,.075);--g-fill2:rgba(255,255,255,.15);
+    --g-rim:rgba(255,255,255,.36);--g-rim2:rgba(255,255,255,.10);--g-line:rgba(255,255,255,.11);
+    --g-shadow:0 16px 40px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.35);
+    --g-sheen:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,0) 45%);
+    --g-dash:rgba(255,255,255,.32);
+  }
+}
+
+/* a faint colourful backdrop behind everything, so the glass has something to bend */
+html.ios body::before{content:"";position:fixed;inset:-12%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(46% 32% at 10% 5%,rgba(10,132,255,.30),transparent 70%),
+    radial-gradient(42% 30% at 96% 26%,rgba(191,90,242,.24),transparent 70%),
+    radial-gradient(50% 34% at 22% 98%,rgba(48,209,88,.18),transparent 70%),
+    radial-gradient(40% 28% at 88% 86%,rgba(255,159,10,.15),transparent 70%)}
+
+/* panels */
+html.ios .card,html.ios .mbox{
+  background:var(--g-sheen),var(--g-fill);-webkit-backdrop-filter:var(--g-blur);backdrop-filter:var(--g-blur);
+  border:1px solid var(--g-line);border-radius:24px;
+  box-shadow:inset 0 1px 0 var(--g-rim),inset 0 -1px 0 var(--g-rim2),var(--g-shadow)}
+html.ios .mbox{border-radius:30px}
+html.ios #drop{border-radius:24px;background:var(--g-fill);-webkit-backdrop-filter:var(--g-blur);backdrop-filter:var(--g-blur);border:1.5px dashed var(--g-dash);box-shadow:inset 0 1px 0 var(--g-rim2)}
+html.ios #drop.over{border-color:var(--ac)}
+html.ios #off{border-radius:18px}
+html.ios .note{border-radius:16px}
+html.ios details.fold.pinned{border-color:rgba(10,132,255,.6)}
+html.ios .cell{border-radius:15px}
+html.ios .ico{border-radius:13px}
+
+/* controls: capsules */
+html.ios button,html.ios .btn{border-radius:999px;transition:transform .3s cubic-bezier(.2,.9,.3,1.35),background-color .2s,box-shadow .2s}
+html.ios button:active,html.ios .btn:active{transform:scale(.95)}
+html.ios button:not(.ghost):not(.del):not(.danger),html.ios .btn{
+  background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,0) 55%),var(--ac);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(0,0,0,.08),0 6px 18px rgba(10,132,255,.32)}
+html.ios button.ghost,html.ios button.del{
+  background:var(--g-sheen),var(--g-fill);border:1px solid var(--g-line);
+  box-shadow:inset 0 1px 0 var(--g-rim),0 4px 14px rgba(0,0,0,.10)}
+html.ios button.del{color:#ff453a}
+html.ios button.danger{background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 55%),#ff453a;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 18px rgba(255,69,58,.35)}
+html.ios button.on{background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,0) 55%),var(--ac);color:#fff;border-color:transparent}
+/* real blur only for controls that sit directly on the page (inside a panel the panel already blurs) */
+html.ios .bar button.ghost,html.ios header button.ghost,html.ios .bar select{-webkit-backdrop-filter:var(--g-blur);backdrop-filter:var(--g-blur)}
+html.ios select{border-radius:999px;background:var(--g-sheen),var(--g-fill);border:1px solid var(--g-line);box-shadow:inset 0 1px 0 var(--g-rim),0 4px 14px rgba(0,0,0,.08)}
+html.ios input[type=email],html.ios input[type=password],html.ios .mbox input[type=text],html.ios .mbox input[type=password]{border-radius:16px;background:var(--g-fill);border:1px solid var(--g-line);box-shadow:inset 0 1px 2px rgba(0,0,0,.12)}
+
+/* segmented switch (list / medium / small icons): one glass capsule, the active choice is a raised glass pill */
+html.ios .seg{padding:3px;border-radius:999px;background:var(--g-sheen),var(--g-fill);-webkit-backdrop-filter:var(--g-blur);backdrop-filter:var(--g-blur);border:1px solid var(--g-line);box-shadow:inset 0 1px 0 var(--g-rim),var(--g-shadow)}
+html.ios .seg button{border:0!important;border-radius:999px!important;background:transparent!important;box-shadow:none!important;color:var(--fg);-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.ios .seg button.on{background:var(--g-fill2)!important;color:var(--ac)!important;font-weight:600;box-shadow:inset 0 1px 0 var(--g-rim),0 3px 10px rgba(0,0,0,.18)!important}
+
+/* the selection bar floats as a glass capsule above the bottom edge */
+html.ios #selbar{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));padding:10px 14px;border:1px solid var(--g-line);border-radius:32px;
+  background:var(--g-sheen),var(--g-fill);-webkit-backdrop-filter:var(--g-blur);backdrop-filter:var(--g-blur);box-shadow:inset 0 1px 0 var(--g-rim),var(--g-shadow)}
+html.ios body.selecting .wrap{padding-bottom:130px}
+
+/* dialogs: the page behind is blurred, the sheet is glass */
+html.ios #modal{background:rgba(0,0,0,.28);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+
+/* preview: toolbar, arrows and info panel are glass floating over the photo (always the dark variant, it sits on a black stage) */
+html.ios .vtop{margin:calc(env(safe-area-inset-top) + 6px) 10px 0;padding:8px 10px;border-radius:28px;
+  background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,0) 45%),rgba(60,60,68,.42);-webkit-backdrop-filter:blur(24px) saturate(190%);backdrop-filter:blur(24px) saturate(190%);
+  border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.34),0 12px 32px rgba(0,0,0,.4)}
+html.ios .vtop button.ghost{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+html.ios .vnav{border-radius:50%;width:50px;height:50px;background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,0) 50%),rgba(60,60,68,.42);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
+  border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.34),0 8px 22px rgba(0,0,0,.35)}
+html.ios #vinfop{background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,0) 45%),rgba(50,50,58,.5);-webkit-backdrop-filter:blur(26px) saturate(190%);backdrop-filter:blur(26px) saturate(190%);
+  border:1px solid rgba(255,255,255,.18);border-radius:24px;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 18px 44px rgba(0,0,0,.5)}
+
+/* folder being dragged: lifts off the page */
+html.ios details.fold.dragging{box-shadow:inset 0 1px 0 var(--g-rim),0 24px 50px rgba(0,0,0,.45)}
+
+/* fallbacks: no backdrop-filter support, or the user asked for less transparency -> solid surfaces */
+@supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  html.ios .card,html.ios .mbox,html.ios .seg,html.ios #selbar,html.ios #drop{background:var(--card)}
+  html.ios .vtop,html.ios .vnav,html.ios #vinfop{background:rgba(31,41,55,.92)}
+}
+@media(prefers-reduced-transparency:reduce){
+  html.ios *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+  html.ios .card,html.ios .mbox,html.ios .seg,html.ios #selbar,html.ios #drop,html.ios select{background:var(--card)!important}
+  html.ios .vtop,html.ios .vnav,html.ios #vinfop{background:rgba(31,41,55,.95)!important}
+  html.ios body::before{display:none}
+}

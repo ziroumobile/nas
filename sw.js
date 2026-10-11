@@ -2,7 +2,7 @@
 // Network-first, so a new release shows up immediately (no stale cached pages); the cache is only the offline fallback.
 // Files and the API are on other origins (the tunnel) and are never touched here; url.json (the tunnel address) is never cached.
 const CACHE = 'nas-v1';
-const SHELL = ['./', './index.html', './config.js', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
+const SHELL = ['./', './index.html', './glass.css', './config.js', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

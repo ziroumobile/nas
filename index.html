@@ -2,9 +2,11 @@
 <html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="glass.css">
+<script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1))document.documentElement.classList.add('ios')}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -38,12 +40,12 @@ details.fold[open]>summary::before{content:"▾"}
 details.fold>summary{position:relative}
 details.fold.hasgrip>summary{padding-right:50px} /* room for the drag handle on the right */
 /* drag handle: three lines (drawn with gradients), at the right edge, centred vertically on the folder's header */
-.grip{position:absolute;right:0;top:50%;transform:translateY(-50%);width:44px;height:48px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:10px;
+.grip{position:absolute;right:0;top:50%;transform:translateY(-50%);width:44px;height:48px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;border-radius:10px;
   background:linear-gradient(var(--mut),var(--mut)) center 15px/22px 3px no-repeat,linear-gradient(var(--mut),var(--mut)) center 22px/22px 3px no-repeat,linear-gradient(var(--mut),var(--mut)) center 29px/22px 3px no-repeat}
 .grip:active,details.fold.dragging .grip{background-color:rgba(127,127,127,.18)}
 body.dragmode{cursor:grabbing;user-select:none;-webkit-user-select:none}
 body.dragmode details.fold>*:not(summary){display:none}
-details.fold.dragging{opacity:.8;outline:2px solid var(--ac)}
+details.fold.dragging{position:relative;z-index:20;transition:none!important;outline:2px solid var(--ac);box-shadow:0 18px 40px rgba(0,0,0,.4);will-change:transform}
 details.fold.pinned{border-color:var(--ac)}
 details.fold>summary{flex-wrap:wrap;row-gap:8px}
 .fname{flex:1 1 140px;min-width:0;overflow-wrap:anywhere}
@@ -342,34 +344,62 @@ async function togglePin(name){
   await saveFolderPrefs({pinned});
 }
 $('#resetorder').onclick=()=>{if(confirm('恢復自動排序？你拖動調整過的順序會被清除（置頂的資料夾不受影響）。'))saveFolderPrefs({reset:true})};
+// The dragged card follows the pointer (translateY), the other cards slide out of its way (FLIP animation), and on release it settles into its slot.
 let drag=null;
-const scrollLoop=()=>{if(!drag)return;const y=drag.y;if(y<80)scrollBy(0,-14);else if(y>innerHeight-80)scrollBy(0,14);requestAnimationFrame(scrollLoop)};
-function dragMove(e){
-  if(!drag||e.pointerId!==drag.id)return;drag.y=e.clientY;
-  const same=[...document.querySelectorAll('#list details.fold')].filter(c=>c!==drag.card&&c.dataset.pinned===drag.card.dataset.pinned); // can't cross the pinned boundary: use the pin button for that
-  for(const c of same){
-    const r=c.getBoundingClientRect(),mid=r.top+r.height/2,after=drag.card.compareDocumentPosition(c)&Node.DOCUMENT_POSITION_FOLLOWING;
-    if(after&&e.clientY>mid){c.after(drag.card);drag.moved=true}else if(!after&&e.clientY<mid){c.before(drag.card);drag.moved=true}
+function dragFrame(){
+  const d=drag;if(!d)return;
+  const c=d.card,want=d.y-d.grab; // where the card's top edge should be on screen
+  const same=[...document.querySelectorAll('#list details.fold')].filter(x=>x!==c&&x.dataset.pinned===c.dataset.pinned); // can't cross the pinned boundary: use the pin button for that
+  c.style.transform='';
+  const center=want+c.getBoundingClientRect().height/2;
+  const v0=new Map(same.map(x=>[x,x.getBoundingClientRect().top])); // where each neighbour is drawn right now
+  let moved=false;
+  for(const x of same){ // passing a neighbour's midpoint swaps places with it
+    const r=x.getBoundingClientRect(),mid=r.top+r.height/2,after=c.compareDocumentPosition(x)&Node.DOCUMENT_POSITION_FOLLOWING;
+    if(after&&center>mid){x.after(c);moved=true}else if(!after&&center<mid){x.before(c);moved=true}
   }
+  if(moved){
+    d.moved=true;
+    for(const x of same){ // FLIP: neighbours start where they were drawn, then glide to their new slot
+      x.style.transition='none';x.style.transform='';
+      const dy=v0.get(x)-x.getBoundingClientRect().top;
+      if(Math.abs(dy)>1){x.style.transform=`translateY(${dy}px)`;x.getBoundingClientRect();x.style.transition='transform .22s cubic-bezier(.2,.8,.2,1)';x.style.transform=''}
+      else x.style.transition='';
+    }
+  }
+  const nat=c.getBoundingClientRect().top; // its slot in the list (transform cleared above)
+  c.style.transform=`translateY(${want-nat}px) scale(1.02)`;
 }
+function dragTick(){
+  if(!drag)return;
+  const y=drag.y,edge=90; // near the top/bottom edge the page scrolls by itself
+  if(y<edge)scrollBy(0,-Math.min(18,(edge-y)/4+4));else if(y>innerHeight-edge)scrollBy(0,Math.min(18,(y-(innerHeight-edge))/4+4));
+  dragFrame();requestAnimationFrame(dragTick);
+}
+const dragMove=e=>{if(drag&&e.pointerId===drag.id){drag.y=e.clientY;dragFrame()}}; // update right away on every move; the frame loop below only handles auto-scrolling at the edges
 async function dragEnd(e){
   if(!drag||(e&&e.pointerId!==drag.id))return;
   const d=drag;drag=null;
   removeEventListener('pointermove',dragMove);removeEventListener('pointerup',dragEnd);removeEventListener('pointercancel',dragEnd);
-  d.card.classList.remove('dragging');document.body.classList.remove('dragmode');
+  const c=d.card;
+  c.style.transition='transform .2s cubic-bezier(.2,.8,.2,1)';c.style.transform='translateY(0) scale(1)'; // settle into the slot
+  await new Promise(r=>setTimeout(r,200));
+  for(const x of document.querySelectorAll('#list details.fold')){x.style.transition='';x.style.transform=''}
+  c.classList.remove('dragging');document.body.classList.remove('dragmode');
   if(!d.moved)return;
-  const pinnedGroup=d.card.dataset.pinned==='1';
-  const names=[...document.querySelectorAll('#list details.fold')].filter(c=>(c.dataset.pinned==='1')===pinnedGroup).map(c=>c.dataset.f);
+  const pinnedGroup=c.dataset.pinned==='1';
+  const names=[...document.querySelectorAll('#list details.fold')].filter(x=>(x.dataset.pinned==='1')===pinnedGroup).map(x=>x.dataset.f);
   await saveFolderPrefs(pinnedGroup?{pinned:names}:{order:names});
 }
 $('#list').addEventListener('pointerdown',e=>{
   const g=e.target.closest('.grip');if(!g||!me?.admin)return;
   e.preventDefault();
   const card=g.closest('details.fold');
-  drag={card,id:e.pointerId,y:e.clientY,moved:false};
-  card.classList.add('dragging');document.body.classList.add('dragmode'); // bodies collapse while dragging so the cards are easy to move around
+  document.body.classList.add('dragmode');card.classList.add('dragging'); // bodies collapse while dragging so the cards are easy to move around
+  const r=card.getBoundingClientRect();
+  drag={card,id:e.pointerId,y:e.clientY,grab:Math.min(Math.max(e.clientY-r.top,0),r.height),moved:false}; // grab = where on the card the finger holds it
   addEventListener('pointermove',dragMove);addEventListener('pointerup',dragEnd);addEventListener('pointercancel',dragEnd);
-  requestAnimationFrame(scrollLoop);
+  dragFrame();requestAnimationFrame(dragTick);
 });
 $('#list').onclick=async e=>{
   if(e.target.closest('.grip')){e.preventDefault();return} // grabbing the handle must not expand/collapse the folder
@@ -529,7 +559,7 @@ const fmtDur=s=>{if(!Number.isFinite(s))return'';s=Math.round(s);const h=Math.fl
 const TYPES={image:'圖片',video:'影片'};
 function renderInfo(){
   const p=$('#vinfop');if(p.hidden||!vlist[vi])return;
-  $('#viewer').style.setProperty('--vbar',document.querySelector('.vtop').offsetHeight+4+'px'); // the toolbar can be one or two rows tall: keep the panel just below it
+  $('#viewer').style.setProperty('--vbar',document.querySelector('.vtop').getBoundingClientRect().bottom+6+'px'); // the toolbar can be one or two rows tall (and float with margins on iOS): keep the panel just below it
   const{k,x}=vlist[vi],{folder}=splitKey(k),ext=extOf(x.name),label=x.kind in TYPES?TYPES[x.kind]:ext==='mp3'||ext==='wav'?'音訊':ext==='pdf'?'PDF 文件':ext==='txt'?'文字檔':'檔案';
   const rows=[['名稱',x.name],['資料夾',folder],['類型',label+(ext?'（'+ext.toUpperCase()+'）':'')],['大小',fmt(x.size)],
     ['更新日期',new Date(x.mtime).toLocaleString()]];
