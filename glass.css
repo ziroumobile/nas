@@ -162,3 +162,16 @@ html.ios #dock button:active,html.ios #dock button.act,html.ios #dock button.gpr
 html.ios #dock button::before,html.ios #dock button::after{display:none!important}
 @media(prefers-color-scheme:light){html.ios #dock button{color:#1c1e21!important}}
 html.ios .srch input{-webkit-appearance:none;appearance:none}
+
+/* Windows / Android / desktop: the same frosted-glass pills as the dock (iOS has its own fuller glass above) */
+html:not(.ios) .bar :is(button.ghost,select){border-radius:999px;border:0;color:var(--fg);background:rgba(255,255,255,.06);
+  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 1.5px rgba(255,255,255,.2),0 6px 18px rgba(0,0,0,.35);transition:background .15s}
+html:not(.ios) .bar :is(button.ghost,select):hover{background:rgba(255,255,255,.1)}
+html:not(.ios) .bar :is(button.ghost,select):active{background:rgba(0,0,0,.35)}
+html:not(.ios) .bar select{padding:8px 16px}
+html:not(.ios) .seg{padding:3px;border-radius:999px;background:rgba(255,255,255,.06);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 1.5px rgba(255,255,255,.2),0 6px 18px rgba(0,0,0,.35)}
+html:not(.ios) .seg button.ghost{background:transparent;box-shadow:none;border:0;border-radius:999px!important;padding:6px 16px;-webkit-backdrop-filter:none;backdrop-filter:none}
+html:not(.ios) .seg button.ghost.on{background:rgba(0,0,0,.35);color:#60a5fa}
+html:not(.ios) .seg button.ghost:hover:not(.on){background:rgba(255,255,255,.08)}
