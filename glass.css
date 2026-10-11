@@ -250,3 +250,13 @@ html.ios .selbot button{pointer-events:auto;width:56px;height:56px;padding:0!imp
 html.ios .selbot button svg{width:26px;height:26px}
 html.ios .selbot button[hidden]{display:none}
 html.ios .selbot button:disabled,html.ios .seltop button:disabled{opacity:.4}
+
+/* page sits right under the Dynamic Island; the black mask covers only the status bar itself.
+   The select-mode top row is solid (no disabled fade, no halo) and sits just under the island. */
+html.ios body::before{height:env(safe-area-inset-top)}
+html.ios .wrap{padding-top:calc(env(safe-area-inset-top) - 8px)}
+html.ios .seltop{top:calc(env(safe-area-inset-top) - 2px)}
+html.ios .seltop button,html.ios .seltop button:disabled{opacity:1!important;background:rgba(44,44,48,.96)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)!important}
+html.ios .seltop button:disabled{color:rgba(255,255,255,.4)!important}
+html.ios .seltop button#seldel:disabled{color:rgba(255,69,58,.45)!important}
+html.ios .seltop #selcount{text-shadow:none}
