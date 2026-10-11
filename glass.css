@@ -351,3 +351,9 @@ html.ios #modal button.danger{background:var(--g-fill)!important;background-imag
 html.ios #modal button.ghost{color:#fff!important}
 html.ios #modal button.del,html.ios #modal button.danger{color:#ff453a!important}
 html.ios #modal button:active{background:rgba(120,120,128,.5)!important}
+
+/* the "建立分享連結" (create share link) button is the one blue-filled button: blue background, white text */
+#modal #smk,html.ios #modal #smk,html:not(.ios) #modal #smk{background:linear-gradient(180deg,rgba(10,132,255,.9),rgba(10,132,255,.68))!important;background-image:linear-gradient(180deg,rgba(10,132,255,.9),rgba(10,132,255,.68))!important;
+  color:#fff!important;border:1px solid transparent!important;box-shadow:inset 0 1px 1.5px rgba(255,255,255,.3),0 8px 20px rgba(10,132,255,.28)!important}
+#modal #smk:active{filter:brightness(.8)}
+#modal #smk:disabled{opacity:.6}
