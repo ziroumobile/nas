@@ -90,7 +90,7 @@ body.selecting .wrap{padding-bottom:100px}
   <div class="card" id="list"></div>
 </div>
 <div id="viewer" hidden>
-  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div>
+  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><a id="vdlj" class="btn" hidden title="下載轉好的 JPG 版本（不能開 HEIC 的裝置用這個）">JPG</a><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div>
   <div id="vstage"></div>
   <button class="vnav" id="vprev" aria-label="上一個">‹</button><button class="vnav" id="vnext" aria-label="下一個">›</button>
 </div>
@@ -177,11 +177,12 @@ function showViewer(){
   const x=vlist[vi],seq=++vseq,st=$('#vstage'),u=API+x.url,ext=extOf(x.name);
   stopMedia();st.innerHTML='';
   $('#vtitle').textContent=x.name;$('#vpos').textContent=`${vi+1} / ${vlist.length}`;$('#vdl').href=u+'&dl=1';
+  $('#vdlj').hidden=!x.preview;if(x.preview)$('#vdlj').href=API+x.preview+'&dl=1'; // HEIC/HEIF: viewed as a JPEG copy; "下載" still gives the untouched original
   $('#vprev').hidden=$('#vnext').hidden=vlist.length<2;
   const msg=(html,cls)=>{const d=document.createElement('div');d.className='vmsg '+(cls||'');d.innerHTML=html;st.append(d)};
   if(x.kind==='image'){
     const img=document.createElement('img');img.className='vimg';img.alt=x.name;if(x.thumb)img.src=API+x.thumb;st.append(img);
-    const full=new Image();full.onload=()=>{if(seq===vseq)img.src=full.src};full.src=u;
+    const full=new Image();full.onload=()=>{if(seq===vseq)img.src=full.src};full.src=x.preview?API+x.preview:u;
   }else if(x.kind==='video'){
     const v=document.createElement('video');v.controls=true;v.playsInline=true;v.preload='metadata';if(x.thumb)v.poster=API+x.thumb;
     v.addEventListener('error',()=>{if(seq===vseq&&v.getAttribute('src'))msg('這個瀏覽器無法播放此影片格式，請按右上角「下載」。','warn')});

@@ -131,7 +131,7 @@ body.selecting .wrap{padding-bottom:100px}
   <div id="list"></div>
 </div>
 <div id="viewer" hidden>
-  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><button class="ghost" id="vshare" hidden style="color:#fff">🔗 分享</button><button class="ghost" id="vdel" hidden style="color:#f87171">🗑 刪除</button><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div>
+  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><button class="ghost" id="vshare" hidden style="color:#fff">🔗 分享</button><button class="ghost" id="vdel" hidden style="color:#f87171">🗑 刪除</button><a id="vdlj" class="btn" hidden title="下載轉好的 JPG 版本（不能開 HEIC 的裝置用這個）">JPG</a><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div>
   <div id="vstage"></div>
   <button class="vnav" id="vprev" aria-label="上一個">‹</button><button class="vnav" id="vnext" aria-label="下一個">›</button>
 </div>
@@ -439,13 +439,14 @@ function showViewer(){
   const{x}=vlist[vi],seq=++vseq,st=$('#vstage'),u=API+x.url,ext=extOf(x.name);
   stopMedia();st.innerHTML='';
   $('#vtitle').textContent=x.name;$('#vpos').textContent=`${vi+1} / ${vlist.length}`;$('#vdl').href=u+'&dl=1';
+  $('#vdlj').hidden=!x.preview;if(x.preview)$('#vdlj').href=API+x.preview+'&dl=1'; // HEIC/HEIF: the browser shows the JPEG copy; "下載" still gives the untouched original
   $('#vprev').hidden=$('#vnext').hidden=vlist.length<2;
   const msg=(html,cls)=>{const d=document.createElement('div');d.className='vmsg '+(cls||'');d.innerHTML=html;st.append(d);return d};
   if(x.kind==='image'){
     const img=document.createElement('img');img.className='vimg';img.alt=x.name;
     if(x.thumb)img.src=API+x.thumb; // 720p version shows instantly, the original replaces it when loaded
     st.append(img);
-    const full=new Image();full.onload=()=>{if(seq===vseq)img.src=full.src};full.onerror=()=>{if(seq===vseq&&!x.thumb)img.replaceWith(Object.assign(document.createElement('div'),{className:'vmsg warn',textContent:'無法載入圖片'}))};full.src=u;
+    const full=new Image();full.onload=()=>{if(seq===vseq)img.src=full.src};full.onerror=()=>{if(seq===vseq&&!x.thumb)img.replaceWith(Object.assign(document.createElement('div'),{className:'vmsg warn',textContent:x.preview?'無法轉換這張照片來預覽，請按右上角「下載」取得原檔':'無法載入圖片'}))};full.src=x.preview?API+x.preview:u;
   }else if(x.kind==='video'){
     const v=document.createElement('video');v.controls=true;v.playsInline=true;v.preload='metadata';if(x.thumb)v.poster=API+x.thumb;
     v.addEventListener('error',()=>{if(seq===vseq&&v.getAttribute('src'))msg('這個瀏覽器無法播放此影片格式（例如 iPhone 的 HEVC .mov），請按右上角「下載」後用播放器開啟。','warn')});
