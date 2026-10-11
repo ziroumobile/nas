@@ -321,3 +321,6 @@ html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 76px)}
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 10px 28px rgba(0,0,0,.35)!important}
 /* settings buttons also grey out while pressed */
 #setpanel #setbody button:active,#setpanel .mbtns button:active,#setpanel #setbody button.gpress,#setpanel .mbtns button.gpress{background:rgba(120,120,128,.5)!important}
+
+/* windows (settings / shared links / dialogs) sit above the fixed title bar and select-mode layers, and start below the status bar */
+html.ios #modal,html.ios #setpanel{z-index:90;padding-top:calc(env(safe-area-inset-top) + 12px);padding-bottom:calc(env(safe-area-inset-bottom) + 12px)}
