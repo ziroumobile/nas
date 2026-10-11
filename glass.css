@@ -310,3 +310,8 @@ html.ios .seltop #selexit svg{width:26px;height:26px}
 html.ios .seltop #selcount{font-size:15px}
 html.ios #topband{height:calc(env(safe-area-inset-top) + 56px)}
 html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 68px)}
+
+/* nothing can be drawn inside the top safe-area strip (the system clips it) -> start the row below it */
+html.ios .seltop{top:calc(env(safe-area-inset-top) + 4px)}
+html.ios #topband{height:calc(env(safe-area-inset-top) + 64px)}
+html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 76px)}
