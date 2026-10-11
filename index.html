@@ -35,6 +35,11 @@ details.fold>summary{display:flex;align-items:center;gap:8px;cursor:pointer;font
 details.fold>summary::-webkit-details-marker{display:none}
 details.fold>summary::before{content:"▸";color:var(--mut)}
 details.fold[open]>summary::before{content:"▾"}
+.grip{cursor:grab;color:var(--mut);padding:0 8px 0 2px;font-size:20px;line-height:1;touch-action:none;user-select:none;-webkit-user-select:none;flex:none}
+body.dragmode{cursor:grabbing;user-select:none;-webkit-user-select:none}
+body.dragmode details.fold>*:not(summary){display:none}
+details.fold.dragging{opacity:.8;outline:2px solid var(--ac)}
+details.fold.pinned{border-color:var(--ac)}
 .fname{flex:1;min-width:0;word-break:break-all}.cnt{color:var(--mut);font-weight:400}
 .row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--bd)}
 .ico{width:44px;height:44px;border-radius:8px;background:var(--bg);object-fit:cover;flex:none;display:grid;place-items:center;font-size:20px}
@@ -132,6 +137,7 @@ body.selecting .wrap{padding-bottom:100px}
     排序：<select id="sort"><option value="name">名稱</option><option value="date">更新日期</option><option value="size">大小</option></select>
     <button class="ghost" id="order"></button>
     <button class="ghost" id="selmode">☑ 選取</button>
+    <button class="ghost" id="resetorder" hidden title="清除你拖動調整過的資料夾順序">↺ 恢復自動排序</button>
   </div>
   <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" type="file" multiple hidden></div>
   <div id="ups"></div>
@@ -168,7 +174,7 @@ const ls={get:k=>{try{return localStorage.getItem(k)}catch{return null}},set:(k,
 function guessDevice(){const u=navigator.userAgent;
   return /iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Android/.test(u)?'Android':/Windows/.test(u)?'Windows 電腦':/Mac/.test(u)?'Mac':'未命名裝置'}
 let device=ls.get('nas_device')||guessDevice();
-const closed=new Set(JSON.parse(ls.get('nas_closed')||'[]'));
+const opened=new Set(JSON.parse(ls.get('nas_open')||'[]')); // folders start collapsed; only the ones you expanded stay open
 async function token(){const{data}=await sb.auth.getSession();return data.session?.access_token}
 async function findApi(){ // the PC's tunnel URL is published to url.json by start.ps1
   try{const r=await fetch('url.json?t='+Date.now());API=(await r.json()).url.replace(/\/$/,'')}catch{API=''}
@@ -212,9 +218,17 @@ const cmpName=(a,b)=>a.name.localeCompare(b.name,'zh-Hant',{numeric:true});
 const CMP={name:cmpName,date:(a,b)=>a.mtime-b.mtime,size:(a,b)=>a.size-b.size};
 const dir=n=>(asc?1:-1)*n;
 const sortFiles=fs=>[...fs].sort((a,b)=>dir(CMP[sortBy](a,b))||cmpName(a,b));
-function sortFolders(){ // folders follow the same rule: by name, by newest file, or by total size
+// Folder order: pinned folders first; then the manual order if one has been set (drag to arrange, shared by all devices);
+// otherwise the sort rule above: by name, by newest file, or by total size. New folders without a manual position go last.
+const manualOrder=()=>folders.some(f=>!f.pinned&&f.rank>=0);
+function sortFolders(){
   const key=f=>sortBy==='date'?Math.max(0,...f.files.map(x=>x.mtime)):f.files.reduce((s,x)=>s+x.size,0);
-  return [...folders].sort((a,b)=>sortBy==='name'?dir(cmpName(a,b)):dir(key(a)-key(b))||cmpName(a,b));
+  const manual=manualOrder(),rk=f=>f.rank<0?1e9:f.rank;
+  return [...folders].sort((a,b)=>{
+    if(a.pinned!==b.pinned)return b.pinned-a.pinned; // pinned group first, newest pin on top (its own order, changed by dragging)
+    if(a.pinned)return a.pinRank-b.pinRank;
+    return manual?(rk(a)-rk(b)||cmpName(a,b)):sortBy==='name'?dir(cmpName(a,b)):dir(key(a)-key(b))||cmpName(a,b);
+  });
 }
 function syncToolbar(){
   for(const[v,id]of[['list','#vlist'],['nine','#vnine'],['small','#vsmall']])$(id).classList.toggle('on',view===v);
@@ -255,13 +269,15 @@ function render(force){
   if(!force&&sig===lastSig)return; // nothing changed: leave the DOM (and loaded thumbnails) alone
   lastSig=sig;
   const allFiles=folders.reduce((n,f)=>n+f.files.length,0),allSize=folders.reduce((n,f)=>n+f.files.reduce((s,x)=>s+x.size,0),0);
+  $('#resetorder').hidden=!(me?.admin&&manualOrder());
   $('#total').textContent=`全部：${folders.length} 個資料夾 · ${allFiles} 個檔案 · ${fmtTotal(allSize)}`;
   $('#list').innerHTML=folders.length?sortFolders().map(f=>{
     const items=sortFiles(f.files).map(x=>fileItem(f,x)).join('');
     const body=!f.files.length?'<div class="empty">（空資料夾）</div>':view==='list'?items:`<div class="nine${view==='small'?' small':''}">${items}</div>`;
     const tools=(selMode&&f.files.length?`<button class="ghost" data-selfolder="${esc(f.name)}" style="padding:4px 10px">全選</button>`:'')
-      +(me.admin?`<button class="ghost" data-sharefolder="${esc(f.name)}" style="padding:4px 10px">🔗 分享</button><button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button>`:'');
-    return `<details class="fold card" data-f="${esc(f.name)}"${closed.has(f.name)?'':' open'}><summary><span class="fname">📂 ${esc(f.name)} <span class="cnt">${f.files.length} 個檔案 · ${fmtTotal(f.files.reduce((s,x)=>s+x.size,0))}</span></span>
+      +(me.admin?`<button class="ghost" data-pin="${esc(f.name)}" style="padding:4px 10px">${f.pinned?'取消置頂':'📌 置頂'}</button><button class="ghost" data-sharefolder="${esc(f.name)}" style="padding:4px 10px">🔗 分享</button><button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button>`:'');
+    const grip=me.admin?`<span class="grip" title="按住上下拖動來調整順序">⠿</span>`:'';
+    return `<details class="fold card${f.pinned?' pinned':''}" data-f="${esc(f.name)}" data-pinned="${f.pinned?1:0}"${opened.has(f.name)?' open':''}><summary>${grip}<span class="fname">${f.pinned?'📌 ':''}📂 ${esc(f.name)} <span class="cnt">${f.files.length} 個檔案 · ${fmtTotal(f.files.reduce((s,x)=>s+x.size,0))}</span></span>
       ${tools}</summary>${body}</details>`}).join(''):'<div class="card" style="color:var(--mut);text-align:center">還沒有資料夾，上傳檔案會自動建立「'+esc(device)+'」</div>';
   updateSelUI();
 }
@@ -297,11 +313,55 @@ async function deleteItems(items,msg){ // admin only; the server checks too. One
   return true;
 }
 $('#list').addEventListener('toggle',e=>{const f=e.target.dataset?.f;if(!f||!e.target.matches('details.fold'))return;
-  e.target.open?closed.delete(f):closed.add(f);ls.set('nas_closed',JSON.stringify([...closed]))},true);
+  e.target.open?opened.add(f):opened.delete(f);ls.set('nas_open',JSON.stringify([...opened]))},true);
+// ---- folder layout (admin): pin to top, drag the ⠿ handle to reorder (mouse or touch). Saved on the server, so every device shows the same. ----
+async function saveFolderPrefs(body){
+  const r=await api('/api/folder-prefs',{method:'PUT',body:JSON.stringify(body)});
+  if(!r.ok)alert((await r.json().catch(()=>({}))).error||'儲存失敗');
+  await refresh();
+}
+async function togglePin(name){
+  const f=folders.find(x=>x.name===name);if(!f)return;
+  const pinned=folders.filter(x=>x.pinned).sort((a,b)=>a.pinRank-b.pinRank).map(x=>x.name).filter(n=>n!==name);
+  if(!f.pinned)pinned.unshift(name); // newly pinned goes to the very top
+  await saveFolderPrefs({pinned});
+}
+$('#resetorder').onclick=()=>{if(confirm('恢復自動排序？你拖動調整過的順序會被清除（置頂的資料夾不受影響）。'))saveFolderPrefs({reset:true})};
+let drag=null;
+const scrollLoop=()=>{if(!drag)return;const y=drag.y;if(y<80)scrollBy(0,-14);else if(y>innerHeight-80)scrollBy(0,14);requestAnimationFrame(scrollLoop)};
+function dragMove(e){
+  if(!drag||e.pointerId!==drag.id)return;drag.y=e.clientY;
+  const same=[...document.querySelectorAll('#list details.fold')].filter(c=>c!==drag.card&&c.dataset.pinned===drag.card.dataset.pinned); // can't cross the pinned boundary: use the pin button for that
+  for(const c of same){
+    const r=c.getBoundingClientRect(),mid=r.top+r.height/2,after=drag.card.compareDocumentPosition(c)&Node.DOCUMENT_POSITION_FOLLOWING;
+    if(after&&e.clientY>mid){c.after(drag.card);drag.moved=true}else if(!after&&e.clientY<mid){c.before(drag.card);drag.moved=true}
+  }
+}
+async function dragEnd(e){
+  if(!drag||(e&&e.pointerId!==drag.id))return;
+  const d=drag;drag=null;
+  removeEventListener('pointermove',dragMove);removeEventListener('pointerup',dragEnd);removeEventListener('pointercancel',dragEnd);
+  d.card.classList.remove('dragging');document.body.classList.remove('dragmode');
+  if(!d.moved)return;
+  const pinnedGroup=d.card.dataset.pinned==='1';
+  const names=[...document.querySelectorAll('#list details.fold')].filter(c=>(c.dataset.pinned==='1')===pinnedGroup).map(c=>c.dataset.f);
+  await saveFolderPrefs(pinnedGroup?{pinned:names}:{order:names});
+}
+$('#list').addEventListener('pointerdown',e=>{
+  const g=e.target.closest('.grip');if(!g||!me?.admin)return;
+  e.preventDefault();
+  const card=g.closest('details.fold');
+  drag={card,id:e.pointerId,y:e.clientY,moved:false};
+  card.classList.add('dragging');document.body.classList.add('dragmode'); // bodies collapse while dragging so the cards are easy to move around
+  addEventListener('pointermove',dragMove);addEventListener('pointerup',dragEnd);addEventListener('pointercancel',dragEnd);
+  requestAnimationFrame(scrollLoop);
+});
 $('#list').onclick=async e=>{
+  if(e.target.closest('.grip')){e.preventDefault();return} // grabbing the handle must not expand/collapse the folder
   const b=e.target.closest('button');
   if(b){
     if(b.dataset.selfolder){e.preventDefault();return selectFolder(b.dataset.selfolder)}
+    if(b.dataset.pin){e.preventDefault();return togglePin(b.dataset.pin)}
     if(b.dataset.sharefolder){e.preventDefault();const n=b.dataset.sharefolder;return shareDialog(`資料夾「${n}」（${folders.find(f=>f.name===n)?.files.length||0} 個檔案，之後新增的檔案也會出現在分享裡）`,{folder:n})}
     if(b.dataset.sharefile){const k=b.dataset.sharefile;return shareDialog(`檔案「${splitKey(k).name}」`,{items:[splitKey(k)]})}
     if(b.dataset.delfolder){e.preventDefault();return delFolder(b.dataset.delfolder)}
@@ -455,11 +515,11 @@ const TYPES={image:'圖片',video:'影片'};
 function renderInfo(){
   const p=$('#vinfop');if(p.hidden||!vlist[vi])return;
   const{k,x}=vlist[vi],{folder}=splitKey(k),ext=extOf(x.name),label=x.kind in TYPES?TYPES[x.kind]:ext==='mp3'||ext==='wav'?'音訊':ext==='pdf'?'PDF 文件':ext==='txt'?'文字檔':'檔案';
-  const rows=[['名稱',x.name],['資料夾',folder],['類型',label+(ext?'（'+ext.toUpperCase()+'）':'')],['大小',`${fmt(x.size)}（${x.size.toLocaleString()} 位元組）`],
+  const rows=[['名稱',x.name],['資料夾',folder],['類型',label+(ext?'（'+ext.toUpperCase()+'）':'')],['大小',fmt(x.size)],
     ['更新日期',new Date(x.mtime).toLocaleString()]];
   if(x.uploaded)rows.push(['上傳時間',new Date(x.uploaded).toLocaleString()]);
   if(x.owner&&x.owner!=='?')rows.push(['上傳者',x.owner]);
-  if(vmeta.w&&vmeta.h)rows.push(['解析度',`${vmeta.w} × ${vmeta.h}（${(vmeta.w*vmeta.h/1e6).toFixed(1)} 百萬畫素）`]);
+  if(vmeta.w&&vmeta.h)rows.push(['解析度',`${vmeta.w} × ${vmeta.h}（${(vmeta.w*vmeta.h/1e6).toFixed(1)} MP）`]);
   if(vmeta.dur)rows.push(['長度',fmtDur(vmeta.dur)]);
   if(x.preview)rows.push(['備註','HEIC 照片：預覽使用轉好的 JPG，下載的是原檔']);
   p.innerHTML='<h4>ℹ️ 檔案資訊</h4>'+rows.map(([a,b])=>`<div class="ir"><span class="ik">${a}</span><span class="iv">${esc(b)}</span></div>`).join('');

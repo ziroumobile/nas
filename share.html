@@ -188,8 +188,8 @@ const fmtDur=s=>{if(!Number.isFinite(s))return'';s=Math.round(s);const h=Math.fl
 function renderInfo(){
   const p=$('#vinfop');if(p.hidden||!vlist[vi])return;
   const x=vlist[vi],ext=extOf(x.name),label=x.kind==='image'?'圖片':x.kind==='video'?'影片':ext==='mp3'||ext==='wav'?'音訊':ext==='pdf'?'PDF 文件':ext==='txt'?'文字檔':'檔案';
-  const rows=[['名稱',x.name],['類型',label+(ext?'（'+ext.toUpperCase()+'）':'')],['大小',`${fmt(x.size)}（${x.size.toLocaleString()} 位元組）`],['更新日期',new Date(x.mtime).toLocaleString()]];
-  if(vmeta.w&&vmeta.h)rows.push(['解析度',`${vmeta.w} × ${vmeta.h}（${(vmeta.w*vmeta.h/1e6).toFixed(1)} 百萬畫素）`]);
+  const rows=[['名稱',x.name],['類型',label+(ext?'（'+ext.toUpperCase()+'）':'')],['大小',fmt(x.size)],['更新日期',new Date(x.mtime).toLocaleString()]];
+  if(vmeta.w&&vmeta.h)rows.push(['解析度',`${vmeta.w} × ${vmeta.h}（${(vmeta.w*vmeta.h/1e6).toFixed(1)} MP）`]);
   if(vmeta.dur)rows.push(['長度',fmtDur(vmeta.dur)]);
   if(x.preview)rows.push(['備註','HEIC 照片：預覽使用轉好的 JPG，下載的是原檔']);
   p.innerHTML='<h4>ℹ️ 檔案資訊</h4>'+rows.map(([a,b])=>`<div class="ir"><span class="ik">${a}</span><span class="iv">${esc(b)}</span></div>`).join('');
