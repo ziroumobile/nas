@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="theme-color" content="#2563eb">
+<title>檔案分享</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--fg:#1c1e21;--mut:#6b7280;--ac:#2563eb;--bd:#e5e7eb}
+@media(prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--fg:#e8eaed;--mut:#9aa0a6;--ac:#60a5fa;--bd:#2a2e37}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px system-ui,"Noto Sans TC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:16px;padding-top:calc(16px + env(safe-area-inset-top))}
+h1{font-size:20px;margin:0 0 4px}
+button,.btn{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer;text-decoration:none;display:inline-block}
+button.ghost{background:transparent;color:var(--ac);border:1px solid var(--bd)}
+button.on{background:var(--ac);color:#fff}
+button:disabled{opacity:.5;cursor:default}
+input[type=password]{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg);font:inherit;margin-bottom:10px}
+select{padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px}
+#gate{max-width:360px;margin:12vh auto}
+#err{color:#dc2626;margin:0 0 8px;min-height:1.2em}
+.sub{color:var(--mut);margin:0 0 14px;font-size:13px}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.seg{display:inline-flex}.seg button{border-radius:0;border-left-width:0}.seg button:first-child{border-radius:8px 0 0 8px;border-left-width:1px}.seg button:last-child{border-radius:0 8px 8px 0}
+.note{background:rgba(37,99,235,.1);color:var(--ac);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:13px}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--bd)}
+.row:first-child{border-top:0}
+.ico{width:44px;height:44px;border-radius:8px;background:var(--bg);object-fit:cover;flex:none;display:grid;place-items:center;font-size:20px}
+.info{flex:1;min-width:0}.info a{color:var(--fg);text-decoration:none;font-weight:500;word-break:break-all}
+.info small{display:block;color:var(--mut)}
+.nine{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.nine.small{grid-template-columns:repeat(5,1fr);gap:2px}
+@media(min-width:700px){.nine{grid-template-columns:repeat(5,1fr)}.nine.small{grid-template-columns:repeat(8,1fr)}}
+.cell{position:relative;aspect-ratio:1;overflow:hidden;border-radius:4px;background:var(--bd)}
+.cell .thumbA{position:absolute;inset:0}
+.cell .thumbA img,.cell .ico{width:100%;height:100%;border-radius:0;object-fit:cover;font-size:30px}
+.small .cell .ico{font-size:20px}
+.cell .cn{position:absolute;left:0;right:0;bottom:0;padding:14px 5px 3px;background:linear-gradient(transparent,rgba(0,0,0,.7));color:#fff;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+.small .cell .cn{display:none}
+.cell .chk{position:absolute;top:4px;left:4px;z-index:2}
+.small .cell .chk{width:16px;height:16px;font-size:11px;border-width:1.5px;top:2px;left:2px}
+.cell.sel{outline:3px solid var(--ac);outline-offset:-3px}
+.thumbA{position:relative;display:block;flex:none}
+.play{position:absolute;right:3px;bottom:3px;background:rgba(0,0,0,.6);color:#fff;border-radius:4px;font-size:10px;padding:1px 4px;pointer-events:none}
+.selecting .cell,.selecting .row{cursor:pointer}
+.chk{display:none;flex:none;width:22px;height:22px;border:2px solid var(--mut);border-radius:6px;place-items:center;font-size:14px;line-height:1;color:#fff;background:var(--card)}
+.selecting .chk{display:grid}
+.sel>.chk{background:var(--ac);border-color:var(--ac)}.sel>.chk::after{content:"✓"}
+.row.sel{background:rgba(37,99,235,.12)}
+#selbar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;z-index:10;box-shadow:0 -2px 10px rgba(0,0,0,.15)}
+#selbar[hidden]{display:none}
+body.selecting .wrap{padding-bottom:100px}
+#viewer{position:fixed;inset:0;background:#000;z-index:30;display:flex;flex-direction:column}
+#viewer[hidden]{display:none}
+.vtop{display:flex;gap:8px;align-items:center;padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top));color:#fff}
+#vtitle{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#vpos{color:#9ca3af;font-size:13px;white-space:nowrap}
+.vtop .btn{padding:6px 12px}
+#vstage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 8px calc(8px + env(safe-area-inset-bottom));position:relative}
+#vstage img.vimg{max-width:100%;max-height:100%;object-fit:contain}
+#vstage video{max-width:100%;max-height:100%;background:#000;border-radius:6px}
+#vstage audio{width:min(600px,100%)}
+#vstage iframe{width:100%;height:100%;border:0;background:#fff;border-radius:6px}
+#vstage pre{width:100%;height:100%;margin:0;padding:12px;overflow:auto;white-space:pre-wrap;word-break:break-word;color:#e5e7eb;background:#111827;border-radius:6px;text-align:left;font:13px/1.5 ui-monospace,Consolas,monospace}
+.vmsg{color:#d1d5db;text-align:center;padding:20px;line-height:1.7}.vmsg .big{font-size:56px}.vmsg.warn{color:#fbbf24}
+.vnav{position:fixed;top:50%;transform:translateY(-50%);width:44px;height:64px;border-radius:10px;background:rgba(255,255,255,.14);color:#fff;font-size:28px;padding:0;z-index:31}
+#vprev{left:6px}#vnext{right:6px}
+</style></head><body><div class="wrap">
+<div id="gate" class="card">
+  <h1>🔒 檔案分享</h1>
+  <p class="sub">這份分享受密碼保護，請輸入分享者提供的密碼。</p>
+  <p id="err"></p>
+  <input id="pw" type="password" placeholder="分享密碼" autocomplete="off" autocapitalize="off" spellcheck="false">
+  <button id="go" style="width:100%">開啟</button>
+</div>
+<div id="app" hidden>
+  <h1 id="title">📁 分享</h1>
+  <p class="sub" id="sub"></p>
+  <div class="note">🔒 唯讀分享：你只能檢視和下載這裡的檔案。</div>
+  <div class="bar">
+    <span class="seg"><button class="ghost" id="vlist">☰ 列表</button><button class="ghost" id="vnine">▩ 中圖示</button><button class="ghost" id="vsmall">▪ 小圖示</button></span>
+    排序：<select id="sort"><option value="name">名稱</option><option value="date">更新日期</option><option value="size">大小</option></select>
+    <button class="ghost" id="order"></button>
+    <button class="ghost" id="selmode">☑ 選取</button>
+  </div>
+  <div class="card" id="list"></div>
+</div>
+<div id="viewer" hidden>
+  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div>
+  <div id="vstage"></div>
+  <button class="vnav" id="vprev" aria-label="上一個">‹</button><button class="vnav" id="vnext" aria-label="下一個">›</button>
+</div>
+<div id="selbar" hidden>
+  <b id="selcount">已選 0 個</b>
+  <button class="ghost" id="selall">全選</button>
+  <button class="ghost" id="selnone">清除選取</button>
+  <button id="seldl">下載選取</button>
+  <button class="ghost" id="selexit">完成</button>
+</div>
+<script>
+// Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
+const $=s=>document.querySelector(s);
+const id=location.hash.slice(1);let API='',files=[];
+const fmt=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':n<1073741824?(n/1048576).toFixed(1)+' MB':(n/1073741824).toFixed(2)+' GB';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function findApi(){try{const r=await fetch('url.json?t='+Date.now());API=(await r.json()).url.replace(/\/$/,'')}catch{API=''}}
+async function unlock(){
+  const pw=$('#pw').value;if(!pw)return;
+  $('#go').disabled=true;$('#err').textContent='';
+  try{
+    if(!API)await findApi();
+    if(!API)throw 0;
+    const r=await fetch(API+'/api/share/open',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,password:pw})});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok){$('#err').textContent=j.error||'無法開啟';$('#pw').value='';$('#pw').focus();return}
+    $('#pw').value='';files=j.files;
+    $('#gate').hidden=true;$('#app').hidden=false;
+    $('#title').textContent=j.type==='folder'?'📁 '+j.title:`📄 分享的檔案（${files.length} 個）`;
+    $('#sub').textContent=files.length+' 個檔案'+(j.expires?' · 分享有效至 '+new Date(j.expires).toLocaleString():'');
+    document.title=j.type==='folder'?j.title+' - 檔案分享':'檔案分享';
+    render();
+  }catch{$('#err').textContent='連不到主機，可能是電腦沒開機，請稍後再試'}
+  finally{$('#go').disabled=false}
+}
+if(!/^[A-Za-z0-9_-]{22}$/.test(id)){$('#gate').innerHTML='<h1>🔒 檔案分享</h1><p class="sub">連結不完整或已失效。</p>'}
+else{$('#go').onclick=unlock;$('#pw').onkeydown=e=>{if(e.key==='Enter')unlock()};$('#pw').focus()}
+
+let view='nine',sortBy='date',asc=false,selMode=false;const selected=new Set();
+const cmpName=(a,b)=>a.name.localeCompare(b.name,'zh-Hant',{numeric:true});
+const CMP={name:cmpName,date:(a,b)=>a.mtime-b.mtime,size:(a,b)=>a.size-b.size};
+const sorted=()=>[...files].sort((a,b)=>(asc?1:-1)*CMP[sortBy](a,b)||cmpName(a,b));
+function syncToolbar(){for(const[v,i]of[['list','#vlist'],['nine','#vnine'],['small','#vsmall']])$(i).classList.toggle('on',view===v);$('#sort').value=sortBy;$('#order').textContent=asc?'↑ 由小到大':'↓ 由大到小';$('#selmode').classList.toggle('on',selMode)}
+const ICON={image:'🖼',video:'🎬',file:'📄'};
+function thumbErr(img){const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.k==='video'?'🎬':'🖼';img.replaceWith(d)}
+function media(x,i){
+  const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-k="${x.kind}" src="${API+x.thumb}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
+  return `<a class="thumbA" href="${API+x.url}" data-open="${i}">${inner}${x.kind==='video'?'<span class="play">▶</span>':''}</a>`;
+}
+function render(){
+  syncToolbar();document.body.classList.toggle('selecting',selMode);
+  const list=sorted();vlist=list;
+  const items=list.map((x,i)=>{
+    const sel=selected.has(x.url)?' sel':'';
+    if(view!=='list')return `<div class="cell${sel}" data-i="${i}" title="${esc(x.name)}"><span class="chk"></span>${media(x,i)}<div class="cn">${esc(x.name)}</div></div>`;
+    return `<div class="row${sel}" data-i="${i}"><span class="chk"></span>${media(x,i)}<div class="info"><a href="${API+x.url}" data-open="${i}">${esc(x.name)}</a><small>${fmt(x.size)} · 更新 ${new Date(x.mtime).toLocaleDateString()}</small></div><a class="btn" href="${API+x.url}&dl=1" style="padding:4px 10px">下載</a></div>`}).join('');
+  $('#list').innerHTML=view==='list'?items:`<div class="nine${view==='small'?' small':''}">${items}</div>`;
+  $('#selbar').hidden=!selMode;$('#selcount').textContent='已選 '+selected.size+' 個';$('#seldl').disabled=$('#selnone').disabled=!selected.size;
+}
+const setView=v=>{view=v;render()};
+$('#vlist').onclick=()=>setView('list');$('#vnine').onclick=()=>setView('nine');$('#vsmall').onclick=()=>setView('small');
+$('#sort').onchange=e=>{sortBy=e.target.value;asc=sortBy==='name';render()};$('#order').onclick=()=>{asc=!asc;render()};
+$('#selmode').onclick=()=>{selMode=!selMode;if(!selMode)selected.clear();render()};
+$('#selexit').onclick=()=>{selMode=false;selected.clear();render()};
+$('#selall').onclick=()=>{files.forEach(x=>selected.add(x.url));render()};$('#selnone').onclick=()=>{selected.clear();render()};
+$('#seldl').onclick=async()=>{ // browsers may ask to allow multiple downloads the first time
+  for(const x of files)if(selected.has(x.url)){const a=document.createElement('a');a.href=API+x.url+'&dl=1';document.body.appendChild(a);a.click();a.remove();await new Promise(r=>setTimeout(r,700))}
+};
+$('#list').onclick=e=>{
+  if(selMode&&!e.target.closest('a.btn')){const it=e.target.closest('[data-i]');if(it){e.preventDefault();const x=vlist[+it.dataset.i];selected.has(x.url)?selected.delete(x.url):selected.add(x.url);render()}return}
+  const a=e.target.closest('a[data-open]');
+  if(a&&!(e.ctrlKey||e.metaKey||e.shiftKey)){e.preventDefault();openViewer(+a.dataset.open)}
+};
+
+// ---- in-page preview ----
+let vlist=[],vi=0,vseq=0,vOpen=false;
+const extOf=n=>(n.match(/\.([^.]+)$/)||[])[1]?.toLowerCase()||'';
+function openViewer(i){vi=i;if(!vOpen){vOpen=true;history.pushState({viewer:1},'')}$('#viewer').hidden=false;document.body.style.overflow='hidden';showViewer()}
+function stopMedia(){for(const m of $('#vstage').querySelectorAll('video,audio')){m.pause();m.removeAttribute('src');m.load()}}
+function showViewer(){
+  const x=vlist[vi],seq=++vseq,st=$('#vstage'),u=API+x.url,ext=extOf(x.name);
+  stopMedia();st.innerHTML='';
+  $('#vtitle').textContent=x.name;$('#vpos').textContent=`${vi+1} / ${vlist.length}`;$('#vdl').href=u+'&dl=1';
+  $('#vprev').hidden=$('#vnext').hidden=vlist.length<2;
+  const msg=(html,cls)=>{const d=document.createElement('div');d.className='vmsg '+(cls||'');d.innerHTML=html;st.append(d)};
+  if(x.kind==='image'){
+    const img=document.createElement('img');img.className='vimg';img.alt=x.name;if(x.thumb)img.src=API+x.thumb;st.append(img);
+    const full=new Image();full.onload=()=>{if(seq===vseq)img.src=full.src};full.src=u;
+  }else if(x.kind==='video'){
+    const v=document.createElement('video');v.controls=true;v.playsInline=true;v.preload='metadata';if(x.thumb)v.poster=API+x.thumb;
+    v.addEventListener('error',()=>{if(seq===vseq&&v.getAttribute('src'))msg('這個瀏覽器無法播放此影片格式，請按右上角「下載」。','warn')});
+    v.src=u;st.append(v);v.play().catch(()=>{});
+  }else if(ext==='mp3'||ext==='wav'){
+    msg('<div class="big">🎵</div>'+esc(x.name));const a=document.createElement('audio');a.controls=true;a.src=u;st.append(a);a.play().catch(()=>{});
+  }else if(ext==='pdf'){const fr=document.createElement('iframe');fr.src=u;st.append(fr)}
+  else if(ext==='txt'){
+    msg('載入中…');
+    fetch(u).then(r=>r.text()).then(t=>{if(seq!==vseq)return;st.innerHTML='';const p=document.createElement('pre');p.textContent=t.length>300000?t.slice(0,300000)+'\n\n…（內容過長，只顯示前 300KB）':t;st.append(p)}).catch(()=>{if(seq===vseq){st.innerHTML='';msg('無法載入文字內容','warn')}});
+  }else msg(`<div class="big">📄</div>${esc(x.name)}<br>${fmt(x.size)}<br>此檔案類型無法預覽，請按右上角「下載」。`);
+}
+function closeViewer(fromPop){if(!vOpen)return;vOpen=false;vseq++;stopMedia();$('#vstage').innerHTML='';$('#viewer').hidden=true;document.body.style.overflow='';if(!fromPop&&history.state?.viewer)history.back()}
+const vgo=d=>{if(vlist.length<2)return;vi=(vi+d+vlist.length)%vlist.length;showViewer()};
+$('#vclose').onclick=()=>closeViewer();$('#vprev').onclick=()=>vgo(-1);$('#vnext').onclick=()=>vgo(1);
+$('#vstage').onclick=e=>{if(e.target.id==='vstage')closeViewer()};
+addEventListener('popstate',()=>closeViewer(true));
+document.addEventListener('keydown',e=>{if(!vOpen)return;if(e.key==='Escape')closeViewer();else if(e.key==='ArrowLeft')vgo(-1);else if(e.key==='ArrowRight')vgo(1)});
+let tx=0,ty=0;
+$('#vstage').addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+$('#vstage').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.8&&!e.target.closest('video,audio,iframe,pre'))vgo(dx<0?1:-1)},{passive:true});
+</script></div></body></html>
