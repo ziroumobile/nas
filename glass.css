@@ -32,34 +32,34 @@ html.ios{--seg-fg:#fff;--seg-blue:#0a84ff}
 }
 
 /* ---- the controls that get the glass look (everything listed here is OUTSIDE the folder cards) ---- */
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn){
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button,a.btn){
   position:relative;border-radius:999px;transition:transform .32s cubic-bezier(.2,.9,.3,1.35),background-color .2s,box-shadow .2s;
 }
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn):not(.seg button):active{transform:none;background-color:rgba(120,120,128,.5)!important}   /* touched: greys for a moment, like the iOS menu button */
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button,a.btn):not(.seg button):active{transform:none;background-color:rgba(120,120,128,.5)!important}   /* touched: greys for a moment, like the iOS menu button */
 html.ios button.ghost:not(.del):not(.danger),html.ios a.btn.ghost,html.ios .bar select{color:var(--seg-fg)!important}
 html.ios button.del,html.ios button.danger{color:#ff453a!important}
 html.ios button.danger{color:#fff!important}   /* only the view switch uses blue; other buttons stay white */
 /* clear glass: outlined (ghost) and delete buttons */
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button.ghost,button.del){
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button.ghost,button.del){
   background:var(--g-fill);border:1px solid transparent;
   -webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);
   box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),inset 0 -1px 1.5px var(--g-lo),var(--g-shadow)}
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button.ghost,button.del):active{background:var(--g-fill-press)}
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button.ghost,button.del):active{background:var(--g-fill-press)}
 /* the lit rim: thin gradient ring, bright where the "light" hits (top-left and bottom-right) */
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button.ghost,button.del,button:not(.ghost):not(.del):not(.danger),button.danger,a.btn)::before{
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button.ghost,button.del,button:not(.ghost):not(.del):not(.danger),button.danger,a.btn)::before{
   content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--g-rim);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 /* soft sheen across the upper-left of every glass control */
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button.ghost,button.del,button:not(.ghost):not(.del):not(.danger),button.danger,a.btn)::after{
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button.ghost,button.del,button:not(.ghost):not(.del):not(.danger),button.danger,a.btn)::after{
   content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:var(--g-sheen);opacity:.9}
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) button.del{color:#ff453a}
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) button.del{color:#ff453a}
 /* primary / active buttons: tinted glass (same rim and sheen, accent colour showing through) */
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button:not(.ghost):not(.del):not(.danger),a.btn),
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button:not(.ghost):not(.del):not(.danger),a.btn),
 html.ios .bar button.on.ghost,html.ios #selmode.on{
   background:linear-gradient(180deg,rgba(10,132,255,.78),rgba(10,132,255,.52));color:#fff;border:1px solid transparent;
   -webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);
   box-shadow:inset 0 0 14px rgba(255,255,255,.16),inset 0 1px 1.5px rgba(255,255,255,.5),0 8px 20px rgba(10,132,255,.30)}
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) button.danger{
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) button.danger{
   background:linear-gradient(180deg,rgba(255,69,58,.8),rgba(255,69,58,.55));color:#fff;border:1px solid transparent;
   box-shadow:inset 0 0 14px rgba(255,255,255,.16),inset 0 1px 1.5px rgba(255,255,255,.5),0 8px 20px rgba(255,69,58,.3)}
 /* drop-down menus in the toolbar */
@@ -101,12 +101,12 @@ html.ios .seg-gl.on{display:block}
 
 /* fallbacks: no backdrop-filter support, or the user asked for less transparency -> solid */
 @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-  html.ios .seg,html.ios .bar select,html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button.ghost,button.del){background:var(--card)}
+  html.ios .seg,html.ios .bar select,html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button.ghost,button.del){background:var(--card)}
   html.ios .vnav{background:rgba(31,41,55,.92)}
 }
 @media(prefers-reduced-transparency:reduce){
   html.ios *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-  html.ios .seg,html.ios .bar select,html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button.ghost,button.del){background:var(--card)}
+  html.ios .seg,html.ios .bar select,html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button.ghost,button.del){background:var(--card)}
   html.ios .vnav{background:rgba(31,41,55,.95)}
 }
 
@@ -165,3 +165,8 @@ html.ios .srch input{-webkit-appearance:none;appearance:none;border-radius:999px
 html.ios body::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top);background:#000;z-index:60;pointer-events:none}
 html.ios .wrap{padding-top:calc(env(safe-area-inset-top) + 12px)}
 html.ios #app>header{margin-bottom:6px}
+
+/* gear: plain icon like the timetable's, not a glass button */
+html.ios #gear{background:none!important;box-shadow:none!important;border:0!important;color:var(--fg)!important;padding:4px 8px!important;font-size:22px}
+html.ios #gear::before,html.ios #gear::after{display:none!important}
+html.ios #setpanel{background:rgba(0,0,0,.6)}

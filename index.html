@@ -120,7 +120,7 @@ body.selecting .wrap{padding-bottom:100px}
 .vnav{position:fixed;top:50%;transform:translateY(-50%);width:44px;height:64px;border-radius:10px;background:rgba(255,255,255,.14);color:#fff;font-size:28px;padding:0;z-index:51}
 #vprev{left:6px}#vnext{right:6px}
 /* dialogs (sharing) */
-#modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+#modal,#setpanel{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
 #modal[hidden]{display:none}
 #modal.top{z-index:60}
 .mbox{width:min(460px,100%);max-height:100%;overflow:auto}
@@ -135,6 +135,9 @@ body.selecting .wrap{padding-bottom:100px}
 .sc{position:relative;display:block;width:64px;height:64px;border-radius:6px;overflow:hidden;background:var(--bd);flex:none}
 .sc img,.sc .ico{width:100%;height:100%;object-fit:cover;border-radius:0;font-size:22px}
 .srow b{word-break:break-all}.srow small{display:block;color:var(--mut);margin:2px 0 6px}
+#setpanel[hidden]{display:none}#setbody{display:flex;flex-direction:column;align-items:stretch;gap:8px}#setbody button{text-align:left}
+#gear{background:none;border:0;font-size:22px;line-height:1;padding:4px 8px;border-radius:8px;color:var(--fg)}#gear:hover{background:var(--card)}
+@media(max-width:699px){.bar button,.bar select{padding:6px 12px;font-size:14px}}
 </style></head><body><div class="wrap">
 <div id="login" class="card" hidden>
   <h1 style="margin-bottom:14px">登入 NAS</h1>
@@ -144,12 +147,12 @@ body.selecting .wrap{padding-bottom:100px}
   <button id="go" style="width:100%">登入</button>
 </div>
 <div id="app" hidden>
-  <header><h1>📁 我的 NAS</h1><div><span id="who" style="color:var(--mut);margin-right:8px"></span><button class="ghost" id="shares" hidden style="margin-right:6px">🔗 已分享連結</button><button class="ghost" id="out">登出</button></div></header>
+  <header><h1>📁 我的 NAS</h1><button id="gear" class="icon" title="設定" aria-label="設定">⚙</button></header>
+  <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button><button class="ghost" id="out">登出</button></div><div class="mbtns"><button class="ghost" id="setclose">完成</button></div></div></div>
   <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
   <div class="bar">
     <span>此裝置：<b id="dev"></b></span><button class="ghost" id="rename">改名</button>
     <button class="ghost" id="newf">＋ 新增資料夾</button>
-    <button class="ghost" id="setpw" hidden>🔑 編輯密碼</button>
     <button class="ghost" id="install" hidden>📲 安裝成 App</button>
   </div>
   <div class="bar">上傳到：<select id="target"></select></div>
@@ -230,7 +233,7 @@ let target=device;
 function drawTarget(){
   const names=[...new Set([device,...folders.map(f=>f.name)])];
   if(!names.includes(target))target=device;
-  $('#target').innerHTML=names.map(n=>`<option value="${esc(n)}"${n===target?' selected':''}>${esc(n)}${n===device?'（此裝置）':''}</option>`).join('');
+  $('#target').innerHTML=names.map(n=>`<option value="${esc(n)}"${n===target?' selected':''}>${esc(n)}</option>`).join('');
 }
 $('#target').onchange=e=>target=e.target.value;
 // view mode and sorting, remembered per browser ('grid' was the removed large-icon view -> medium)
@@ -313,15 +316,18 @@ async function refresh(){
   render(false);updateSelUI();
 }
 syncToolbar();
-// iPhone / iPad layout: title / account + log out / shares, new folder / sort / view switch / upload target, select / search, password
-if(document.documentElement.classList.contains('ios'))try{
-  const hdr=$('#app>header'),bar1=$('#newf').parentElement,mk=()=>{const d=document.createElement('div');d.className='bar';return d};
-  const who=$('#who'),rowA=mk();rowA.append(who,$('#out'));who.style.marginRight='0';hdr.after(rowA);
-  bar1.insertBefore($('#shares'),$('#newf'));$('#shares').style.marginRight='0';$('#dev').parentElement.style.display='none';$('#rename').style.display='none';
+// settings panel (gear, top right)
+{const p=$('#setpanel'),close=()=>{p.hidden=true};
+  $('#gear').onclick=()=>{p.hidden=!p.hidden};$('#setclose').onclick=close;
+  p.addEventListener('click',e=>{if(e.target===p||(e.target.closest('button')&&e.target.id!=='out'))close()},true)}
+// phone layout (iPhone / iPad / Android): title + gear / new folder / sort / view switch / upload target, select / search
+if(document.documentElement.classList.contains('ios')||matchMedia('(max-width:699px)').matches)try{
+  const bar1=$('#newf').parentElement,mk=()=>{const d=document.createElement('div');d.className='bar';return d};
+  $('#dev').parentElement.style.display='none';$('#rename').style.display='none';
   const up=$('#target').parentElement,w=document.createElement('span');w.append('上傳到：',$('#target'));up.remove();
-  const sb=$('.seg').parentElement,segBar=mk();segBar.append($('.seg'));sb.after(segBar);
+  const sb=$('.seg').parentElement,segBar=mk();segBar.append('顯示方式：',$('.seg'));sb.after(segBar);
   const last=mk();last.append(w,$('#selmode'));segBar.after(last);
-  const r7=mk();r7.append($('#srch'),$('#setpw'));last.after(r7);
+  const r7=mk();r7.append($('#srch'));last.after(r7);
 }catch(e){console.error('layout',e)}
 // desktop layout (phones / iOS keep the original): row 1 = upload target + new folder + ..., row 2 = sort / select / search, row 3 = view switch; the device name + rename are hidden
 if(!document.documentElement.classList.contains('ios')&&matchMedia('(min-width:700px)').matches){
