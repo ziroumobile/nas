@@ -175,7 +175,7 @@ void main(){
   function trackHot(s, cx) { const k = s.nearest(cx); if (k !== s.hot) setHot(s, k); }
   function step(s, dt) {
     const L = s.lens; let moving = false;
-    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 520, 38], ['w', 'vw', 'tw', 520, 38], ['grow', 'vg', 'tg', 380, 30], ['mag', 'vm', 'tm', 380, 30]]) {
+    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 520, 38], ['w', 'vw', 'tw', 520, 38], ['grow', 'vg', 'tg', 900, 48], ['mag', 'vm', 'tm', 900, 48]]) {
       [L[k], L[v]] = spring(L[k], L[v], L[t], dt, kk, cc);
       if (Math.abs(L[t] - L[k]) > (k === 'mag' ? 0.002 : 0.25) || Math.abs(L[v]) > (k === 'mag' ? 0.02 : 4)) moving = true;
     }
@@ -186,7 +186,7 @@ void main(){
     const frame = now => {
       const dt = Math.min(0.034, Math.max(0.001, (now - last) / 1000)); last = now;
       const moving = step(s, dt); trackHot(s, s.lens.cx); draw(s);
-      if (moving || s.drag) raf(frame); else { s.running = false; finishLens(s); }
+      if (moving || s.drag || s.hold) raf(frame); else { s.running = false; finishLens(s); }
     };
     raf(frame);
   }
@@ -210,7 +210,7 @@ void main(){
       return { cx: fx, w: g[i].w + (g[i + 1].w - g[i].w) * t };      // between two options the lens stretches to blend their widths
     };
     seg.addEventListener('pointerdown', e => {
-      if (e.button > 0) return; s.drag = { id: e.pointerId, x0: e.clientX, started: false };
+      if (e.button > 0) return; s.drag = { id: e.pointerId, x0: e.clientX, started: false, t0: Date.now() };
       if (!s.gl) return;
       s.drag.started = true;   // the lens swells the moment it is touched, no drag needed
       if (!s.active) startLens(s);
@@ -234,12 +234,16 @@ void main(){
       if (!d.started) return;                                        // a plain tap: the button's own click does the work
       const rect = seg.getBoundingClientRect();
       const k = e && e.type === 'pointerup' ? nearest(e.clientX - rect.left - seg.clientLeft) : selected(s);
+      const wait = s.gl && s.lens ? Math.max(0, 170 - (Date.now() - d.t0)) : 0;   // a quick tap still shows the lens swelling before it lands
+      s.suppressClick = true; setTimeout(() => { s.suppressClick = false; }, wait + 80);
+      if (wait) { const t = e ? target(e) : null; if (t && s.lens) { s.lens.tx = t.cx; s.lens.tw = t.w; } s.hold = true; setTimeout(() => { s.hold = false; release(k); }, wait); } else release(k);
+    };
+    const release = k => {
       const changed = k !== selected(s), g = geom(s)[k];
       if (s.gl && s.lens) { s.lens.tx = g.l + g.w / 2; s.lens.tw = g.w; s.lens.tg = 0; s.lens.tm = 1; loop(s); }   // spring into the slot, then finishLens
       else { s.active = false; s.pill.classList.remove('noanim'); seg.classList.remove('dragging'); setHot(s, -1, true); }
       if (changed) s.btns[k].click();                                // choose through the normal handler
       if (!s.lens) placePill(s, selected(s), true);
-      s.suppressClick = true; setTimeout(() => { s.suppressClick = false; }, 60); // the browser's own trailing click after a drag must not toggle anything
     };
     seg.addEventListener('pointerup', end); seg.addEventListener('pointercancel', end);
     seg.addEventListener('click', e => { if (s.suppressClick) { e.stopPropagation(); e.preventDefault(); } }, true);
@@ -274,7 +278,7 @@ void main(){
       document.addEventListener('pointerup', off, true); document.addEventListener('pointercancel', off, true);
     }, true);
     const stop = e => { const t = e.target.closest && e.target.closest('select'); if (t) { e.preventDefault(); if (e.type === 'click') { e.stopPropagation(); gm ? closeMenu() : openMenu(t); } } };
-    ['pointerdown', 'mousedown', 'touchstart', 'click'].forEach(ev => document.addEventListener(ev, stop, { capture: true, passive: false }));
+    ['mousedown', 'click'].forEach(ev => document.addEventListener(ev, stop, { capture: true, passive: false }));   // (not touchstart/pointerdown: cancelling those would swallow the click)
     document.addEventListener('pointerdown', e => { if (gm && !e.target.closest('.gmenu') && !e.target.closest('select')) closeMenu(); }, true);
     addEventListener('scroll', closeMenu, true);
   }
