@@ -70,10 +70,12 @@ body.selecting .wrap{padding-bottom:100px}
 </style></head><body><div class="wrap">
 <div id="gate" class="card">
   <h1>🔒 檔案分享</h1>
-  <p class="sub">這份分享受密碼保護，請輸入分享者提供的密碼。</p>
+  <p class="sub" id="gsub">載入中…</p>
   <p id="err"></p>
-  <input id="pw" type="password" placeholder="分享密碼" autocomplete="off" autocapitalize="off" spellcheck="false">
-  <button id="go" style="width:100%">開啟</button>
+  <div id="form" hidden>
+    <input id="pw" type="password" placeholder="分享密碼" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <button id="go" style="width:100%">開啟</button>
+  </div>
 </div>
 <div id="app" hidden>
   <h1 id="title">📁 分享</h1>
@@ -106,26 +108,29 @@ const id=location.hash.slice(1);let API='',files=[];
 const fmt=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':n<1073741824?(n/1048576).toFixed(1)+' MB':(n/1073741824).toFixed(2)+' GB';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function findApi(){try{const r=await fetch('url.json?t='+Date.now());API=(await r.json()).url.replace(/\/$/,'')}catch{API=''}}
-async function unlock(){
-  const pw=$('#pw').value;if(!pw)return;
+// open(undefined) just asks whether a password is needed (shares made without one open straight away); open(pw) tries the password
+async function openShare(pw){
   $('#go').disabled=true;$('#err').textContent='';
   try{
     if(!API)await findApi();
     if(!API)throw 0;
-    const r=await fetch(API+'/api/share/open',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,password:pw})});
+    const r=await fetch(API+'/api/share/open',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pw===undefined?{id}:{id,password:pw})});
     const j=await r.json().catch(()=>({}));
-    if(!r.ok){$('#err').textContent=j.error||'無法開啟';$('#pw').value='';$('#pw').focus();return}
+    if(r.status===401&&j.needsPassword){$('#gsub').textContent='這份分享受密碼保護，請輸入分享者提供的密碼。';$('#form').hidden=false;$('#pw').focus();return}
+    if(!r.ok){$('#gsub').textContent=pw===undefined?'':'這份分享受密碼保護，請輸入分享者提供的密碼。';if(pw===undefined)$('#form').hidden=true;$('#err').textContent=j.error||'無法開啟';$('#pw').value='';$('#pw').focus();return}
     $('#pw').value='';files=j.files;
     $('#gate').hidden=true;$('#app').hidden=false;
     $('#title').textContent=j.type==='folder'?'📁 '+j.title:`📄 分享的檔案（${files.length} 個）`;
     $('#sub').textContent=files.length+' 個檔案'+(j.expires?' · 分享有效至 '+new Date(j.expires).toLocaleString():'');
     document.title=j.type==='folder'?j.title+' - 檔案分享':'檔案分享';
     render();
-  }catch{$('#err').textContent='連不到主機，可能是電腦沒開機，請稍後再試'}
+  }catch{$('#gsub').textContent='';$('#err').textContent='連不到主機，可能是電腦沒開機，請稍後再試'}
   finally{$('#go').disabled=false}
 }
+addEventListener('hashchange',()=>location.reload()); // a different share link pasted into this tab must start fresh, never keep showing the previous share
+const submitPw=()=>{const pw=$('#pw').value;if(pw)openShare(pw)};
 if(!/^[A-Za-z0-9_-]{22}$/.test(id)){$('#gate').innerHTML='<h1>🔒 檔案分享</h1><p class="sub">連結不完整或已失效。</p>'}
-else{$('#go').onclick=unlock;$('#pw').onkeydown=e=>{if(e.key==='Enter')unlock()};$('#pw').focus()}
+else{$('#go').onclick=submitPw;$('#pw').onkeydown=e=>{if(e.key==='Enter')submitPw()};openShare()}
 
 let view='nine',sortBy='date',asc=false,selMode=false;const selected=new Set();
 const cmpName=(a,b)=>a.name.localeCompare(b.name,'zh-Hant',{numeric:true});
