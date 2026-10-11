@@ -180,7 +180,7 @@ html:not(.ios) .seg button.ghost:hover:not(.on){background:rgba(255,255,255,.08)
 html:not(.ios) button:not(#dock button):not(.seg button):not(.vnav):not(.grip):not(.icon){border-radius:999px;border:0;color:var(--seg-fg,#fff);background:rgba(255,255,255,.06);
   -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 1.5px rgba(255,255,255,.2),0 6px 18px rgba(0,0,0,.35);transition:background .15s}
-html:not(.ios) button.del:not(#dock button),html:not(.ios) button.danger:not(#dock button){color:#f87171}
+html:not(.ios) button.del:not(#dock button),html:not(.ios) button.danger:not(#dock button){color:#f87171!important}
 html:not(.ios) button:not(#dock button):not(.seg button):not(.vnav):not(.grip):not(.icon):hover{background:rgba(255,255,255,.1)}
 html:not(.ios) button:not(#dock button):not(.seg button):not(.vnav):not(.grip):not(.icon):active{background:rgba(0,0,0,.35)}
 html:not(.ios) button:disabled{opacity:.5}
@@ -197,3 +197,14 @@ html.ios #dock{bottom:max(4px,calc(env(safe-area-inset-bottom) - 16px));width:ca
 html.ios #dock button{flex:1 1 0;width:auto}
 html.ios #dock button.txt{flex:1.5 1 0}
 @media(max-width:420px){html.ios #dock button{width:auto}}
+
+/* delete-folder and log-out always red; settings window: calmer glass, centred text */
+html.ios button.del,html.ios #setpanel #out,#setpanel #out{color:#ff453a!important}
+html:not(.ios) #setpanel #out{color:#f87171!important}
+#setpanel .mbox h3,#setpanel #who{text-align:center}
+#setbody{align-items:stretch}#setbody button{text-align:center;justify-content:center}
+#setpanel button{background:rgba(255,255,255,.025)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 4px 12px rgba(0,0,0,.25)!important}
+html.ios #setpanel button{background:rgba(255,255,255,.025)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 4px 12px rgba(0,0,0,.25)!important}
+/* view switch: three equal thirds, each label centred in its own third */
+.seg{width:min(100%,340px)}
+.seg button{flex:1 1 0;text-align:center;white-space:nowrap;padding-left:6px!important;padding-right:6px!important}

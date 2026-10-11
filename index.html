@@ -241,12 +241,17 @@ $('#out').onclick=async()=>{await sb.auth.signOut();location.reload()};
 $('#rename').onclick=()=>{const n=prompt('這台裝置的名稱（上傳預設會存到同名資料夾）',device);
   if(n&&n.trim()){device=n.trim();ls.set('nas_device',device);$('#dev').textContent=device;target=device;drawTarget()}};
 let target=device;
+function fitSel(sel){if(!sel||!sel.options.length)return;const sp=fitSel.sp||(fitSel.sp=Object.assign(document.createElement('span'),{style:'position:absolute;visibility:hidden;white-space:nowrap;left:-9999px'}));
+  const cs=getComputedStyle(sel);sp.style.font=cs.font;document.body.appendChild(sp);sp.textContent=sel.options[sel.selectedIndex]?.text||'';
+  sel.style.width=Math.ceil(sp.getBoundingClientRect().width+parseFloat(cs.paddingLeft)+parseFloat(cs.paddingRight)+30)+'px';sp.remove()}
 function drawTarget(){
   const names=[...new Set([device,...folders.map(f=>f.name)])];
   if(!names.includes(target))target=device;
-  $('#target').innerHTML=names.map(n=>`<option value="${esc(n)}"${n===target?' selected':''}>${esc(n)}</option>`).join('');
+  $('#target').innerHTML=names.map(n=>`<option value="${esc(n)}"${n===target?' selected':''}>${esc(n)}</option>`).join('');fitSel($('#target'));
 }
 $('#target').onchange=e=>target=e.target.value;
+document.addEventListener('change',e=>{if(e.target.matches('.bar select'))fitSel(e.target)});
+addEventListener('load',()=>document.querySelectorAll('.bar select').forEach(fitSel));
 // view mode and sorting, remembered per browser ('grid' was the removed large-icon view -> medium)
 const savedView=ls.get('nas_view');
 let view=['list','nine','small'].includes(savedView)?savedView:'nine',sortBy=['name','date','size'].includes(ls.get('nas_sort'))?ls.get('nas_sort'):'date',asc=ls.get('nas_asc')==='1',lastSig='';
@@ -326,7 +331,7 @@ async function refresh(){
   const have=new Set(allKeys());for(const k of selected)if(!have.has(k))selected.delete(k); // files that vanished
   render(false);updateSelUI();
 }
-syncToolbar();
+syncToolbar();fitSel($('#sort'));
 // settings panel (gear, top right)
 {const p=$('#setpanel'),close=()=>{p.hidden=true};
   $('#dset').onclick=()=>{p.hidden=!p.hidden};$('#setclose').onclick=close;
