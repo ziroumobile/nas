@@ -132,3 +132,14 @@ html.ios *{-webkit-tap-highlight-color:transparent}
 html.ios button:focus,html.ios button:focus-visible,html.ios select:focus,html.ios select:focus-visible,html.ios a.btn:focus{outline:none!important;box-shadow:none}
 html.ios select:focus,html.ios select:focus-visible{border-color:transparent!important}
 html.ios .gpress{background-color:rgba(120,120,128,.5)!important;background-image:none!important}
+
+/* bottom selection bar: a floating glass dock instead of a full-width dark strip */
+html.ios #selbar{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));padding:10px 12px;gap:8px 6px;border:0;border-radius:30px;
+  background:rgba(34,34,38,.55);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 1.5px rgba(255,255,255,.18),0 14px 40px rgba(0,0,0,.55)}
+html.ios #selbar>span,html.ios #selbar>b,html.ios #selbar #selcount{font-size:14px;margin-right:2px;color:#fff}
+html.ios #selbar button{padding:8px 13px;font-size:14px;color:#fff!important;white-space:nowrap}
+html.ios #selbar button.del{color:#ff453a!important}
+html.ios #selbar button.danger{color:#fff!important}
+html.ios body.selecting .wrap{padding-bottom:170px}
+@media(prefers-color-scheme:light){html.ios #selbar{background:rgba(250,250,252,.6)}html.ios #selbar>span,html.ios #selbar>b,html.ios #selbar #selcount{color:#1c1e21}html.ios #selbar button.ghost{color:#1c1e21!important}}
