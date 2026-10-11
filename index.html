@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="glass.css">
-<script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(matchMedia('(prefers-color-scheme: dark)').matches){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
+<script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,7 +15,7 @@
 <title>我的 NAS</title>
 <style>
 :root{--bg:#f5f6f8;--card:#fff;--fg:#1c1e21;--mut:#6b7280;--ac:#2563eb;--bd:#e5e7eb}
-@media(prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--fg:#e8eaed;--mut:#9aa0a6;--ac:#60a5fa;--bd:#2a2e37}}
+@media all{:root{color-scheme:dark;--bg:#111318;--card:#1b1e25;--fg:#e8eaed;--mut:#9aa0a6;--ac:#60a5fa;--bd:#2a2e37}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px system-ui,"Noto Sans TC",sans-serif}
 .wrap{max-width:860px;margin:0 auto;padding:16px;padding-top:calc(16px + env(safe-area-inset-top))}
 header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap}
@@ -41,7 +41,7 @@ details.fold>summary{position:relative}
 details.fold.hasgrip>summary{padding-right:50px} /* room for the drag handle on the right */
 /* drag handle: three lines (drawn with gradients), at the right edge, centred vertically on the folder's header */
 .grip{position:absolute;right:0;top:50%;transform:translateY(-50%);width:44px;height:48px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;border-radius:10px;
-  background:linear-gradient(var(--mut),var(--mut)) center 15px/22px 3px no-repeat,linear-gradient(var(--mut),var(--mut)) center 22px/22px 3px no-repeat,linear-gradient(var(--mut),var(--mut)) center 29px/22px 3px no-repeat}
+  background:linear-gradient(#d1d5db,#d1d5db) center 15px/22px 3px no-repeat,linear-gradient(#d1d5db,#d1d5db) center 22px/22px 3px no-repeat,linear-gradient(#d1d5db,#d1d5db) center 29px/22px 3px no-repeat}
 .grip{display:none}body.reorder .grip{display:block}
 .grip:active,details.fold.dragging .grip{background-color:rgba(127,127,127,.18)}
 body.dragmode{cursor:grabbing;user-select:none;-webkit-user-select:none}

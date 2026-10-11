@@ -138,7 +138,7 @@ void main(){
     gl.uniform2f(u.u_org, ox, oy); gl.uniform2f(u.u_texSize, s.texW, s.texH); gl.uniform1f(u.u_pad, TPAD);
     gl.uniform1f(u.u_mag, L.mag); gl.uniform1f(u.u_bezel, BEZEL); gl.uniform1f(u.u_lift, Math.min(1, L.grow / GROW));
     gl.uniform3f(u.u_tint, 1, 1, 1);
-    gl.uniform1f(u.u_dark, window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches ? 0 : 1);
+    gl.uniform1f(u.u_dark, 1);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }

@@ -13,14 +13,14 @@ html.ios{
 }
 html.ios{--seg-fg:#fff;--seg-blue:#0a84ff}
 /* the whole page background is pure black in dark mode (iPhone / iPad) */
-@media(prefers-color-scheme:dark){
+@media all{
   html.ios{--bg:#000;background:#000}
   html.ios body{background:#000}
 }
-@media(prefers-color-scheme:light){
+@media not all{
   html.ios{--seg-fg:#1c1e21;--seg-blue:#007aff}
 }
-@media(prefers-color-scheme:light){
+@media not all{
   html.ios{
     --g-fill:rgba(255,255,255,.42);--g-fill-press:rgba(255,255,255,.72);
     --g-inner:rgba(255,255,255,.4);--g-hi:rgba(255,255,255,.6);--g-lo:rgba(60,60,67,.07);
@@ -93,7 +93,7 @@ html.ios .seg-pill{position:absolute;left:0;top:0;z-index:0;border-radius:999px;
   /* the "selected" marker is nearly transparent: a slightly darker smoky capsule set into the bar, no bright rim, no outer shadow (as in the iOS 26 tab bar) */
   background:rgba(0,0,0,.24);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05),inset 0 1px 4px rgba(0,0,0,.22);
   transition:transform .4s cubic-bezier(.2,.9,.3,1.25),width .4s cubic-bezier(.2,.9,.3,1.25),opacity .18s}
-@media(prefers-color-scheme:light){html.ios .seg-pill{background:rgba(60,60,67,.09);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),inset 0 1px 3px rgba(60,60,67,.12)}}
+@media not all{html.ios .seg-pill{background:rgba(60,60,67,.09);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),inset 0 1px 3px rgba(60,60,67,.12)}}
 html.ios .seg-pill.noanim{transition:none}
 html.ios .seg-pill.hidden{opacity:0}
 html.ios .seg-gl{position:absolute;left:0;top:0;z-index:4;pointer-events:none;display:none}
@@ -125,7 +125,7 @@ html.ios .bar select{-webkit-appearance:none;appearance:none;padding-right:14px}
 .gmenu div.cur::after{content:"✓";color:#0a84ff}
 @keyframes gmenu-in{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
 @keyframes gmenu-out{to{opacity:0;transform:scale(.85)}}
-@media(prefers-color-scheme:light){.gmenu{background:rgba(250,250,252,.75)}.gmenu div{color:#1c1e21}}
+@media not all{.gmenu{background:rgba(250,250,252,.75)}.gmenu div{color:#1c1e21}}
 
 /* no blue focus ring on press; a quick tap still greys the control for a moment (class set by glass.js) */
 html.ios *{-webkit-tap-highlight-color:transparent}
@@ -142,7 +142,7 @@ html.ios #selbar button{padding:8px 13px;font-size:14px;color:#fff!important;whi
 html.ios #selbar button.del{color:#ff453a!important}
 html.ios #selbar button.danger{color:#fff!important}
 html.ios body.selecting .wrap{padding-bottom:170px}
-@media(prefers-color-scheme:light){html.ios #selbar{background:rgba(250,250,252,.6)}html.ios #selbar>span,html.ios #selbar>b,html.ios #selbar #selcount{color:#1c1e21}html.ios #selbar button.ghost{color:#1c1e21!important}}
+@media not all{html.ios #selbar{background:rgba(250,250,252,.6)}html.ios #selbar>span,html.ios #selbar>b,html.ios #selbar #selcount{color:#1c1e21}html.ios #selbar button.ghost{color:#1c1e21!important}}
 
 /* selection bar: pinned to the very bottom; every button is the same grey glass, with blue / red text for the main / delete actions */
 html.ios #selbar{left:0;right:0;bottom:0;border-radius:26px 26px 0 0;padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
@@ -160,7 +160,7 @@ html.ios #selbar button:active{background:rgba(120,120,128,.5)!important}
 html.ios #dock button{background:transparent!important;background-image:none!important;box-shadow:none!important;border:0!important;color:#fff!important}
 html.ios #dock button:active,html.ios #dock button.act,html.ios #dock button.gpress{background:rgba(0,0,0,.35)!important}
 html.ios #dock button::before,html.ios #dock button::after{display:none!important}
-@media(prefers-color-scheme:light){html.ios #dock button{color:#1c1e21!important}}
+@media not all{html.ios #dock button{color:#1c1e21!important}}
 html.ios .srch input{-webkit-appearance:none;appearance:none}
 
 /* Windows / Android / desktop: the same frosted-glass pills as the dock (iOS has its own fuller glass above) */
@@ -221,7 +221,7 @@ html.ios{--g-rim:linear-gradient(rgba(255,255,255,.09),rgba(255,255,255,.09));--
 html.ios #dock{box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 12px 34px rgba(0,0,0,.5)}
 html.ios .vnav{box-shadow:0 8px 22px rgba(0,0,0,.4)}
 html.ios .seg-pill{box-shadow:none}
-@media(prefers-color-scheme:light){html.ios{--g-rim:linear-gradient(rgba(60,60,67,.14),rgba(60,60,67,.14));--g-sheen:none;--g-inner:rgba(255,255,255,0);--g-hi:rgba(255,255,255,0);--g-lo:rgba(255,255,255,0)}}
+@media not all{html.ios{--g-rim:linear-gradient(rgba(60,60,67,.14),rgba(60,60,67,.14));--g-sheen:none;--g-inner:rgba(255,255,255,0);--g-hi:rgba(255,255,255,0);--g-lo:rgba(255,255,255,0)}}
 
 /* settings window buttons: flat neutral pills, text centred (no blue-ish glass tint) */
 #setpanel #setbody button,#setpanel .mbtns button{background:rgba(255,255,255,.07)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
