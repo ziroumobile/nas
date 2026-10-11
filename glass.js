@@ -59,7 +59,8 @@ void main(){
     const pill = document.createElement('span'); pill.className = 'seg-pill'; pill.setAttribute('aria-hidden', 'true');
     const canvas = document.createElement('canvas'); canvas.className = 'seg-gl'; canvas.setAttribute('aria-hidden', 'true');
     seg.append(pill, canvas);
-    const s = { seg, btns, pill, canvas, drag: null, active: false, lens: null, gl: null, running: false, lw: 0, lh: 0 };
+    const s = { seg, btns, pill, canvas, drag: null, active: false, lens: null, gl: null, running: false, lw: 0, lh: 0, hot: -1 };
+    s.nearest = cx => { const c = geom(s).map(g => g.l + g.w / 2); let k = 0; c.forEach((v, i) => { if (Math.abs(v - cx) < Math.abs(c[k] - cx)) k = i; }); return k; };
     s.gl = initGL(s);
     switches.push(s); wire(s);
     if ('ResizeObserver' in window) new ResizeObserver(() => {   // also fires when the (initially hidden) page appears
@@ -102,12 +103,16 @@ void main(){
     x.fillStyle = sc.backgroundColor; rrect(x, T, T, W, H, H / 2); x.fill();
     x.strokeStyle = 'rgba(255,255,255,.07)'; x.lineWidth = 1; rrect(x, T + .5, T + .5, W - 1, H - 1, H / 2); x.stroke();
     x.textAlign = 'center'; x.textBaseline = 'middle';
-    for (const b of s.btns) {
+    // colours come straight from the CSS variables (not from the buttons' animated colour): white, except the blue one = the option the lens is over
+    const root = getComputedStyle(document.documentElement);
+    const white = root.getPropertyValue('--seg-fg').trim() || '#fff', blue = root.getPropertyValue('--seg-blue').trim() || '#0a84ff';
+    const blueIdx = s.active && s.hot >= 0 ? s.hot : selected(s);
+    s.btns.forEach((b, i) => {
       const cs = getComputedStyle(b);
-      x.font = `${b.classList.contains('on') ? 600 : cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-      x.fillStyle = cs.color;
+      x.font = `500 ${cs.fontSize} ${cs.fontFamily}`;
+      x.fillStyle = i === blueIdx ? blue : white;
       x.fillText(b.textContent.trim(), T + b.offsetLeft + b.offsetWidth / 2, T + b.offsetTop + b.offsetHeight / 2 + 1);
-    }
+    });
     const { gl, tex } = g;
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -157,10 +162,17 @@ void main(){
   function startLens(s) {
     const r = geom(s)[selected(s)];
     s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: GROW, tm: MAG };
+    s.active = true; s.hot = selected(s); s.seg.classList.add('dragging'); setHot(s, s.hot, true);
     makeTexture(s);                                                  // labels as they look right now
-    s.pill.classList.add('hidden'); s.canvas.classList.add('on'); s.active = true;
+    s.pill.classList.add('hidden'); s.canvas.classList.add('on');
     draw(s); loop(s);
   }
+  // the option the lens is over turns blue (the others stay white); the lens's own copy of the labels is repainted to match
+  function setHot(s, k, quiet) {
+    s.hot = k; s.btns.forEach((b, i) => b.classList.toggle('glass-hot', i === k));
+    if (!quiet && s.gl) makeTexture(s);
+  }
+  function trackHot(s, cx) { const k = s.nearest(cx); if (k !== s.hot) setHot(s, k); }
   function step(s, dt) {
     const L = s.lens; let moving = false;
     for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 520, 38], ['w', 'vw', 'tw', 520, 38], ['grow', 'vg', 'tg', 380, 30], ['mag', 'vm', 'tm', 380, 30]]) {
@@ -173,13 +185,14 @@ void main(){
     if (s.running) return; s.running = true; let last = performance.now();
     const frame = now => {
       const dt = Math.min(0.034, Math.max(0.001, (now - last) / 1000)); last = now;
-      const moving = step(s, dt); draw(s);
+      const moving = step(s, dt); trackHot(s, s.lens.cx); draw(s);
       if (moving || s.drag) raf(frame); else { s.running = false; finishLens(s); }
     };
     raf(frame);
   }
   function finishLens(s) {                                           // lens has settled into its option: swap back to the resting pill
     s.canvas.classList.remove('on'); s.active = false; s.lens = null;
+    s.seg.classList.remove('dragging'); setHot(s, -1, true);
     placePill(s, selected(s), false); s.pill.classList.remove('hidden');
     makeTexture(s);
   }
@@ -203,11 +216,11 @@ void main(){
         if (Math.abs(e.clientX - d.x0) < 5) return;
         d.started = true; try { seg.setPointerCapture(e.pointerId); } catch { }
         if (s.gl) { if (!s.active) startLens(s); else if (s.lens) { s.lens.tg = GROW; s.lens.tm = MAG; } }
-        else { s.active = true; s.pill.classList.add('noanim'); }
+        else { s.active = true; s.pill.classList.add('noanim'); seg.classList.add('dragging'); }
       }
       const t = target(e);
       if (s.gl && s.lens) { s.lens.tx = t.cx; s.lens.tw = t.w; s.lens.tg = GROW; s.lens.tm = MAG; if (!s.running) loop(s); }
-      else { const r = geom(s)[0]; s.pill.style.transform = `translate(${t.cx - t.w / 2}px,${r.t}px)`; s.pill.style.width = t.w + 'px'; }  // no WebGL: the pill follows the finger
+      else { const r = geom(s)[0]; s.pill.style.transform = `translate(${t.cx - t.w / 2}px,${r.t}px)`; s.pill.style.width = t.w + 'px'; trackHot(s, t.cx); }  // no WebGL: the pill follows the finger
     });
     const end = e => {
       const d = s.drag; if (!d || (e && e.pointerId !== d.id)) return;
@@ -217,7 +230,7 @@ void main(){
       const k = e && e.type === 'pointerup' ? nearest(e.clientX - rect.left - seg.clientLeft) : selected(s);
       const changed = k !== selected(s), g = geom(s)[k];
       if (s.gl && s.lens) { s.lens.tx = g.l + g.w / 2; s.lens.tw = g.w; s.lens.tg = 0; s.lens.tm = 1; loop(s); }   // spring into the slot, then finishLens
-      else { s.active = false; s.pill.classList.remove('noanim'); }
+      else { s.active = false; s.pill.classList.remove('noanim'); seg.classList.remove('dragging'); setHot(s, -1, true); }
       if (changed) s.btns[k].click();                                // choose through the normal handler
       if (!s.lens) placePill(s, selected(s), true);
       s.suppressClick = true; setTimeout(() => { s.suppressClick = false; }, 60); // the browser's own trailing click after a drag must not toggle anything
