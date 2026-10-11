@@ -5,9 +5,9 @@
    The 列表 / 中圖示 / 小圖示 switch additionally gets a real refracting glass lens while dragged (glass.js, WebGL). */
 html.ios{
   --g-fill:rgba(255,255,255,.055);--g-fill-press:rgba(255,255,255,.14);
-  --g-inner:rgba(255,255,255,.05);--g-hi:rgba(255,255,255,.13);--g-lo:rgba(255,255,255,.05);
-  --g-rim:linear-gradient(145deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.07) 26%,rgba(255,255,255,.015) 52%,rgba(255,255,255,.06) 76%,rgba(255,255,255,.26) 100%);   /* soft edge light, like the iOS 26 tab bar */
-  --g-sheen:radial-gradient(120% 90% at 18% 0%,rgba(255,255,255,.10),rgba(255,255,255,0) 58%);
+  --g-inner:rgba(255,255,255,.05);--g-hi:rgba(255,255,255,.06);--g-lo:rgba(255,255,255,.05);
+  --g-rim:linear-gradient(145deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.04) 26%,rgba(255,255,255,.01) 52%,rgba(255,255,255,.03) 76%,rgba(255,255,255,.12) 100%);   /* soft edge light, like the iOS 26 tab bar */
+  --g-sheen:radial-gradient(120% 90% at 18% 0%,rgba(255,255,255,.05),rgba(255,255,255,0) 58%);
   --g-shadow:0 8px 22px rgba(0,0,0,.38),0 1px 3px rgba(0,0,0,.3);
   --g-glass-blur:blur(3px) saturate(175%) brightness(1.12);
 }
@@ -166,12 +166,12 @@ html.ios .srch input{-webkit-appearance:none;appearance:none}
 /* Windows / Android / desktop: the same frosted-glass pills as the dock (iOS has its own fuller glass above) */
 html:not(.ios) .bar :is(button.ghost,select){border-radius:999px;border:0;color:var(--fg);background:rgba(255,255,255,.06);
   -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 1.5px rgba(255,255,255,.2),0 6px 18px rgba(0,0,0,.35);transition:background .15s}
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),inset 0 1px 1.5px rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.35);transition:background .15s}
 html:not(.ios) .bar :is(button.ghost,select):hover{background:rgba(255,255,255,.1)}
 html:not(.ios) .bar :is(button.ghost,select):active{background:rgba(0,0,0,.35)}
 html:not(.ios) .bar select{padding:8px 16px}
 html:not(.ios) .seg{padding:3px;border-radius:999px;background:rgba(255,255,255,.06);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 1.5px rgba(255,255,255,.2),0 6px 18px rgba(0,0,0,.35)}
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),inset 0 1px 1.5px rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.35)}
 html:not(.ios) .seg button.ghost{background:transparent;box-shadow:none;border:0;border-radius:999px!important;padding:6px 16px;-webkit-backdrop-filter:none;backdrop-filter:none}
 html:not(.ios) .seg button.ghost.on{background:rgba(0,0,0,.35);color:#60a5fa}
 html:not(.ios) .seg button.ghost:hover:not(.on){background:rgba(255,255,255,.08)}
@@ -179,7 +179,7 @@ html:not(.ios) .seg button.ghost:hover:not(.on){background:rgba(255,255,255,.08)
 /* Windows / Android: every button gets the frosted-glass pill (white text; delete / danger = red; only the view switch's chosen option and the settings 完成 button are blue) */
 html:not(.ios) button:not(#dock button):not(.seg button):not(.vnav):not(.grip):not(.icon){border-radius:999px;border:0;color:var(--seg-fg,#fff);background:rgba(255,255,255,.06);
   -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 1.5px rgba(255,255,255,.2),0 6px 18px rgba(0,0,0,.35);transition:background .15s}
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),inset 0 1px 1.5px rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.35);transition:background .15s}
 html:not(.ios) button.del:not(#dock button),html:not(.ios) button.danger:not(#dock button){color:#f87171!important}
 html:not(.ios) button:not(#dock button):not(.seg button):not(.vnav):not(.grip):not(.icon):hover{background:rgba(255,255,255,.1)}
 html:not(.ios) button:not(#dock button):not(.seg button):not(.vnav):not(.grip):not(.icon):active{background:rgba(0,0,0,.35)}
@@ -209,3 +209,9 @@ html:not(.ios) :is(.bar,#setpanel,#modal) select{-webkit-appearance:none;appeara
   background-repeat:no-repeat;background-position:right 12px center;background-color:rgba(255,255,255,.06)}
 html.ios .bar select{border:1px solid transparent;padding:6px 14px;background:linear-gradient(var(--g-fill),var(--g-fill)) padding-box,var(--g-rim) border-box;
   box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),inset 0 -1px 1.5px var(--g-lo),var(--g-shadow)}
+
+/* iOS dock: five equal fifths, wide enough to feel like a tab bar */
+html.ios #dock{width:min(86vw,380px);gap:0;padding:6px;justify-content:stretch}
+html.ios #dock button,html.ios #dock button.txt{flex:1 1 0;width:auto;min-width:0}
+/* "顯示方式：" and the switch share one row */
+.segrow{flex-wrap:nowrap}.segrow .seg{width:auto;flex:1 1 0;min-width:0;max-width:300px}.segrow{white-space:nowrap}
