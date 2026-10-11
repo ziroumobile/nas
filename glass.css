@@ -35,7 +35,7 @@ html.ios{--seg-fg:#fff;--seg-blue:#0a84ff}
 html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn){
   position:relative;border-radius:999px;transition:transform .32s cubic-bezier(.2,.9,.3,1.35),background-color .2s,box-shadow .2s;
 }
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn):active{transform:scale(1.1)}   /* swells as soon as it is touched, held or tapped */
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn):active{transform:none;background-color:rgba(120,120,128,.5)!important}   /* touched: greys for a moment, like the iOS menu button */
 html.ios button.ghost:not(.del):not(.danger),html.ios a.btn.ghost,html.ios .bar select{color:var(--seg-fg)!important}
 html.ios button.del,html.ios button.danger{color:#ff453a!important}
 html.ios button.danger{color:#fff!important}   /* only the view switch uses blue; other buttons stay white */
@@ -109,3 +109,20 @@ html.ios .seg-gl.on{display:block}
   html.ios .seg,html.ios .bar select,html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button.ghost,button.del){background:var(--card)}
   html.ios .vnav{background:rgba(31,41,55,.95)}
 }
+
+/* iPhone system font (SF Pro + PingFang for Chinese) */
+html.ios body,html.ios button,html.ios select,html.ios input,html.ios .btn{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Helvetica Neue",sans-serif}
+html.ios .bar select{-webkit-appearance:none;appearance:none;padding-right:14px}
+
+/* drop-down menu: opens just under its button and grows out of it, like the iOS context menu */
+.gmenu{position:fixed;z-index:2000;min-width:150px;padding:6px;border-radius:22px;background:rgba(40,40,44,.72);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 14px 40px rgba(0,0,0,.5);transform-origin:top left;
+  animation:gmenu-in .26s cubic-bezier(.2,.9,.3,1.2)}
+.gmenu.out{animation:gmenu-out .16s ease forwards}
+.gmenu div{padding:11px 14px;border-radius:16px;color:#fff;display:flex;gap:10px;justify-content:space-between;align-items:center;white-space:nowrap}
+.gmenu div:active{background:rgba(120,120,128,.45)}
+.gmenu div.cur::after{content:"✓";color:#0a84ff}
+@keyframes gmenu-in{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+@keyframes gmenu-out{to{opacity:0;transform:scale(.85)}}
+@media(prefers-color-scheme:light){.gmenu{background:rgba(250,250,252,.75)}.gmenu div{color:#1c1e21}}

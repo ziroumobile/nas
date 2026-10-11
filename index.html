@@ -154,7 +154,6 @@ body.selecting .wrap{padding-bottom:100px}
     排序：<select id="sort"><option value="name">名稱</option><option value="date">更新日期</option><option value="size">大小</option></select>
     <button class="ghost" id="order"></button>
     <button class="ghost" id="selmode">☑ 選取</button>
-    <button class="ghost" id="resetorder" hidden title="清除你拖動調整過的資料夾順序">↺ 恢復自動排序</button>
   </div>
   <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" type="file" multiple hidden></div>
   <div id="ups"></div>
@@ -288,7 +287,6 @@ function render(force){
   if(!force&&sig===lastSig)return; // nothing changed: leave the DOM (and loaded thumbnails) alone
   lastSig=sig;
   const allFiles=folders.reduce((n,f)=>n+f.files.length,0),allSize=folders.reduce((n,f)=>n+f.files.reduce((s,x)=>s+x.size,0),0);
-  $('#resetorder').hidden=!(me?.admin&&manualOrder());
   $('#total').textContent=`全部：${folders.length} 個資料夾 · ${allFiles} 個檔案 · ${fmtTotal(allSize)}`;
   $('#list').innerHTML=folders.length?sortFolders().map(f=>{
     const items=sortFiles(f.files).map(x=>fileItem(f,x)).join('');
@@ -345,7 +343,6 @@ async function togglePin(name){
   if(!f.pinned)pinned.unshift(name); // newly pinned goes to the very top
   await saveFolderPrefs({pinned});
 }
-$('#resetorder').onclick=()=>{if(confirm('恢復自動排序？你拖動調整過的順序會被清除（置頂的資料夾不受影響）。'))saveFolderPrefs({reset:true})};
 // The dragged card follows the pointer (translateY), the other cards slide out of its way (FLIP animation), and on release it settles into its slot.
 let drag=null;
 function dragFrame(){

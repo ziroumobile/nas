@@ -7,7 +7,7 @@
 (function () {
   if (!document.documentElement.classList.contains('ios')) return;
   const DPR = Math.min(window.devicePixelRatio || 1, 3);
-  const GROW = 12, MAG = 1.10, SPAD = 24, TPAD = 28, BEZEL = 15;     // lens grows while held; shadow padding; texture padding; width of the curved edge (css px)
+  const GROW = 22, MAG = 1.18, SPAD = 24, TPAD = 28, BEZEL = 15;     // lens grows while held; shadow padding; texture padding; width of the curved edge (css px)
   const raf = fn => (document.hidden ? setTimeout(() => fn(performance.now()), 16) : requestAnimationFrame(fn));
 
   const VS = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
