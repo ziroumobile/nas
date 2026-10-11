@@ -269,3 +269,11 @@ html.ios #topsent{position:fixed;top:calc(env(safe-area-inset-top) - 2px);left:1
 html.ios body.selecting #topsent{display:none}
 /* in select mode the title moves down so the top row does not sit on it */
 html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 46px)}
+
+/* select mode: frosted (gaussian blur) band behind the top row so the options stay readable over the page */
+html.ios .seltop{height:46px;align-items:center}
+html.ios .seltop::before{content:"";position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top) + 56px);z-index:-1;pointer-events:none;
+  background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%)}
+html.ios .seltop button{flex:none}
+html.ios .seltop #selexit{flex:none;width:40px;height:40px;min-width:40px;min-height:40px;overflow:visible}
+html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 58px)}
