@@ -35,7 +35,8 @@ html.ios{--seg-fg:#fff;--seg-blue:#0a84ff}
 html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn){
   position:relative;border-radius:999px;transition:transform .32s cubic-bezier(.2,.9,.3,1.35),background-color .2s,box-shadow .2s;
 }
-html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn):active{transform:scale(.95)}
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button,a.btn):active{transform:scale(1.1)}   /* swells as soon as it is touched, held or tapped */
+html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) button.ghost{color:var(--seg-fg)}   /* only the view switch uses blue; other buttons stay white */
 /* clear glass: outlined (ghost) and delete buttons */
 html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#gate) :is(button.ghost,button.del){
   background:var(--g-fill);border:1px solid transparent;

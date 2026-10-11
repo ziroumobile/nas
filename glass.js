@@ -209,7 +209,13 @@ void main(){
       const t = (fx - c[i]) / ((c[i + 1] - c[i]) || 1);
       return { cx: fx, w: g[i].w + (g[i + 1].w - g[i].w) * t };      // between two options the lens stretches to blend their widths
     };
-    seg.addEventListener('pointerdown', e => { if (e.button > 0) return; s.drag = { id: e.pointerId, x0: e.clientX, started: false }; });
+    seg.addEventListener('pointerdown', e => {
+      if (e.button > 0) return; s.drag = { id: e.pointerId, x0: e.clientX, started: false };
+      if (!s.gl) return;
+      s.drag.started = true; try { seg.setPointerCapture(e.pointerId); } catch { }   // the lens swells the moment it is touched, no drag needed
+      if (!s.active) startLens(s);
+      const t = target(e); s.lens.tx = t.cx; s.lens.tw = t.w; s.lens.tg = GROW; s.lens.tm = MAG; if (!s.running) loop(s);
+    });
     seg.addEventListener('pointermove', e => {
       const d = s.drag; if (!d || e.pointerId !== d.id) return;
       if (!d.started) {
