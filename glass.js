@@ -5,7 +5,7 @@
 // beneath it (a texture painted from the real labels), so nothing is stacked twice. Releasing springs it into the nearest option, which is then
 // chosen through the buttons' own click handlers. Only runs on iPhone / iPad (html.ios); without WebGL the pill just follows the finger.
 (function () {
-  if (!document.documentElement.classList.contains('ios')) return;
+  // (runs on every platform; the iOS-only touches are guarded where they differ)
   const DPR = Math.min(window.devicePixelRatio || 1, 3);
   const GROW = 22, MAG = 1.18, SPAD = 24, TPAD = 28, BEZEL = 15;     // lens grows while held; shadow padding; texture padding; width of the curved edge (css px)
   const raf = fn => (document.hidden ? setTimeout(() => fn(performance.now()), 16) : requestAnimationFrame(fn));
