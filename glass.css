@@ -155,3 +155,8 @@ html.ios body.selecting .wrap{padding-bottom:150px}
 html.ios #selbar button{background:var(--g-fill)!important;background-image:none!important;border:1px solid transparent!important;
   box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),inset 0 -1px 1.5px var(--g-lo),var(--g-shadow)!important}
 html.ios #selbar button:active{background:rgba(120,120,128,.5)!important}
+
+/* search button: grey round glass with a blue magnifier */
+html.ios #sbtn{background:rgba(120,120,128,.28)!important;background-image:none!important;color:#0a84ff!important;border-radius:50%!important;width:40px;height:40px;padding:0!important;
+  box-shadow:inset 0 1px 1.5px var(--g-hi),var(--g-shadow)!important}
+html.ios .srch input{-webkit-appearance:none;appearance:none;border-radius:999px;background:var(--g-fill);-webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);font-size:16px}
