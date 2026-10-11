@@ -40,10 +40,17 @@ body.dragmode{cursor:grabbing;user-select:none;-webkit-user-select:none}
 body.dragmode details.fold>*:not(summary){display:none}
 details.fold.dragging{opacity:.8;outline:2px solid var(--ac)}
 details.fold.pinned{border-color:var(--ac)}
-.fname{flex:1;min-width:0;word-break:break-all}.cnt{color:var(--mut);font-weight:400}
+details.fold>summary{flex-wrap:wrap;row-gap:8px}
+.fname{flex:1 1 140px;min-width:0;overflow-wrap:anywhere}
+.ftools{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.ftools:empty{display:none}
+@media(max-width:640px){.ftools{flex-basis:100%}} /* phones: the buttons drop to their own row under the folder name */.cnt{color:var(--mut);font-weight:400}
 .row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--bd)}
 .ico{width:44px;height:44px;border-radius:8px;background:var(--bg);object-fit:cover;flex:none;display:grid;place-items:center;font-size:20px}
-.info{flex:1;min-width:0}.info a{color:var(--fg);text-decoration:none;font-weight:500;word-break:break-all}
+.row{flex-wrap:wrap}
+.info{flex:1 1 120px;min-width:0}.info a{color:var(--fg);text-decoration:none;font-weight:500;word-break:break-all}
+.rbtns{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+@media(max-width:480px){.rbtns{flex-basis:100%;padding-left:54px}} /* narrow phones: the buttons go under the file name instead of squeezing it */
 .info small{display:block;color:var(--mut)}
 .prog{height:6px;background:var(--bd);border-radius:3px;margin:4px 0;overflow:hidden}.prog i{display:block;height:100%;background:var(--ac);width:0}
 #err{color:#dc2626;margin:0 0 8px;min-height:1em}
@@ -79,10 +86,13 @@ body.selecting .wrap{padding-bottom:100px}
 #viewer{position:fixed;inset:0;background:#000;z-index:50;display:flex;flex-direction:column}
 #viewer[hidden]{display:none}
 .vtop{display:flex;gap:8px;align-items:center;padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top));color:#fff}
-#vtitle{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vtop{flex-wrap:wrap}
+#vtitle{flex:1 1 120px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vbtns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+@media(max-width:640px){.vbtns{flex-basis:100%;justify-content:flex-end}} /* phones: the file name keeps the whole first row, the buttons get their own row */
 #vpos{color:#9ca3af;font-size:13px;white-space:nowrap}
 .vtop .btn{text-decoration:none;padding:6px 12px}
-#vinfop{position:absolute;top:calc(56px + env(safe-area-inset-top));right:10px;width:min(360px,calc(100% - 20px));max-height:calc(100% - 80px - env(safe-area-inset-top));overflow:auto;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:12px;padding:12px 14px;z-index:52;box-shadow:0 8px 30px rgba(0,0,0,.5);font-size:14px}
+#vinfop{position:absolute;top:var(--vbar,56px);right:10px;width:min(360px,calc(100% - 20px));max-height:calc(100% - var(--vbar,56px) - 24px);overflow:auto;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:12px;padding:12px 14px;z-index:52;box-shadow:0 8px 30px rgba(0,0,0,.5);font-size:14px}
 #vinfop[hidden]{display:none}
 #vinfop h4{margin:0 0 8px;font-size:15px}
 #vinfop .ir{display:flex;gap:10px;padding:5px 0;border-top:1px solid #374151}
@@ -145,7 +155,7 @@ body.selecting .wrap{padding-bottom:100px}
   <div id="list"></div>
 </div>
 <div id="viewer" hidden>
-  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><button class="ghost" id="vshare" hidden style="color:#fff">🔗 分享</button><button class="ghost" id="vdel" hidden style="color:#f87171">🗑 刪除</button><button class="ghost" id="vinfo" style="color:#fff" title="檔案資訊">ℹ️ 資訊</button><a id="vdlj" class="btn" hidden title="下載轉好的 JPG 版本（不能開 HEIC 的裝置用這個）">JPG</a><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div>
+  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><div class="vbtns"><button class="ghost" id="vshare" hidden style="color:#fff">🔗 分享</button><button class="ghost" id="vdel" hidden style="color:#f87171">🗑 刪除</button><button class="ghost" id="vinfo" style="color:#fff" title="檔案資訊">ℹ️ 資訊</button><a id="vdlj" class="btn" hidden title="下載轉好的 JPG 版本（不能開 HEIC 的裝置用這個）">JPG</a><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div></div>
   <div id="vstage"></div>
   <div id="vinfop" hidden></div>
   <button class="vnav" id="vprev" aria-label="上一個">‹</button><button class="vnav" id="vnext" aria-label="下一個">›</button>
@@ -262,7 +272,7 @@ function fileItem(f,x){
   if(view!=='list')return `<div class="cell${sel}" data-k="${esc(k)}" title="${esc(x.name)}"><span class="chk"></span>${media(x,k)}<div class="cn">${esc(x.name)}</div></div>`;
   return `<div class="row${sel}" data-k="${esc(k)}"><span class="chk"></span>${media(x,k)}
     <div class="info"><a href="${u}" target="_blank" rel="noopener" data-open="${esc(k)}">${esc(x.name)}</a><small>${meta} · ${esc(x.owner)}</small></div>
-    <a class="btn" href="${u}&dl=1" style="padding:4px 10px;text-decoration:none">下載</a>${del}</div>`;
+    <span class="rbtns"><a class="btn" href="${u}&dl=1" style="padding:4px 10px;text-decoration:none">下載</a>${del}</span></div>`;
 }
 function render(force){
   const sig=JSON.stringify([folders,view,sortBy,asc,API,selMode,!!me?.admin]);
@@ -278,7 +288,7 @@ function render(force){
       +(me.admin?`<button class="ghost" data-pin="${esc(f.name)}" style="padding:4px 10px">${f.pinned?'取消置頂':'📌 置頂'}</button><button class="ghost" data-sharefolder="${esc(f.name)}" style="padding:4px 10px">🔗 分享</button><button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button>`:'');
     const grip=me.admin?`<span class="grip" title="按住上下拖動來調整順序">⠿</span>`:'';
     return `<details class="fold card${f.pinned?' pinned':''}" data-f="${esc(f.name)}" data-pinned="${f.pinned?1:0}"${opened.has(f.name)?' open':''}><summary>${grip}<span class="fname">${f.pinned?'📌 ':''}📂 ${esc(f.name)} <span class="cnt">${f.files.length} 個檔案 · ${fmtTotal(f.files.reduce((s,x)=>s+x.size,0))}</span></span>
-      ${tools}</summary>${body}</details>`}).join(''):'<div class="card" style="color:var(--mut);text-align:center">還沒有資料夾，上傳檔案會自動建立「'+esc(device)+'」</div>';
+      <span class="ftools">${tools}</span></summary>${body}</details>`}).join(''):'<div class="card" style="color:var(--mut);text-align:center">還沒有資料夾，上傳檔案會自動建立「'+esc(device)+'」</div>';
   updateSelUI();
 }
 async function refresh(){
@@ -514,6 +524,7 @@ const fmtDur=s=>{if(!Number.isFinite(s))return'';s=Math.round(s);const h=Math.fl
 const TYPES={image:'圖片',video:'影片'};
 function renderInfo(){
   const p=$('#vinfop');if(p.hidden||!vlist[vi])return;
+  $('#viewer').style.setProperty('--vbar',document.querySelector('.vtop').offsetHeight+4+'px'); // the toolbar can be one or two rows tall: keep the panel just below it
   const{k,x}=vlist[vi],{folder}=splitKey(k),ext=extOf(x.name),label=x.kind in TYPES?TYPES[x.kind]:ext==='mp3'||ext==='wav'?'音訊':ext==='pdf'?'PDF 文件':ext==='txt'?'文字檔':'檔案';
   const rows=[['名稱',x.name],['資料夾',folder],['類型',label+(ext?'（'+ext.toUpperCase()+'）':'')],['大小',fmt(x.size)],
     ['更新日期',new Date(x.mtime).toLocaleString()]];

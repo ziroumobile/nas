@@ -28,7 +28,8 @@ select{padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(-
 .row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--bd)}
 .row:first-child{border-top:0}
 .ico{width:44px;height:44px;border-radius:8px;background:var(--bg);object-fit:cover;flex:none;display:grid;place-items:center;font-size:20px}
-.info{flex:1;min-width:0}.info a{color:var(--fg);text-decoration:none;font-weight:500;word-break:break-all}
+.row{flex-wrap:wrap}
+.info{flex:1 1 120px;min-width:0}.info a{color:var(--fg);text-decoration:none;font-weight:500;word-break:break-all}
 .info small{display:block;color:var(--mut)}
 .nine{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
 .nine.small{grid-template-columns:repeat(5,1fr);gap:2px}
@@ -55,10 +56,13 @@ body.selecting .wrap{padding-bottom:100px}
 #viewer{position:fixed;inset:0;background:#000;z-index:30;display:flex;flex-direction:column}
 #viewer[hidden]{display:none}
 .vtop{display:flex;gap:8px;align-items:center;padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top));color:#fff}
-#vtitle{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vtop{flex-wrap:wrap}
+#vtitle{flex:1 1 120px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vbtns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+@media(max-width:640px){.vbtns{flex-basis:100%;justify-content:flex-end}} /* phones: the file name keeps the whole first row, the buttons get their own row */
 #vpos{color:#9ca3af;font-size:13px;white-space:nowrap}
 .vtop .btn{padding:6px 12px}
-#vinfop{position:absolute;top:calc(56px + env(safe-area-inset-top));right:10px;width:min(360px,calc(100% - 20px));max-height:calc(100% - 80px - env(safe-area-inset-top));overflow:auto;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:12px;padding:12px 14px;z-index:52;box-shadow:0 8px 30px rgba(0,0,0,.5);font-size:14px}
+#vinfop{position:absolute;top:var(--vbar,56px);right:10px;width:min(360px,calc(100% - 20px));max-height:calc(100% - var(--vbar,56px) - 24px);overflow:auto;background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:12px;padding:12px 14px;z-index:52;box-shadow:0 8px 30px rgba(0,0,0,.5);font-size:14px}
 #vinfop[hidden]{display:none}
 #vinfop h4{margin:0 0 8px;font-size:15px}
 #vinfop .ir{display:flex;gap:10px;padding:5px 0;border-top:1px solid #374151}
@@ -97,7 +101,7 @@ body.selecting .wrap{padding-bottom:100px}
   <div class="card" id="list"></div>
 </div>
 <div id="viewer" hidden>
-  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><button class="ghost" id="vinfo" style="color:#fff" title="檔案資訊">ℹ️ 資訊</button><a id="vdlj" class="btn" hidden title="下載轉好的 JPG 版本（不能開 HEIC 的裝置用這個）">JPG</a><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div>
+  <div class="vtop"><span id="vtitle"></span><span id="vpos"></span><div class="vbtns"><button class="ghost" id="vinfo" style="color:#fff" title="檔案資訊">ℹ️ 資訊</button><a id="vdlj" class="btn" hidden title="下載轉好的 JPG 版本（不能開 HEIC 的裝置用這個）">JPG</a><a id="vdl" class="btn">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div></div>
   <div id="vstage"></div>
   <div id="vinfop" hidden></div>
   <button class="vnav" id="vprev" aria-label="上一個">‹</button><button class="vnav" id="vnext" aria-label="下一個">›</button>
@@ -187,6 +191,7 @@ let vmeta={};
 const fmtDur=s=>{if(!Number.isFinite(s))return'';s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return(h?h+':'+String(m).padStart(2,'0'):m)+':'+String(r).padStart(2,'0')};
 function renderInfo(){
   const p=$('#vinfop');if(p.hidden||!vlist[vi])return;
+  $('#viewer').style.setProperty('--vbar',document.querySelector('.vtop').offsetHeight+4+'px'); // the toolbar can be one or two rows tall: keep the panel just below it
   const x=vlist[vi],ext=extOf(x.name),label=x.kind==='image'?'圖片':x.kind==='video'?'影片':ext==='mp3'||ext==='wav'?'音訊':ext==='pdf'?'PDF 文件':ext==='txt'?'文字檔':'檔案';
   const rows=[['名稱',x.name],['類型',label+(ext?'（'+ext.toUpperCase()+'）':'')],['大小',fmt(x.size)],['更新日期',new Date(x.mtime).toLocaleString()]];
   if(vmeta.w&&vmeta.h)rows.push(['解析度',`${vmeta.w} × ${vmeta.h}（${(vmeta.w*vmeta.h/1e6).toFixed(1)} MP）`]);
