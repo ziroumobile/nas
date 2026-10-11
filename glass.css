@@ -343,3 +343,11 @@ html.ios .vbtns a.vlk::after{display:none!important}
 .vbtns a.vlk:active{background:rgba(120,120,128,.5)!important}
 html.ios .vbtns button.ghost{color:#fff!important}html.ios .vbtns button.del{color:#ff453a!important}
 html:not(.ios) .vbtns button.del{color:#f87171!important}
+
+/* dialog buttons (#modal): same grey glass + white text as the home page; delete / danger = red text */
+html.ios #modal button:not(.ghost):not(.del):not(.danger){background:var(--g-fill)!important;background-image:none!important;color:#fff!important;border:1px solid transparent!important;
+  box-shadow:inset 0 0 14px var(--g-inner),var(--g-shadow)!important}
+html.ios #modal button.danger{background:var(--g-fill)!important;background-image:none!important;color:#ff453a!important;box-shadow:inset 0 0 14px var(--g-inner),var(--g-shadow)!important}
+html.ios #modal button.ghost{color:#fff!important}
+html.ios #modal button.del,html.ios #modal button.danger{color:#ff453a!important}
+html.ios #modal button:active{background:rgba(120,120,128,.5)!important}
