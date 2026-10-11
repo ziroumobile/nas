@@ -238,3 +238,15 @@ html.ios #app>header{margin-bottom:6px}
 /* the swelling lens may poke past the screen edge: clip it, otherwise iOS zooms the whole page out to fit it */
 html.ios,html.ios body{overflow-x:clip}
 html.ios .wrap{overflow-x:clip}
+
+/* iOS select mode: dock hidden; close (完成) top-right with the bulk actions to its left; share and download as round icons bottom-left / bottom-right */
+html.ios #selbar{position:static;display:contents;background:none!important;border:0;box-shadow:none;padding:0;-webkit-backdrop-filter:none;backdrop-filter:none}
+html.ios #selbar[hidden]{display:none!important}
+html.ios .seltop{position:fixed;top:calc(env(safe-area-inset-top) + 6px);left:12px;right:12px;z-index:70;display:flex;gap:6px;align-items:center;justify-content:flex-end}
+html.ios .seltop #selcount{margin-right:auto;font-size:15px}
+html.ios .seltop button{padding:7px 12px;font-size:14px}
+html.ios .selbot{position:fixed;left:16px;right:16px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:70;display:flex;justify-content:space-between;pointer-events:none}
+html.ios .selbot button{pointer-events:auto;width:56px;height:56px;padding:0!important;border-radius:50%!important;display:flex;align-items:center;justify-content:center}
+html.ios .selbot button svg{width:26px;height:26px}
+html.ios .selbot button[hidden]{display:none}
+html.ios .selbot button:disabled,html.ios .seltop button:disabled{opacity:.4}
