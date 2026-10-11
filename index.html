@@ -35,7 +35,12 @@ details.fold>summary{display:flex;align-items:center;gap:8px;cursor:pointer;font
 details.fold>summary::-webkit-details-marker{display:none}
 details.fold>summary::before{content:"▸";color:var(--mut)}
 details.fold[open]>summary::before{content:"▾"}
-.grip{cursor:grab;color:var(--mut);padding:0 8px 0 2px;font-size:20px;line-height:1;touch-action:none;user-select:none;-webkit-user-select:none;flex:none}
+details.fold>summary{position:relative}
+details.fold.hasgrip>summary{padding-right:50px} /* room for the drag handle on the right */
+/* drag handle: three lines (drawn with gradients), at the right edge, centred vertically on the folder's header */
+.grip{position:absolute;right:0;top:50%;transform:translateY(-50%);width:44px;height:48px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:10px;
+  background:linear-gradient(var(--mut),var(--mut)) center 15px/22px 3px no-repeat,linear-gradient(var(--mut),var(--mut)) center 22px/22px 3px no-repeat,linear-gradient(var(--mut),var(--mut)) center 29px/22px 3px no-repeat}
+.grip:active,details.fold.dragging .grip{background-color:rgba(127,127,127,.18)}
 body.dragmode{cursor:grabbing;user-select:none;-webkit-user-select:none}
 body.dragmode details.fold>*:not(summary){display:none}
 details.fold.dragging{opacity:.8;outline:2px solid var(--ac)}
@@ -286,8 +291,8 @@ function render(force){
     const body=!f.files.length?'<div class="empty">（空資料夾）</div>':view==='list'?items:`<div class="nine${view==='small'?' small':''}">${items}</div>`;
     const tools=(selMode&&f.files.length?`<button class="ghost" data-selfolder="${esc(f.name)}" style="padding:4px 10px">全選</button>`:'')
       +(me.admin?`<button class="ghost" data-pin="${esc(f.name)}" style="padding:4px 10px">${f.pinned?'取消置頂':'📌 置頂'}</button><button class="ghost" data-sharefolder="${esc(f.name)}" style="padding:4px 10px">🔗 分享</button><button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button>`:'');
-    const grip=me.admin?`<span class="grip" title="按住上下拖動來調整順序">⠿</span>`:'';
-    return `<details class="fold card${f.pinned?' pinned':''}" data-f="${esc(f.name)}" data-pinned="${f.pinned?1:0}"${opened.has(f.name)?' open':''}><summary>${grip}<span class="fname">${f.pinned?'📌 ':''}📂 ${esc(f.name)} <span class="cnt">${f.files.length} 個檔案 · ${fmtTotal(f.files.reduce((s,x)=>s+x.size,0))}</span></span>
+    const grip=me.admin?`<span class="grip" title="按住上下拖動來調整順序" aria-label="拖動調整順序"></span>`:'';
+    return `<details class="fold card${f.pinned?' pinned':''}${me.admin?' hasgrip':''}" data-f="${esc(f.name)}" data-pinned="${f.pinned?1:0}"${opened.has(f.name)?' open':''}><summary>${grip}<span class="fname">${f.pinned?'📌 ':''}📂 ${esc(f.name)} <span class="cnt">${f.files.length} 個檔案 · ${fmtTotal(f.files.reduce((s,x)=>s+x.size,0))}</span></span>
       <span class="ftools">${tools}</span></summary>${body}</details>`}).join(''):'<div class="card" style="color:var(--mut);text-align:center">還沒有資料夾，上傳檔案會自動建立「'+esc(device)+'」</div>';
   updateSelUI();
 }
