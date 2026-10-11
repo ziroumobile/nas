@@ -260,3 +260,12 @@ html.ios .seltop button,html.ios .seltop button:disabled{opacity:1!important;bac
 html.ios .seltop button:disabled{color:rgba(255,255,255,.4)!important}
 html.ios .seltop button#seldel:disabled{color:rgba(255,69,58,.45)!important}
 html.ios .seltop #selcount{text-shadow:none}
+
+/* done = round blue button with a white check */
+html.ios .seltop #selexit{width:40px;height:40px;padding:0!important;border-radius:50%!important;background:#0a84ff!important;color:#fff!important;border:0!important;display:flex;align-items:center;justify-content:center;box-shadow:none!important}
+html.ios .seltop #selexit svg{width:22px;height:22px}
+/* iOS only sharpens the top of the page when a fixed element sits there (as the select-mode row does): keep an invisible one there in normal mode too */
+html.ios #topsent{position:fixed;top:calc(env(safe-area-inset-top) - 2px);left:12px;right:12px;height:40px;z-index:59;pointer-events:none;border-radius:20px;background:rgba(0,0,0,.02)}
+html.ios body.selecting #topsent{display:none}
+/* in select mode the title moves down so the top row does not sit on it */
+html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 46px)}

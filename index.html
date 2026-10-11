@@ -347,6 +347,8 @@ if(document.documentElement.classList.contains('ios')||matchMedia('(max-width:69
   const sbar=$('#selbar'),top=document.createElement('div'),bot=document.createElement('div');top.className='seltop';bot.className='selbot';   // select mode: close + bulk actions on top, share / download as round icons in the bottom corners
   top.append($('#selcount'),$('#selall'),$('#selnone'),$('#seldel'),$('#selexit'));bot.append($('#selshare'),$('#seldl'));sbar.append(top,bot);
   $('#selshare').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14.5V3.5M8 7l4-4 4 4"/><path d="M7.5 10H6.5a2.5 2.5 0 0 0-2.5 2.5v6A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5v-6A2.5 2.5 0 0 0 17.5 10h-1"/></svg>';$('#selshare').setAttribute('aria-label','分享選取');
+  $('#selexit').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.8l4.2 4.2L18.5 7.5"/></svg>';$('#selexit').setAttribute('aria-label','完成');
+  const sent=document.createElement('div');sent.id='topsent';sent.setAttribute('aria-hidden','true');document.body.appendChild(sent);   // always keeps a fixed element at the top (see glass.css)
   $('#seldl').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M8 11l4 4 4-4"/><path d="M4.5 17v1.5A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5V17"/></svg>';$('#seldl').setAttribute('aria-label','下載選取');
   
 }catch(e){console.error('layout',e)}
