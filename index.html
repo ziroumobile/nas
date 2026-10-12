@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012g">
+<link rel="stylesheet" href="glass.css?v=20261012h">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -166,9 +166,9 @@ body.mlock{position:fixed;left:0;right:0;overflow:hidden}#modal,#setpanel{oversc
   <header><h1>📁 我的 NAS</h1></header>
   <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></span>
   <nav id="dock"><button id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button><button id="dflt" type="button" aria-label="拖動排序" title="拖動排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
-  <div id="applock" hidden><div class="mbox card"><h3 style="margin:0 0 6px">🔒 我的 NAS 已鎖定</h3><p class="sub" style="margin:0 0 10px">請輸入編輯密碼來開啟</p>
-    <input id="lockpw" type="password" autocomplete="off" autocapitalize="off" placeholder="編輯密碼"><p class="merr" id="lockerr"></p>
-    <div class="mbtns" style="justify-content:space-between"><button class="ghost" id="lockout">登出帳號</button><button id="lockgo" style="background:#0a84ff;color:#fff">解鎖</button></div></div></div>
+  <div id="applock" hidden><div class="mbox card"><h3 style="margin:0 0 6px">🔒 我的 NAS 已鎖定</h3><p class="sub" style="margin:0 0 10px">請輸入登入密碼來開啟</p>
+    <input id="lockpw" type="password" autocomplete="off" autocapitalize="off" placeholder="登入密碼"><p class="merr" id="lockerr"></p>
+    <div class="mbtns" style="justify-content:space-between"><button class="ghost" id="lockout">登出帳號</button><button class="ghost" id="lockgo">解鎖</button></div></div></div>
   <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button></div><div class="mbtns" style="justify-content:space-between"><button class="ghost" id="out">登出</button><button class="ghost" id="setclose">完成</button></div></div></div>
   <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
   <div class="bar">
@@ -206,7 +206,7 @@ body.mlock{position:fixed;left:0;right:0;overflow:hidden}#modal,#setpanel{oversc
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012g"></script>
+<script src="glass.js?v=20261012h"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // macOS (Safari "Add to Dock"): a full-bleed icon gets a white plate behind it, so give Macs a squircle icon with its own transparent margin (iPhone keeps the full-bleed one)
