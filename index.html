@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012x">
+<link rel="stylesheet" href="glass.css?v=20261012y">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -166,7 +166,7 @@ body.covered #app{visibility:hidden}
 <div id="app" hidden>
   <header><h1>📁 我的 NAS</h1></header>
   <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></span>
-  <nav id="dock"><button id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button><button id="dflt" type="button" aria-label="拖動排序" title="拖動排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
+  <nav id="dock"><button id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button><button id="dflt" type="button" aria-label="拖動排序" title="拖動排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg class="uring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="dupArc" cx="22" cy="22" r="19" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4" transform="rotate(-90 22 22)"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
   <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button></div><div class="mbtns" style="justify-content:space-between"><button class="ghost" id="out">登出</button><button class="ghost" id="setclose">完成</button></div></div></div>
   <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
   <div class="bar">
@@ -208,7 +208,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012x"></script>
+<script src="glass.js?v=20261012y"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -817,25 +817,37 @@ $('#setpw').onclick=async()=>{
 // the upload list sits below all the folders; this one-line summary stays under the drop zone and jumps down to it
 const upsum=$('#upsum');
 upsum.onclick=()=>$('#ups').scrollIntoView({behavior:'smooth',block:'start'});
-// a small progress ring (fixed under the status bar / Dynamic Island) while files are uploading; tap = jump to the detailed list
-const ring=document.createElement('div');ring.id='upring';ring.hidden=true;
-ring.innerHTML='<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="9" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="3"/><circle id="uparc" cx="12" cy="12" r="9" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="56.5" stroke-dashoffset="56.5" transform="rotate(-90 12 12)"/></svg><span id="uptxt"></span>';
-document.body.appendChild(ring);ring.onclick=()=>$('#ups').scrollIntoView({behavior:'smooth',block:'start'});
+// progress: a ring drawn around the "+" in the dock (blue arc = how much of the whole batch is done), plus the one-line summary under the drop zone
 function updateUploadUI(){
   const cs=$('#ups').children.length;
-  if(!cs){upsum.hidden=true;ring.hidden=true;releaseAwake();return}
+  document.body.classList.toggle('uploading',cs>0);
+  if(!cs){upsum.hidden=true;releaseAwake();return}
   const f=[...$('#ups').querySelectorAll('.rt')].filter(b=>!b.hidden).length;
-  upsum.hidden=false;upsum.textContent='⬆ 上傳中：還有 '+cs+' 個檔案'+(f?'（'+f+' 個失敗）':'')+'　點此看進度';
   let got=batch.done;for(const j of allJobs)got+=j.loaded||0;
   const pct=batch.bytes?Math.min(100,Math.round(got/batch.bytes*100)):0;
-  ring.hidden=false;$('#uparc').style.strokeDashoffset=(56.5*(1-pct/100)).toFixed(1);$('#uptxt').textContent=pct+'%（'+batch.doneFiles+'/'+batch.files+'）';
+  upsum.hidden=false;upsum.textContent='⬆ 上傳中 '+pct+'%（'+batch.doneFiles+'/'+batch.files+'）'+(f?'・'+f+' 個失敗':'')+'　點此看進度';
+  $('#dupArc').style.strokeDashoffset=(119.4*(1-pct/100)).toFixed(1);
 }
 setInterval(updateUploadUI,500);
 const queue=[];let running=0;const MAX_PAR=10,MAX_TRY=3;
 const allJobs=new Set(),batch={bytes:0,done:0,files:0,doneFiles:0}; // everything still to upload / the totals of the current batch (drives the progress ring)
-let wake=null;
-async function keepAwake(){try{if(!wake&&navigator.wakeLock&&allJobs.size)wake=await navigator.wakeLock.request('screen'),wake.addEventListener('release',()=>{wake=null})}catch{}}
-function releaseAwake(){if(wake&&!allJobs.size){wake.release().catch(()=>{});wake=null}}
+let wake=null,silent=null;
+function silentAudio(){
+  if(silent)return silent;
+  const n=8000,b=new Uint8Array(44+n),dv=new DataView(b.buffer),w=(o,t)=>[...t].forEach((c,i)=>b[o+i]=c.charCodeAt(0));
+  w(0,'RIFF');dv.setUint32(4,36+n,true);w(8,'WAVE');w(12,'fmt ');dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);dv.setUint32(24,8000,true);dv.setUint32(28,8000,true);dv.setUint16(32,1,true);dv.setUint16(34,8,true);w(36,'data');dv.setUint32(40,n,true);b.fill(128,44);
+  silent=new Audio(URL.createObjectURL(new Blob([b],{type:'audio/wav'})));silent.loop=true;silent.setAttribute('playsinline','');
+  return silent;
+}
+async function keepAwake(){
+  try{if(!wake&&navigator.wakeLock&&allJobs.size){wake=await navigator.wakeLock.request('screen');wake.addEventListener('release',()=>{wake=null})}}catch{}
+  try{const a=silentAudio();if(a.paused&&allJobs.size){await a.play();if(navigator.mediaSession)navigator.mediaSession.metadata=new MediaMetadata({title:'NAS 上傳中…'})}}catch{}
+}
+function releaseAwake(){
+  if(allJobs.size)return;
+  if(wake){wake.release().catch(()=>{});wake=null}
+  if(silent&&!silent.paused)silent.pause();
+}
 // the whole folder list is ~0.8 MB and costs the PC a moment to build: while a batch is uploading, refresh it every few seconds, and right after the last file
 let upRefresh=null;
 function refreshAfterUpload(){
