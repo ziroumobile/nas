@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012l">
+<link rel="stylesheet" href="glass.css?v=20261012m">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -207,7 +207,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012l"></script>
+<script src="glass.js?v=20261012m"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // macOS (Safari "Add to Dock"): a full-bleed icon gets a white plate behind it, so give Macs a squircle icon with its own transparent margin (iPhone keeps the full-bleed one)
@@ -374,7 +374,7 @@ if(document.documentElement.classList.contains('ios')||matchMedia('(max-width:69
   $('#selshare').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14.5V3.5M8 7l4-4 4 4"/><path d="M7.5 10H6.5a2.5 2.5 0 0 0-2.5 2.5v6A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5v-6A2.5 2.5 0 0 0 17.5 10h-1"/></svg>';$('#selshare').setAttribute('aria-label','分享選取');
   $('#selexit').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.8l4.2 4.2L18.5 7.5"/></svg>';$('#selexit').setAttribute('aria-label','完成');
   const sent=document.createElement('div');sent.id='topsent';sent.setAttribute('aria-hidden','true');document.body.appendChild(sent);
-  const band=document.createElement('div');band.id='topband';band.style.cssText='background:#000;opacity:1;-webkit-backdrop-filter:none;backdrop-filter:none';band.setAttribute('aria-hidden','true');document.body.appendChild(band);   // select-mode blur band (separate element, sits under the button row)   // always keeps a fixed element at the top (see glass.css)
+  const band=document.createElement('div');band.id='topband';band.style.cssText='background:#000;opacity:1;-webkit-backdrop-filter:none;backdrop-filter:none';band.setAttribute('aria-hidden','true');($('#app')||document.body).appendChild(band);   // select-mode blur band (separate element, sits under the button row)   // always keeps a fixed element at the top (see glass.css)
   $('#seldl').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M8 11l4 4 4-4"/><path d="M4.5 17v1.5A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5V17"/></svg>';$('#seldl').setAttribute('aria-label','下載選取');
   
 }catch(e){console.error('layout',e)}
