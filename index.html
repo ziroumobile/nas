@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012n">
+<link rel="stylesheet" href="glass.css?v=20261012o">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -207,9 +207,11 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012n"></script>
+<script src="glass.js?v=20261012o"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
+// thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
+const thumbSrc=t=>API+t+(document.documentElement.classList.contains('ios')?'&res=480':'');
 // macOS (Safari "Add to Dock"): a full-bleed icon gets a white plate behind it, so give Macs a squircle icon with its own transparent margin (iPhone keeps the full-bleed one)
 if(/Macintosh/.test(navigator.userAgent)&&!(navigator.maxTouchPoints>1)){const l=document.querySelector('link[rel=apple-touch-icon]');if(l)l.href='icons/icon-mac-1024.png'}
 const sb=supabase.createClient(NAS_CONFIG.supabaseUrl,NAS_CONFIG.supabaseAnonKey);
@@ -303,7 +305,7 @@ $('#order').onclick=()=>{asc=!asc;setPref()};
 const ICON={image:'🖼',video:'🎬',file:'📄'};
 function thumbErr(img){const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.kind==='video'?'🎬':'🖼';img.replaceWith(d)}
 function media(x,k){
-  const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-kind="${x.kind}" src="${API+x.thumb}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
+  const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-kind="${x.kind}" src="${thumbSrc(x.thumb)}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
   return `<a class="thumbA" href="${API+x.url}" target="_blank" rel="noopener" data-open="${esc(k)}">${inner}${x.kind==='video'?'<span class="play">▶</span>':''}</a>`;
 }
 // selection: pick many files to download, or (admin only) delete
@@ -351,7 +353,7 @@ function render(force){
 let prefetched=false;
 function prefetchThumbs(){
   if(prefetched||!folders.length)return;prefetched=true;
-  const urls=[];for(const f of sortFolders())for(const x of sortFiles(f.files).slice(0,20))if(x.thumb)urls.push(API+x.thumb);
+  const urls=[];for(const f of sortFolders())for(const x of sortFiles(f.files).slice(0,20))if(x.thumb)urls.push(thumbSrc(x.thumb));
   let i=0;const worker=()=>{if(document.hidden){setTimeout(worker,2000);return}const u=urls[i++];if(!u)return;const im=new Image();im.decoding='async';im.onload=im.onerror=worker;im.src=u};
   for(let k=0;k<4;k++)worker();
 }
@@ -634,7 +636,7 @@ async function sharesManager(){ // every share: link, password (after entering t
     if(!keys.length)return '<div class="sub" style="margin:6px 0">（這些檔案已不存在）</div>';
     const MAX=40;
     return `<div class="sth">${keys.slice(0,MAX).map(k=>{const x=fileByKey(k);
-      const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-kind="${x.kind}" src="${API+x.thumb}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
+      const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-kind="${x.kind}" src="${thumbSrc(x.thumb)}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
       return `<a class="sc" href="#" data-pv="${esc(k)}" data-sid="${esc(s.id)}" title="${esc(x.name)}">${inner}${x.kind==='video'?'<span class="play">▶</span>':''}</a>`}).join('')}${keys.length>MAX?`<span class="sub" style="align-self:center;margin:0 4px">+${keys.length-MAX} 個</span>`:''}</div>`;
   };
   const pwCell=s=>!s.hasPassword?'<span style="color:#b45309">（沒有設密碼：任何人有連結就能開啟）</span>':!s.pwStored?'<span style="color:var(--mut)">（未儲存）</span>':revealed?(revealed[s.id]==null?'<span style="color:var(--mut)">（無法解密）</span>':`<code style="user-select:all;font-size:15px">${esc(revealed[s.id])}</code> <button class="ghost" data-copypw="${esc(s.id)}" style="padding:2px 8px">複製密碼</button>`):'<code>••••••••</code>';
