@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012b">
+<link rel="stylesheet" href="glass.css?v=20261012c">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -203,7 +203,7 @@ body.mlock{position:fixed;left:0;right:0;overflow:hidden}#modal,#setpanel{oversc
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012b"></script>
+<script src="glass.js?v=20261012c"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // macOS (Safari "Add to Dock"): a full-bleed icon gets a white plate behind it, so give Macs a squircle icon with its own transparent margin (iPhone keeps the full-bleed one)
@@ -330,10 +330,12 @@ function render(force){
     const items=sortFiles(f.files).map(x=>fileItem(f,x)).join('');
     const body=!f.files.length?'<div class="empty">（空資料夾）</div>':view==='list'?items:`<div class="nine${view==='small'?' small':''}">${items}</div>`;
     const depth=f.name.split('/').length-1,leaf=f.name.split('/').pop();
+    const sub=folders.filter(g=>g.name.startsWith(f.name+'/')),direct=sub.filter(g=>g.name.indexOf('/',f.name.length+1)<0).length,all=[f,...sub]; // a folder's counts include everything inside it
+    const cnt=`${direct?direct+' 個資料夾 · ':''}${all.reduce((n,g)=>n+g.files.length,0)} 個檔案 · ${fmtTotal(all.reduce((n,g)=>n+g.files.reduce((m,x)=>m+x.size,0),0))}`;
     const tools=`<button class="ghost" data-subfolder="${esc(f.name)}" style="padding:4px 10px" title="在這個資料夾裡新增資料夾">＋ 資料夾</button>`+(selMode&&f.files.length?`<button class="ghost" data-selfolder="${esc(f.name)}" style="padding:4px 10px">全選</button>`:'')
       +(me.admin?(depth?'':`<button class="ghost" data-pin="${esc(f.name)}" style="padding:4px 10px">${f.pinned?'取消置頂':'📌 置頂'}</button>`)+`<button class="ghost" data-sharefolder="${esc(f.name)}" style="padding:4px 10px">🔗 分享</button><button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button>`:'');
     const grip=me.admin&&!depth?`<span class="grip" title="按住上下拖動來調整順序" aria-label="拖動調整順序"></span>`:'';
-    return `<details class="fold card${f.pinned?' pinned':''}${me.admin&&!depth?' hasgrip':''}"${depth?` style="margin-left:${depth*14}px"`:''} data-f="${esc(f.name)}" data-pinned="${f.pinned?1:0}"${opened.has(f.name)||q?' open':''}><summary>${grip}<span class="fname">${f.pinned?'📌 ':''}📂 ${esc(leaf)} <span class="cnt">${f.files.length} 個檔案 · ${fmtTotal(f.files.reduce((s,x)=>s+x.size,0))}</span></span>
+    return `<details class="fold card${f.pinned?' pinned':''}${me.admin&&!depth?' hasgrip':''}"${depth?` style="margin-left:${depth*14}px"`:''} data-f="${esc(f.name)}" data-pinned="${f.pinned?1:0}"${opened.has(f.name)||q?' open':''}><summary>${grip}<span class="fname">${f.pinned?'📌 ':''}📂 ${esc(leaf)} <span class="cnt">${cnt}</span></span>
       <span class="ftools">${tools}</span></summary>${body}</details>`}).join(''):'<div class="card" style="color:var(--mut);text-align:center">還沒有資料夾，上傳檔案會自動建立「'+esc(device)+'」</div>';
   syncNested();updateSelUI();
 }
