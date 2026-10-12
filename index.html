@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012o">
+<link rel="stylesheet" href="glass.css?v=20261012p">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -207,7 +207,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012o"></script>
+<script src="glass.js?v=20261012p"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -698,6 +698,26 @@ function openViewer(k,keys){ // keys = an explicit list to browse (e.g. the file
   if(!vOpen){vOpen=true;history.pushState({viewer:1},'')} // so the phone's back button closes the preview instead of leaving the site
   $('#viewer').hidden=false;document.body.style.overflow='hidden';showViewer();
 }
+// the preview player does not need the original 4K file: phones and FHD / 2K screens get <= 1080p, 4K screens <= 1440p (converted once on the PC, then cached)
+const previewHeight=()=>{if(document.documentElement.classList.contains('ios'))return 1080;const long=Math.max(screen.width,screen.height)*(window.devicePixelRatio||1);return long>=3300?1440:1080};
+async function pickVideoSrc(folder,x,u,seq,msg){
+  const h=previewHeight();let note=null,skip=false;
+  try{
+    for(;;){
+      const r=await api('/api/vprep?folder='+encodeURIComponent(folder)+'&name='+encodeURIComponent(x.name)+'&h='+h);
+      if(!r.ok)return u;
+      const j=await r.json();
+      if(seq!==vseq)return null;
+      if(j.state==='ready'){if(note)note.remove();return API+j.url}
+      if(j.state!=='processing'){if(note)note.remove();return u}
+      if(!note){note=msg('<div class="big">🎞️</div>正在準備 '+h+'p 預覽版本…（第一次看這部影片需要轉檔）<br><b id="vprg">0%</b><br><button class="ghost" id="vorig" style="margin-top:10px">直接播放原檔</button>');note.querySelector('#vorig').onclick=()=>{skip=true}}
+      const sp=note.querySelector('#vprg');if(sp)sp.textContent=Math.round((j.progress||0)*100)+'%';
+      if(skip){note.remove();return u}
+      await new Promise(r=>setTimeout(r,1500));
+      if(skip){note.remove();return u}
+    }
+  }catch{return u}
+}
 function stopMedia(){for(const m of $('#vstage').querySelectorAll('video,audio')){m.pause();m.removeAttribute('src');m.load()}}
 // file info panel (the ℹ️ button): facts about the file being previewed; size/resolution/length come from the file itself once it has loaded
 let vmeta={};
@@ -722,7 +742,7 @@ function showViewer(){
   stopMedia();st.innerHTML='';vmeta={};renderInfo();
   $('#vtitle').textContent=x.name;$('#vpos').textContent=`${vi+1} / ${vlist.length}`;$('#vdl').href=u+'&dl=1';window.__vx=x;
   $('#vdlj').hidden=!x.preview;if(x.preview)$('#vdlj').href=API+x.preview+'&dl=1'; // HEIC/HEIF: the browser shows the JPEG copy; "下載" still gives the untouched original
-  $('#vprev').hidden=$('#vnext').hidden=vlist.length<2;
+  $('#vprev').hidden=$('#vnext').hidden=vlist.length<2;$('#viewer').classList.toggle('hasnav',vlist.length>=2);
   const msg=(html,cls)=>{const d=document.createElement('div');d.className='vmsg '+(cls||'');d.innerHTML=html;st.append(d);return d};
   if(x.kind==='image'){
     const img=document.createElement('img');img.className='vimg';img.alt=x.name;
@@ -733,7 +753,8 @@ function showViewer(){
     const v=document.createElement('video');v.controls=true;v.playsInline=true;v.preload='metadata';if(x.thumb)v.poster=API+x.thumb;
     v.addEventListener('error',()=>{if(seq===vseq&&v.getAttribute('src'))msg('這個瀏覽器無法播放此影片格式（例如 iPhone 的 HEVC .mov），請按右上角「下載」後用播放器開啟。','warn')});
     v.addEventListener('loadedmetadata',()=>{if(seq===vseq){vmeta={w:v.videoWidth,h:v.videoHeight,dur:v.duration};renderInfo()}});
-    v.src=u;st.append(v);v.play().catch(()=>{}); // autoplay may be refused; the controls are there
+    st.append(v);
+    pickVideoSrc(splitKey(vlist[vi].k).folder,x,u,seq,msg).then(src=>{if(src&&seq===vseq){v.src=src;v.play().catch(()=>{})}}); // autoplay may be refused; the controls are there
   }else if(['mp3','wav','m4a','aac','ogg','opus','flac'].includes(ext)){
     msg('<div class="big">🎵</div>'+esc(x.name));const a=document.createElement('audio');a.controls=true;a.addEventListener('loadedmetadata',()=>{if(seq===vseq){vmeta={dur:a.duration};renderInfo()}});a.src=u;st.append(a);a.play().catch(()=>{});
   }else if(ext==='pdf'){

@@ -430,3 +430,9 @@ html.android .wrap{position:fixed;inset:0;overflow-y:auto;overflow-x:clip;max-wi
 #applock #lockgo{color:#0a84ff!important;background:rgba(255,255,255,.04)!important;background-image:none!important;border:1px solid transparent!important;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)!important}
 #applock #lockgo:active{background:rgba(120,120,128,.5)!important}
 #applock #lockgo:disabled{opacity:.5}
+
+/* preview: the previous / next arrows sit at the bottom corners (the picture keeps clear of them) */
+.vnav,html.ios .vnav{top:auto!important;bottom:calc(14px + env(safe-area-inset-bottom));transform:none!important}
+#vprev{left:14px}#vnext{right:14px}
+.vnav:active,html.ios .vnav:active{transform:scale(.94)!important}
+#viewer.hasnav #vstage{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
