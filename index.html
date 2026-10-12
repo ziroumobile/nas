@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012v">
+<link rel="stylesheet" href="glass.css?v=20261012w">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -208,7 +208,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012v"></script>
+<script src="glass.js?v=20261012w"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -821,7 +821,15 @@ setInterval(()=>{
   const f=[...$('#ups').querySelectorAll('.rt')].filter(b=>!b.hidden).length;
   upsum.hidden=false;upsum.textContent='⬆ 上傳中：還有 '+cs+' 個檔案'+(f?'（'+f+' 個失敗）':'')+'　點此看進度';
 },1000);
-const queue=[];let running=0;const MAX_PAR=2,MAX_TRY=3;
+const queue=[];let running=0;const MAX_PAR=6,MAX_TRY=3;
+// the whole folder list is ~0.8 MB and costs the PC a moment to build: while a batch is uploading, refresh it every few seconds, and right after the last file
+let upRefresh=null;
+function refreshAfterUpload(){
+  const last=!queue.length&&running<=1;
+  if(upRefresh&&!last)return;
+  clearTimeout(upRefresh);
+  upRefresh=setTimeout(()=>{upRefresh=null;refresh()},last?600:8000);
+}
 function enqueue(file,folder,keep){
   const d=document.createElement('div');d.className='card';d.style.marginBottom='8px';
   d.innerHTML=`<div>${esc(file.name)} → ${esc(folder)} <small class="s">等待中</small> <button class="ghost rt" hidden style="padding:2px 8px">重試</button></div><div class="prog"><i></i></div>`;
@@ -871,7 +879,7 @@ async function runJob(j){
     const r=await sendChunk(j,j.offset,l=>show(j.offset+l,fails?`（重試 ${fails}/${MAX_TRY}）`:''));
     if(r.status===200&&(r.body.done||Number.isFinite(r.body.received))){
       fails=0;
-      if(r.body.done){j.d.remove();if(r.body.warn)alert('「'+(r.body.name||j.file.name)+'」'+r.body.warn);refresh();return}
+      if(r.body.done){j.d.remove();if(r.body.warn)alert('「'+(r.body.name||j.file.name)+'」'+r.body.warn);refreshAfterUpload();return}
       j.offset=r.body.received;continue;
     }
     if(r.status===409){j.offset=r.body.received;continue} // server has a different amount; resync
