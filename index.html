@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
@@ -8,14 +8,14 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012k">
+<link rel="stylesheet" href="glass.css?v=20261012l">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="NAS">
-<title>我的 NAS</title>
+<title>?? NAS</title>
 <style>
 :root{--bg:#f5f6f8;--card:#fff;--fg:#1c1e21;--mut:#6b7280;--ac:#2563eb;--bd:#e5e7eb}
 @media all{:root{color-scheme:dark;--bg:#111318;--card:#1b1e25;--fg:#e8eaed;--mut:#9aa0a6;--ac:#60a5fa;--bd:#2a2e37}}
@@ -38,8 +38,8 @@ select{padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(-
 details.fold{margin-bottom:12px}
 details.fold>summary{display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;list-style:none;padding:2px 0}
 details.fold>summary::-webkit-details-marker{display:none}
-details.fold>summary::before{content:"▸";color:var(--mut)}
-details.fold[open]>summary::before{content:"▾"}
+details.fold>summary::before{content:"??;color:var(--mut)}
+details.fold[open]>summary::before{content:"??}
 details.fold>summary{position:relative}
 details.fold.hasgrip>summary{padding-right:50px} /* room for the drag handle on the right */
 /* drag handle: three lines (drawn with gradients), at the right edge, centred vertically on the folder's header */
@@ -102,7 +102,7 @@ body.selecting #dock,body.selecting .srch,body.searching #dock{display:none}
 .selecting .cell,.selecting .row{cursor:pointer}
 .chk{display:none;flex:none;width:22px;height:22px;border:2px solid var(--mut);border-radius:50%;place-items:center;font-size:14px;line-height:1;color:#fff;background:var(--card)}
 .selecting .chk{display:grid}
-.sel>.chk{background:#0a84ff;border-color:#0a84ff;color:#fff}.sel>.chk::after{content:"✓"}
+.sel>.chk{background:#0a84ff;border-color:#0a84ff;color:#fff}.sel>.chk::after{content:"??}
 .row.sel{background:rgba(37,99,235,.12)}
 #selbar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;z-index:10;box-shadow:0 -2px 10px rgba(0,0,0,.15)}
 #selbar[hidden]{display:none}
@@ -157,57 +157,57 @@ body.covered #app{visibility:hidden}
 @media(max-width:699px){.bar button,.bar select{padding:6px 12px;font-size:14px}}
 </style></head><body><div class="wrap">
 <div id="login" class="card" hidden>
-  <h1 style="margin-bottom:14px">登入 NAS</h1>
+  <h1 style="margin-bottom:14px">?餃 NAS</h1>
   <p id="err"></p>
   <input id="u" type="email" placeholder="Email" autocomplete="username">
-  <input id="p" type="password" placeholder="密碼" autocomplete="current-password">
-  <button id="go" style="width:100%">登入</button>
+  <input id="p" type="password" placeholder="撖Ⅳ" autocomplete="current-password">
+  <button id="go" style="width:100%">?餃</button>
 </div>
 <div id="app" hidden>
-  <header><h1>📁 我的 NAS</h1></header>
-  <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></span>
-  <nav id="dock"><button id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button><button id="dflt" type="button" aria-label="拖動排序" title="拖動排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
-  <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button></div><div class="mbtns" style="justify-content:space-between"><button class="ghost" id="out">登出</button><button class="ghost" id="setclose">完成</button></div></div></div>
-  <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
+  <header><h1>?? ?? NAS</h1></header>
+  <span class="srch" id="srch"><input id="sq" type="search" placeholder="??瑼?嚗?憒?mov" autocomplete="off" enterkeyhint="search"></span>
+  <nav id="dock"><button id="dset" type="button" aria-label="閮剖?" title="閮剖?"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button><button id="dflt" type="button" aria-label="????" title="????"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button id="dup" type="button" aria-label="銝" title="銝"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="?詨?" title="?詨?"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="??" title="??瑼?"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
+  <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">閮剖?</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>?? 撌脣?鈭恍??</button><button class="ghost" id="setpw" hidden>?? 蝺刻摩撖Ⅳ</button></div><div class="mbtns" style="justify-content:space-between"><button class="ghost" id="out">?餃</button><button class="ghost" id="setclose">摰?</button></div></div></div>
+  <div id="off" hidden>?? ????唬蜓璈?佗??航?????芸???</div>
   <div class="bar">
-    <span>此裝置：<b id="dev"></b></span><button class="ghost" id="rename">改名</button>
-    <button class="ghost" id="newf">＋ 新增資料夾</button>
-    <button class="ghost" id="install" hidden>📲 安裝成 App</button>
+    <span>甇方?蝵殷?<b id="dev"></b></span><button class="ghost" id="rename">?孵?</button>
+    <button class="ghost" id="newf">嚗??啣?鞈?憭?/button>
+    <button class="ghost" id="install" hidden>? 摰???App</button>
   </div>
-  <div class="bar">上傳到：<select id="target"></select></div>
+  <div class="bar">銝?堆?<select id="target"></select></div>
   <div class="bar">
-    <span class="seg"><button class="ghost" id="vlist">☰ 列表</button><button class="ghost" id="vnine">▩ 中圖示</button><button class="ghost" id="vsmall">▪ 小圖示</button></span>
-    排序：<select id="sort"><option value="name">名稱</option><option value="date">更新日期</option><option value="size">大小</option></select>
+    <span class="seg"><button class="ghost" id="vlist">???”</button><button class="ghost" id="vnine">??銝剖?蝷?/button><button class="ghost" id="vsmall">??撠?蝷?/button></span>
+    ??嚗?select id="sort"><option value="name">?迂</option><option value="date">?湔?交?</option><option value="size">憭批?</option></select>
     <button class="ghost" id="order"></button>
-    <button class="ghost" id="selmode">☑ 選取</button>
+    <button class="ghost" id="selmode">???詨?</button>
   </div>
-  <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" type="file" multiple hidden></div>
+  <div id="drop">暺??豢?瑼?嚗???獢??圈ㄐ銝<input id="f" type="file" multiple hidden></div>
   <div id="ups"></div>
   <div id="total" style="color:var(--mut);font-size:13px;margin:0 2px 8px"></div>
   <div id="list"></div>
 </div>
 <div id="viewer" hidden>
-  <div class="vtop"><div class="vbtns" style="flex:none"><button class="ghost" id="vback">‹ 返回</button></div><span id="vtitle"></span><span id="vpos"></span><div class="vbtns"><button class="ghost" id="vshare" hidden style="color:#fff">🔗 分享</button><button class="ghost del" id="vdel" hidden>刪除</button><button class="ghost" id="vinfo" style="color:#fff" title="檔案資訊">ℹ️ 資訊</button><a id="vdlj" class="btn vlk" hidden title="下載轉好的 JPG 版本（不能開 HEIC 的裝置用這個）">JPG</a><a id="vdl" class="btn vlk">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div></div>
+  <div class="vtop"><div class="vbtns" style="flex:none"><button class="ghost" id="vback">??餈?</button></div><span id="vtitle"></span><span id="vpos"></span><div class="vbtns"><button class="ghost" id="vshare" hidden style="color:#fff">?? ?澈</button><button class="ghost del" id="vdel" hidden>?芷</button><button class="ghost" id="vinfo" style="color:#fff" title="瑼?鞈?">?對? 鞈?</button><a id="vdlj" class="btn vlk" hidden title="銝?頧末??JPG ?嚗??賡? HEIC ??蝵桃??">JPG</a><a id="vdl" class="btn vlk">銝?</a><button class="ghost" id="vclose" style="color:#fff">??/button></div></div>
   <div id="vstage"></div>
   <div id="vinfop" hidden></div>
-  <button class="vnav" id="vprev" aria-label="上一個">‹</button><button class="vnav" id="vnext" aria-label="下一個">›</button>
+  <button class="vnav" id="vprev" aria-label="銝???>??/button><button class="vnav" id="vnext" aria-label="銝???>??/button>
 </div>
-<div id="applock" hidden><div class="mbox card"><h3 style="margin:0 0 6px">🔒 我的 NAS 已鎖定</h3><p class="sub" style="margin:0 0 10px">請輸入登入密碼來開啟</p>
-    <input id="lockpw" type="password" autocomplete="off" autocapitalize="off" placeholder="登入密碼"><p class="merr" id="lockerr"></p>
-    <div class="mbtns" style="justify-content:space-between"><button class="ghost" id="lockout">登出帳號</button><button class="ghost" id="lockgo">解鎖</button></div></div></div>
+<div id="applock" hidden><div class="mbox card"><h3 style="margin:0 0 6px">?? ?? NAS 撌脤?摰?/h3><p class="sub" style="margin:0 0 10px">隢撓?亦?亙?蝣潔???</p>
+    <input id="lockpw" type="password" autocomplete="off" autocapitalize="off" placeholder="?餃撖Ⅳ"><p class="merr" id="lockerr"></p>
+    <div class="mbtns" style="justify-content:space-between"><button class="ghost" id="lockout">?餃撣唾?</button><button class="ghost" id="lockgo">閫??</button></div></div></div>
 <div id="modal" hidden><div class="mbox card" id="mbox"></div></div>
 <div id="selbar" hidden>
-  <b id="selcount">已選 0 個</b>
-  <button class="ghost" id="selall">全選</button>
-  <button class="ghost" id="selnone">取消選取</button>
-  <button id="seldl">下載選取</button>
-  <button id="selshare" hidden>🔗 分享選取</button>
-  <button class="danger" id="seldel" hidden>刪除選取</button>
-  <button class="ghost" id="selexit">完成</button>
+  <b id="selcount">撌脤 0 ??/b>
+  <button class="ghost" id="selall">?券</button>
+  <button class="ghost" id="selnone">???詨?</button>
+  <button id="seldl">銝??詨?</button>
+  <button id="selshare" hidden>?? ?澈?詨?</button>
+  <button class="danger" id="seldel" hidden>?芷?詨?</button>
+  <button class="ghost" id="selexit">摰?</button>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012k"></script>
+<script src="glass.js?v=20261012l"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // macOS (Safari "Add to Dock"): a full-bleed icon gets a white plate behind it, so give Macs a squircle icon with its own transparent margin (iPhone keeps the full-bleed one)
@@ -220,7 +220,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const ls={get:k=>{try{return localStorage.getItem(k)}catch{return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch{}}};
 // device name: user-editable, remembered per browser
 function guessDevice(){const u=navigator.userAgent;
-  return /iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Android/.test(u)?'Android':/Windows/.test(u)?'Windows 電腦':/Mac/.test(u)?'Mac':'未命名裝置'}
+  return /iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Android/.test(u)?'Android':/Windows/.test(u)?'Windows ?餉':/Mac/.test(u)?'Mac':'?芸??蝵?}
 let device=ls.get('nas_device')||guessDevice();
 const opened=new Set(JSON.parse(ls.get('nas_open')||'[]')); // folders start collapsed; only the ones you expanded stay open
 async function token(){const{data}=await sb.auth.getSession();return data.session?.access_token}
@@ -244,16 +244,16 @@ async function init(){
   $('#off').hidden=true;me=await r.json();
   if(needLock())await askUnlock(); // admin with an edit password: ask for it every time the app is opened
   $('#app').hidden=false;
-  $('#who').textContent=me.name+(me.admin?'（管理員）':'');
+  $('#who').textContent=me.name+(me.admin?'嚗恣?嚗?:'');
   $('#setpw').hidden=$('#shares').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh();
 }
 $('#go').onclick=async()=>{
   const{error}=await sb.auth.signInWithPassword({email:$('#u').value.trim(),password:$('#p').value});
-  if(error)$('#err').textContent='帳號或密碼錯誤';else{$('#err').textContent='';init()}
+  if(error)$('#err').textContent='撣唾???蝣潮隤?;else{$('#err').textContent='';init()}
 };
 $('#p').onkeydown=e=>{if(e.key==='Enter')$('#go').click()};
 $('#out').onclick=async()=>{await sb.auth.signOut();location.reload()};
-$('#rename').onclick=()=>{const n=prompt('這台裝置的名稱（上傳預設會存到同名資料夾）',device);
+$('#rename').onclick=()=>{const n=prompt('?鋆蔭??蝔梧?銝?身???啣????冗嚗?,device);
   if(n&&n.trim()){device=n.trim();ls.set('nas_device',device);$('#dev').textContent=device;target=device;drawTarget()}};
 let target=device;
 function fitSel(sel){if(!sel||!sel.options.length)return;const sp=fitSel.sp||(fitSel.sp=Object.assign(document.createElement('span'),{style:'position:absolute;visibility:hidden;white-space:nowrap;left:-9999px'}));
@@ -293,18 +293,18 @@ function sortFolders(){
 }
 function syncToolbar(){
   for(const[v,id]of[['list','#vlist'],['nine','#vnine'],['small','#vsmall']])$(id).classList.toggle('on',view===v);
-  $('#sort').value=sortBy;$('#order').textContent=asc?'↑ 由小到大':'↓ 由大到小';
+  $('#sort').value=sortBy;$('#order').textContent=asc?'???勗??啣之':'???勗之?啣?';
   if(window.glassSegSync)glassSegSync(); // iOS: move the glass lens to the chosen option
 }
 const setPref=()=>{ls.set('nas_view',view);ls.set('nas_sort',sortBy);ls.set('nas_asc',asc?'1':'0');syncToolbar();render(true)};
 $('#vlist').onclick=()=>{view='list';setPref()};$('#vnine').onclick=()=>{view='nine';setPref()};$('#vsmall').onclick=()=>{view='small';setPref()};
-$('#sort').onchange=e=>{sortBy=e.target.value;asc=sortBy==='name';setPref()}; // names read A→Z, dates/sizes newest/biggest first
+$('#sort').onchange=e=>{sortBy=e.target.value;asc=sortBy==='name';setPref()}; // names read A?, dates/sizes newest/biggest first
 $('#order').onclick=()=>{asc=!asc;setPref()};
-const ICON={image:'🖼',video:'🎬',file:'📄'};
-function thumbErr(img){const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.kind==='video'?'🎬':'🖼';img.replaceWith(d)}
+const ICON={image:'?',video:'?',file:'??'};
+function thumbErr(img){const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.kind==='video'?'?':'?';img.replaceWith(d)}
 function media(x,k){
   const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-kind="${x.kind}" src="${API+x.thumb}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
-  return `<a class="thumbA" href="${API+x.url}" target="_blank" rel="noopener" data-open="${esc(k)}">${inner}${x.kind==='video'?'<span class="play">▶</span>':''}</a>`;
+  return `<a class="thumbA" href="${API+x.url}" target="_blank" rel="noopener" data-open="${esc(k)}">${inner}${x.kind==='video'?'<span class="play">??/span>':''}</a>`;
 }
 // selection: pick many files to download, or (admin only) delete
 let selMode=false;const selected=new Set();const keyOf=(f,n)=>f+'/'+n;
@@ -314,36 +314,36 @@ function fileByKey(k){const{folder,name}=splitKey(k);return folders.find(f=>f.na
 function updateSelUI(){
   document.body.classList.toggle('selecting',selMode);
   $('#selbar').hidden=!selMode;$('#selmode').classList.toggle('on',selMode);
-  $('#selcount').textContent='已選 '+selected.size+' 個';
+  $('#selcount').textContent='撌脤 '+selected.size+' ??;
   $('#seldel').hidden=$('#selshare').hidden=!me?.admin;$('#seldel').disabled=$('#selshare').disabled=$('#seldl').disabled=$('#selnone').disabled=!selected.size;
 }
 function fileItem(f,x){
   const u=API+x.url,k=keyOf(f.name,x.name),sel=selected.has(k)?' sel':'';
-  const del=me.admin?`<button class="ghost" data-sharefile="${esc(k)}" style="padding:4px 10px">分享</button><button class="del" data-f="${esc(f.name)}" data-n="${esc(x.name)}">刪除</button>`:'';
-  const meta=`${fmt(x.size)} · 更新 ${new Date(x.mtime).toLocaleDateString()} ${new Date(x.mtime).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`;
+  const del=me.admin?`<button class="ghost" data-sharefile="${esc(k)}" style="padding:4px 10px">?澈</button><button class="del" data-f="${esc(f.name)}" data-n="${esc(x.name)}">?芷</button>`:'';
+  const meta=`${fmt(x.size)} 繚 ?湔 ${new Date(x.mtime).toLocaleDateString()} ${new Date(x.mtime).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`;
   if(view!=='list')return `<div class="cell${sel}" data-k="${esc(k)}" title="${esc(x.name)}"><span class="chk"></span>${media(x,k)}<div class="cn">${esc(x.name)}</div></div>`;
   return `<div class="row${sel}" data-k="${esc(k)}"><span class="chk"></span>${media(x,k)}
-    <div class="info"><a href="${u}" target="_blank" rel="noopener" data-open="${esc(k)}">${esc(x.name)}</a><small>${meta} · ${esc(x.owner)}</small></div>
-    <span class="rbtns"><a class="btn" href="${u}&dl=1" style="padding:4px 10px;text-decoration:none">下載</a>${del}</span></div>`;
+    <div class="info"><a href="${u}" target="_blank" rel="noopener" data-open="${esc(k)}">${esc(x.name)}</a><small>${meta} 繚 ${esc(x.owner)}</small></div>
+    <span class="rbtns"><a class="btn" href="${u}&dl=1" style="padding:4px 10px;text-decoration:none">銝?</a>${del}</span></div>`;
 }
 function render(force){
   const sig=JSON.stringify([folders,view,sortBy,asc,API,selMode,!!me?.admin,q]);
   if(!force&&sig===lastSig)return; // nothing changed: leave the DOM (and loaded thumbnails) alone
   lastSig=sig;
   const allFiles=folders.reduce((n,f)=>n+f.files.length,0),allSize=folders.reduce((n,f)=>n+f.files.reduce((s,x)=>s+x.size,0),0);
-  $('#total').textContent=`全部：${folders.length} 個資料夾 · ${allFiles} 個檔案 · ${fmtTotal(allSize)}`;
+  $('#total').textContent=`?券嚗?{folders.length} ???冗 繚 ${allFiles} ??獢?繚 ${fmtTotal(allSize)}`;
   const shown=q?sortFolders().filter(f=>sortFiles(f.files).length):sortFolders();
-  $('#list').innerHTML=folders.length&&!shown.length?'<div class="card" style="color:var(--mut);text-align:center">找不到符合「'+esc(q)+'」的檔案</div>':folders.length?shown.map(f=>{
+  $('#list').innerHTML=folders.length&&!shown.length?'<div class="card" style="color:var(--mut);text-align:center">?曆??啁泵??+esc(q)+'??瑼?</div>':folders.length?shown.map(f=>{
     const items=sortFiles(f.files).map(x=>fileItem(f,x)).join('');
-    const body=!f.files.length?'<div class="empty">（空資料夾）</div>':view==='list'?items:`<div class="nine${view==='small'?' small':''}">${items}</div>`;
+    const body=!f.files.length?'<div class="empty">嚗征鞈?憭橘?</div>':view==='list'?items:`<div class="nine${view==='small'?' small':''}">${items}</div>`;
     const depth=f.name.split('/').length-1,leaf=f.name.split('/').pop();
     const sub=folders.filter(g=>g.name.startsWith(f.name+'/')),direct=sub.filter(g=>g.name.indexOf('/',f.name.length+1)<0).length,all=[f,...sub]; // a folder's counts include everything inside it
-    const cnt=`${direct?direct+' 個資料夾 · ':''}${all.reduce((n,g)=>n+g.files.length,0)} 個檔案 · ${fmtTotal(all.reduce((n,g)=>n+g.files.reduce((m,x)=>m+x.size,0),0))}`;
-    const tools=`<button class="ghost" data-subfolder="${esc(f.name)}" style="padding:4px 10px" title="在這個資料夾裡新增資料夾">＋ 資料夾</button>`+(selMode&&f.files.length?`<button class="ghost" data-selfolder="${esc(f.name)}" style="padding:4px 10px">全選</button>`:'')
-      +(me.admin?(depth?'':`<button class="ghost" data-pin="${esc(f.name)}" style="padding:4px 10px">${f.pinned?'取消置頂':'📌 置頂'}</button>`)+`<button class="ghost" data-sharefolder="${esc(f.name)}" style="padding:4px 10px">🔗 分享</button><button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button>`:'');
-    const grip=me.admin&&!depth?`<span class="grip" title="按住上下拖動來調整順序" aria-label="拖動調整順序"></span>`:'';
-    return `<details class="fold card${f.pinned?' pinned':''}${me.admin&&!depth?' hasgrip':''}"${depth?` style="margin-left:${depth*14}px"`:''} data-f="${esc(f.name)}" data-pinned="${f.pinned?1:0}"${opened.has(f.name)||q?' open':''}><summary>${grip}<span class="fname">${f.pinned?'📌 ':''}📂 ${esc(leaf)} <span class="cnt">${cnt}</span></span>
-      <span class="ftools">${tools}</span></summary>${body}</details>`}).join(''):'<div class="card" style="color:var(--mut);text-align:center">還沒有資料夾，上傳檔案會自動建立「'+esc(device)+'」</div>';
+    const cnt=`${direct?direct+' ???冗 繚 ':''}${all.reduce((n,g)=>n+g.files.length,0)} ??獢?繚 ${fmtTotal(all.reduce((n,g)=>n+g.files.reduce((m,x)=>m+x.size,0),0))}`;
+    const tools=`<button class="ghost" data-subfolder="${esc(f.name)}" style="padding:4px 10px" title="?券??冗鋆⊥憓??冗">嚗?鞈?憭?/button>`+(selMode&&f.files.length?`<button class="ghost" data-selfolder="${esc(f.name)}" style="padding:4px 10px">?券</button>`:'')
+      +(me.admin?(depth?'':`<button class="ghost" data-pin="${esc(f.name)}" style="padding:4px 10px">${f.pinned?'??蝵桅?':'?? 蝵桅?'}</button>`)+`<button class="ghost" data-sharefolder="${esc(f.name)}" style="padding:4px 10px">?? ?澈</button><button class="del" data-delfolder="${esc(f.name)}">?芷鞈?憭?/button>`:'');
+    const grip=me.admin&&!depth?`<span class="grip" title="??銝???靘矽?湧?摨? aria-label="??隤踵??"></span>`:'';
+    return `<details class="fold card${f.pinned?' pinned':''}${me.admin&&!depth?' hasgrip':''}"${depth?` style="margin-left:${depth*14}px"`:''} data-f="${esc(f.name)}" data-pinned="${f.pinned?1:0}"${opened.has(f.name)||q?' open':''}><summary>${grip}<span class="fname">${f.pinned?'?? ':''}?? ${esc(leaf)} <span class="cnt">${cnt}</span></span>
+      <span class="ftools">${tools}</span></summary>${body}</details>`}).join(''):'<div class="card" style="color:var(--mut);text-align:center">?????冗嚗??單?獢??芸?撱箇???+esc(device)+'??/div>';
   syncNested();updateSelUI();
 }
 async function refresh(){
@@ -366,23 +366,23 @@ syncToolbar();fitSel($('#sort'));
 if(document.documentElement.classList.contains('ios')||matchMedia('(max-width:699px)').matches)try{
   const bar1=$('#newf').parentElement,mk=()=>{const d=document.createElement('div');d.className='bar';return d};
   $('#dev').parentElement.style.display='none';$('#rename').style.display='none';
-  const up=$('#target').parentElement,w=document.createElement('span');w.append('上傳到：',$('#target'));up.remove();
-  const sb=$('.seg').parentElement,segBar=mk();segBar.classList.add('segrow');segBar.append('顯示方式：',$('.seg'));sb.before(segBar);
+  const up=$('#target').parentElement,w=document.createElement('span');w.append('銝?堆?',$('#target'));up.remove();
+  const sb=$('.seg').parentElement,segBar=mk();segBar.classList.add('segrow');segBar.append('憿舐內?孵?嚗?,$('.seg'));sb.before(segBar);
   const last=mk();last.append(w,$('#selmode'));segBar.before(last);   // order: upload target / view switch / sort
   const sbar=$('#selbar'),top=document.createElement('div'),bot=document.createElement('div');top.className='seltop';bot.className='selbot';   // select mode: close + bulk actions on top, share / download as round icons in the bottom corners
   top.append($('#selcount'),$('#seldel'),$('#selnone'),$('#selall'),$('#selexit'));bot.append($('#selshare'),$('#seldl'));sbar.append(top,bot);
-  $('#selshare').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14.5V3.5M8 7l4-4 4 4"/><path d="M7.5 10H6.5a2.5 2.5 0 0 0-2.5 2.5v6A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5v-6A2.5 2.5 0 0 0 17.5 10h-1"/></svg>';$('#selshare').setAttribute('aria-label','分享選取');
-  $('#selexit').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.8l4.2 4.2L18.5 7.5"/></svg>';$('#selexit').setAttribute('aria-label','完成');
+  $('#selshare').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14.5V3.5M8 7l4-4 4 4"/><path d="M7.5 10H6.5a2.5 2.5 0 0 0-2.5 2.5v6A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5v-6A2.5 2.5 0 0 0 17.5 10h-1"/></svg>';$('#selshare').setAttribute('aria-label','?澈?詨?');
+  $('#selexit').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.8l4.2 4.2L18.5 7.5"/></svg>';$('#selexit').setAttribute('aria-label','摰?');
   const sent=document.createElement('div');sent.id='topsent';sent.setAttribute('aria-hidden','true');document.body.appendChild(sent);
   const band=document.createElement('div');band.id='topband';band.style.cssText='background:#000;opacity:1;-webkit-backdrop-filter:none;backdrop-filter:none';band.setAttribute('aria-hidden','true');document.body.appendChild(band);   // select-mode blur band (separate element, sits under the button row)   // always keeps a fixed element at the top (see glass.css)
-  $('#seldl').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M8 11l4 4 4-4"/><path d="M4.5 17v1.5A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5V17"/></svg>';$('#seldl').setAttribute('aria-label','下載選取');
+  $('#seldl').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M8 11l4 4 4-4"/><path d="M4.5 17v1.5A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5V17"/></svg>';$('#seldl').setAttribute('aria-label','銝??詨?');
   
 }catch(e){console.error('layout',e)}
 // desktop layout (phones / iOS keep the original): row 1 = upload target + new folder + ..., row 2 = sort / select / search, row 3 = view switch; the device name + rename are hidden
 if(!document.documentElement.classList.contains('ios')&&matchMedia('(min-width:700px)').matches){
   const b1=$('#newf').parentElement;$('#dev').parentElement.style.display='none';$('#rename').style.display='none';
-  const up=$('#target').parentElement,w=document.createElement('span');w.append('上傳到：',$('#target'));b1.insertBefore(w,$('#newf'));up.remove();
-  const sb=$('.seg').parentElement,nb=document.createElement('div');nb.className='bar';nb.append('顯示方式：',$('.seg'));sb.after(nb);
+  const up=$('#target').parentElement,w=document.createElement('span');w.append('銝?堆?',$('#target'));b1.insertBefore(w,$('#newf'));up.remove();
+  const sb=$('.seg').parentElement,nb=document.createElement('div');nb.className='bar';nb.append('憿舐內?孵?嚗?,$('.seg'));sb.after(nb);
 }
 function setSel(k,on){on?selected.add(k):selected.delete(k);
   for(const el of document.querySelectorAll('[data-k]'))if(el.dataset.k===k)el.classList.toggle('sel',on)}
@@ -399,7 +399,7 @@ function setSel(k,on){on?selected.add(k):selected.delete(k);
 {let pm=null;const closePm=()=>{if(pm){const m=pm;pm=null;m.classList.add('out');setTimeout(()=>m.remove(),170)}};
   $('#dup').onclick=e=>{e.stopPropagation();if(pm){closePm();return}
     const m=document.createElement('div');m.className='gmenu';m.style.visibility='hidden';pm=m;
-    for(const[t,f]of[['⬆ 上傳檔案',()=>$('#f').click()],['📁 新增資料夾',()=>$('#newf').click()]]){const d=document.createElement('div');d.textContent=t;d.onclick=ev=>{ev.stopPropagation();closePm();f()};m.appendChild(d)}
+    for(const[t,f]of[['漎?銝瑼?',()=>$('#f').click()],['?? ?啣?鞈?憭?,()=>$('#newf').click()]]){const d=document.createElement('div');d.textContent=t;d.onclick=ev=>{ev.stopPropagation();closePm();f()};m.appendChild(d)}
     $('#dock').appendChild(m);   // lives inside the (fixed) dock, so it can never change the page's height or scroll position
     const du=$('#dup'),w=m.offsetWidth;m.className='gmenu dockmenu';m.style.left=(du.offsetLeft+du.offsetWidth/2-w/2)+'px';m.style.transformOrigin='50% 100%';m.style.visibility='visible'};
   document.addEventListener('pointerdown',e=>{if(pm&&!e.target.closest('.gmenu')&&!e.target.closest('#dup'))closePm()},true)}
@@ -412,12 +412,12 @@ $('#selnone').onclick=()=>{[...selected].forEach(k=>setSel(k,false));updateSelUI
 function selectFolder(name){folders.find(f=>f.name===name)?.files.forEach(x=>setSel(keyOf(name,x.name),true));updateSelUI()}
 // iPhone / iPad: a link to the API (another site) opens "Open in Safari?" and the file is lost. So fetch the file here and save it as a blob (files over ~600 MB can't be held in memory -> normal link).
 const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),BLOB_MAX=600*1024*1024;
-// after the download finishes, show a "save" pill: tapping it (a fresh tap, which iOS requires) opens the share sheet with 儲存到檔案 / 儲存影像
+// after the download finishes, show a "save" pill: tapping it (a fresh tap, which iOS requires) opens the share sheet with ?脣??唳?獢?/ ?脣?敶勗?
 function offerSave(files){
   files=files.filter(Boolean);if(!files.length)return;
   document.querySelector('#savepill')?.remove();
   const p=document.createElement('div');p.id='savepill';
-  p.innerHTML=`<span>已下載 ${files.length} 個檔案</span><button id="savego">儲存</button><button id="saveno" class="ghost">✕</button>`;document.body.appendChild(p);
+  p.innerHTML=`<span>撌脖?頛?${files.length} ??獢?/span><button id="savego">?脣?</button><button id="saveno" class="ghost">??/button>`;document.body.appendChild(p);
   $('#saveno').onclick=()=>p.remove();
   $('#savego').onclick=async()=>{
     try{if(navigator.canShare&&navigator.canShare({files})){await navigator.share({files});p.remove();return}}catch(e){if(e&&e.name==='AbortError')return}
@@ -429,7 +429,7 @@ async function dlFile(url,name,btn){
   try{const r=await fetch(url);if(!r.ok)throw 0;const total=+r.headers.get('content-length')||0,rd=r.body.getReader(),parts=[];let got=0;
     for(;;){const{done,value}=await rd.read();if(done)break;parts.push(value);got+=value.length;if(btn&&btn.dataset.pct!==undefined&&total)btn.textContent=Math.floor(got/total*100)+'%'}
     return new File(parts,name,{type:r.headers.get('content-type')||'application/octet-stream'})}
-  catch{alert('下載失敗：'+name);return null}
+  catch{alert('銝?憭望?嚗?+name);return null}
   finally{if(btn){btn.disabled=false;btn.style.opacity='';if(btn.dataset.pct!==undefined)btn.textContent=btn.dataset.pct}}
 }
 $('#seldl').onclick=async()=>{ // browsers may ask to allow multiple downloads the first time
@@ -440,13 +440,13 @@ $('#seldl').onclick=async()=>{ // browsers may ask to allow multiple downloads t
     await new Promise(r=>setTimeout(r,700))}
   if(got.length)offerSave(got);
 };
-$('#seldel').onclick=()=>deleteItems([...selected].map(splitKey),`確定要刪除選取的 ${selected.size} 個檔案嗎？此動作無法復原。`);
+$('#seldel').onclick=()=>deleteItems([...selected].map(splitKey),`蝣箏?閬?日?? ${selected.size} ??獢?嚗迨???⊥?敺拙??);
 async function deleteItems(items,msg){ // admin only; the server checks too. One edit-password prompt covers the whole batch.
   if(!me.admin||!items.length||!confirm(msg))return;
-  const pw=prompt('請輸入編輯密碼');if(pw===null)return;
+  const pw=prompt('隢撓?亦楊頛臬?蝣?);if(pw===null)return;
   const r=await api('/api/delete-files',{method:'POST',headers:{'X-Edit-Password':pw},body:JSON.stringify({items})});
   const j=await r.json().catch(()=>({}));
-  if(!r.ok){alert(j.error||'刪除失敗');return false}
+  if(!r.ok){alert(j.error||'?芷憭望?');return false}
   items.forEach(i=>selected.delete(keyOf(i.folder,i.name)));
   await refresh();render(true);
   return true;
@@ -461,10 +461,10 @@ function syncNested(){
 $('#list').addEventListener('toggle',e=>{const f=e.target.dataset?.f;if(!f||!e.target.matches('details.fold'))return;
   if(!q){e.target.open?opened.add(f):opened.delete(f);ls.set('nas_open',JSON.stringify([...opened]))}
   syncNested()},true);
-// ---- folder layout (admin): pin to top, drag the ⠿ handle to reorder (mouse or touch). Saved on the server, so every device shows the same. ----
+// ---- folder layout (admin): pin to top, drag the ??handle to reorder (mouse or touch). Saved on the server, so every device shows the same. ----
 async function saveFolderPrefs(body){
   const r=await api('/api/folder-prefs',{method:'PUT',body:JSON.stringify(body)});
-  if(!r.ok)alert((await r.json().catch(()=>({}))).error||'儲存失敗');
+  if(!r.ok)alert((await r.json().catch(()=>({}))).error||'?脣?憭望?');
   await refresh();
 }
 async function togglePin(name){
@@ -541,11 +541,11 @@ $('#list').onclick=async e=>{
   if(b){
     if(b.dataset.selfolder){e.preventDefault();return selectFolder(b.dataset.selfolder)}
     if(b.dataset.pin){e.preventDefault();return togglePin(b.dataset.pin)}
-    if(b.dataset.sharefolder){e.preventDefault();const n=b.dataset.sharefolder;return shareDialog(`資料夾「${n}」（${folders.find(f=>f.name===n)?.files.length||0} 個檔案，之後新增的檔案也會出現在分享裡）`,{folder:n})}
-    if(b.dataset.sharefile){const k=b.dataset.sharefile;return shareDialog(`檔案「${splitKey(k).name}」`,{items:[splitKey(k)]})}
-    if(b.dataset.subfolder){e.preventDefault();const par=b.dataset.subfolder,n=prompt(`在「${par.replace(/\//g,' / ')}」裡新增資料夾，名稱：`);if(!n||!n.trim())return;const r=await api('/api/folder?name='+encodeURIComponent(par+'/'+n.trim()),{method:'POST'});if(!r.ok)alert((await r.json()).error);else{opened.add(par);ls.set('nas_open',JSON.stringify([...opened]));refresh()}return}
+    if(b.dataset.sharefolder){e.preventDefault();const n=b.dataset.sharefolder;return shareDialog(`鞈?憭整?{n}??${folders.find(f=>f.name===n)?.files.length||0} ??獢?銋??啣???獢???曉?澈鋆∴?`,{folder:n})}
+    if(b.dataset.sharefile){const k=b.dataset.sharefile;return shareDialog(`瑼???{splitKey(k).name}?,{items:[splitKey(k)]})}
+    if(b.dataset.subfolder){e.preventDefault();const par=b.dataset.subfolder,n=prompt(`?具?{par.replace(/\//g,' / ')}?ㄐ?啣?鞈?憭橘??迂嚗);if(!n||!n.trim())return;const r=await api('/api/folder?name='+encodeURIComponent(par+'/'+n.trim()),{method:'POST'});if(!r.ok)alert((await r.json()).error);else{opened.add(par);ls.set('nas_open',JSON.stringify([...opened]));refresh()}return}
     if(b.dataset.delfolder){e.preventDefault();return delFolder(b.dataset.delfolder)}
-    if(b.dataset.n)return deleteItems([{folder:b.dataset.f,name:b.dataset.n}],`確定要刪除「${b.dataset.n}」嗎？`);
+    if(b.dataset.n)return deleteItems([{folder:b.dataset.f,name:b.dataset.n}],`蝣箏?閬?扎?{b.dataset.n}??嚗);
     return;
   }
   if(selMode&&!e.target.closest('a.btn')){ // in select mode a tap toggles the item instead of opening it
@@ -567,78 +567,78 @@ const closeModal=()=>{$('#modal').hidden=true;$('#modal').classList.remove('top'
 $('#modal').onclick=e=>{if(e.target.id==='modal')closeModal()};
 async function copyText(text,btn){
   try{await navigator.clipboard.writeText(text)}catch{const i=document.createElement('input');i.value=text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove()}
-  if(btn){const o=btn.textContent;btn.textContent='已複製 ✓';setTimeout(()=>btn.textContent=o,1500)}
+  if(btn){const o=btn.textContent;btn.textContent='撌脰?鋆???;setTimeout(()=>btn.textContent=o,1500)}
 }
 function shareDialog(label,payload){
-  showModal(`<h3>🔗 建立分享連結</h3><p class="sub">分享內容：${esc(label)}<br>對方<b>不需要登入</b>，開啟連結後就能<b>檢視與下載</b>（唯讀，看不到其他檔案）。</p>
-    <label>分享密碼（選填：不設密碼就留空；要設的話至少 4 個字元，只用於這一個連結）</label><input id="sp1" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false" placeholder="留空 = 不設密碼">
-    <label>再輸入一次</label><input id="sp2" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false">
-    <div class="mwarn" id="nopw" hidden style="margin:6px 0 0">⚠️ 沒有設密碼：任何拿到連結的人都能開啟，請只傳給你信任的人。</div>
-    <label>連結有效期限</label>
-    <select id="sexp"><option value="1h">1 小時</option><option value="6h">6 小時</option><option value="1d">1 天</option><option value="7d" selected>7 天</option><option value="30d">30 天</option><option value="never">永久（可隨時撤銷）</option><option value="custom">自訂…</option></select>
-    <div id="scustom" hidden style="display:none;gap:6px;margin-top:6px;align-items:center"><input id="sn" type="text" inputmode="numeric" placeholder="數字" style="width:90px;margin:0"><select id="su"><option value="h">小時</option><option value="d" selected>天</option></select></div>
+  showModal(`<h3>?? 撱箇??澈???</h3><p class="sub">?澈?批捆嚗?{esc(label)}<br>撠<b>銝?閬??/b>嚗????敺停??b>瑼Ｚ???頛?/b>嚗霈嚗?銝?嗡?瑼?嚗?/p>
+    <label>?澈撖Ⅳ嚗憛恬?銝身撖Ⅳ撠梁?蝛綽?閬身?店?喳? 4 ?????芰?潮????嚗?/label><input id="sp1" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false" placeholder="?征 = 銝身撖Ⅳ">
+    <label>?撓?乩?甈?/label><input id="sp2" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false">
+    <div class="mwarn" id="nopw" hidden style="margin:6px 0 0">?? 瘝?閮剖?蝣潘?隞颱??踹????犖?質??嚗??芸蝯虫?靽∩遙?犖??/div>
+    <label>???????</label>
+    <select id="sexp"><option value="1h">1 撠?</option><option value="6h">6 撠?</option><option value="1d">1 憭?/option><option value="7d" selected>7 憭?/option><option value="30d">30 憭?/option><option value="never">瘞訾?嚗?冽??日嚗?/option><option value="custom">?芾???/option></select>
+    <div id="scustom" hidden style="display:none;gap:6px;margin-top:6px;align-items:center"><input id="sn" type="text" inputmode="numeric" placeholder="?詨?" style="width:90px;margin:0"><select id="su"><option value="h">撠?</option><option value="d" selected>憭?/option></select></div>
     <p class="merr" id="serr"></p>
-    <div class="mbtns"><button id="smk">建立分享連結</button><button class="ghost" id="scancel">取消</button></div>`);
+    <div class="mbtns"><button id="smk">撱箇??澈???</button><button class="ghost" id="scancel">??</button></div>`);
   $('#scancel').onclick=closeModal;$('#sp1').focus();
   const syncForm=()=>{$('#nopw').hidden=!!($('#sp1').value||$('#sp2').value);const c=$('#sexp').value==='custom';$('#scustom').style.display=c?'flex':'none';if(c)$('#sn').focus()};
   $('#sp1').oninput=$('#sp2').oninput=syncForm;$('#sexp').onchange=syncForm;syncForm();
   $('#smk').onclick=async()=>{
     const p1=$('#sp1').value,p2=$('#sp2').value;
     if(p1||p2){ // a password is optional; if given it needs 4+ characters and must match
-      if(p1.length<4)return $('#serr').textContent='密碼至少要 4 個字元（或留空不設密碼）';
-      if(p1!==p2)return $('#serr').textContent='兩次輸入的密碼不一樣';
+      if(p1.length<4)return $('#serr').textContent='撖Ⅳ?喳?閬?4 ??????蝛箔?閮剖?蝣潘?';
+      if(p1!==p2)return $('#serr').textContent='?拇活頛詨??蝣潔?銝璅?;
     }
     let hours;const ev=$('#sexp').value; // lifetime in hours; 0 = never
     if(ev==='never')hours=0;
     else if(ev==='custom'){
       const n=Number($('#sn').value.trim());
-      if(!Number.isFinite(n)||n<=0||!/^\d+(\.\d+)?$/.test($('#sn').value.trim()))return $('#serr').textContent='請輸入大於 0 的數字';
+      if(!Number.isFinite(n)||n<=0||!/^\d+(\.\d+)?$/.test($('#sn').value.trim()))return $('#serr').textContent='隢撓?亙之??0 ?摮?;
       hours=n*($('#su').value==='d'?24:1);
-      if(hours>24*3650)return $('#serr').textContent='有效期限最長 3650 天';
+      if(hours>24*3650)return $('#serr').textContent='???????3650 憭?;
     }else hours=ev.endsWith('h')?parseInt(ev):parseInt(ev)*24;
     $('#smk').disabled=true;$('#serr').textContent='';
     const r=await api('/api/share/create',{method:'POST',body:JSON.stringify({...payload,password:p1,expiresHours:hours})});
     const j=await r.json().catch(()=>({}));
-    if(!r.ok){$('#smk').disabled=false;return $('#serr').textContent=j.error||'建立失敗'}
+    if(!r.ok){$('#smk').disabled=false;return $('#serr').textContent=j.error||'撱箇?憭望?'}
     const url=shareUrl(j.id);
-    showModal(`<h3>✅ 分享連結已建立</h3><p class="sub">分享內容：${esc(label)}</p>
-      <label>分享連結</label><input id="slink" type="text" readonly value="${esc(url)}">
-      <div class="mbtns"><button id="scopy">複製連結</button>${navigator.share?'<button class="ghost" id="sshare">用其他 App 傳送…</button>':''}<button class="ghost" id="sdone">完成</button></div>
-      <div class="mwarn">${p1?'請<b>另外</b>把密碼告訴對方（不要和連結放在同一則訊息）。密碼會加密保存在你的電腦上，之後可以到頁面頂端的「🔗 已分享連結」，輸入編輯密碼後再查看。':'這個分享<b>沒有設密碼</b>：任何拿到連結的人都能開啟，請只傳給你信任的人。不放心的話，可以到頁面頂端的「🔗 已分享連結」隨時撤銷。'}</div>`);
+    showModal(`<h3>???澈???撌脣遣蝡?/h3><p class="sub">?澈?批捆嚗?{esc(label)}</p>
+      <label>?澈???</label><input id="slink" type="text" readonly value="${esc(url)}">
+      <div class="mbtns"><button id="scopy">銴ˊ???</button>${navigator.share?'<button class="ghost" id="sshare">?典隞?App ?喲?/button>':''}<button class="ghost" id="sdone">摰?</button></div>
+      <div class="mwarn">${p1?'隢?b>?血?</b>??蝣澆?閮游??對?銝?????曉?????荔???蝣潭???靽??其???虫?嚗?敺隞亙??垢???撌脣?鈭恍????頛詨蝺刻摩撖Ⅳ敺??亦???:'??鈭?b>瘝?閮剖?蝣?/b>嚗遙雿?圈???犖?質??嚗??芸蝯虫?靽∩遙?犖???曉??店嚗隞亙??垢???撌脣?鈭恍?????瑯?}</div>`);
     $('#slink').onfocus=e=>e.target.select();
     $('#scopy').onclick=e=>copyText(url,e.target);$('#sdone').onclick=closeModal;
-    if($('#sshare'))$('#sshare').onclick=()=>navigator.share({title:'檔案分享',url}).catch(()=>{});
+    if($('#sshare'))$('#sshare').onclick=()=>navigator.share({title:'瑼??澈',url}).catch(()=>{});
     if(selMode){selected.clear();selMode=false;render(true)}
   };
 }
 async function sharesManager(){ // every share: link, password (after entering the edit password), expiry, usage; copy / revoke
-  showModal('<h3>🔗 已分享連結</h3><p class="sub">載入中…</p>');
+  showModal('<h3>?? 撌脣?鈭恍??</h3><p class="sub">頛銝凌?/p>');
   let list=[],revealed=null; // revealed passwords live only in this dialog and are dropped when it closes
   const load=async()=>{const r=await api('/api/shares');if(!r.ok)throw 0;list=await r.json()};
-  try{await load()}catch{showModal('<h3>🔗 已分享連結</h3><p class="merr">無法載入</p><div class="mbtns"><button class="ghost" id="sx">關閉</button></div>');$('#sx').onclick=closeModal;return}
+  try{await load()}catch{showModal('<h3>?? 撌脣?鈭恍??</h3><p class="merr">?⊥?頛</p><div class="mbtns"><button class="ghost" id="sx">??</button></div>');$('#sx').onclick=closeModal;return}
   const when=t=>new Date(t).toLocaleString();
-  const left=t=>{const ms=t-Date.now();if(ms<=0)return'已到期';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return d?`剩 ${d} 天 ${h} 小時`:h?`剩 ${h} 小時 ${m} 分`:`剩 ${m} 分鐘`};
+  const left=t=>{const ms=t-Date.now();if(ms<=0)return'撌脣??;const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return d?`??${d} 憭?${h} 撠?`:h?`??${h} 撠? ${m} ?:`??${m} ??`};
   const keysOf=s=>s.type==='folder'?(folders.find(f=>f.name===s.folder)?.files.map(x=>keyOf(s.folder,x.name))||[]):(s.items||[]).map(i=>keyOf(i.folder,i.name)).filter(k=>fileByKey(k));
   const keyMap={}; // share id -> the files it shows, so a thumbnail opens the preview with prev/next inside that share
   const thumbs=s=>{
     const keys=keysOf(s);keyMap[s.id]=keys;
-    if(!keys.length)return '<div class="sub" style="margin:6px 0">（這些檔案已不存在）</div>';
+    if(!keys.length)return '<div class="sub" style="margin:6px 0">嚗?瑼?撌脖?摮嚗?/div>';
     const MAX=40;
     return `<div class="sth">${keys.slice(0,MAX).map(k=>{const x=fileByKey(k);
       const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-kind="${x.kind}" src="${API+x.thumb}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
-      return `<a class="sc" href="#" data-pv="${esc(k)}" data-sid="${esc(s.id)}" title="${esc(x.name)}">${inner}${x.kind==='video'?'<span class="play">▶</span>':''}</a>`}).join('')}${keys.length>MAX?`<span class="sub" style="align-self:center;margin:0 4px">+${keys.length-MAX} 個</span>`:''}</div>`;
+      return `<a class="sc" href="#" data-pv="${esc(k)}" data-sid="${esc(s.id)}" title="${esc(x.name)}">${inner}${x.kind==='video'?'<span class="play">??/span>':''}</a>`}).join('')}${keys.length>MAX?`<span class="sub" style="align-self:center;margin:0 4px">+${keys.length-MAX} ??/span>`:''}</div>`;
   };
-  const pwCell=s=>!s.hasPassword?'<span style="color:#b45309">（沒有設密碼：任何人有連結就能開啟）</span>':!s.pwStored?'<span style="color:var(--mut)">（未儲存）</span>':revealed?(revealed[s.id]==null?'<span style="color:var(--mut)">（無法解密）</span>':`<code style="user-select:all;font-size:15px">${esc(revealed[s.id])}</code> <button class="ghost" data-copypw="${esc(s.id)}" style="padding:2px 8px">複製密碼</button>`):'<code>••••••••</code>';
+  const pwCell=s=>!s.hasPassword?'<span style="color:#b45309">嚗??身撖Ⅳ嚗遙雿犖???撠梯??嚗?/span>':!s.pwStored?'<span style="color:var(--mut)">嚗?脣?嚗?/span>':revealed?(revealed[s.id]==null?'<span style="color:var(--mut)">嚗瘜圾撖?</span>':`<code style="user-select:all;font-size:15px">${esc(revealed[s.id])}</code> <button class="ghost" data-copypw="${esc(s.id)}" style="padding:2px 8px">銴ˊ撖Ⅳ</button>`):'<code>?ＴＴＴＴＴＴＴ?/code>';
   const draw=()=>{
-    showModal(`<div class="mhead"><h3>🔗 已分享連結（${list.length}）</h3><button class="ghost" id="sx">關閉</button></div><p class="sub">對方開啟連結（有設密碼的要先輸入密碼）後可檢視與下載，唯讀。點縮圖可以直接預覽。撤銷後連結立刻失效，對方已經打開的下載連結也一併失效。密碼要輸入編輯密碼才會顯示。</p>
-      ${list.some(s=>s.hasPassword)?`<div class="mbtns" style="margin:0 0 6px">${revealed?'<button class="ghost" data-hide="1">🙈 隱藏密碼</button>':'<button data-reveal="1">🔑 顯示密碼</button>'}</div>`:''}`+
-      (list.length?list.map(s=>`<div class="srow"><b>${s.type==='folder'?'📁 資料夾「'+esc(s.folder)+'」· '+s.count+' 個檔案（即時）':'📄 '+s.count+' 個檔案'}</b>
+    showModal(`<div class="mhead"><h3>?? 撌脣?鈭恍??嚗?{list.length}嚗?/h3><button class="ghost" id="sx">??</button></div><p class="sub">撠?????嚗?閮剖?蝣潛?閬?頛詨撖Ⅳ嚗??舀炎閬?銝?嚗霈??蝮桀??臭誑?湔?汗??瑕????蝡憭望?嚗??孵歇蝬???銝????銋?雿萄仃??蝣潸?頛詨蝺刻摩撖Ⅳ??憿舐內??/p>
+      ${list.some(s=>s.hasPassword)?`<div class="mbtns" style="margin:0 0 6px">${revealed?'<button class="ghost" data-hide="1">?? ?梯?撖Ⅳ</button>':'<button data-reveal="1">?? 憿舐內撖Ⅳ</button>'}</div>`:''}`+
+      (list.length?list.map(s=>`<div class="srow"><b>${s.type==='folder'?'?? 鞈?憭整?+esc(s.folder)+'??'+s.count+' ??獢??單?嚗?:'?? '+s.count+' ??獢?}</b>
         ${thumbs(s)}
-        <small>建立 ${when(s.created)} · 已開啟 ${s.opens} 次${s.lastOpen?'（最近 '+when(s.lastOpen)+'）':''}</small>
-        <div style="display:flex;gap:6px;margin:4px 0"><input type="text" readonly value="${esc(shareUrl(s.id))}" onfocus="this.select()" style="flex:1;min-width:0;padding:6px 8px;font-size:12px;margin:0"><button class="ghost" data-copy="${esc(s.id)}" style="padding:4px 10px;white-space:nowrap">複製連結</button></div>
-        <div style="margin:4px 0">密碼：${pwCell(s)}</div>
-        <div style="margin:4px 0">有效期限：${s.expires?when(s.expires)+'（'+left(s.expires)+'）':'永久有效'}</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin-top:4px"><button class="del" data-revoke="${esc(s.id)}">撤銷這個分享</button><a class="btn vlk" href="${esc(shareUrl(s.id))}" target="_blank" rel="noopener noreferrer">開啟連結</a></div></div>`).join(''):'<p class="sub">目前沒有任何分享。</p>')+
+        <small>撱箇? ${when(s.created)} 繚 撌脤???${s.opens} 甈?{s.lastOpen?'嚗?餈?'+when(s.lastOpen)+'嚗?:''}</small>
+        <div style="display:flex;gap:6px;margin:4px 0"><input type="text" readonly value="${esc(shareUrl(s.id))}" onfocus="this.select()" style="flex:1;min-width:0;padding:6px 8px;font-size:12px;margin:0"><button class="ghost" data-copy="${esc(s.id)}" style="padding:4px 10px;white-space:nowrap">銴ˊ???</button></div>
+        <div style="margin:4px 0">撖Ⅳ嚗?{pwCell(s)}</div>
+        <div style="margin:4px 0">????嚗?{s.expires?when(s.expires)+'嚗?+left(s.expires)+'嚗?:'瘞訾???'}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin-top:4px"><button class="del" data-revoke="${esc(s.id)}">?日??鈭?/button><a class="btn vlk" href="${esc(shareUrl(s.id))}" target="_blank" rel="noopener noreferrer">?????</a></div></div>`).join(''):'<p class="sub">?桀?瘝?隞颱??澈??/p>')+
       '');
     $('#sx').onclick=closeModal;
     $('#mbox').onclick=async e=>{
@@ -649,15 +649,15 @@ async function sharesManager(){ // every share: link, password (after entering t
       if(b.dataset.copypw)return copyText(revealed[b.dataset.copypw],b);
       if(b.dataset.hide){revealed=null;return draw()}
       if(b.dataset.reveal){
-        const pw=prompt('請輸入編輯密碼，以顯示分享密碼');if(pw===null)return;
+        const pw=prompt('隢撓?亦楊頛臬?蝣潘?隞仿＊蝷箏?鈭怠?蝣?);if(pw===null)return;
         const rr=await api('/api/shares/reveal',{method:'POST',headers:{'X-Edit-Password':pw}});
         const j=await rr.json().catch(()=>({}));
-        if(!rr.ok)return alert(j.error||'無法顯示');
+        if(!rr.ok)return alert(j.error||'?⊥?憿舐內');
         revealed=j.passwords;return draw();
       }
-      if(b.dataset.revoke&&confirm('確定要撤銷這個分享連結嗎？撤銷後對方就無法再開啟。')){
+      if(b.dataset.revoke&&confirm('蝣箏?閬?琿?鈭恍?????日敺??孵停?⊥?????)){
         const rr=await api('/api/share?id='+encodeURIComponent(b.dataset.revoke),{method:'DELETE'});
-        if(!rr.ok)return alert((await rr.json().catch(()=>({}))).error||'撤銷失敗');
+        if(!rr.ok)return alert((await rr.json().catch(()=>({}))).error||'?日憭望?');
         try{await load();draw()}catch{closeModal()}
       }
     };
@@ -665,12 +665,12 @@ async function sharesManager(){ // every share: link, password (after entering t
   draw();
 }
 $('#shares').onclick=sharesManager;
-$('#selshare').onclick=()=>{const items=[...selected].map(splitKey);if(items.length)shareDialog(`${items.length} 個檔案`,{items})};
-$('#vshare').onclick=()=>{const k=vlist[vi]?.k;if(k)shareDialog(`檔案「${splitKey(k).name}」`,{items:[splitKey(k)]})};
+$('#selshare').onclick=()=>{const items=[...selected].map(splitKey);if(items.length)shareDialog(`${items.length} ??獢,{items})};
+$('#vshare').onclick=()=>{const k=vlist[vi]?.k;if(k)shareDialog(`瑼???{splitKey(k).name}?,{items:[splitKey(k)]})};
 $('#vdel').onclick=async()=>{ // admin: delete the file being previewed (confirm + edit password), then move on to the next one
   const k=vlist[vi]?.k;if(!k)return;
   const{folder,name}=splitKey(k);
-  if(!await deleteItems([{folder,name}],`確定要刪除「${name}」嗎？此動作無法復原。`))return;
+  if(!await deleteItems([{folder,name}],`蝣箏?閬?扎?{name}??嚗迨???⊥?敺拙??))return;
   vlist.splice(vi,1);
   if(!vlist.length)return closeViewer();
   vi=Math.min(vi,vlist.length-1);showViewer();
@@ -688,56 +688,56 @@ function openViewer(k,keys){ // keys = an explicit list to browse (e.g. the file
   $('#viewer').hidden=false;document.body.style.overflow='hidden';showViewer();
 }
 function stopMedia(){for(const m of $('#vstage').querySelectorAll('video,audio')){m.pause();m.removeAttribute('src');m.load()}}
-// file info panel (the ℹ️ button): facts about the file being previewed; size/resolution/length come from the file itself once it has loaded
+// file info panel (the ?對? button): facts about the file being previewed; size/resolution/length come from the file itself once it has loaded
 let vmeta={};
 const fmtDur=s=>{if(!Number.isFinite(s))return'';s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return(h?h+':'+String(m).padStart(2,'0'):m)+':'+String(r).padStart(2,'0')};
-const TYPES={image:'圖片',video:'影片'};
+const TYPES={image:'??',video:'敶梁?'};
 function renderInfo(){
   const p=$('#vinfop');if(p.hidden||!vlist[vi])return;
   $('#viewer').style.setProperty('--vbar',document.querySelector('.vtop').getBoundingClientRect().bottom+6+'px'); // the toolbar can be one or two rows tall (and float with margins on iOS): keep the panel just below it
-  const{k,x}=vlist[vi],{folder}=splitKey(k),ext=extOf(x.name),label=x.kind in TYPES?TYPES[x.kind]:ext==='mp3'||ext==='wav'?'音訊':ext==='pdf'?'PDF 文件':ext==='txt'?'文字檔':'檔案';
-  const rows=[['名稱',x.name],['資料夾',folder],['類型',label+(ext?'（'+ext.toUpperCase()+'）':'')],['大小',fmt(x.size)],
-    ['更新日期',new Date(x.mtime).toLocaleString()]];
-  if(x.uploaded)rows.push(['上傳時間',new Date(x.uploaded).toLocaleString()]);
-  if(x.owner&&x.owner!=='?')rows.push(['上傳者',x.owner]);
-  if(vmeta.w&&vmeta.h)rows.push(['解析度',`${vmeta.w} × ${vmeta.h}（${(vmeta.w*vmeta.h/1e6).toFixed(1)} MP）`]);
-  if(vmeta.dur)rows.push(['長度',fmtDur(vmeta.dur)]);
-  if(x.preview)rows.push(['備註','HEIC 照片：預覽使用轉好的 JPG，下載的是原檔']);
-  p.innerHTML='<h4>ℹ️ 檔案資訊</h4>'+rows.map(([a,b])=>`<div class="ir"><span class="ik">${a}</span><span class="iv">${esc(b)}</span></div>`).join('');
+  const{k,x}=vlist[vi],{folder}=splitKey(k),ext=extOf(x.name),label=x.kind in TYPES?TYPES[x.kind]:ext==='mp3'||ext==='wav'?'?唾?':ext==='pdf'?'PDF ?辣':ext==='txt'?'??瑼?:'瑼?';
+  const rows=[['?迂',x.name],['鞈?憭?,folder],['憿?',label+(ext?'嚗?+ext.toUpperCase()+'嚗?:'')],['憭批?',fmt(x.size)],
+    ['?湔?交?',new Date(x.mtime).toLocaleString()]];
+  if(x.uploaded)rows.push(['銝??',new Date(x.uploaded).toLocaleString()]);
+  if(x.owner&&x.owner!=='?')rows.push(['銝??,x.owner]);
+  if(vmeta.w&&vmeta.h)rows.push(['閫??摨?,`${vmeta.w} ? ${vmeta.h}嚗?{(vmeta.w*vmeta.h/1e6).toFixed(1)} MP嚗]);
+  if(vmeta.dur)rows.push(['?瑕漲',fmtDur(vmeta.dur)]);
+  if(x.preview)rows.push(['?酉','HEIC ?抒?嚗?閬賭蝙?刻?憟賜? JPG嚗?頛??臬?瑼?]);
+  p.innerHTML='<h4>?對? 瑼?鞈?</h4>'+rows.map(([a,b])=>`<div class="ir"><span class="ik">${a}</span><span class="iv">${esc(b)}</span></div>`).join('');
 }
 $('#vinfo').onclick=()=>{const p=$('#vinfop');p.hidden=!p.hidden;renderInfo()};
 function showViewer(){
   const{x}=vlist[vi],seq=++vseq,st=$('#vstage'),u=API+x.url,ext=extOf(x.name);
   stopMedia();st.innerHTML='';vmeta={};renderInfo();
   $('#vtitle').textContent=x.name;$('#vpos').textContent=`${vi+1} / ${vlist.length}`;$('#vdl').href=u+'&dl=1';window.__vx=x;
-  $('#vdlj').hidden=!x.preview;if(x.preview)$('#vdlj').href=API+x.preview+'&dl=1'; // HEIC/HEIF: the browser shows the JPEG copy; "下載" still gives the untouched original
+  $('#vdlj').hidden=!x.preview;if(x.preview)$('#vdlj').href=API+x.preview+'&dl=1'; // HEIC/HEIF: the browser shows the JPEG copy; "銝?" still gives the untouched original
   $('#vprev').hidden=$('#vnext').hidden=vlist.length<2;
   const msg=(html,cls)=>{const d=document.createElement('div');d.className='vmsg '+(cls||'');d.innerHTML=html;st.append(d);return d};
   if(x.kind==='image'){
     const img=document.createElement('img');img.className='vimg';img.alt=x.name;
     if(x.thumb)img.src=API+x.thumb; // 720p version shows instantly, the original replaces it when loaded
     st.append(img);
-    const full=new Image();full.onload=()=>{if(seq===vseq){img.src=full.src;vmeta={w:full.naturalWidth,h:full.naturalHeight};renderInfo()}};full.onerror=()=>{if(seq===vseq&&!x.thumb)img.replaceWith(Object.assign(document.createElement('div'),{className:'vmsg warn',textContent:x.preview?'無法轉換這張照片來預覽，請按右上角「下載」取得原檔':'無法載入圖片'}))};full.src=x.preview?API+x.preview:u;
+    const full=new Image();full.onload=()=>{if(seq===vseq){img.src=full.src;vmeta={w:full.naturalWidth,h:full.naturalHeight};renderInfo()}};full.onerror=()=>{if(seq===vseq&&!x.thumb)img.replaceWith(Object.assign(document.createElement('div'),{className:'vmsg warn',textContent:x.preview?'?⊥?頧??撐?抒?靘?閬踝?隢??喃?閫?頛?敺?瑼?:'?⊥?頛??'}))};full.src=x.preview?API+x.preview:u;
   }else if(x.kind==='video'){
     const v=document.createElement('video');v.controls=true;v.playsInline=true;v.preload='metadata';if(x.thumb)v.poster=API+x.thumb;
-    v.addEventListener('error',()=>{if(seq===vseq&&v.getAttribute('src'))msg('這個瀏覽器無法播放此影片格式（例如 iPhone 的 HEVC .mov），請按右上角「下載」後用播放器開啟。','warn')});
+    v.addEventListener('error',()=>{if(seq===vseq&&v.getAttribute('src'))msg('?汗?函瘜?暹迨敶梁??澆?嚗?憒?iPhone ??HEVC .mov嚗?隢??喃?閫?頛??冽?曉????,'warn')});
     v.addEventListener('loadedmetadata',()=>{if(seq===vseq){vmeta={w:v.videoWidth,h:v.videoHeight,dur:v.duration};renderInfo()}});
     v.src=u;st.append(v);v.play().catch(()=>{}); // autoplay may be refused; the controls are there
   }else if(['mp3','wav','m4a','aac','ogg','opus','flac'].includes(ext)){
-    msg('<div class="big">🎵</div>'+esc(x.name));const a=document.createElement('audio');a.controls=true;a.addEventListener('loadedmetadata',()=>{if(seq===vseq){vmeta={dur:a.duration};renderInfo()}});a.src=u;st.append(a);a.play().catch(()=>{});
+    msg('<div class="big">?</div>'+esc(x.name));const a=document.createElement('audio');a.controls=true;a.addEventListener('loadedmetadata',()=>{if(seq===vseq){vmeta={dur:a.duration};renderInfo()}});a.src=u;st.append(a);a.play().catch(()=>{});
   }else if(ext==='pdf'){
     const fr=document.createElement('iframe');fr.src=u;st.append(fr); // some phone browsers can't show PDFs inline: use the download button then
   }else if(ext==='txt'){
-    msg('載入中…');
-    fetch(u).then(r=>r.text()).then(t=>{if(seq!==vseq)return;st.innerHTML='';const p=document.createElement('pre');p.textContent=t.length>300000?t.slice(0,300000)+'\n\n…（內容過長，只顯示前 300KB）':t;st.append(p)}).catch(()=>{if(seq===vseq){st.innerHTML='';msg('無法載入文字內容','warn')}});
-  }else msg(`<div class="big">📄</div>${esc(x.name)}<br>${fmt(x.size)}<br>此檔案類型無法預覽，請按右上角「下載」。`);
+    msg('頛銝凌?);
+    fetch(u).then(r=>r.text()).then(t=>{if(seq!==vseq)return;st.innerHTML='';const p=document.createElement('pre');p.textContent=t.length>300000?t.slice(0,300000)+'\n\n?佗??批捆?嚗憿舐內??300KB嚗?:t;st.append(p)}).catch(()=>{if(seq===vseq){st.innerHTML='';msg('?⊥?頛???批捆','warn')}});
+  }else msg(`<div class="big">??</div>${esc(x.name)}<br>${fmt(x.size)}<br>甇斗?獢??瘜?閬踝?隢??喃?閫?頛);
 }
 function closeViewer(fromPop){
   if(!vOpen)return;vOpen=false;vseq++;stopMedia();$('#vstage').innerHTML='';$('#viewer').hidden=true;$('#vinfop').hidden=true;document.body.style.overflow='';
   if(!fromPop&&history.state?.viewer)history.back();
 }
 const vgo=d=>{if(vlist.length<2)return;vi=(vi+d+vlist.length)%vlist.length;showViewer()};
-$('#vdl').dataset.pct='下載';$('#vdl').onclick=e=>{const x=window.__vx;if(IOS&&x&&x.size<=BLOB_MAX){e.preventDefault();dlFile($('#vdl').href,x.name,$('#vdl')).then(f=>f&&offerSave([f]))}};
+$('#vdl').dataset.pct='銝?';$('#vdl').onclick=e=>{const x=window.__vx;if(IOS&&x&&x.size<=BLOB_MAX){e.preventDefault();dlFile($('#vdl').href,x.name,$('#vdl')).then(f=>f&&offerSave([f]))}};
 $('#vclose').onclick=()=>closeViewer();$('#vback').onclick=()=>closeViewer();$('#vprev').onclick=()=>vgo(-1);$('#vnext').onclick=()=>vgo(1);
 $('#vstage').onclick=e=>{if(e.target.id==='vstage')closeViewer()};
 addEventListener('popstate',()=>closeViewer(true));
@@ -751,28 +751,28 @@ $('#vstage').addEventListener('touchend',e=>{const dx=e.changedTouches[0].client
 
 async function delFolder(name){
   if(!me.admin)return;
-  if(!confirm(`確定要刪除資料夾「${name}」以及裡面所有檔案和資料夾嗎？此動作無法復原。`))return;
-  const pw=prompt('請輸入編輯密碼');if(pw===null)return;
+  if(!confirm(`蝣箏?閬?方??冗??{name}?誑?ㄐ?Ｘ???獢?鞈?憭曉?嚗迨???⊥?敺拙??))return;
+  const pw=prompt('隢撓?亦楊頛臬?蝣?);if(pw===null)return;
   const r=await api('/api/folder?name='+encodeURIComponent(name),{method:'DELETE',headers:{'X-Edit-Password':pw}});
   if(!r.ok)alert((await r.json()).error);refresh();
 }
 $('#newf').onclick=async()=>{
-  const n=prompt('新資料夾名稱');if(!n||!n.trim())return;
+  const n=prompt('?啗??冗?迂');if(!n||!n.trim())return;
   const r=await api('/api/folder?name='+encodeURIComponent(n.trim()),{method:'POST'});
   if(!r.ok)alert((await r.json()).error);else{target=(await r.json()).name;refresh()}
 };
 $('#setpw').onclick=async()=>{
   let cur='';
-  if(me.hasEditPassword){cur=prompt('請輸入目前的編輯密碼');if(cur===null)return}
-  const nw=prompt('設定新的編輯密碼（至少 4 個字元）');if(nw===null)return;
+  if(me.hasEditPassword){cur=prompt('隢撓?亦??蝺刻摩撖Ⅳ');if(cur===null)return}
+  const nw=prompt('閮剖??啁?蝺刻摩撖Ⅳ嚗撠?4 ????');if(nw===null)return;
   const r=await api('/api/edit-password',{method:'PUT',body:JSON.stringify({current:cur,new:nw})});
-  if(r.ok){me.hasEditPassword=true;alert('編輯密碼已更新')}else alert((await r.json()).error);
+  if(r.ok){me.hasEditPassword=true;alert('蝺刻摩撖Ⅳ撌脫??)}else alert((await r.json()).error);
 };
 // Uploads run through a queue (2 at a time) with automatic retry; failures show a reason + retry button.
 const queue=[];let running=0;const MAX_PAR=2,MAX_TRY=3;
 function enqueue(file,folder){
   const d=document.createElement('div');d.className='card';d.style.marginBottom='8px';
-  d.innerHTML=`<div>${esc(file.name)} → ${esc(folder)} <small class="s">等待中</small> <button class="ghost rt" hidden style="padding:2px 8px">重試</button></div><div class="prog"><i></i></div>`;
+  d.innerHTML=`<div>${esc(file.name)} ??${esc(folder)} <small class="s">蝑?銝?/small> <button class="ghost rt" hidden style="padding:2px 8px">?岫</button></div><div class="prog"><i></i></div>`;
   $('#ups').prepend(d);
   const job={file,folder,d,tries:0};
   d.querySelector('.rt').onclick=()=>{d.querySelector('.rt').hidden=true;job.tries=0;queue.push(job);pump()};
@@ -801,18 +801,18 @@ async function runJob(j){
   let fails=0;
   if(j.offset>0){const r=await api(`/api/upload-status?folder=${encodeURIComponent(j.folder)}&id=${j.id}`).catch(()=>null);if(r?.ok)j.offset=(await r.json()).received}
   while(true){
-    show(j.offset,fails?`（重試 ${fails}/${MAX_TRY}）`:'');
-    const r=await sendChunk(j,j.offset,l=>show(j.offset+l,fails?`（重試 ${fails}/${MAX_TRY}）`:''));
+    show(j.offset,fails?`嚗?閰?${fails}/${MAX_TRY}嚗:'');
+    const r=await sendChunk(j,j.offset,l=>show(j.offset+l,fails?`嚗?閰?${fails}/${MAX_TRY}嚗:''));
     if(r.status===200&&(r.body.done||Number.isFinite(r.body.received))){
       fails=0;
-      if(r.body.done){j.d.remove();refresh();return}
+      if(r.body.done){j.d.remove();if(r.body.warn)alert('??+(r.body.name||j.file.name)+'??+r.body.warn);refresh();return}
       j.offset=r.body.received;continue;
     }
     if(r.status===409){j.offset=r.body.received;continue} // server has a different amount; resync
-    if(r.status===401){s.textContent='失敗：登入過期，請重新整理頁面';break}
-    const why=r.status?`伺服器回應 ${r.status}`+(r.body?.error?`（${r.body.error}）`:''):'網路中斷或連不到主機';
-    if(++fails>MAX_TRY){s.textContent='失敗：'+why;break}
-    s.textContent=`${why}，重試中 ${fails}/${MAX_TRY}`;
+    if(r.status===401){s.textContent='憭望?嚗?仿???隢??唳????;break}
+    const why=r.status?`隡箸??典???${r.status}`+(r.body?.error?`嚗?{r.body.error}嚗:''):'蝬脰楝銝剜????唬蜓璈?;
+    if(++fails>MAX_TRY){s.textContent='憭望?嚗?+why;break}
+    s.textContent=`${why}嚗?閰虫葉 ${fails}/${MAX_TRY}`;
     await new Promise(r=>setTimeout(r,2000*fails));await findApi(); // tunnel may have restarted
     const st=await api(`/api/upload-status?folder=${encodeURIComponent(j.folder)}&id=${j.id}`).catch(()=>null);
     if(st?.ok)j.offset=(await st.json()).received; // resume from what the PC actually has
@@ -835,8 +835,8 @@ function askUnlock(){
     const go=async()=>{const pw=$('#lockpw').value;if(!pw)return;$('#lockgo').disabled=true;
       try{const r=await api('/api/unlock',{method:'POST',headers:{'X-Edit-Password':pw}});
         if(r.ok){sessionStorage.setItem('nas_unlocked','1');$('#lockgo').disabled=false;$('#applock').hidden=true;lockOpen=null;res();return}
-        $('#lockerr').textContent=(await r.json().catch(()=>({}))).error||'密碼錯誤';$('#lockpw').value='';$('#lockpw').focus()}
-      catch{$('#lockerr').textContent='連不到主機電腦'}
+        $('#lockerr').textContent=(await r.json().catch(()=>({}))).error||'撖Ⅳ?航炊';$('#lockpw').value='';$('#lockpw').focus()}
+      catch{$('#lockerr').textContent='????唬蜓璈??}
       $('#lockgo').disabled=false};
     $('#lockgo').onclick=go;$('#lockpw').onkeydown=e=>{if(e.key==='Enter')go()};
     $('#lockout').onclick=async()=>{await sb.auth.signOut();sessionStorage.removeItem('nas_unlocked');location.reload()};
@@ -858,10 +858,10 @@ addEventListener('appinstalled',()=>{deferredInstall=null;syncInstall()});
 $('#install').onclick=()=>{
   if(deferredInstall){deferredInstall.prompt();deferredInstall=null}
   else{const ua=navigator.userAgent,mac=/Macintosh/.test(navigator.platform+ua)&&!(navigator.maxTouchPoints>1),chrome=/Chrome|Edg|CriOS/.test(ua);
-    alert(/iPhone|iPad/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)?'iPhone / iPad：點 Safari 下方的「分享」→「加入主畫面」'
-      :mac&&!chrome?'Mac（Safari）：選單列「檔案」→「加入 Dock」（需 macOS Sonoma 14 以上）'
-      :mac?'Mac（Chrome / Edge）：網址列右邊的「安裝」圖示，或選單裡的「安裝 NAS」'
-      :'請用瀏覽器選單裡的「安裝應用程式」或「加入主畫面」')}
+    alert(/iPhone|iPad/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)?'iPhone / iPad嚗? Safari 銝??鈭怒????乩蜓?恍??
+      :mac&&!chrome?'Mac嚗afari嚗??詨??獢?????Dock??? macOS Sonoma 14 隞乩?嚗?
+      :mac?'Mac嚗hrome / Edge嚗?蝬脣??????鋆?蝷綽???株ㄐ??鋆?NAS??
+      :'隢?汗?券?株ㄐ??鋆??函?撘????乩蜓?恍??)}
 };
 syncInstall();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
