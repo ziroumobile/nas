@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012p">
+<link rel="stylesheet" href="glass.css?v=20261012q">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -207,7 +207,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012p"></script>
+<script src="glass.js?v=20261012q"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -699,6 +699,16 @@ function openViewer(k,keys){ // keys = an explicit list to browse (e.g. the file
   $('#viewer').hidden=false;document.body.style.overflow='hidden';showViewer();
 }
 // the preview player does not need the original 4K file: phones and FHD / 2K screens get <= 1080p, 4K screens <= 1440p (converted once on the PC, then cached)
+// photos: phones show up to 2K (shorter side 1440); desktops follow the same rule as videos
+const photoHeight=()=>document.documentElement.classList.contains('ios')?1440:previewHeight();
+async function pickImageSrc(folder,x,fallback){
+  try{
+    const r=await api('/api/iprep?folder='+encodeURIComponent(folder)+'&name='+encodeURIComponent(x.name)+'&h='+photoHeight());
+    if(!r.ok)return{src:fallback};
+    const j=await r.json();
+    return{src:j.state==='ready'?API+j.url:fallback,w:j.w,h:j.h};
+  }catch{return{src:fallback}}
+}
 const previewHeight=()=>{if(document.documentElement.classList.contains('ios'))return 1080;const long=Math.max(screen.width,screen.height)*(window.devicePixelRatio||1);return long>=3300?1440:1080};
 async function pickVideoSrc(folder,x,u,seq,msg){
   const h=previewHeight();let note=null,skip=false;
@@ -748,7 +758,7 @@ function showViewer(){
     const img=document.createElement('img');img.className='vimg';img.alt=x.name;
     if(x.thumb)img.src=API+x.thumb; // 720p version shows instantly, the original replaces it when loaded
     st.append(img);
-    const full=new Image();full.onload=()=>{if(seq===vseq){img.src=full.src;vmeta={w:full.naturalWidth,h:full.naturalHeight};renderInfo()}};full.onerror=()=>{if(seq===vseq&&!x.thumb)img.replaceWith(Object.assign(document.createElement('div'),{className:'vmsg warn',textContent:x.preview?'無法轉換這張照片來預覽，請按右上角「下載」取得原檔':'無法載入圖片'}))};full.src=x.preview?API+x.preview:u;
+    let origDims=null;const full=new Image();full.onload=()=>{if(seq===vseq){img.src=full.src;vmeta=origDims||{w:full.naturalWidth,h:full.naturalHeight};renderInfo()}};full.onerror=()=>{if(seq===vseq&&!x.thumb)img.replaceWith(Object.assign(document.createElement('div'),{className:'vmsg warn',textContent:x.preview?'無法轉換這張照片來預覽，請按右上角「下載」取得原檔':'無法載入圖片'}))};pickImageSrc(splitKey(vlist[vi].k).folder,x,x.preview?API+x.preview:u).then(r=>{if(seq!==vseq)return;origDims=r.w?{w:r.w,h:r.h}:null;full.src=r.src});
   }else if(x.kind==='video'){
     const v=document.createElement('video');v.controls=true;v.playsInline=true;v.preload='metadata';if(x.thumb)v.poster=API+x.thumb;
     v.addEventListener('error',()=>{if(seq===vseq&&v.getAttribute('src'))msg('這個瀏覽器無法播放此影片格式（例如 iPhone 的 HEVC .mov），請按右上角「下載」後用播放器開啟。','warn')});
