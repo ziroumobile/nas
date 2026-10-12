@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012t">
+<link rel="stylesheet" href="glass.css?v=20261012u">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -181,7 +181,7 @@ body.covered #app{visibility:hidden}
     <button class="ghost" id="order"></button>
     <button class="ghost" id="selmode">☑ 選取</button>
   </div>
-  <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" type="file" multiple hidden><input id="fo" type="file" multiple hidden accept="image/heic,image/heif,.heic,.heif,video/quicktime,.mov"></div>
+  <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" type="file" multiple hidden></div>
   <div id="ups"></div>
   <div id="total" style="color:var(--mut);font-size:13px;margin:0 2px 8px"></div>
   <div id="list"></div>
@@ -207,7 +207,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012t"></script>
+<script src="glass.js?v=20261012u"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -410,8 +410,7 @@ function setSel(k,on){on?selected.add(k):selected.delete(k);
 {let pm=null;const closePm=()=>{if(pm){const m=pm;pm=null;m.classList.add('out');setTimeout(()=>m.remove(),170)}};
   $('#dup').onclick=e=>{e.stopPropagation();if(pm){closePm();return}
     const m=document.createElement('div');m.className='gmenu';m.style.visibility='hidden';pm=m;
-    const ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-    for(const[t,f]of[['⬆ 上傳檔案',()=>$('#f').click()],...(ios?[['🖼 相簿原檔（HEIC / MOV）',()=>$('#fo').click()]]:[]),['📁 新增資料夾',()=>$('#newf').click()]]){const d=document.createElement('div');d.textContent=t;d.onclick=ev=>{ev.stopPropagation();closePm();f()};m.appendChild(d)}
+    for(const[t,f]of[['⬆ 上傳檔案',()=>$('#f').click()],['📁 新增資料夾',()=>$('#newf').click()]]){const d=document.createElement('div');d.textContent=t;d.onclick=ev=>{ev.stopPropagation();closePm();f()};m.appendChild(d)}
     $('#dock').appendChild(m);   // lives inside the (fixed) dock, so it can never change the page's height or scroll position
     const du=$('#dup'),w=m.offsetWidth;m.className='gmenu dockmenu';m.style.left=(du.offsetLeft+du.offsetWidth/2-w/2)+'px';m.style.transformOrigin='50% 100%';m.style.visibility='visible'};
   document.addEventListener('pointerdown',e=>{if(pm&&!e.target.closest('.gmenu')&&!e.target.closest('#dup'))closePm()},true)}
@@ -877,7 +876,6 @@ async function runJob(j){
   j.d.querySelector('.rt').hidden=false;
 }
 const pick=(fl,keep)=>{const f=target;[...fl].forEach(x=>enqueue(x,f,keep))};
-$('#fo').onchange=e=>{pick(e.target.files,true);e.target.value=''}; // originals (HEIC / MOV) straight from the photo library
 $('#drop').onclick=()=>$('#f').click();$('#f').onchange=e=>{pick(e.target.files);e.target.value=''};
 $('#drop').ondragover=e=>{e.preventDefault();$('#drop').classList.add('over')};
 $('#drop').ondragleave=()=>$('#drop').classList.remove('over');
