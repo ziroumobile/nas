@@ -134,7 +134,7 @@ body.selecting .wrap{padding-bottom:100px}
 .vnav{position:fixed;top:50%;transform:translateY(-50%);width:44px;height:64px;border-radius:10px;background:rgba(255,255,255,.14);color:#fff;font-size:28px;padding:0;z-index:51}
 #vprev{left:6px}#vnext{right:6px}
 /* dialogs (sharing) */
-#modal,#setpanel{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+#modal,#setpanel,#applock{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
 #modal[hidden]{display:none}
 #modal.top{z-index:60}
 .mbox{width:min(460px,100%);max-height:100%;overflow:auto}
@@ -151,7 +151,7 @@ body.selecting .wrap{padding-bottom:100px}
 .sc img,.sc .ico{width:100%;height:100%;object-fit:cover;border-radius:0;font-size:22px}
 .srow b{word-break:break-all}.srow small{display:block;color:var(--mut);margin:2px 0 6px}
 body.mlock{position:fixed;left:0;right:0;overflow:hidden}#modal,#setpanel{overscroll-behavior:contain}
-#setpanel[hidden]{display:none}#setbody{display:flex;flex-direction:column;align-items:stretch;gap:8px}#setbody button{text-align:left}
+#setpanel[hidden],#applock[hidden]{display:none}#applock{z-index:500;background:#000}#setbody{display:flex;flex-direction:column;align-items:stretch;gap:8px}#setbody button{text-align:left}
 #gear{background:none;border:0;font-size:22px;line-height:1;padding:4px 8px;border-radius:8px;color:var(--fg)}#gear:hover{background:var(--card)}
 @media(max-width:699px){.bar button,.bar select{padding:6px 12px;font-size:14px}}
 </style></head><body><div class="wrap">
@@ -166,6 +166,9 @@ body.mlock{position:fixed;left:0;right:0;overflow:hidden}#modal,#setpanel{oversc
   <header><h1>📁 我的 NAS</h1></header>
   <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></span>
   <nav id="dock"><button id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button><button id="dflt" type="button" aria-label="拖動排序" title="拖動排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
+  <div id="applock" hidden><div class="mbox card"><h3 style="margin:0 0 6px">🔒 我的 NAS 已鎖定</h3><p class="sub" style="margin:0 0 10px">請輸入編輯密碼來開啟</p>
+    <input id="lockpw" type="password" autocomplete="off" autocapitalize="off" placeholder="編輯密碼"><p class="merr" id="lockerr"></p>
+    <div class="mbtns" style="justify-content:space-between"><button class="ghost" id="lockout">登出帳號</button><button id="lockgo" style="background:#0a84ff;color:#fff">解鎖</button></div></div></div>
   <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button></div><div class="mbtns" style="justify-content:space-between"><button class="ghost" id="out">登出</button><button class="ghost" id="setclose">完成</button></div></div></div>
   <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
   <div class="bar">
@@ -237,7 +240,9 @@ async function init(){
   $('#login').hidden=true;$('#app').hidden=false;
   let r;try{r=await api('/api/me')}catch{$('#off').hidden=false;return}
   if(!r.ok){$('#off').hidden=r.status===401;if(r.status===401){await sb.auth.signOut();return init()}return}
-  $('#off').hidden=true;me=await r.json();$('#who').textContent=me.name+(me.admin?'（管理員）':'');
+  $('#off').hidden=true;me=await r.json();
+  if(needLock())await askUnlock(); // admin with an edit password: ask for it every time the app is opened
+  $('#who').textContent=me.name+(me.admin?'（管理員）':'');
   $('#setpw').hidden=$('#shares').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh();
 }
 $('#go').onclick=async()=>{
@@ -818,6 +823,30 @@ $('#drop').ondragover=e=>{e.preventDefault();$('#drop').classList.add('over')};
 $('#drop').ondragleave=()=>$('#drop').classList.remove('over');
 $('#drop').ondrop=e=>{e.preventDefault();$('#drop').classList.remove('over');pick(e.dataTransfer.files)};
 
+// ---- app lock: the login stays, but opening the app (or coming back after a minute away) asks for the edit password ----
+const needLock=()=>!!(me?.admin&&me.hasEditPassword)&&sessionStorage.getItem('nas_unlocked')!=='1';
+let lockOpen=null;
+function askUnlock(){
+  if(lockOpen)return lockOpen;
+  $('#lockpw').value='';$('#lockerr').textContent='';$('#applock').hidden=false;setTimeout(()=>$('#lockpw').focus(),50);
+  lockOpen=new Promise(res=>{
+    const go=async()=>{const pw=$('#lockpw').value;if(!pw)return;$('#lockgo').disabled=true;
+      try{const r=await api('/api/unlock',{method:'POST',headers:{'X-Edit-Password':pw}});
+        if(r.ok){sessionStorage.setItem('nas_unlocked','1');$('#applock').hidden=true;lockOpen=null;res();return}
+        $('#lockerr').textContent=(await r.json().catch(()=>({}))).error||'密碼錯誤';$('#lockpw').value='';$('#lockpw').focus()}
+      catch{$('#lockerr').textContent='連不到主機電腦'}
+      $('#lockgo').disabled=false};
+    $('#lockgo').onclick=go;$('#lockpw').onkeydown=e=>{if(e.key==='Enter')go()};
+    $('#lockout').onclick=async()=>{await sb.auth.signOut();sessionStorage.removeItem('nas_unlocked');location.reload()};
+  });
+  return lockOpen;
+}
+let hiddenAt=0;
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){hiddenAt=Date.now();return}
+  if(hiddenAt&&Date.now()-hiddenAt>60000&&me?.admin&&me.hasEditPassword){sessionStorage.removeItem('nas_unlocked');askUnlock()}
+  hiddenAt=0;
+});
 // ---- install as an app (same idea as the ledger app) ----
 let deferredInstall=null;
 const isStandalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone;
@@ -835,6 +864,6 @@ $('#install').onclick=()=>{
 syncInstall();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 
-setInterval(()=>{if(me&&!document.hidden&&!vOpen)refresh()},10000);
+setInterval(()=>{if(me&&!document.hidden&&!vOpen&&$('#applock').hidden)refresh()},10000);
 init();
 </script></div></body></html>
