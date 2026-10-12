@@ -436,3 +436,7 @@ html.android .wrap{position:fixed;inset:0;overflow-y:auto;overflow-x:clip;max-wi
 #vprev{left:14px}#vnext{right:14px}
 .vnav:active,html.ios .vnav:active{transform:scale(.94)!important}
 #viewer.hasnav #vstage{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+
+/* one-line upload summary under the drop zone */
+#upsum{margin:8px 2px;padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.05);color:#0a84ff;font-size:14px;text-align:center;cursor:pointer}
+#upsum[hidden]{display:none}

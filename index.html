@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012u">
+<link rel="stylesheet" href="glass.css?v=20261012v">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -182,9 +182,10 @@ body.covered #app{visibility:hidden}
     <button class="ghost" id="selmode">☑ 選取</button>
   </div>
   <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" type="file" multiple hidden></div>
-  <div id="ups"></div>
+  <div id="upsum" hidden></div>
   <div id="total" style="color:var(--mut);font-size:13px;margin:0 2px 8px"></div>
   <div id="list"></div>
+  <div id="ups" style="margin-top:12px"></div>
 </div>
 <div id="viewer" hidden>
   <div class="vtop"><div class="vbtns" style="flex:none"><button class="ghost" id="vback">‹ 返回</button></div><span id="vtitle"></span><span id="vpos"></span><div class="vbtns"><button class="ghost" id="vshare" hidden style="color:#fff">🔗 分享</button><button class="ghost del" id="vdel" hidden>刪除</button><button class="ghost" id="vinfo" style="color:#fff" title="檔案資訊">ℹ️ 資訊</button><a id="vdlj" class="btn vlk" hidden title="下載轉好的 JPG 版本（不能開 HEIC 的裝置用這個）">JPG</a><a id="vdl" class="btn vlk">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div></div>
@@ -207,7 +208,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012u"></script>
+<script src="glass.js?v=20261012v"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -811,6 +812,15 @@ $('#setpw').onclick=async()=>{
   if(r.ok){me.hasEditPassword=true;alert('編輯密碼已更新')}else alert((await r.json()).error);
 };
 // Uploads run through a queue (2 at a time) with automatic retry; failures show a reason + retry button.
+// the upload list sits below all the folders; this one-line summary stays under the drop zone and jumps down to it
+const upsum=$('#upsum');
+upsum.onclick=()=>$('#ups').scrollIntoView({behavior:'smooth',block:'start'});
+setInterval(()=>{
+  const cs=$('#ups').children.length;
+  if(!cs){upsum.hidden=true;return}
+  const f=[...$('#ups').querySelectorAll('.rt')].filter(b=>!b.hidden).length;
+  upsum.hidden=false;upsum.textContent='⬆ 上傳中：還有 '+cs+' 個檔案'+(f?'（'+f+' 個失敗）':'')+'　點此看進度';
+},1000);
 const queue=[];let running=0;const MAX_PAR=2,MAX_TRY=3;
 function enqueue(file,folder,keep){
   const d=document.createElement('div');d.className='card';d.style.marginBottom='8px';
