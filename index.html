@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012f">
+<link rel="stylesheet" href="glass.css?v=20261012g">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -203,7 +203,7 @@ body.mlock{position:fixed;left:0;right:0;overflow:hidden}#modal,#setpanel{oversc
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012f"></script>
+<script src="glass.js?v=20261012g"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // macOS (Safari "Add to Dock"): a full-bleed icon gets a white plate behind it, so give Macs a squircle icon with its own transparent margin (iPhone keeps the full-bleed one)
@@ -631,7 +631,7 @@ async function sharesManager(){ // every share: link, password (after entering t
         <div style="display:flex;gap:6px;margin:4px 0"><input type="text" readonly value="${esc(shareUrl(s.id))}" onfocus="this.select()" style="flex:1;min-width:0;padding:6px 8px;font-size:12px;margin:0"><button class="ghost" data-copy="${esc(s.id)}" style="padding:4px 10px;white-space:nowrap">複製連結</button></div>
         <div style="margin:4px 0">密碼：${pwCell(s)}</div>
         <div style="margin:4px 0">有效期限：${s.expires?when(s.expires)+'（'+left(s.expires)+'）':'永久有效'}</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:4px"><button class="del" data-revoke="${esc(s.id)}">撤銷這個分享</button><a class="btn vlk" href="${esc(shareUrl(s.id))}" target="_blank" rel="noopener noreferrer">開啟連結</a></div></div>`).join(''):'<p class="sub">目前沒有任何分享。</p>')+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin-top:4px"><button class="del" data-revoke="${esc(s.id)}">撤銷這個分享</button><a class="btn vlk" href="${esc(shareUrl(s.id))}" target="_blank" rel="noopener noreferrer">開啟連結</a></div></div>`).join(''):'<p class="sub">目前沒有任何分享。</p>')+
       '');
     $('#sx').onclick=closeModal;
     $('#mbox').onclick=async e=>{
