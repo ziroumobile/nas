@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012y">
+<link rel="stylesheet" href="glass.css?v=20261012z">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -181,7 +181,7 @@ body.covered #app{visibility:hidden}
     <button class="ghost" id="order"></button>
     <button class="ghost" id="selmode">☑ 選取</button>
   </div>
-  <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" type="file" multiple hidden></div>
+  <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" class="fpick" type="file" multiple></div>
   <div id="upsum" hidden></div>
   <div id="total" style="color:var(--mut);font-size:13px;margin:0 2px 8px"></div>
   <div id="list"></div>
@@ -208,7 +208,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012y"></script>
+<script src="glass.js?v=20261012z"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -413,7 +413,7 @@ function setSel(k,on){on?selected.add(k):selected.delete(k);
     const m=document.createElement('div');m.className='gmenu';m.style.visibility='hidden';pm=m;
     for(const[t,f]of[['⬆ 上傳檔案',()=>$('#f').click()],['📁 新增資料夾',()=>$('#newf').click()]]){const d=document.createElement('div');d.textContent=t;d.onclick=ev=>{ev.stopPropagation();closePm();f()};m.appendChild(d)}
     $('#dock').appendChild(m);   // lives inside the (fixed) dock, so it can never change the page's height or scroll position
-    m.className='gmenu dockmenu';const du=$('#dup').getBoundingClientRect(),dk=$('#dock').getBoundingClientRect(),w=m.getBoundingClientRect().width;
+    m.className='gmenu dockmenu';const du=$('#dup').getBoundingClientRect(),dk=$('#dock').getBoundingClientRect(),w=m.offsetWidth; // layout width (the grow-in animation shrinks getBoundingClientRect)
     let left=du.left+du.width/2-w/2;left=Math.max(8,Math.min(left,innerWidth-8-w)); // viewport coordinates, kept on screen
     m.style.left=(left-dk.left)+'px';m.style.transformOrigin=Math.round(du.left+du.width/2-left)+'px 100%';m.style.visibility='visible'};
   document.addEventListener('pointerdown',e=>{if(pm&&!e.target.closest('.gmenu')&&!e.target.closest('#dup'))closePm()},true)}

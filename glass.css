@@ -447,3 +447,6 @@ html.android .wrap{position:fixed;inset:0;overflow-y:auto;overflow-x:clip;max-wi
 #dup .uring{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;display:none;pointer-events:none}
 body.uploading #dup .uring{display:block}
 #dup .uring+svg{position:relative}
+
+/* the real file input is kept on screen (invisible, just above the dock) so the iOS "Photo Library / Take Photo / Choose File" pop-up opens next to the + instead of at a random place */
+.fpick{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom));width:2px;height:2px;opacity:0;pointer-events:none;z-index:-1}
