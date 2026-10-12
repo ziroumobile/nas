@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012w">
+<link rel="stylesheet" href="glass.css?v=20261012x">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -208,7 +208,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012w"></script>
+<script src="glass.js?v=20261012x"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -413,7 +413,9 @@ function setSel(k,on){on?selected.add(k):selected.delete(k);
     const m=document.createElement('div');m.className='gmenu';m.style.visibility='hidden';pm=m;
     for(const[t,f]of[['⬆ 上傳檔案',()=>$('#f').click()],['📁 新增資料夾',()=>$('#newf').click()]]){const d=document.createElement('div');d.textContent=t;d.onclick=ev=>{ev.stopPropagation();closePm();f()};m.appendChild(d)}
     $('#dock').appendChild(m);   // lives inside the (fixed) dock, so it can never change the page's height or scroll position
-    const du=$('#dup'),w=m.offsetWidth;m.className='gmenu dockmenu';m.style.left=(du.offsetLeft+du.offsetWidth/2-w/2)+'px';m.style.transformOrigin='50% 100%';m.style.visibility='visible'};
+    m.className='gmenu dockmenu';const du=$('#dup').getBoundingClientRect(),dk=$('#dock').getBoundingClientRect(),w=m.getBoundingClientRect().width;
+    let left=du.left+du.width/2-w/2;left=Math.max(8,Math.min(left,innerWidth-8-w)); // viewport coordinates, kept on screen
+    m.style.left=(left-dk.left)+'px';m.style.transformOrigin=Math.round(du.left+du.width/2-left)+'px 100%';m.style.visibility='visible'};
   document.addEventListener('pointerdown',e=>{if(pm&&!e.target.closest('.gmenu')&&!e.target.closest('#dup'))closePm()},true)}
 $('#dflt').onclick=()=>{const on=document.body.classList.toggle('reorder');$('#dflt').classList.toggle('act',on)}; // the drag handles only show while this is on
 $('#dsel').onclick=()=>$('#selmode').click();
@@ -815,13 +817,25 @@ $('#setpw').onclick=async()=>{
 // the upload list sits below all the folders; this one-line summary stays under the drop zone and jumps down to it
 const upsum=$('#upsum');
 upsum.onclick=()=>$('#ups').scrollIntoView({behavior:'smooth',block:'start'});
-setInterval(()=>{
+// a small progress ring (fixed under the status bar / Dynamic Island) while files are uploading; tap = jump to the detailed list
+const ring=document.createElement('div');ring.id='upring';ring.hidden=true;
+ring.innerHTML='<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="9" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="3"/><circle id="uparc" cx="12" cy="12" r="9" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="56.5" stroke-dashoffset="56.5" transform="rotate(-90 12 12)"/></svg><span id="uptxt"></span>';
+document.body.appendChild(ring);ring.onclick=()=>$('#ups').scrollIntoView({behavior:'smooth',block:'start'});
+function updateUploadUI(){
   const cs=$('#ups').children.length;
-  if(!cs){upsum.hidden=true;return}
+  if(!cs){upsum.hidden=true;ring.hidden=true;releaseAwake();return}
   const f=[...$('#ups').querySelectorAll('.rt')].filter(b=>!b.hidden).length;
   upsum.hidden=false;upsum.textContent='⬆ 上傳中：還有 '+cs+' 個檔案'+(f?'（'+f+' 個失敗）':'')+'　點此看進度';
-},1000);
-const queue=[];let running=0;const MAX_PAR=6,MAX_TRY=3;
+  let got=batch.done;for(const j of allJobs)got+=j.loaded||0;
+  const pct=batch.bytes?Math.min(100,Math.round(got/batch.bytes*100)):0;
+  ring.hidden=false;$('#uparc').style.strokeDashoffset=(56.5*(1-pct/100)).toFixed(1);$('#uptxt').textContent=pct+'%（'+batch.doneFiles+'/'+batch.files+'）';
+}
+setInterval(updateUploadUI,500);
+const queue=[];let running=0;const MAX_PAR=10,MAX_TRY=3;
+const allJobs=new Set(),batch={bytes:0,done:0,files:0,doneFiles:0}; // everything still to upload / the totals of the current batch (drives the progress ring)
+let wake=null;
+async function keepAwake(){try{if(!wake&&navigator.wakeLock&&allJobs.size)wake=await navigator.wakeLock.request('screen'),wake.addEventListener('release',()=>{wake=null})}catch{}}
+function releaseAwake(){if(wake&&!allJobs.size){wake.release().catch(()=>{});wake=null}}
 // the whole folder list is ~0.8 MB and costs the PC a moment to build: while a batch is uploading, refresh it every few seconds, and right after the last file
 let upRefresh=null;
 function refreshAfterUpload(){
@@ -834,7 +848,9 @@ function enqueue(file,folder,keep){
   const d=document.createElement('div');d.className='card';d.style.marginBottom='8px';
   d.innerHTML=`<div>${esc(file.name)} → ${esc(folder)} <small class="s">等待中</small> <button class="ghost rt" hidden style="padding:2px 8px">重試</button></div><div class="prog"><i></i></div>`;
   $('#ups').prepend(d);
-  const job={file,folder,d,tries:0,keep};
+  const job={file,folder,d,tries:0,keep,loaded:0};
+  if(!allJobs.size){batch.bytes=0;batch.done=0;batch.files=0;batch.doneFiles=0}
+  allJobs.add(job);batch.bytes+=file.size;batch.files++;keepAwake();
   d.querySelector('.rt').onclick=()=>{d.querySelector('.rt').hidden=true;job.tries=0;queue.push(job);pump()};
   queue.push(job);pump();
 }
@@ -871,7 +887,7 @@ async function runJob(j){
   if(!j.checked){j.checked=true;if(isHeic(j.file)&&!j.keep){const s0=j.d.querySelector('.s');s0.textContent='轉成 JPEG…';try{j.file=await heicToJpeg(j.file)}catch{}}}
   const s=j.d.querySelector('.s'),bar=j.d.querySelector('i'),total=j.file.size;
   j.id=j.id||newId();j.offset=j.offset||0;
-  const show=(done,note)=>{const p=total?Math.min(100,done/total*100):100;bar.style.width=p+'%';s.textContent=Math.round(p)+'%'+(note||'')};
+  const show=(done,note)=>{j.loaded=done;const p=total?Math.min(100,done/total*100):100;bar.style.width=p+'%';s.textContent=Math.round(p)+'%'+(note||'')};
   let fails=0;
   if(j.offset>0){const r=await api(`/api/upload-status?folder=${encodeURIComponent(j.folder)}&id=${j.id}`).catch(()=>null);if(r?.ok)j.offset=(await r.json()).received}
   while(true){
@@ -879,7 +895,7 @@ async function runJob(j){
     const r=await sendChunk(j,j.offset,l=>show(j.offset+l,fails?`（重試 ${fails}/${MAX_TRY}）`:''));
     if(r.status===200&&(r.body.done||Number.isFinite(r.body.received))){
       fails=0;
-      if(r.body.done){j.d.remove();if(r.body.warn)alert('「'+(r.body.name||j.file.name)+'」'+r.body.warn);refreshAfterUpload();return}
+      if(r.body.done){allJobs.delete(j);batch.done+=total;batch.doneFiles++;releaseAwake();j.d.remove();if(r.body.warn)alert('「'+(r.body.name||j.file.name)+'」'+r.body.warn);refreshAfterUpload();return}
       j.offset=r.body.received;continue;
     }
     if(r.status===409){j.offset=r.body.received;continue} // server has a different amount; resync
@@ -891,7 +907,7 @@ async function runJob(j){
     const st=await api(`/api/upload-status?folder=${encodeURIComponent(j.folder)}&id=${j.id}`).catch(()=>null);
     if(st?.ok)j.offset=(await st.json()).received; // resume from what the PC actually has
   }
-  j.d.querySelector('.rt').hidden=false;
+  j.failed=true;j.d.querySelector('.rt').hidden=false;
 }
 const pick=(fl,keep)=>{const f=target;[...fl].forEach(x=>enqueue(x,f,keep))};
 $('#drop').onclick=()=>$('#f').click();$('#f').onchange=e=>{pick(e.target.files);e.target.value=''};
@@ -919,6 +935,7 @@ function askUnlock(){
 }
 let hiddenAt=0;
 document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden){keepAwake();for(const j of allJobs)if(j.failed){j.failed=false;j.tries=0;j.d.querySelector('.rt').hidden=true;queue.push(j);pump()}} // resume uploads that stalled in the background
   if(document.hidden){hiddenAt=Date.now();if(needLock()===false&&me?.admin&&me.hasEditPassword)document.body.classList.add('covered');return}
   if(hiddenAt&&Date.now()-hiddenAt>60000&&me?.admin&&me.hasEditPassword){sessionStorage.removeItem('nas_unlocked');askUnlock()}
   document.body.classList.remove('covered');hiddenAt=0;
