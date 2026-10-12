@@ -450,3 +450,6 @@ body.uploading #dup .uring{display:block}
 
 /* the real file input is kept on screen (invisible, just above the dock) so the iOS "Photo Library / Take Photo / Choose File" pop-up opens next to the + instead of at a random place */
 .fpick{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom));width:2px;height:2px;opacity:0;pointer-events:none;z-index:-1}
+
+/* drag handle: just the three lines, no pill / ring around them */
+.grip,.grip:active,details.fold.dragging .grip{background-color:transparent!important;box-shadow:none!important;border:0!important;outline:0!important}
