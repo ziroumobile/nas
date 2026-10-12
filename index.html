@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012r">
+<link rel="stylesheet" href="glass.css?v=20261012s">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -207,7 +207,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012r"></script>
+<script src="glass.js?v=20261012s"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -836,7 +836,21 @@ async function sendChunk(j,offset,onprog){
     x.send(j.file.slice(offset,Math.min(offset+CHUNK,j.file.size)));
   });
 }
+// HEIC / HEIF photos are converted to JPEG on the phone itself right before they go up (the phone can decode them; other devices often can't).
+// Photos over ~16 megapixels are scaled down to fit a phone browser's canvas limit; if the browser can't decode the file it is uploaded as it is.
+const isHeic=f=>/\.(heic|heif)$/i.test(f.name)||/^image\/hei[cf]$/i.test(f.type||'');
+async function heicToJpeg(file){
+  let bmp;
+  try{bmp=await createImageBitmap(file,{imageOrientation:'from-image'})}
+  catch{bmp=await new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{URL.revokeObjectURL(u);ok(im)};im.onerror=()=>{URL.revokeObjectURL(u);no()};im.src=u})}
+  const w0=bmp.width||bmp.naturalWidth,h0=bmp.height||bmp.naturalHeight,k=Math.min(1,Math.sqrt(16000000/(w0*h0))),w=Math.round(w0*k),h=Math.round(h0*k);
+  const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0,w,h);if(bmp.close)bmp.close();
+  const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',0.92));c.width=c.height=0;
+  if(!blob||!blob.size)throw new Error('convert');
+  return new File([blob],file.name.replace(/\.hei[cf]$/i,'.jpg'),{type:'image/jpeg',lastModified:file.lastModified});
+}
 async function runJob(j){
+  if(!j.checked){j.checked=true;if(isHeic(j.file)){const s0=j.d.querySelector('.s');s0.textContent='轉成 JPEG…';try{j.file=await heicToJpeg(j.file)}catch{}}}
   const s=j.d.querySelector('.s'),bar=j.d.querySelector('i'),total=j.file.size;
   j.id=j.id||newId();j.offset=j.offset||0;
   const show=(done,note)=>{const p=total?Math.min(100,done/total*100):100;bar.style.width=p+'%';s.textContent=Math.round(p)+'%'+(note||'')};
