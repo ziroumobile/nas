@@ -408,3 +408,7 @@ html:not(.ios) .seg-pill.noanim{transition:none}html:not(.ios) .seg-pill.hidden{
 html:not(.ios) .seg-gl{position:absolute;left:0;top:0;z-index:4;pointer-events:none;display:none}
 html:not(.ios) .seg-gl.on{display:block}
 /* the dark pop-up menu is the same everywhere */
+
+/* Android: scroll inside .wrap instead of the document, so the browser's floating "back to top" button doesn't appear */
+html.android,html.android body{height:100%;overflow:hidden}
+html.android .wrap{position:fixed;inset:0;overflow-y:auto;overflow-x:clip;max-width:none;margin:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}

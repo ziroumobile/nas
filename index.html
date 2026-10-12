@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012c">
+<link rel="stylesheet" href="glass.css?v=20261012d">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -203,7 +203,7 @@ body.mlock{position:fixed;left:0;right:0;overflow:hidden}#modal,#setpanel{oversc
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012c"></script>
+<script src="glass.js?v=20261012d"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // macOS (Safari "Add to Dock"): a full-bleed icon gets a white plate behind it, so give Macs a squircle icon with its own transparent margin (iPhone keeps the full-bleed one)
@@ -492,10 +492,12 @@ function dragFrame(){
   const nat=c.getBoundingClientRect().top; // its slot in the list (transform cleared above)
   c.style.transform=`translateY(${want-nat}px) scale(1.02)`;
 }
+// Android: the page scrolls inside .wrap (not the document), so the browser's own floating "scroll to top" button never shows up
+const scrollPage=dy=>{const w=document.documentElement.classList.contains('android')?document.querySelector('.wrap'):null;w?w.scrollBy(0,dy):scrollBy(0,dy)};
 function dragTick(){
   if(!drag)return;
   const y=drag.y,edge=90; // near the top/bottom edge the page scrolls by itself
-  if(y<edge)scrollBy(0,-Math.min(18,(edge-y)/4+4));else if(y>innerHeight-edge)scrollBy(0,Math.min(18,(y-(innerHeight-edge))/4+4));
+  if(y<edge)scrollPage(-Math.min(18,(edge-y)/4+4));else if(y>innerHeight-edge)scrollPage(Math.min(18,(y-(innerHeight-edge))/4+4));
   dragFrame();requestAnimationFrame(dragTick);
 }
 const dragMove=e=>{if(drag&&e.pointerId===drag.id){drag.y=e.clientY;dragFrame()}}; // update right away on every move; the frame loop below only handles auto-scrolling at the edges
@@ -520,7 +522,7 @@ $('#list').addEventListener('pointerdown',e=>{
   const top0=card.getBoundingClientRect().top;
   document.body.classList.add('dragmode');card.classList.add('dragging'); // bodies collapse while dragging so the cards are easy to move around
   const t1=card.getBoundingClientRect().top;
-  if(Math.abs(t1-top0)>.5)scrollBy(0,t1-top0); // the page got shorter when the bodies collapsed: scroll so the card stays under the finger instead of jumping
+  if(Math.abs(t1-top0)>.5)scrollPage(t1-top0); // the page got shorter when the bodies collapsed: scroll so the card stays under the finger instead of jumping
   const r=card.getBoundingClientRect();
   drag={card,id:e.pointerId,y:e.clientY,grab:Math.min(Math.max(e.clientY-r.top,0),r.height),moved:false}; // grab = where on the card the finger holds it
   addEventListener('pointermove',dragMove);addEventListener('pointerup',dragEnd);addEventListener('pointercancel',dragEnd);
