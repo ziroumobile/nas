@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012h">
+<link rel="stylesheet" href="glass.css?v=20261012i">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -206,7 +206,7 @@ body.mlock{position:fixed;left:0;right:0;overflow:hidden}#modal,#setpanel{oversc
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012h"></script>
+<script src="glass.js?v=20261012i"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // macOS (Safari "Add to Dock"): a full-bleed icon gets a white plate behind it, so give Macs a squircle icon with its own transparent margin (iPhone keeps the full-bleed one)
@@ -828,11 +828,11 @@ const needLock=()=>!!(me?.admin&&me.hasEditPassword)&&sessionStorage.getItem('na
 let lockOpen=null;
 function askUnlock(){
   if(lockOpen)return lockOpen;
-  $('#lockpw').value='';$('#lockerr').textContent='';$('#applock').hidden=false;setTimeout(()=>$('#lockpw').focus(),50);
+  $('#lockpw').value='';$('#lockerr').textContent='';$('#lockgo').disabled=false;$('#applock').hidden=false;setTimeout(()=>$('#lockpw').focus(),50);
   lockOpen=new Promise(res=>{
     const go=async()=>{const pw=$('#lockpw').value;if(!pw)return;$('#lockgo').disabled=true;
       try{const r=await api('/api/unlock',{method:'POST',headers:{'X-Edit-Password':pw}});
-        if(r.ok){sessionStorage.setItem('nas_unlocked','1');$('#applock').hidden=true;lockOpen=null;res();return}
+        if(r.ok){sessionStorage.setItem('nas_unlocked','1');$('#lockgo').disabled=false;$('#applock').hidden=true;lockOpen=null;res();return}
         $('#lockerr').textContent=(await r.json().catch(()=>({}))).error||'密碼錯誤';$('#lockpw').value='';$('#lockpw').focus()}
       catch{$('#lockerr').textContent='連不到主機電腦'}
       $('#lockgo').disabled=false};
