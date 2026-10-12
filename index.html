@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261011h">
+<link rel="stylesheet" href="glass.css?v=20261012a">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -203,7 +203,7 @@ body.mlock{position:fixed;left:0;right:0;overflow:hidden}#modal,#setpanel{oversc
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261011h"></script>
+<script src="glass.js?v=20261012a"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // macOS (Safari "Add to Dock"): a full-bleed icon gets a white plate behind it, so give Macs a squircle icon with its own transparent margin (iPhone keeps the full-bleed one)
@@ -255,7 +255,7 @@ function fitSel(sel){if(!sel||!sel.options.length)return;const sp=fitSel.sp||(fi
 function drawTarget(){
   const names=[...new Set([device,...folders.map(f=>f.name)])];
   if(!names.includes(target))target=device;
-  $('#target').innerHTML=names.map(n=>`<option value="${esc(n)}"${n===target?' selected':''}>${esc(n)}</option>`).join('');fitSel($('#target'));
+  $('#target').innerHTML=names.map(n=>`<option value="${esc(n)}"${n===target?' selected':''}>${esc(n.replace(/\//g,' / '))}</option>`).join('');fitSel($('#target'));
 }
 $('#target').onchange=e=>target=e.target.value;
 document.addEventListener('change',e=>{if(e.target.matches('.bar select'))fitSel(e.target)});
@@ -274,11 +274,15 @@ const manualOrder=()=>folders.some(f=>!f.pinned&&f.rank>=0);
 function sortFolders(){
   const key=f=>sortBy==='date'?Math.max(0,...f.files.map(x=>x.mtime)):f.files.reduce((s,x)=>s+x.size,0);
   const manual=manualOrder(),rk=f=>f.rank<0?1e9:f.rank;
-  return [...folders].sort((a,b)=>{
+  const roots=folders.filter(f=>!f.name.includes('/')).sort((a,b)=>{
     if(a.pinned!==b.pinned)return b.pinned-a.pinned; // pinned group first, newest pin on top (its own order, changed by dragging)
     if(a.pinned)return a.pinRank-b.pinRank;
     return manual?(rk(a)-rk(b)||cmpName(a,b)):sortBy==='name'?dir(cmpName(a,b)):dir(key(a)-key(b))||cmpName(a,b);
   });
+  // folders inside folders: each one is listed right after its parent (by name)
+  const kids=p=>folders.filter(f=>f.name.startsWith(p+'/')&&f.name.indexOf('/',p.length+1)<0).sort(cmpName);
+  const out=[],add=f=>{out.push(f);kids(f.name).forEach(add)};roots.forEach(add);
+  return out;
 }
 function syncToolbar(){
   for(const[v,id]of[['list','#vlist'],['nine','#vnine'],['small','#vsmall']])$(id).classList.toggle('on',view===v);
@@ -297,7 +301,7 @@ function media(x,k){
 }
 // selection: pick many files to download, or (admin only) delete
 let selMode=false;const selected=new Set();const keyOf=(f,n)=>f+'/'+n;
-const splitKey=k=>{const i=k.indexOf('/');return{folder:k.slice(0,i),name:k.slice(i+1)}};
+const splitKey=k=>{const i=k.lastIndexOf('/');return{folder:k.slice(0,i),name:k.slice(i+1)}};
 function allKeys(){return folders.flatMap(f=>f.files.map(x=>keyOf(f.name,x.name)))}
 function fileByKey(k){const{folder,name}=splitKey(k);return folders.find(f=>f.name===folder)?.files.find(x=>x.name===name)}
 function updateSelUI(){
@@ -325,10 +329,11 @@ function render(force){
   $('#list').innerHTML=folders.length&&!shown.length?'<div class="card" style="color:var(--mut);text-align:center">找不到符合「'+esc(q)+'」的檔案</div>':folders.length?shown.map(f=>{
     const items=sortFiles(f.files).map(x=>fileItem(f,x)).join('');
     const body=!f.files.length?'<div class="empty">（空資料夾）</div>':view==='list'?items:`<div class="nine${view==='small'?' small':''}">${items}</div>`;
-    const tools=(selMode&&f.files.length?`<button class="ghost" data-selfolder="${esc(f.name)}" style="padding:4px 10px">全選</button>`:'')
-      +(me.admin?`<button class="ghost" data-pin="${esc(f.name)}" style="padding:4px 10px">${f.pinned?'取消置頂':'📌 置頂'}</button><button class="ghost" data-sharefolder="${esc(f.name)}" style="padding:4px 10px">🔗 分享</button><button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button>`:'');
-    const grip=me.admin?`<span class="grip" title="按住上下拖動來調整順序" aria-label="拖動調整順序"></span>`:'';
-    return `<details class="fold card${f.pinned?' pinned':''}${me.admin?' hasgrip':''}" data-f="${esc(f.name)}" data-pinned="${f.pinned?1:0}"${opened.has(f.name)||q?' open':''}><summary>${grip}<span class="fname">${f.pinned?'📌 ':''}📂 ${esc(f.name)} <span class="cnt">${f.files.length} 個檔案 · ${fmtTotal(f.files.reduce((s,x)=>s+x.size,0))}</span></span>
+    const depth=f.name.split('/').length-1,leaf=f.name.split('/').pop();
+    const tools=`<button class="ghost" data-subfolder="${esc(f.name)}" style="padding:4px 10px" title="在這個資料夾裡新增資料夾">＋ 資料夾</button>`+(selMode&&f.files.length?`<button class="ghost" data-selfolder="${esc(f.name)}" style="padding:4px 10px">全選</button>`:'')
+      +(me.admin?(depth?'':`<button class="ghost" data-pin="${esc(f.name)}" style="padding:4px 10px">${f.pinned?'取消置頂':'📌 置頂'}</button>`)+`<button class="ghost" data-sharefolder="${esc(f.name)}" style="padding:4px 10px">🔗 分享</button><button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button>`:'');
+    const grip=me.admin&&!depth?`<span class="grip" title="按住上下拖動來調整順序" aria-label="拖動調整順序"></span>`:'';
+    return `<details class="fold card${f.pinned?' pinned':''}${me.admin&&!depth?' hasgrip':''}"${depth?` style="margin-left:${depth*14}px"`:''} data-f="${esc(f.name)}" data-pinned="${f.pinned?1:0}"${opened.has(f.name)||q?' open':''}><summary>${grip}<span class="fname">${f.pinned?'📌 ':''}📂 ${esc(leaf)} <span class="cnt">${f.files.length} 個檔案 · ${fmtTotal(f.files.reduce((s,x)=>s+x.size,0))}</span></span>
       <span class="ftools">${tools}</span></summary>${body}</details>`}).join(''):'<div class="card" style="color:var(--mut);text-align:center">還沒有資料夾，上傳檔案會自動建立「'+esc(device)+'」</div>';
   updateSelUI();
 }
@@ -519,6 +524,7 @@ $('#list').onclick=async e=>{
     if(b.dataset.pin){e.preventDefault();return togglePin(b.dataset.pin)}
     if(b.dataset.sharefolder){e.preventDefault();const n=b.dataset.sharefolder;return shareDialog(`資料夾「${n}」（${folders.find(f=>f.name===n)?.files.length||0} 個檔案，之後新增的檔案也會出現在分享裡）`,{folder:n})}
     if(b.dataset.sharefile){const k=b.dataset.sharefile;return shareDialog(`檔案「${splitKey(k).name}」`,{items:[splitKey(k)]})}
+    if(b.dataset.subfolder){e.preventDefault();const par=b.dataset.subfolder,n=prompt(`在「${par.replace(/\//g,' / ')}」裡新增資料夾，名稱：`);if(!n||!n.trim())return;const r=await api('/api/folder?name='+encodeURIComponent(par+'/'+n.trim()),{method:'POST'});if(!r.ok)alert((await r.json()).error);else{opened.add(par);ls.set('nas_open',JSON.stringify([...opened]));refresh()}return}
     if(b.dataset.delfolder){e.preventDefault();return delFolder(b.dataset.delfolder)}
     if(b.dataset.n)return deleteItems([{folder:b.dataset.f,name:b.dataset.n}],`確定要刪除「${b.dataset.n}」嗎？`);
     return;
@@ -726,7 +732,7 @@ $('#vstage').addEventListener('touchend',e=>{const dx=e.changedTouches[0].client
 
 async function delFolder(name){
   if(!me.admin)return;
-  if(!confirm(`確定要刪除資料夾「${name}」以及裡面所有檔案嗎？此動作無法復原。`))return;
+  if(!confirm(`確定要刪除資料夾「${name}」以及裡面所有檔案和資料夾嗎？此動作無法復原。`))return;
   const pw=prompt('請輸入編輯密碼');if(pw===null)return;
   const r=await api('/api/folder?name='+encodeURIComponent(name),{method:'DELETE',headers:{'X-Edit-Password':pw}});
   if(!r.ok)alert((await r.json()).error);refresh();
