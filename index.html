@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261013C">
+<link rel="stylesheet" href="glass.css?v=20261013D">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -222,7 +222,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261013C"></script>
+<script src="glass.js?v=20261013D"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -719,7 +719,7 @@ async function activityWindow(){ // admin: which device did what, when (the log 
     const dopts=[...new Set(devs.map(d=>d.dev).filter(Boolean))].map(n=>'<option value="'+esc(n)+'"'+(fd===n?' selected':'')+'>'+esc(n)+'</option>').join('');
     showModal('<div class="mhead"><h3>🕘 活動紀錄</h3><button class="ghost" id="actx">關閉</button></div>'+
       '<p class="sub">每次刪除都會「先寫進日誌」再移到主機的回收區（使用者看起來已刪除，檔案其實還在主機上）。</p>'+
-      '<b>登入過的裝置</b>'+(devs.length?devs.map(d=>'<div class="srow"><b>'+esc(d.dev||'（舊版或未命名）')+'</b>　<span class="sub">'+esc(d.user)+'</span><small>'+esc(uaShort(d.ua))+' · IP '+esc(d.ip)+'<br>最近 '+when(d.last)+'：'+esc(ACT[d.lastAction]||d.lastAction)+(d.lastDetail?'　'+esc(d.lastDetail):'')+'</small></div>').join(''):'<p class="sub">沒有紀錄</p>')+
+      '<b>登入過的裝置</b>'+(devs.length?devs.map(d=>'<div class="srow"><b>'+esc(d.dev||'（舊版或未命名）')+'</b>　<span class="sub">'+esc(d.user)+'</span><small>'+esc(uaShort(d.ua))+'<br>最近 '+when(d.last)+(d.lastAction?'：'+esc(ACT[d.lastAction]||d.lastAction)+(d.lastDetail?'　'+esc(d.lastDetail):''):'')+'</small>'+(d.lastChange?'<div style="margin-top:4px;color:#f59e0b;font-size:13px">⚠ 有變動檔案（共 '+d.changes+' 次）：最近 '+when(d.lastChange)+'　'+esc(ACT[d.lastChangeAction]||d.lastChangeAction)+'　'+esc(d.lastChangeDetail)+'</div>':'')+'</div>').join(''):'<p class="sub">沒有紀錄</p>')+
       '<div class="mbtns" style="margin:12px 0 4px;justify-content:flex-start"><select id="actf" style="padding:6px;border-radius:8px"><option value="">所有動作</option>'+opts+'</select><select id="actd" style="padding:6px;border-radius:8px"><option value="">所有裝置</option>'+dopts+'</select></div>'+
       (entries.length?entries.map(e=>'<div class="srow"><b>'+esc(ACT[e.a]||e.a)+(e.ph==='start'?'（開始）':e.ph==='done'?'（完成）':e.ph==='failed'?'（失敗）':'')+'</b>　<span class="sub">'+when(e.t)+'</span><small>'+esc(e.d||'')+(e.size?' · '+fmt(e.size):'')+'<br>'+esc(e.user)+(e.dev?' · '+esc(e.dev):'')+(e.note==='backfill'?' · 事後補記':'')+'</small></div>').join(''):'<p class="sub">沒有符合的紀錄</p>')+
       (more?'<div class="mbtns"><button class="ghost" id="actmore">載入更多</button></div>':''));
