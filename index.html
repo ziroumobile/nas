@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012A">
+<link rel="stylesheet" href="glass.css?v=20261012B">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -134,7 +134,7 @@ body.selecting .wrap{padding-bottom:100px}
 .vnav{position:fixed;top:50%;transform:translateY(-50%);width:44px;height:64px;border-radius:10px;background:rgba(255,255,255,.14);color:#fff;font-size:28px;padding:0;z-index:51}
 #vprev{left:6px}#vnext{right:6px}
 /* dialogs (sharing) */
-#modal,#setpanel,#applock{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+#modal,#setpanel,#applock,#offscreen{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
 #modal[hidden]{display:none}
 #modal.top{z-index:60}
 .mbox{width:min(460px,100%);max-height:100%;overflow:auto}
@@ -152,7 +152,7 @@ body.selecting .wrap{padding-bottom:100px}
 .srow b{word-break:break-all}.srow small{display:block;color:var(--mut);margin:2px 0 6px}
 body.mlock{position:fixed;left:0;right:0;overflow:hidden}#modal,#setpanel{overscroll-behavior:contain}
 body.covered #app{visibility:hidden}
-#setpanel[hidden],#applock[hidden]{display:none}#applock{z-index:500;background:#000}#setbody{display:flex;flex-direction:column;align-items:stretch;gap:8px}#setbody button{text-align:left}
+#setpanel[hidden],#applock[hidden],#offscreen[hidden]{display:none}#offscreen{z-index:500;background:#000}#applock{z-index:500;background:#000}#setbody{display:flex;flex-direction:column;align-items:stretch;gap:8px}#setbody button{text-align:left}
 #gear{background:none;border:0;font-size:22px;line-height:1;padding:4px 8px;border-radius:8px;color:var(--fg)}#gear:hover{background:var(--card)}
 @media(max-width:699px){.bar button,.bar select{padding:6px 12px;font-size:14px}}
 </style></head><body><div class="wrap">
@@ -193,6 +193,8 @@ body.covered #app{visibility:hidden}
   <div id="vinfop" hidden></div>
   <button class="vnav" id="vprev" aria-label="上一個">‹</button><button class="vnav" id="vnext" aria-label="下一個">›</button>
 </div>
+<div id="offscreen" hidden><div class="mbox card"><h3 style="margin:0 0 6px">⚠️ 連不到主機電腦</h3><p class="sub" id="offmsg" style="margin:0 0 10px">主機可能關機，或通道還沒啟動。</p><p class="sub" id="offretry" style="margin:0 0 10px"></p>
+    <div class="mbtns" style="justify-content:space-between"><button class="ghost" id="offout">登出帳號</button><button class="ghost" id="offgo">重試</button></div></div></div>
 <div id="applock" hidden><div class="mbox card"><h3 style="margin:0 0 6px">🔒 我的 NAS 已鎖定</h3><p class="sub" style="margin:0 0 10px">請輸入登入密碼來開啟</p>
     <input id="lockpw" type="password" autocomplete="off" autocapitalize="off" placeholder="登入密碼"><p class="merr" id="lockerr"></p>
     <div class="mbtns" style="justify-content:space-between"><button class="ghost" id="lockout">登出帳號</button><button class="ghost" id="lockgo">解鎖</button></div></div></div>
@@ -208,7 +210,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012A"></script>
+<script src="glass.js?v=20261012B"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -237,13 +239,22 @@ async function api(path,o={}){
   try{return await fetch(API+path,o)}
   catch{await findApi();return fetch(API+path,o)} // tunnel may have restarted
 }
+let initRetry=null;
+function hostBlocked(msg){ // the app stays hidden: without the host we can't know who this is or whether the lock applies
+  $('#app').hidden=true;$('#login').hidden=true;$('#offmsg').textContent=msg;$('#offscreen').hidden=false;
+  let n=5;clearInterval(initRetry);$('#offretry').textContent='（'+n+' 秒後自動重試）';
+  initRetry=setInterval(()=>{if(--n<=0){clearInterval(initRetry);init();return}$('#offretry').textContent='（'+n+' 秒後自動重試）'},1000);
+}
+$('#offgo').onclick=()=>{clearInterval(initRetry);init()};
+$('#offout').onclick=async()=>{clearInterval(initRetry);try{await sb.auth.signOut()}catch{}sessionStorage.removeItem('nas_unlocked');location.reload()};
 async function init(){
+  clearInterval(initRetry);$('#offscreen').hidden=true;
   $('#dev').textContent=device;
   const t=await token();
   if(!t){$('#login').hidden=false;$('#app').hidden=true;return}
   $('#login').hidden=true; // the home page stays hidden until we know whether the lock screen must come first
-  let r;try{r=await api('/api/me')}catch{$('#app').hidden=false;$('#off').hidden=false;return}
-  if(!r.ok){$('#app').hidden=false;$('#off').hidden=r.status===401;if(r.status===401){await sb.auth.signOut();return init()}return}
+  let r;try{r=await api('/api/me')}catch{return hostBlocked('主機可能關機，或通道還沒啟動（開機後要執行 start.ps1）。')}
+  if(!r.ok){if(r.status===401){await sb.auth.signOut();return init()}return hostBlocked('主機回應了錯誤（'+r.status+'），請稍後再試。')}
   $('#off').hidden=true;me=await r.json();
   if(needLock())await askUnlock(); // admin with an edit password: ask for it every time the app is opened
   $('#app').hidden=false;
