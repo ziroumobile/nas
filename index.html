@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261012C">
+<link rel="stylesheet" href="glass.css?v=20261013A">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -178,13 +178,8 @@ body.covered #app{visibility:hidden}
   <header><h1>📁 我的 NAS</h1></header>
   <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></span>
   <nav id="dock"><button id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button><button id="dflt" type="button" aria-label="拖動排序" title="拖動排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg class="uring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="dupArc" cx="22" cy="22" r="19" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4" transform="rotate(-90 22 22)"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
-  <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button></div><div class="mbtns" style="justify-content:space-between"><button class="ghost" id="out">登出</button><button class="ghost" id="setclose">完成</button></div></div></div>
-  <details id="clip" class="card"><summary>📋 剪貼簿 <span id="clipn" class="cnt"></span></summary>
-    <textarea id="clipin" rows="2" placeholder="輸入或貼上文字、圖片…（暫存 24 小時，只有你的裝置看得到）"></textarea>
-    <div class="mbtns"><button class="ghost" id="clippaste">📋 貼上</button><button class="ghost" id="clipsend">送出文字</button><button class="ghost" id="clippic">🖼 選圖片</button><button class="del" id="clipclear" hidden>全部清除</button></div>
-    <input id="clipfile" class="fpick" type="file" accept="image/*" multiple>
-    <div id="cliplist"></div>
-  </details>
+  <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="actlog" hidden>🕘 活動紀錄</button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button></div><div class="mbtns" style="justify-content:space-between"><button class="ghost" id="out">登出</button><button class="ghost" id="setclose">完成</button></div></div></div>
+  <button class="ghost" id="clipbtn" type="button" style="width:100%;margin-bottom:12px">📋 剪貼簿 <span id="clipn" class="cnt"></span></button>
   <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
   <div class="bar">
     <span>此裝置：<b id="dev"></b></span><button class="ghost" id="rename">改名</button>
@@ -227,7 +222,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261012C"></script>
+<script src="glass.js?v=20261013A"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -252,7 +247,7 @@ async function findApi(){ // the PC's tunnel URL is published to url.json by sta
 async function api(path,o={}){
   if(!API)await findApi();
   const t=await token();
-  o.headers=Object.assign({Authorization:'Bearer '+t},o.headers||{});
+  o.headers=Object.assign({Authorization:'Bearer '+t,'X-NAS-Device':encodeURIComponent(device)},o.headers||{});
   try{return await fetch(API+path,o)}
   catch{await findApi();return fetch(API+path,o)} // tunnel may have restarted
 }
@@ -276,7 +271,7 @@ async function init(){
   if(needLock())await askUnlock(); // admin with an edit password: ask for it every time the app is opened
   $('#app').hidden=false;
   $('#who').textContent=me.name+(me.admin?'（管理員）':'');
-  $('#setpw').hidden=$('#shares').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh().then(()=>setTimeout(prefetchThumbs,600));clipRefresh();
+  $('#setpw').hidden=$('#shares').hidden=$('#actlog').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh().then(()=>setTimeout(prefetchThumbs,600));clipRefresh();
 }
 $('#go').onclick=async()=>{
   const{error}=await sb.auth.signInWithPassword({email:$('#u').value.trim(),password:$('#p').value});
@@ -706,6 +701,34 @@ async function sharesManager(){ // every share: link, password (after entering t
   };
   draw();
 }
+const ACT={'login':'登入／開啟','upload':'上傳','delete-file':'刪除檔案','delete-folder':'刪除資料夾','create-folder':'建立資料夾','share-create':'建立分享','share-revoke':'撤銷分享','share-open':'分享被開啟','unlock':'解鎖','password-wrong':'編輯密碼輸入錯誤','edit-password':'變更編輯密碼','assistant-delete':'助手：刪除','assistant-move':'助手：搬移','assistant-stop':'助手：停止伺服器','assistant-start':'助手：啟動伺服器','assistant-note':'助手：備註'};
+function uaShort(u){u=u||'';const os=/iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Android/.test(u)?'Android':/Windows/.test(u)?'Windows':/Mac OS X/.test(u)?'Mac':'';const br=/Edg\//.test(u)?'Edge':/CriOS|Chrome\//.test(u)?'Chrome':/Firefox|FxiOS/.test(u)?'Firefox':/Safari\//.test(u)?'Safari':'';return [os,br].filter(Boolean).join(' · ')}
+async function activityWindow(){ // admin: which device did what, when (the log is written before anything is deleted)
+  showModal('<h3>🕘 活動紀錄</h3><p class="sub">載入中…</p>');
+  let entries=[],devs=[],more=false,fa='',fd='';
+  const when=t=>new Date(t).toLocaleString('zh-TW',{hour12:false});
+  const load=async(append)=>{
+    const qs=new URLSearchParams({limit:'100'});if(fa)qs.set('a',fa);if(fd)qs.set('dev',fd);if(append&&entries.length)qs.set('before',entries[entries.length-1].t);
+    const r=await api('/api/activity?'+qs);if(!r.ok)throw new Error((await r.json().catch(()=>({}))).error||'無法載入');
+    const j=await r.json();entries=append?entries.concat(j.entries):j.entries;more=j.more;devs=j.devices;
+  };
+  const draw=()=>{
+    const opts=Object.entries(ACT).map(([k,v])=>'<option value="'+k+'"'+(fa===k?' selected':'')+'>'+v+'</option>').join('');
+    const dopts=[...new Set(devs.map(d=>d.dev).filter(Boolean))].map(n=>'<option value="'+esc(n)+'"'+(fd===n?' selected':'')+'>'+esc(n)+'</option>').join('');
+    showModal('<div class="mhead"><h3>🕘 活動紀錄</h3><button class="ghost" id="actx">關閉</button></div>'+
+      '<p class="sub">每次刪除都會「先寫進日誌」再移到主機的回收區（使用者看起來已刪除，檔案其實還在主機上）。</p>'+
+      '<b>登入過的裝置</b>'+(devs.length?devs.map(d=>'<div class="srow"><b>'+esc(d.dev||'（舊版或未命名）')+'</b>　<span class="sub">'+esc(d.user)+'</span><small>'+esc(uaShort(d.ua))+' · IP '+esc(d.ip)+'<br>最近 '+when(d.last)+'：'+esc(ACT[d.lastAction]||d.lastAction)+(d.lastDetail?'　'+esc(d.lastDetail):'')+'</small></div>').join(''):'<p class="sub">沒有紀錄</p>')+
+      '<div class="mbtns" style="margin:12px 0 4px;justify-content:flex-start"><select id="actf" style="padding:6px;border-radius:8px"><option value="">所有動作</option>'+opts+'</select><select id="actd" style="padding:6px;border-radius:8px"><option value="">所有裝置</option>'+dopts+'</select></div>'+
+      (entries.length?entries.map(e=>'<div class="srow"><b>'+esc(ACT[e.a]||e.a)+(e.ph==='start'?'（開始）':e.ph==='done'?'（完成）':e.ph==='failed'?'（失敗）':'')+'</b>　<span class="sub">'+when(e.t)+'</span><small>'+esc(e.d||'')+(e.size?' · '+fmt(e.size):'')+'<br>'+esc(e.user)+(e.dev?' · '+esc(e.dev):'')+(e.note==='backfill'?' · 事後補記':'')+'</small></div>').join(''):'<p class="sub">沒有符合的紀錄</p>')+
+      (more?'<div class="mbtns"><button class="ghost" id="actmore">載入更多</button></div>':''));
+    $('#actx').onclick=closeModal;
+    $('#actf').onchange=async e=>{fa=e.target.value;try{await load(false);draw()}catch(x){alert(x.message)}};
+    $('#actd').onchange=async e=>{fd=e.target.value;try{await load(false);draw()}catch(x){alert(x.message)}};
+    if($('#actmore'))$('#actmore').onclick=async()=>{try{await load(true);draw()}catch(x){alert(x.message)}};
+  };
+  try{await load(false);draw()}catch(x){showModal('<h3>🕘 活動紀錄</h3><p class="merr">'+esc(x.message)+'</p><div class="mbtns"><button class="ghost" id="actx">關閉</button></div>');$('#actx').onclick=closeModal}
+}
+$('#actlog').onclick=activityWindow;
 $('#shares').onclick=sharesManager;
 $('#selshare').onclick=()=>{const items=[...selected].map(splitKey);if(items.length)shareDialog(`${items.length} 個檔案`,{items})};
 $('#vshare').onclick=()=>{const k=vlist[vi]?.k;if(k)shareDialog(`檔案「${splitKey(k).name}」`,{items:[splitKey(k)]})};
@@ -903,7 +926,7 @@ async function sendChunk(j,offset,onprog){
   return new Promise(res=>{
     const x=new XMLHttpRequest();
     x.open('PUT',`${API}/api/upload-chunk?folder=${encodeURIComponent(j.folder)}&name=${encodeURIComponent(j.file.name)}&id=${j.id}&offset=${offset}&total=${j.file.size}&mtime=${j.file.lastModified||0}`);
-    x.setRequestHeader('Authorization','Bearer '+t);
+    x.setRequestHeader('Authorization','Bearer '+t);x.setRequestHeader('X-NAS-Device',encodeURIComponent(device));
     x.upload.onprogress=e=>onprog(e.loaded);
     x.onload=()=>{let b={};try{b=JSON.parse(x.responseText)}catch{}res({status:x.status,body:b})};
     x.onerror=()=>res({status:0});x.ontimeout=()=>res({status:0});
@@ -960,11 +983,11 @@ let clipItems=[],clipSig='';
 const clipAgo=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?'剛剛':m<60?m+' 分鐘前':Math.round(m/60)+' 小時前'};
 async function clipRefresh(){
   try{const r=await api('/api/clip');if(!r.ok)return;const l=await r.json();const sig=JSON.stringify(l.map(c=>c.id));
-    clipItems=l;$('#clipn').textContent=l.length?'（'+l.length+'）':'';$('#clipclear').hidden=!l.length;
-    if(sig!==clipSig){clipSig=sig;clipRender()}}catch{}
+    clipItems=l;$('#clipn').textContent=l.length?'（'+l.length+'）':'';if($('#clipclear'))$('#clipclear').hidden=!l.length;
+    if(sig!==clipSig){clipSig=sig;if($('#cliplist'))clipRender()}}catch{}
 }
 function clipRender(){
-  const box=$('#cliplist');box.innerHTML='';
+  const box=$('#cliplist');if(!box)return;box.innerHTML='';
   if(!clipItems.length){box.innerHTML='<div class="sub" style="padding:10px 0">還沒有內容。在這裡貼上的文字或圖片，會同步到你其他登入的裝置。</div>';return}
   for(const c of clipItems){
     const d=document.createElement('div');d.className='clipitem';
@@ -1003,30 +1026,37 @@ async function clipSendImage(file){
   return true;
 }
 async function clipSendFiles(files){let ok=false;for(const f of files)if(/^image\//.test(f.type))ok=(await clipSendImage(f))||ok;if(ok){clipSig='';clipRefresh()}}
-$('#clipsend').onclick=async()=>{if(await clipSendText($('#clipin').value))$('#clipin').value=''};
-$('#clippic').onclick=()=>$('#clipfile').click();
-$('#clipfile').onchange=e=>{clipSendFiles([...e.target.files]);e.target.value=''};
-$('#clipin').addEventListener('paste',e=>{
-  const imgs=[...(e.clipboardData?.files||[])].filter(f=>/^image\//.test(f.type));
-  if(imgs.length){e.preventDefault();clipSendFiles(imgs)} // pictures go straight up; plain text just lands in the box
-});
-$('#clippaste').onclick=async()=>{ // read the device clipboard (the browser asks permission the first time)
-  try{
-    const items=await navigator.clipboard.read();let sent=false;
-    for(const it of items){
-      const imgType=it.types.find(t=>/^image\/(png|jpeg|webp|gif)$/.test(t));
-      if(imgType){const blob=await it.getType(imgType);sent=(await clipSendImage(new File([blob],'clip',{type:imgType})))||sent}
-      else if(it.types.includes('text/plain')){const t=await (await it.getType('text/plain')).text();if(await clipSendText(t))sent=true}
+function clipOpen(){ // the clipboard lives in a window, like the share list
+  showModal('<div class="mhead"><h3>📋 剪貼簿</h3><button class="ghost" id="clipx">關閉</button></div>'+
+    '<textarea id="clipin" rows="2" placeholder="輸入或貼上文字、圖片…（暫存 24 小時，只有你的裝置看得到）" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--fg);font:inherit;resize:vertical;min-height:52px"></textarea>'+
+    '<div class="mbtns" style="margin:8px 0"><button class="ghost" id="clippaste">📋 貼上</button><button class="ghost" id="clipsend">送出文字</button><button class="ghost" id="clippic">🖼 選圖片</button><button class="del" id="clipclear" hidden>全部清除</button></div>'+
+    '<input id="clipfile" class="fpick" type="file" accept="image/*" multiple><div id="cliplist"></div>');
+  $('#clipx').onclick=closeModal;
+  $('#clipsend').onclick=async()=>{if(await clipSendText($('#clipin').value))$('#clipin').value=''};
+  $('#clippic').onclick=()=>$('#clipfile').click();
+  $('#clipfile').onchange=e=>{clipSendFiles([...e.target.files]);e.target.value=''};
+  $('#clipin').addEventListener('paste',e=>{
+    const imgs=[...(e.clipboardData?.files||[])].filter(f=>/^image\//.test(f.type));
+    if(imgs.length){e.preventDefault();clipSendFiles(imgs)} // pictures go straight up; plain text just lands in the box
+  });
+  $('#clippaste').onclick=async()=>{ // read the device clipboard (the browser asks permission the first time)
+    try{
+      const items=await navigator.clipboard.read();let sent=false;
+      for(const it of items){
+        const imgType=it.types.find(t=>/^image\/(png|jpeg|webp|gif)$/.test(t));
+        if(imgType){const blob=await it.getType(imgType);sent=(await clipSendImage(new File([blob],'clip',{type:imgType})))||sent}
+        else if(it.types.includes('text/plain')){const t=await (await it.getType('text/plain')).text();if(await clipSendText(t))sent=true}
+      }
+      if(sent){clipSig='';clipRefresh()}
+    }catch{
+      try{const t=await navigator.clipboard.readText();if(t)await clipSendText(t)}
+      catch{alert('瀏覽器不讓網頁讀取剪貼簿。請長按上面的輸入框貼上，再按「送出文字」。')}
     }
-    if(sent){clipSig='';clipRefresh()}
-  }catch{
-    try{const t=await navigator.clipboard.readText();if(t)await clipSendText(t)}
-    catch{alert('瀏覽器不讓網頁讀取剪貼簿。請長按上面的輸入框貼上，再按「送出文字」。')}
-  }
-};
-$('#clipclear').onclick=async()=>{if(!confirm('清除剪貼簿裡全部的內容？'))return;await api('/api/clip',{method:'DELETE'});clipSig='';clipRefresh()};
-$('#clip').addEventListener('toggle',()=>{try{ls.set('nas_clip_open',$('#clip').open?'1':'0')}catch{}if($('#clip').open)clipRefresh()});
-try{if(ls.get('nas_clip_open')==='1')$('#clip').open=true}catch{}
+  };
+  $('#clipclear').onclick=async()=>{if(!confirm('清除剪貼簿裡全部的內容？'))return;await api('/api/clip',{method:'DELETE'});clipSig='';clipRefresh()};
+  clipSig='';clipRender();$('#clipclear').hidden=!clipItems.length;clipRefresh();
+}
+$('#clipbtn').onclick=clipOpen;
 setInterval(()=>{if(me&&!document.hidden&&$('#applock').hidden&&$('#offscreen').hidden)clipRefresh()},8000);
 
 // ---- app lock: the login stays, but opening the app (or coming back after a minute away) asks for the edit password ----
