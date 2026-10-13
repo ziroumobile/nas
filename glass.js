@@ -269,7 +269,10 @@ void main(){
     document.body.appendChild(m);
     const r = sel.getBoundingClientRect(), w = m.offsetWidth, h = m.offsetHeight;
     const left = Math.max(8, Math.min(r.left, innerWidth - w - 8));
-    let top = r.bottom + 6, up = false; if (top + h > innerHeight - 8 && r.top - h - 6 > 8) { top = r.top - h - 6; up = true; }
+    const below = innerHeight - r.bottom - 14, above = r.top - 14;   // a long list is capped to the room on the roomier side and scrolls inside itself
+    let up = h > below && above > below, room = up ? above : below;
+    m.style.maxHeight = Math.max(120, room) + 'px'; m.style.overflowY = 'auto'; m.style.overscrollBehavior = 'contain'; m.style.touchAction = 'pan-y'; m.style.webkitOverflowScrolling = 'touch';
+    const h2 = m.offsetHeight, top = up ? r.top - h2 - 6 : r.bottom + 6;
     m.style.left = left + 'px'; m.style.top = top + 'px'; m.style.transformOrigin = (up ? 'bottom ' : 'top ') + Math.max(20, r.left + r.width / 2 - left) + 'px';
   }
   {   // dark drop-down menus on every platform (the native list is white on Windows)
@@ -283,7 +286,7 @@ void main(){
     const stop = e => { const t = e.target.closest && e.target.closest('select'); if (t) { e.preventDefault(); if (e.type === 'click') { e.stopPropagation(); gm ? closeMenu() : openMenu(t); } } };
     ['mousedown', 'click'].forEach(ev => document.addEventListener(ev, stop, { capture: true, passive: false }));   // (not touchstart/pointerdown: cancelling those would swallow the click)
     document.addEventListener('pointerdown', e => { if (gm && !e.target.closest('.gmenu') && !e.target.closest('select')) closeMenu(); }, true);
-    addEventListener('scroll', closeMenu, true);
+    addEventListener('scroll', e => { if (e.target && e.target.closest && e.target.closest('.gmenu')) return; closeMenu(); }, true);   // scrolling the menu itself must not close it
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   addEventListener('resize', () => switches.forEach(s => { if (!s.active) relayout(s); }));
