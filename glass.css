@@ -471,10 +471,10 @@ html.ios body .selbot button,html.android body .selbot button{background:rgba(24
 /* ===== every button = clear glass (faint fill, thin rim, light blur) - except: select-mode share / download (frosted), the 列表/中圖示/小圖示 switch, the dock, the preview arrows and the drag grips ===== */
 html body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button),
 html body a.btn:not(#nx1):not(#nx2){
-  background:rgba(255,255,255,.04)!important;background-image:none!important;border:1px solid transparent!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)!important;
+  background:rgba(255,255,255,.012)!important;background-image:none!important;border:1px solid transparent!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 4px 14px rgba(0,0,0,.3)!important;
   text-shadow:none!important}
 html:not(.android) body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button),
-html:not(.android) body a.btn:not(#nx1):not(#nx2){-webkit-backdrop-filter:blur(3px) saturate(175%)!important;backdrop-filter:blur(3px) saturate(175%)!important}
+html:not(.android) body a.btn:not(#nx1):not(#nx2){-webkit-backdrop-filter:blur(1.5px) saturate(160%)!important;backdrop-filter:blur(1.5px) saturate(160%)!important}
 html.ios body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button)::after,
 html.ios body a.btn:not(#nx1):not(#nx2)::after{display:none!important}
 /* text colours: white (ghost) / blue (main action) / red (delete, danger) */
@@ -485,3 +485,5 @@ html body button.on:not(#nx1):not(#nx2):not(.seg button),html body #selmode.on{c
 html body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button):active,html body a.btn:not(#nx1):not(#nx2):active{background:rgba(120,120,128,.5)!important}
 /* select-mode top row: done is a clear-glass button with a blue check */
 html.ios body .seltop #selexit{color:#0a84ff!important;border-radius:50%!important}
+/* same as the dock: no bright rim / sheen layers on these buttons */
+html body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button)::before,html body a.btn:not(#nx1):not(#nx2)::before{display:none!important}
