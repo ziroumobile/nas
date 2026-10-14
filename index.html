@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261014B">
+<link rel="stylesheet" href="glass.css?v=20261014C">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -107,8 +107,15 @@ body.selecting #dock,body.selecting .srch,body.searching #dock{display:none}
 #selbar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;z-index:10;box-shadow:0 -2px 10px rgba(0,0,0,.15)}
 #selbar[hidden]{display:none}
 body.selecting .wrap{padding-bottom:100px}
+#list .cell,#list .row{-webkit-touch-callout:none}#list .thumbA,#list .thumbA img{-webkit-touch-callout:none;-webkit-user-drag:none}
+#peek{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;pointer-events:none}
+#peek[hidden]{display:none}
+#peek .pbox{max-width:92vw;max-height:80vh;display:flex;flex-direction:column;align-items:center;gap:8px;animation:pk .18s ease-out}
+#peek img{max-width:92vw;max-height:72vh;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.6);background:#000}
+#peek .pname{color:#fff;font-size:13px;max-width:92vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@keyframes pk{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
 body.selecting #list{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:pan-y} /* sideways drags reach the page (drag-select), vertical ones still scroll */
-#disk{margin:14px 2px 4px;padding:14px 16px;border-radius:18px;background:var(--card);border:1px solid var(--bd)}
+#disk{margin:4px 2px 10px;padding:14px 16px;border-radius:18px;background:var(--card);border:1px solid var(--bd)}
 #disk .dtop{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px}#disk .dtop span:last-child{color:var(--mut)}
 #disk .dbar{display:flex;height:16px;border-radius:8px;overflow:hidden;background:rgba(120,120,128,.25);margin:10px 0}
 #disk .dbar i{display:block;height:100%;min-width:0}
@@ -202,9 +209,9 @@ body.covered #app{visibility:hidden}
   </div>
   <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" class="fpick" type="file" multiple></div>
   <div id="upsum" hidden></div>
+  <div id="disk" hidden></div>
   <div id="total" style="color:var(--mut);font-size:13px;margin:0 2px 8px"></div>
   <div id="list"></div>
-  <div id="disk" hidden></div>
   <div id="ups" style="margin-top:12px"></div>
 </div>
 <div id="viewer" hidden>
@@ -230,7 +237,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261014B"></script>
+<script src="glass.js?v=20261014C"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -358,29 +365,59 @@ async function drawDisk(){ // capacity bar under the file list: what the NAS fil
   el.hidden=false;
 }
 let dragSwallow=0;
-{ // select mode: drag sideways across items to select (or, when starting on a selected one, deselect) many at once
-  const list=$('#list');let ds=null,raf=0;
-  const cellAt=(x,y)=>{const el=document.elementFromPoint(x,y);return el&&el.closest?el.closest('.cell[data-k],.row[data-k]'):null};
-  const hit=c=>{if(c&&selected.has(c.dataset.k)!==ds.on)setSel(c.dataset.k,ds.on)};
-  const path=(x0,y0,x1,y1)=>{const n=Math.max(1,Math.ceil(Math.hypot(x1-x0,y1-y0)/10));for(let i=1;i<=n;i++)hit(cellAt(x0+(x1-x0)*i/n,y0+(y1-y0)*i/n));updateSelUI()};
+{ // select mode: drag across items like the iPhone Photos app - everything from the first item to the one under the finger (in reading order) gets selected
+  const list=$('#list');let ds=null,raf=0,pk=null;
+  const SEL='.cell[data-k],.row[data-k]';
+  const cellAt=(x,y)=>{const el=document.elementFromPoint(x,y);return el&&el.closest?el.closest(SEL):null};
+  const apply=()=>{ // range anchor..cur: set to ds.on; items that left the range go back to how they were
+    const lo=Math.min(ds.ai,ds.ci),hi=Math.max(ds.ai,ds.ci),want=new Set();
+    for(let i=lo;i<=hi;i++)want.add(ds.keys[i]);
+    for(const k of ds.touched)if(!want.has(k)){const was=ds.base.has(k);if(selected.has(k)!==was)setSel(k,was);ds.touched.delete(k)}
+    for(const k of want){if(selected.has(k)!==ds.on)setSel(k,ds.on);ds.touched.add(k)}
+    updateSelUI();
+  };
+  const at=(x,y)=>{const c=cellAt(x,y);if(c){const i=ds.idx.get(c);if(i!==undefined&&i!==ds.ci){ds.ci=i;apply()}}};
   const edge=()=>{raf=0;if(!ds||!ds.act)return;const y=ds.ly,h=innerHeight,dy=y<90?-14:y>h-120?14:0;
-    if(dy){scrollBy(0,dy);path(ds.lx,ds.ly,ds.lx,ds.ly);raf=requestAnimationFrame(edge)}};
+    if(dy){scrollBy(0,dy);at(ds.lx,ds.ly);raf=requestAnimationFrame(edge)}};
   list.addEventListener('pointerdown',e=>{
     ds=null;if(!selMode||(e.pointerType==='mouse'&&e.button!==0)||e.target.closest('button,a.btn,input,summary'))return;
-    const c=e.target.closest('.cell[data-k],.row[data-k]');if(!c)return;
-    ds={id:e.pointerId,x:e.clientX,y:e.clientY,lx:e.clientX,ly:e.clientY,c,on:!selected.has(c.dataset.k),act:false};
+    const c=e.target.closest(SEL);if(!c)return;
+    const els=[...list.querySelectorAll(SEL)].filter(el=>el.offsetParent!==null);
+    ds={id:e.pointerId,x:e.clientX,y:e.clientY,lx:e.clientX,ly:e.clientY,c,on:!selected.has(c.dataset.k),act:false,keys:els.map(el=>el.dataset.k),idx:new Map(els.map((el,i)=>[el,i])),base:new Set(selected),touched:new Set()};
+    ds.ai=ds.ci=ds.idx.get(c);
   });
   list.addEventListener('pointermove',e=>{
     if(!ds||e.pointerId!==ds.id)return;
     if(!ds.act){const dx=e.clientX-ds.x,dy=e.clientY-ds.y;if(Math.abs(dx)<10||Math.abs(dx)<Math.abs(dy)*1.2)return;
-      ds.act=true;try{list.setPointerCapture(e.pointerId)}catch{}hit(ds.c);path(ds.x,ds.y,e.clientX,e.clientY)}
-    else path(ds.lx,ds.ly,e.clientX,e.clientY);
-    ds.lx=e.clientX;ds.ly=e.clientY;if(!raf)raf=requestAnimationFrame(edge);
+      ds.act=true;try{list.setPointerCapture(e.pointerId)}catch{}apply()}
+    ds.lx=e.clientX;ds.ly=e.clientY;at(e.clientX,e.clientY);if(!raf)raf=requestAnimationFrame(edge);
     e.preventDefault();
   });
   const end=e=>{if(ds&&e.pointerId===ds.id){if(ds.act)dragSwallow=Date.now()+400;ds=null}};
   list.addEventListener('pointerup',end);list.addEventListener('pointercancel',end);
   list.addEventListener('dragstart',e=>{if(selMode)e.preventDefault()});
+
+  // long press on a picture / video: a big preview while the finger stays down (works in select mode too)
+  const peek=document.createElement('div');peek.id='peek';peek.hidden=true;document.body.appendChild(peek);
+  const hidePeek=()=>{peek.hidden=true;peek.innerHTML=''};
+  const startPeek=(c,x0,y0,id)=>{
+    clearTimeout(pk&&pk.t);pk={x:x0,y:y0,id,on:false};
+    pk.t=setTimeout(()=>{
+      const k=c.dataset.k,x=k&&fileByKey(k);if(!x||!x.thumb||ds&&ds.act){pk=null;return}
+      pk.on=true;if(ds)ds=null; // a long press is not a drag-select
+      peek.innerHTML='<div class="pbox"><img alt="" src="'+API+x.thumb+'"><div class="pname">'+esc(x.name)+'</div></div>';peek.hidden=false;
+      if(navigator.vibrate)try{navigator.vibrate(12)}catch{}
+    },420);
+  };
+  list.addEventListener('pointerdown',e=>{
+    if(pk){clearTimeout(pk.t)}pk=null;
+    if(e.pointerType==='mouse'||e.target.closest('button,a.btn,input,summary'))return;
+    const c=e.target.closest(SEL);if(c)startPeek(c,e.clientX,e.clientY,e.pointerId);
+  });
+  list.addEventListener('pointermove',e=>{if(pk&&!pk.on&&Math.hypot(e.clientX-pk.x,e.clientY-pk.y)>8){clearTimeout(pk.t);pk=null}});
+  const pend=()=>{if(!pk)return;clearTimeout(pk.t);if(pk.on){dragSwallow=Date.now()+500;hidePeek()}pk=null};
+  addEventListener('pointerup',pend,true);addEventListener('pointercancel',pend,true);
+  list.addEventListener('contextmenu',e=>{if(e.target.closest(SEL))e.preventDefault()});
 }
 function updateSelUI(){
   document.body.classList.toggle('selecting',selMode);
@@ -639,6 +676,7 @@ $('#list').onclick=async e=>{
     if(it){e.preventDefault();setSel(it.dataset.k,!selected.has(it.dataset.k));updateSelUI()}
     return;
   }
+  if(Date.now()<dragSwallow){e.preventDefault();return}
   const a=e.target.closest('a[data-open]');
   if(a&&!(e.ctrlKey||e.metaKey||e.shiftKey)){e.preventDefault();openViewer(a.dataset.open)} // preview in the page (ctrl/cmd-click still opens a new tab)
 };
