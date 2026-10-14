@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261014C">
+<link rel="stylesheet" href="glass.css?v=20261014D">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -237,7 +237,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261014C"></script>
+<script src="glass.js?v=20261014D"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -357,9 +357,9 @@ async function drawDisk(){ // capacity bar under the file list: what the NAS fil
   try{const r=await api('/api/disk');if(r.ok)diskInfo=await r.json()}catch{}
   const el=$('#disk');if(!diskInfo||!diskInfo.total){el.hidden=true;return}
   const by={image:0,video:0,audio:0,file:0};for(const f of folders)for(const x of f.files)by[by[x.kind]!==undefined?x.kind:'file']+=x.size;
-  const nas=Object.values(by).reduce((a,b)=>a+b,0),t=diskInfo.total,used=Math.max(0,t-diskInfo.free),other=Math.max(0,used-nas);
-  const seg=[['影片',by.video,'#ff453a'],['照片',by.image,'#ff9f0a'],['音訊',by.audio,'#ffd60a'],['其他檔案',by.file,'#8e8e93'],['硬碟上的其他資料',other,'#48484a']];
-  el.innerHTML='<div class="dtop"><span>💾 硬碟 '+fmtTotal(used)+' / '+fmtTotal(t)+' 已使用</span><span>剩餘 '+fmtTotal(diskInfo.free)+'</span></div>'+
+  const nas=Object.values(by).reduce((a,b)=>a+b,0),t=nas+diskInfo.free,used=nas; // total = what the NAS can use: other data on the drive is not shown, it simply isn't part of the capacity
+  const seg=[['影片',by.video,'#ff453a'],['照片',by.image,'#ff9f0a'],['音訊',by.audio,'#ffd60a'],['其他檔案',by.file,'#8e8e93']];
+  el.innerHTML='<div class="dtop"><span>💾 '+fmtTotal(used)+' / '+fmtTotal(t)+' 已使用</span><span>剩餘 '+fmtTotal(diskInfo.free)+'</span></div>'+
     '<div class="dbar">'+seg.filter(s=>s[1]>0).map(s=>'<i style="width:'+(s[1]/t*100).toFixed(2)+'%;background:'+s[2]+'" title="'+s[0]+'"></i>').join('')+'</div>'+
     '<div class="dleg">'+seg.filter(s=>s[1]>0).map(s=>'<span><b style="background:'+s[2]+'"></b>'+s[0]+' '+fmtTotal(s[1])+'</span>').join('')+'<span><b style="background:rgba(120,120,128,.4)"></b>可用 '+fmtTotal(diskInfo.free)+'</span></div>';
   el.hidden=false;
