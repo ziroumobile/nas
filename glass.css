@@ -76,7 +76,7 @@ html.ios .vnav:active{transform:translateY(-50%) scale(.94)}
 /* ---- the 列表 / 中圖示 / 小圖示 switch ----
    At rest: a clear-glass track with a glass pill under the chosen label.
    While dragged: glass.js draws a refracting lens (WebGL) over it; the pill hides so nothing is stacked. */
-html.ios .seg{position:relative;display:inline-flex;padding:3px;border-radius:999px;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+html.ios .seg{position:relative;display:inline-flex;padding:3px;border-radius:999px;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
   background:var(--g-fill);border:1px solid transparent;-webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);
   box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),inset 0 -1px 1.5px var(--g-lo),var(--g-shadow)}
 html.ios .seg::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--g-rim);z-index:3;

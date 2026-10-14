@@ -176,6 +176,7 @@ void main(){
   function step(s, dt) {
     const L = s.lens; let moving = false;
     for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 1000, 50], ['w', 'vw', 'tw', 1000, 50], ['grow', 'vg', 'tg', 900, 48], ['mag', 'vm', 'tm', 900, 48]]) {
+      if (s.drag && s.drag.started && (k === 'cx' || k === 'w')) { L[k] = L[t]; L[v] = 0; continue; }   // follows the finger 1:1 while dragging
       [L[k], L[v]] = spring(L[k], L[v], L[t], dt, kk, cc);
       if (Math.abs(L[t] - L[k]) > (k === 'mag' ? 0.002 : 0.25) || Math.abs(L[v]) > (k === 'mag' ? 0.02 : 4)) moving = true;
     }
