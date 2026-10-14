@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261014K">
+<link rel="stylesheet" href="glass.css?v=20261014L">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -241,7 +241,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261014K"></script>
+<script src="glass.js?v=20261014L"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -255,9 +255,11 @@ const fmtTotal=n=>n>=1073741824?(n/1073741824).toFixed(2)+' GB':n>0&&n<104858?'<
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ls={get:k=>{try{return localStorage.getItem(k)}catch{return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch{}}};
 // device name: user-editable, remembered per browser
+const isIpadOS=navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1; // iPadOS asks for the desktop site and calls itself a Mac
 function guessDevice(){const u=navigator.userAgent;
-  return /iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Android/.test(u)?'Android':/Windows/.test(u)?'Windows 電腦':/Mac/.test(u)?'Mac':'未命名裝置'}
+  return isIpadOS?'iPad':/iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Android/.test(u)?'Android':/Windows/.test(u)?'Windows 電腦':/Mac/.test(u)?'Mac':'未命名裝置'}
 let device=ls.get('nas_device')||guessDevice();
+if(isIpadOS&&device==='Mac'){device='iPad';ls.set('nas_device',device)} // earlier versions named an iPad "Mac"
 const opened=new Set(JSON.parse(ls.get('nas_open')||'[]')); // folders start collapsed; only the ones you expanded stay open
 async function token(){const{data}=await sb.auth.getSession();return data.session?.access_token}
 async function findApi(){ // the PC's tunnel URL is published to url.json by start.ps1
@@ -309,7 +311,16 @@ function drawTarget(){
   if(!names.includes(target))target=device;
   $('#target').innerHTML=names.map(n=>`<option value="${esc(n)}"${n===target?' selected':''}>${esc(n.replace(/\//g,' / '))}</option>`).join('');fitSel($('#target'));
 }
-$('#target').onchange=e=>target=e.target.value;
+const rememberFolder=f=>{if(f)try{ls.set('nas_lastfolder',f)}catch{}};
+let targetInit=false;
+$('#target').onchange=e=>{target=e.target.value;rememberFolder(target)};
+// first load: no folders yet -> make one (named after this device) and use it; otherwise the folder last worked in, else the top one
+async function initTarget(){
+  if(targetInit)return;targetInit=true;
+  if(!folders.length){const r=await api('/api/folder?name='+encodeURIComponent(device),{method:'POST'}).catch(()=>null);if(r&&(r.ok||r.status===409)){target=device;await refresh()}return}
+  const last=ls.get('nas_lastfolder'),top=document.querySelector('#list details.fold')?.dataset.f;
+  target=folders.some(f=>f.name===last)?last:(top||folders[0].name);drawTarget();
+}
 document.addEventListener('change',e=>{if(e.target.matches('.bar select'))fitSel(e.target)});
 addEventListener('load',()=>document.querySelectorAll('.bar select').forEach(fitSel));
 // view mode and sorting, remembered per browser ('grid' was the removed large-icon view -> medium)
@@ -478,7 +489,7 @@ async function refresh(){
   if(!r.ok)return;$('#off').hidden=true;
   folders=await r.json();drawTarget();drawDisk();
   const have=new Set(allKeys());for(const k of selected)if(!have.has(k))selected.delete(k); // files that vanished
-  render(false);updateSelUI();
+  render(false);updateSelUI();initTarget();
 }
 syncToolbar();fitSel($('#sort'));
 // no scrolling of the page behind the settings / shared-links windows
@@ -578,7 +589,7 @@ async function deleteItems(items,msg){ // admin only; the server checks too. One
   const r=await api('/api/delete-files',{method:'POST',headers:eh,body:JSON.stringify({items})});
   const j=await r.json().catch(()=>({}));
   if(!r.ok){alert(j.error||'刪除失敗');return false}
-  items.forEach(i=>selected.delete(keyOf(i.folder,i.name)));
+  items.forEach(i=>selected.delete(keyOf(i.folder,i.name)));rememberFolder(items[items.length-1]?.folder);
   if(selMode){selMode=false;selected.clear()} // password accepted and deleted: leave select mode
   await refresh();render(true);
   return true;
@@ -952,7 +963,7 @@ async function delFolder(name){
 $('#newf').onclick=async()=>{
   const n=prompt('新資料夾名稱');if(!n||!n.trim())return;
   const r=await api('/api/folder?name='+encodeURIComponent(n.trim()),{method:'POST'});
-  if(!r.ok)alert((await r.json()).error);else{target=(await r.json()).name;refresh()}
+  if(!r.ok)alert((await r.json()).error);else{target=(await r.json()).name;rememberFolder(target);refresh()}
 };
 $('#setpw').onclick=async()=>{
   let cur='';
@@ -1055,7 +1066,7 @@ async function runJob(j){
     const r=await sendChunk(j,j.offset,l=>show(j.offset+l,fails?`（重試 ${fails}/${MAX_TRY}）`:''));
     if(r.status===200&&(r.body.done||Number.isFinite(r.body.received))){
       fails=0;
-      if(r.body.done){allJobs.delete(j);batch.done+=total;batch.doneFiles++;releaseAwake();j.d.remove();if(r.body.warn)alert('「'+(r.body.name||j.file.name)+'」'+r.body.warn);refreshAfterUpload();return}
+      if(r.body.done){rememberFolder(j.folder);allJobs.delete(j);batch.done+=total;batch.doneFiles++;releaseAwake();j.d.remove();if(r.body.warn)alert('「'+(r.body.name||j.file.name)+'」'+r.body.warn);refreshAfterUpload();return}
       j.offset=r.body.received;continue;
     }
     if(r.status===409){j.offset=r.body.received;continue} // server has a different amount; resync
