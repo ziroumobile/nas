@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261014G">
+<link rel="stylesheet" href="glass.css?v=20261014H">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -113,6 +113,7 @@ body.selecting .wrap{padding-bottom:100px}
 #peek[hidden]{display:none}
 #peek .pbox{max-width:92vw;max-height:80vh;display:flex;flex-direction:column;align-items:center;gap:8px;animation:pk .18s ease-out}
 #peek img{max-width:92vw;max-height:72vh;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.6);background:#000}
+#peek .pico{width:42vmin;height:42vmin;display:flex;align-items:center;justify-content:center;font-size:20vmin;border-radius:18px;background:#1c1e21}
 #peek .pname{color:#fff;font-size:13px;max-width:92vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @keyframes pk{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
 body.selecting #list{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:pan-y} /* sideways drags reach the page (drag-select), vertical ones still scroll */
@@ -193,7 +194,7 @@ body.covered #app{visibility:hidden}
   <header><h1>📁 我的 NAS</h1></header>
   <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></span>
   <nav id="dock"><button id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button><button id="dflt" type="button" aria-label="拖動排序" title="拖動排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg class="uring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="dupArc" cx="22" cy="22" r="19" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4" transform="rotate(-90 22 22)"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
-  <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="actlog" hidden>🕘 活動紀錄</button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button></div><div class="mbtns" style="justify-content:space-between"><button class="ghost" id="out">登出</button><button class="ghost" id="setclose">完成</button></div></div></div>
+  <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="actlog" hidden>🕘 活動紀錄</button><button class="ghost" id="biobtn" hidden></button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button></div><div class="mbtns" style="justify-content:space-between"><button class="ghost" id="out">登出</button><button class="ghost" id="setclose">完成</button></div></div></div>
   
   <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
   <div class="bar">
@@ -208,9 +209,9 @@ body.covered #app{visibility:hidden}
     <button class="ghost" id="order"></button>
     <button class="ghost" id="selmode">☑ 選取</button>
   </div>
+  <div id="disk" hidden></div>
   <div id="drop">點擊選擇檔案，或把檔案拖到這裡上傳<input id="f" class="fpick" type="file" multiple></div>
   <div id="upsum" hidden></div>
-  <div id="disk" hidden></div>
   <div id="total" style="color:var(--mut);font-size:13px;margin:0 2px 8px"></div>
   <div id="list"></div>
   <div id="ups" style="margin-top:12px"></div>
@@ -225,7 +226,7 @@ body.covered #app{visibility:hidden}
     <div class="mbtns" style="justify-content:space-between"><button class="ghost" id="offout">登出帳號</button><button class="ghost" id="offgo">重試</button></div></div></div>
 <div id="applock" hidden><div class="mbox card"><h3 style="margin:0 0 6px">🔒 我的 NAS 已鎖定</h3><p class="sub" style="margin:0 0 10px">請輸入登入密碼來開啟</p>
     <input id="lockpw" type="password" autocomplete="off" autocapitalize="off" placeholder="登入密碼"><p class="merr" id="lockerr"></p>
-    <div class="mbtns" style="justify-content:space-between"><button class="ghost" id="lockout">登出帳號</button><button class="ghost" id="lockgo">解鎖</button></div></div></div>
+    <div class="mbtns" style="justify-content:space-between"><button class="ghost" id="lockout">登出帳號</button><button class="ghost" id="lockbio" hidden>🔐 生物辨識</button><button class="ghost" id="lockgo">解鎖</button></div></div></div>
 <div id="modal" hidden><div class="mbox card" id="mbox"></div></div>
 <div id="selbar" hidden>
   <b id="selcount">已選 0 個</b>
@@ -238,7 +239,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261014G"></script>
+<script src="glass.js?v=20261014H"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -366,6 +367,10 @@ async function drawDisk(){ // capacity bar under the file list: what the NAS fil
   el.hidden=false;
 }
 let dragSwallow=0;
+function buzz(){ // a short tick: Vibration API (Android), or an invisible switch toggle (iOS 18 Safari gives a haptic for it)
+  try{if(navigator.vibrate&&navigator.vibrate(15))return}catch{}
+  try{let l=document.getElementById('hapt');if(!l){l=document.createElement('label');l.id='hapt';l.style.cssText='position:fixed;left:-99px;top:-99px;opacity:0;pointer-events:none';l.innerHTML='<input type="checkbox" switch>';document.body.appendChild(l)}l.click()}catch{}
+}
 { // select mode: drag across items like the iPhone Photos app - everything from the first item to the one under the finger (in reading order) gets selected
   const list=$('#list');let ds=null,raf=0,pk=null;
   const SEL='.cell[data-k],.row[data-k]';
@@ -406,10 +411,10 @@ let dragSwallow=0;
   const startPeek=(c,x0,y0,id)=>{
     clearTimeout(pk&&pk.t);pk={x:x0,y:y0,id,on:false};
     pk.t=setTimeout(()=>{
-      const k=c.dataset.k,x=k&&fileByKey(k);if(!x||!x.thumb||ds&&ds.act){pk=null;return}
+      const k=c.dataset.k,x=k&&fileByKey(k);if(!x||ds&&ds.act){pk=null;return}
       pk.on=true;peekAt=Date.now();if(ds)ds=null; // a long press is not a drag-select
-      peek.innerHTML='<div class="pbox"><img alt="" src="'+API+x.thumb+'"><div class="pname">'+esc(x.name)+'</div></div>';peek.hidden=false;
-      if(navigator.vibrate)try{navigator.vibrate(12)}catch{}
+      const src=x.thumb?API+x.thumb:x.kind==='image'?API+(x.preview||x.url):'';
+      peek.innerHTML='<div class="pbox">'+(src?'<img alt="" src="'+src+'">':'<div class="pico">'+(ICON[x.kind]||'📄')+'</div>')+'<div class="pname">'+esc(x.name)+'</div></div>';peek.hidden=false;buzz();
     },420);
   };
   list.addEventListener('pointerdown',e=>{
@@ -1150,12 +1155,33 @@ $('#clipbtn').onclick=clipOpen;
 setInterval(()=>{if(me&&!document.hidden&&$('#applock').hidden&&$('#offscreen').hidden)clipRefresh()},8000);
 
 // ---- app lock: the login stays, but opening the app (or coming back after a minute away) asks for the edit password ----
+// biometric unlock: this device proves who you are (fingerprint / face / screen lock) through WebAuthn; the edit password still protects deleting
+const BIO_KEY='nas_bio',b64u=b=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''),unb64u=t=>Uint8Array.from(atob(t.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
+const bioId=()=>{try{return ls.get(BIO_KEY)||''}catch{return ''}};
+let bioOK=false;(async()=>{try{bioOK=!!(window.PublicKeyCredential&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable())}catch{}})();
+async function bioVerify(){ // true when the device's own check passed
+  const id=bioId();if(!id)return false;
+  try{await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rpId:location.hostname,allowCredentials:[{type:'public-key',id:unb64u(id)}],userVerification:'required',timeout:60000}});return true}catch{return false}
+}
+async function bioEnable(){
+  const pw=prompt('請輸入編輯密碼，以啟用這台裝置的生物辨識解鎖');if(pw===null)return;
+  const r=await api('/api/unlock',{method:'POST',headers:{'X-Edit-Password':pw}});if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'編輯密碼錯誤');
+  try{const c=await navigator.credentials.create({publicKey:{rp:{name:'我的 NAS',id:location.hostname},user:{id:crypto.getRandomValues(new Uint8Array(16)),name:me.name,displayName:me.name},challenge:crypto.getRandomValues(new Uint8Array(32)),
+      pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'discouraged'},timeout:60000}});
+    ls.set(BIO_KEY,b64u(c.rawId));alert('已啟用：之後可以用這台裝置的生物辨識解鎖');syncBio()}
+  catch(e){alert('無法啟用生物辨識（'+(e&&e.name||'錯誤')+'）。請確認這台裝置已設定指紋／臉部／螢幕鎖定。')}
+}
+function syncBio(){const b=$('#biobtn');if(!b)return;b.hidden=!(me?.admin&&bioOK);b.textContent=bioId()?'🔐 生物辨識解鎖：已開啟（點此關閉）':'🔐 啟用生物辨識解鎖'}
+$('#biobtn').onclick=()=>{if(bioId()){if(confirm('關閉這台裝置的生物辨識解鎖？'))try{ls.set(BIO_KEY,'');syncBio()}catch{}}else bioEnable()};
+$('#dset').addEventListener('click',()=>setTimeout(syncBio,0));
 const needLock=()=>!!(me?.admin&&me.hasEditPassword)&&sessionStorage.getItem('nas_unlocked')!=='1';
 let lockOpen=null;
 function askUnlock(){
   if(lockOpen)return lockOpen;
-  $('#lockpw').value='';$('#lockerr').textContent='';$('#lockgo').disabled=false;$('#applock').hidden=false;setTimeout(()=>$('#lockpw').focus(),50);
+  $('#lockpw').value='';$('#lockerr').textContent='';$('#lockgo').disabled=false;$('#applock').hidden=false;$('#lockbio').hidden=!(bioOK&&bioId());if(!bioId())setTimeout(()=>$('#lockpw').focus(),50);
   lockOpen=new Promise(res=>{
+    const bio=async()=>{if(await bioVerify()){sessionStorage.setItem('nas_unlocked','1');$('#applock').hidden=true;lockOpen=null;api('/api/unlock-bio',{method:'POST'}).catch(()=>{});res()}};
+    $('#lockbio').onclick=bio;if(bioOK&&bioId())setTimeout(bio,250); // try straight away; if the browser wants a tap first, the button is there
     const go=async()=>{const pw=$('#lockpw').value;if(!pw)return;$('#lockgo').disabled=true;
       try{const r=await api('/api/unlock',{method:'POST',headers:{'X-Edit-Password':pw}});
         if(r.ok){sessionStorage.setItem('nas_unlocked','1');$('#lockgo').disabled=false;$('#applock').hidden=true;lockOpen=null;res();return}
