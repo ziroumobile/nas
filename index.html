@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261014I">
+<link rel="stylesheet" href="glass.css?v=20261014J">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -35,7 +35,8 @@ select{padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(-
 .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
 #drop{border:2px dashed var(--bd);border-radius:12px;padding:22px;text-align:center;color:var(--mut);margin-bottom:12px;cursor:pointer}
 #drop.over{border-color:var(--ac);color:var(--ac)}
-details.fold{margin-bottom:12px}
+details.fold{margin-bottom:12px;position:relative}
+.pinb{position:absolute;top:10px;right:12px;color:var(--ac);display:flex;pointer-events:none;transform:rotate(35deg)}
 details.fold>summary{display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;list-style:none;padding:2px 0}
 details.fold>summary::-webkit-details-marker{display:none}
 details.fold>summary::before{content:"▸";color:var(--mut)}
@@ -239,7 +240,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261014I"></script>
+<script src="glass.js?v=20261014J"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -288,7 +289,7 @@ async function init(){
   if(needLock())await askUnlock(); // admin with an edit password: ask for it every time the app is opened
   $('#app').hidden=false;
   $('#who').textContent=me.name+(me.admin?'（管理員）':'');
-  $('#setpw').hidden=$('#shares').hidden=$('#actlog').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh().then(()=>setTimeout(prefetchThumbs,600));clipRefresh();
+  bioCheck();$('#setpw').hidden=$('#shares').hidden=$('#actlog').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh().then(()=>setTimeout(prefetchThumbs,600));clipRefresh();
 }
 $('#go').onclick=async()=>{
   const{error}=await sb.auth.signInWithPassword({email:$('#u').value.trim(),password:$('#p').value});
@@ -458,7 +459,7 @@ function render(force){
     const tools=`<button class="ghost" data-subfolder="${esc(f.name)}" style="padding:4px 10px" title="在這個資料夾裡新增資料夾">＋ 資料夾</button>`+(selMode&&f.files.length?`<button class="ghost" data-selfolder="${esc(f.name)}" style="padding:4px 10px">全選</button>`:'')
       +(me.admin?(depth?'':`<button class="ghost" data-pin="${esc(f.name)}" style="padding:4px 10px">${f.pinned?'取消置頂':'📌 置頂'}</button>`)+`<button class="ghost" data-sharefolder="${esc(f.name)}" style="padding:4px 10px">🔗 分享</button><button class="del" data-delfolder="${esc(f.name)}">刪除資料夾</button>`:'');
     const grip=me.admin&&!depth?`<span class="grip" title="按住上下拖動來調整順序" aria-label="拖動調整順序"></span>`:'';
-    return `<details class="fold card${f.pinned?' pinned':''}${me.admin&&!depth?' hasgrip':''}"${depth?` style="margin-left:${depth*14}px"`:''} data-f="${esc(f.name)}" data-pinned="${f.pinned?1:0}"${opened.has(f.name)||q?' open':''}><summary>${grip}<span class="fname">${f.pinned?'📌 ':''}📂 ${esc(leaf)} <span class="cnt">${cnt}</span></span>
+    return `<details class="fold card${f.pinned?' pinned':''}${me.admin&&!depth?' hasgrip':''}"${depth?` style="margin-left:${depth*14}px"`:''} data-f="${esc(f.name)}" data-pinned="${f.pinned?1:0}"${opened.has(f.name)||q?' open':''}>${f.pinned?'<span class="pinb" title="置頂" aria-label="置頂"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16 3.5a1 1 0 0 1 .7 1.7l-.7.7v4.1l2.6 3.4a1 1 0 0 1-.8 1.6H13v5.5a1 1 0 0 1-2 0v-5.5H6.2a1 1 0 0 1-.8-1.6L8 10V5.9l-.7-.7A1 1 0 0 1 8 3.5z"/></svg></span>':''}<summary>${grip}<span class="fname">📂 ${esc(leaf)} <span class="cnt">${cnt}</span></span>
       <span class="ftools">${tools}</span></summary>${body}</details>`}).join(''):'<div class="card" style="color:var(--mut);text-align:center">還沒有資料夾，上傳檔案會自動建立「'+esc(device)+'」</div>';
   syncNested();updateSelUI();
 }
@@ -572,8 +573,8 @@ $('#seldl').onclick=async()=>{ // browsers may ask to allow multiple downloads t
 $('#seldel').onclick=()=>deleteItems([...selected].map(splitKey),`確定要刪除選取的 ${selected.size} 個檔案嗎？此動作無法復原。`);
 async function deleteItems(items,msg){ // admin only; the server checks too. One edit-password prompt covers the whole batch.
   if(!me.admin||!items.length||!confirm(msg))return;
-  const pw=prompt('請輸入編輯密碼');if(pw===null)return;
-  const r=await api('/api/delete-files',{method:'POST',headers:{'X-Edit-Password':pw},body:JSON.stringify({items})});
+  const eh=await askEdit();if(!eh)return;
+  const r=await api('/api/delete-files',{method:'POST',headers:eh,body:JSON.stringify({items})});
   const j=await r.json().catch(()=>({}));
   if(!r.ok){alert(j.error||'刪除失敗');return false}
   items.forEach(i=>selected.delete(keyOf(i.folder,i.name)));
@@ -781,8 +782,8 @@ async function sharesManager(){ // every share: link, password (after entering t
       if(b.dataset.copypw)return copyText(revealed[b.dataset.copypw],b);
       if(b.dataset.hide){revealed=null;return draw()}
       if(b.dataset.reveal){
-        const pw=prompt('請輸入編輯密碼，以顯示分享密碼');if(pw===null)return;
-        const rr=await api('/api/shares/reveal',{method:'POST',headers:{'X-Edit-Password':pw}});
+        const eh=await askEdit('請輸入編輯密碼，以顯示分享密碼');if(!eh)return;
+        const rr=await api('/api/shares/reveal',{method:'POST',headers:eh});
         const j=await rr.json().catch(()=>({}));
         if(!rr.ok)return alert(j.error||'無法顯示');
         revealed=j.passwords;return draw();
@@ -943,8 +944,8 @@ $('#vstage').addEventListener('touchend',e=>{const dx=e.changedTouches[0].client
 async function delFolder(name){
   if(!me.admin)return;
   if(!confirm(`確定要刪除資料夾「${name}」以及裡面所有檔案和資料夾嗎？此動作無法復原。`))return;
-  const pw=prompt('請輸入編輯密碼');if(pw===null)return;
-  const r=await api('/api/folder?name='+encodeURIComponent(name),{method:'DELETE',headers:{'X-Edit-Password':pw}});
+  const eh=await askEdit();if(!eh)return;
+  const r=await api('/api/folder?name='+encodeURIComponent(name),{method:'DELETE',headers:eh});
   if(!r.ok)alert((await r.json()).error);refresh();
 }
 $('#newf').onclick=async()=>{
@@ -1155,33 +1156,59 @@ $('#clipbtn').onclick=clipOpen;
 setInterval(()=>{if(me&&!document.hidden&&$('#applock').hidden&&$('#offscreen').hidden)clipRefresh()},8000);
 
 // ---- app lock: the login stays, but opening the app (or coming back after a minute away) asks for the edit password ----
-// biometric unlock: this device proves who you are (fingerprint / face / screen lock) through WebAuthn; the edit password still protects deleting
-const BIO_KEY='nas_bio',b64u=b=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''),unb64u=t=>Uint8Array.from(atob(t.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
+// biometric approval: the device signs a one-time challenge from the server (WebAuthn, fingerprint / face); the server verifies it, so it can stand in for the edit password
+const BIO_KEY='nas_bio2',b64u=b=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''),unb64u=t=>Uint8Array.from(atob(t.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
 const bioId=()=>{try{return ls.get(BIO_KEY)||''}catch{return ''}};
-let bioOK=false;(async()=>{try{bioOK=!!(window.PublicKeyCredential&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable())}catch{}})();
-async function bioVerify(){ // true when the device's own check passed
-  const id=bioId();if(!id)return false;
-  try{await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rpId:location.hostname,allowCredentials:[{type:'public-key',id:unb64u(id)}],userVerification:'required',timeout:60000}});return true}catch{return false}
+let bioOK=false,bioActive=false;
+async function bioCheck(){ // is this device's credential known to the server?
+  try{bioOK=!!(window.PublicKeyCredential&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable())}catch{bioOK=false}
+  bioActive=false;const id=bioId();
+  if(bioOK&&id&&me?.admin)try{const r=await api('/api/bio/mine');if(r.ok)bioActive=(await r.json()).ids.includes(id)}catch{}
+  syncBio();return bioActive;
+}
+async function bioHeader(){ // base64url JSON of the signed approval, or '' if cancelled / failed
+  if(!bioActive)return '';
+  try{
+    const cr=await api('/api/bio/challenge');if(!cr.ok)return '';const {cid,challenge}=await cr.json();
+    const a=(await navigator.credentials.get({publicKey:{challenge:unb64u(challenge),rpId:location.hostname,allowCredentials:[{type:'public-key',id:unb64u(bioId())}],userVerification:'required',timeout:60000}})).response;
+    return btoa(unescape(encodeURIComponent(JSON.stringify({cid,id:bioId(),authData:b64u(a.authenticatorData),clientData:b64u(a.clientDataJSON),sig:b64u(a.signature)})))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }catch{return ''}
+}
+async function askEdit(msg){ // headers that prove the edit password / biometric check, or null if the user backed out
+  if(bioActive){const h=await bioHeader();if(h)return {'X-Bio':h}}
+  const pw=prompt(msg||'請輸入編輯密碼');return pw===null?null:{'X-Edit-Password':pw};
 }
 async function bioEnable(){
-  const pw=prompt('請輸入編輯密碼，以啟用這台裝置的生物辨識解鎖');if(pw===null)return;
-  const r=await api('/api/unlock',{method:'POST',headers:{'X-Edit-Password':pw}});if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'編輯密碼錯誤');
+  const pw=prompt('請輸入編輯密碼，以啟用這台裝置的生物辨識');if(pw===null)return;
   try{const c=await navigator.credentials.create({publicKey:{rp:{name:'我的 NAS',id:location.hostname},user:{id:crypto.getRandomValues(new Uint8Array(16)),name:me.name,displayName:me.name},challenge:crypto.getRandomValues(new Uint8Array(32)),
       pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'discouraged'},timeout:60000}});
-    ls.set(BIO_KEY,b64u(c.rawId));alert('已啟用：之後可以用這台裝置的生物辨識解鎖');syncBio()}
-  catch(e){alert('無法啟用生物辨識（'+(e&&e.name||'錯誤')+'）。請確認這台裝置已設定指紋／臉部／螢幕鎖定。')}
+    const key=c.response.getPublicKey&&c.response.getPublicKey(),alg=c.response.getPublicKeyAlgorithm&&c.response.getPublicKeyAlgorithm();
+    if(!key||![-7,-257].includes(alg))return alert('這個瀏覽器不支援（無法取得公開金鑰）');
+    const r=await api('/api/bio/register',{method:'POST',headers:{'X-Edit-Password':pw},body:JSON.stringify({id:b64u(c.rawId),pub:btoa(String.fromCharCode(...new Uint8Array(key))),alg})});
+    if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'啟用失敗');
+    ls.set(BIO_KEY,b64u(c.rawId));await bioCheck();alert('已啟用：這台裝置之後可以用生物辨識解鎖，以及刪除檔案時確認身分');
+  }catch(e){alert('無法啟用生物辨識（'+(e&&e.name||'錯誤')+'）。請確認這台裝置已設定指紋／臉部／螢幕鎖定。')}
 }
-function syncBio(){const b=$('#biobtn');if(!b)return;b.hidden=!(me?.admin&&bioOK);b.textContent=bioId()?'🔐 生物辨識解鎖：已開啟（點此關閉）':'🔐 啟用生物辨識解鎖'}
-$('#biobtn').onclick=()=>{if(bioId()){if(confirm('關閉這台裝置的生物辨識解鎖？'))try{ls.set(BIO_KEY,'');syncBio()}catch{}}else bioEnable()};
-$('#dset').addEventListener('click',()=>setTimeout(syncBio,0));
+function syncBio(){const b=$('#biobtn');if(!b)return;b.hidden=!(me?.admin&&bioOK);b.textContent=bioActive?'🔐 生物辨識：已開啟（點此關閉）':'🔐 啟用生物辨識（解鎖／刪除確認）'}
+$('#biobtn').onclick=async()=>{
+  if(!bioActive)return bioEnable();
+  if(!confirm('關閉這台裝置的生物辨識？'))return;
+  const eh=await askEdit('請輸入編輯密碼，以關閉生物辨識');if(!eh)return;
+  const r=await api('/api/bio/remove',{method:'POST',headers:eh,body:JSON.stringify({id:bioId()})});
+  if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'關閉失敗');
+  try{ls.set(BIO_KEY,'')}catch{}await bioCheck();
+};
+$('#dset').addEventListener('click',()=>bioCheck());
 const needLock=()=>!!(me?.admin&&me.hasEditPassword)&&sessionStorage.getItem('nas_unlocked')!=='1';
 let lockOpen=null;
 function askUnlock(){
   if(lockOpen)return lockOpen;
-  $('#lockpw').value='';$('#lockerr').textContent='';$('#lockgo').disabled=false;$('#applock').hidden=false;$('#lockbio').hidden=!(bioOK&&bioId());if(!bioId())setTimeout(()=>$('#lockpw').focus(),50);
+  $('#lockpw').value='';$('#lockerr').textContent='';$('#lockgo').disabled=false;$('#applock').hidden=false;$('#lockbio').hidden=true;setTimeout(()=>{if(!bioId())$('#lockpw').focus()},50);
   lockOpen=new Promise(res=>{
-    const bio=async()=>{if(await bioVerify()){sessionStorage.setItem('nas_unlocked','1');$('#applock').hidden=true;lockOpen=null;api('/api/unlock-bio',{method:'POST'}).catch(()=>{});res()}};
-    $('#lockbio').onclick=bio;if(bioOK&&bioId())setTimeout(bio,250); // try straight away; if the browser wants a tap first, the button is there
+    const bio=async()=>{const h=await bioHeader();if(!h)return;
+      try{const r=await api('/api/unlock',{method:'POST',headers:{'X-Bio':h}});if(r.ok){sessionStorage.setItem('nas_unlocked','1');$('#applock').hidden=true;lockOpen=null;res()}else $('#lockerr').textContent=(await r.json().catch(()=>({}))).error||'驗證失敗'}catch{$('#lockerr').textContent='連不到主機電腦'}};
+    $('#lockbio').onclick=bio;
+    bioCheck().then(ok=>{$('#lockbio').hidden=!ok;if(ok)setTimeout(bio,150)}); // try straight away; if the browser wants a tap first, the button is there
     const go=async()=>{const pw=$('#lockpw').value;if(!pw)return;$('#lockgo').disabled=true;
       try{const r=await api('/api/unlock',{method:'POST',headers:{'X-Edit-Password':pw}});
         if(r.ok){sessionStorage.setItem('nas_unlocked','1');$('#lockgo').disabled=false;$('#applock').hidden=true;lockOpen=null;res();return}
