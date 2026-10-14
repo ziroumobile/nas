@@ -467,3 +467,21 @@ html.ios body .selbot button,html.android body .selbot button{background:rgba(24
 #modal .srow button.del:active,#login button:active,#applock button:active{background:rgba(120,120,128,.5)!important}
 #login button,#applock button:not(#lockout){color:#0a84ff!important}
 #modal .srow button.del,#lockout{color:#ff453a!important}
+
+/* ===== every button = clear glass (faint fill, thin rim, light blur) - except: select-mode share / download (frosted), the 列表/中圖示/小圖示 switch, the dock, the preview arrows and the drag grips ===== */
+html body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button),
+html body a.btn:not(#nx1):not(#nx2){
+  background:rgba(255,255,255,.04)!important;background-image:none!important;border:1px solid transparent!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)!important;
+  text-shadow:none!important}
+html:not(.android) body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button),
+html:not(.android) body a.btn:not(#nx1):not(#nx2){-webkit-backdrop-filter:blur(3px) saturate(175%)!important;backdrop-filter:blur(3px) saturate(175%)!important}
+html.ios body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button)::after,
+html.ios body a.btn:not(#nx1):not(#nx2)::after{display:none!important}
+/* text colours: white (ghost) / blue (main action) / red (delete, danger) */
+html body button:not(#nx1):not(#nx2):not(.ghost):not(.del):not(.danger):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button){color:#0a84ff!important}
+html body button.del:not(#nx1):not(#nx2):not(.selbot button),html body button.danger:not(#nx1):not(#nx2):not(.selbot button),html body #lockout,html body #offout{color:#ff453a!important}
+/* switched-on buttons (e.g. 選取) keep a blue rim so the state is visible */
+html body button.on:not(#nx1):not(#nx2):not(.seg button),html body #selmode.on{color:#0a84ff!important;box-shadow:inset 0 0 0 1.5px rgba(10,132,255,.8)!important}
+html body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button):active,html body a.btn:not(#nx1):not(#nx2):active{background:rgba(120,120,128,.5)!important}
+/* select-mode top row: done is a clear-glass button with a blue check */
+html.ios body .seltop #selexit{color:#0a84ff!important;border-radius:50%!important}
