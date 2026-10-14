@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261013E">
+<link rel="stylesheet" href="glass.css?v=20261014A">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -222,7 +222,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261013E"></script>
+<script src="glass.js?v=20261014A"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -422,7 +422,7 @@ if(!document.documentElement.classList.contains('ios')&&matchMedia('(min-width:7
 // the clipboard button sits at the far right of the "upload to" row, small
 {const cb=document.createElement("button");cb.className="ghost";cb.id="clipbtn";cb.type="button";cb.style.cssText="margin-left:auto;white-space:nowrap";cb.innerHTML="📋 剪貼簿<span id=\"clipn\" class=\"cnt\"></span>";$("#target").parentElement.parentElement.classList.contains("bar")?$("#target").parentElement.parentElement.append(cb):$("#target").parentElement.append(cb)}
 function setSel(k,on){on?selected.add(k):selected.delete(k);
-  for(const el of document.querySelectorAll('[data-k]'))if(el.dataset.k===k)el.classList.toggle('sel',on)}
+  for(const el of document.querySelectorAll('[data-k="'+CSS.escape(k)+'"]'))el.classList.toggle('sel',on)} // attribute selector: no walk over every file element on each tap
 {const box=$('#srch'),inp=$('#sq'),btn=$('#sbtn');let tm;
   const setQ=()=>{q=inp.value.trim().toLowerCase().replace(/^./,'');render(false)};
   const openS=()=>{document.body.classList.add('searching');box.classList.add('open');btn.classList.add('act');inp.focus()};
@@ -487,6 +487,7 @@ async function deleteItems(items,msg){ // admin only; the server checks too. One
   const j=await r.json().catch(()=>({}));
   if(!r.ok){alert(j.error||'刪除失敗');return false}
   items.forEach(i=>selected.delete(keyOf(i.folder,i.name)));
+  if(selMode){selMode=false;selected.clear()} // password accepted and deleted: leave select mode
   await refresh();render(true);
   return true;
 }
