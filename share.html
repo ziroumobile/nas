@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
-<link rel="stylesheet" href="glass.css?v=20261012k">
+<link rel="stylesheet" href="glass.css?v=20261014m">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <title>檔案分享</title>
 <style>
@@ -83,7 +83,9 @@ body.selecting .wrap{padding-bottom:100px}
 .vmsg{color:#d1d5db;text-align:center;padding:20px;line-height:1.7}.vmsg .big{font-size:56px}.vmsg.warn{color:#fbbf24}
 .vnav{position:fixed;top:50%;transform:translateY(-50%);width:44px;height:64px;border-radius:10px;background:rgba(255,255,255,.14);color:#fff;font-size:28px;padding:0;z-index:31}
 #vprev{left:6px}#vnext{right:6px}
-</style></head><body><div class="wrap">
+#appback{position:fixed;z-index:900;top:calc(env(safe-area-inset-top) + 8px);left:10px;background:transparent!important;color:#fff!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;padding:8px 12px!important;font-size:17px;text-shadow:0 1px 6px rgba(0,0,0,.7);cursor:pointer}
+body.hasback .wrap{padding-top:calc(52px + env(safe-area-inset-top))}
+</style></head><body><button id="appback" type="button" hidden>‹ 返回</button><div class="wrap">
 <div id="gate" class="card">
   <h1>🔒 檔案分享</h1>
   <p class="sub" id="gsub">載入中…</p>
@@ -118,7 +120,7 @@ body.selecting .wrap{padding-bottom:100px}
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="glass.js?v=20261012k"></script>
+<script src="glass.js?v=20261014m"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
@@ -239,4 +241,5 @@ let tx=0,ty=0;
 $('#vstage').addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
 $('#vstage').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
   if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.8&&!e.target.closest('video,audio,iframe,pre'))vgo(dx<0?1:-1)},{passive:true});
-</script></div></body></html>
+</script></div><script>(function(){try{var inApp=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;if(!inApp)return;var b=document.getElementById('appback');b.hidden=false;document.body.classList.add('hasback');b.onclick=function(){if(history.length>1)history.back();else location.href='./'}}catch(e){}})();</script>
+</body></html>
