@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261014D">
+<link rel="stylesheet" href="glass.css?v=20261014E">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -108,7 +108,7 @@ body.selecting #dock,body.selecting .srch,body.searching #dock{display:none}
 #selbar[hidden]{display:none}
 body.selecting .wrap{padding-bottom:100px}
 #list .cell,#list .row{-webkit-touch-callout:none}#list .thumbA,#list .thumbA img{-webkit-touch-callout:none;-webkit-user-drag:none}
-#peek{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;pointer-events:none}
+#peek{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;touch-action:none}
 #peek[hidden]{display:none}
 #peek .pbox{max-width:92vw;max-height:80vh;display:flex;flex-direction:column;align-items:center;gap:8px;animation:pk .18s ease-out}
 #peek img{max-width:92vw;max-height:72vh;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.6);background:#000}
@@ -237,7 +237,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261014D"></script>
+<script src="glass.js?v=20261014E"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -399,12 +399,14 @@ let dragSwallow=0;
 
   // long press on a picture / video: a big preview while the finger stays down (works in select mode too)
   const peek=document.createElement('div');peek.id='peek';peek.hidden=true;document.body.appendChild(peek);
-  const hidePeek=()=>{peek.hidden=true;peek.innerHTML=''};
+  let peekAt=0;const hidePeek=()=>{peek.hidden=true;peek.innerHTML='';dragSwallow=Date.now()+400};
+  peek.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(Date.now()-peekAt>350)hidePeek()}); // the preview stays after letting go; a tap anywhere closes it
+  peek.addEventListener('click',e=>{e.preventDefault();e.stopPropagation()});peek.addEventListener('contextmenu',e=>e.preventDefault());
   const startPeek=(c,x0,y0,id)=>{
     clearTimeout(pk&&pk.t);pk={x:x0,y:y0,id,on:false};
     pk.t=setTimeout(()=>{
       const k=c.dataset.k,x=k&&fileByKey(k);if(!x||!x.thumb||ds&&ds.act){pk=null;return}
-      pk.on=true;if(ds)ds=null; // a long press is not a drag-select
+      pk.on=true;peekAt=Date.now();if(ds)ds=null; // a long press is not a drag-select
       peek.innerHTML='<div class="pbox"><img alt="" src="'+API+x.thumb+'"><div class="pname">'+esc(x.name)+'</div></div>';peek.hidden=false;
       if(navigator.vibrate)try{navigator.vibrate(12)}catch{}
     },420);
@@ -415,7 +417,7 @@ let dragSwallow=0;
     const c=e.target.closest(SEL);if(c)startPeek(c,e.clientX,e.clientY,e.pointerId);
   });
   list.addEventListener('pointermove',e=>{if(pk&&!pk.on&&Math.hypot(e.clientX-pk.x,e.clientY-pk.y)>8){clearTimeout(pk.t);pk=null}});
-  const pend=()=>{if(!pk)return;clearTimeout(pk.t);if(pk.on){dragSwallow=Date.now()+500;hidePeek()}pk=null};
+  const pend=()=>{if(!pk)return;clearTimeout(pk.t);if(pk.on)dragSwallow=Date.now()+500;pk=null};
   addEventListener('pointerup',pend,true);addEventListener('pointercancel',pend,true);
   list.addEventListener('contextmenu',e=>{if(e.target.closest(SEL))e.preventDefault()});
 }
