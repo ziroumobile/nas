@@ -453,3 +453,7 @@ body.uploading #dup .uring{display:block}
 
 /* drag handle: just the three lines, no pill / ring around them */
 .grip,.grip:active,details.fold.dragging .grip{background-color:transparent!important;box-shadow:none!important;border:0!important;outline:0!important}
+
+/* select mode: share / download round buttons use the same blurred glass as the dock */
+html.ios .selbot button,html.android .selbot button{background:rgba(255,255,255,.012)!important;-webkit-backdrop-filter:blur(1.5px) saturate(160%)!important;backdrop-filter:blur(1.5px) saturate(160%)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 10px 28px rgba(0,0,0,.35)!important;border:0!important}
