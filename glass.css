@@ -487,3 +487,6 @@ html body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#d
 html.ios body .seltop #selexit{color:#0a84ff!important;border-radius:50%!important}
 /* same as the dock: no bright rim / sheen layers on these buttons */
 html body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button)::before,html body a.btn:not(#nx1):not(#nx2)::before{display:none!important}
+
+/* oval (pill) buttons everywhere the clear glass applies */
+html body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button),html body a.btn:not(#nx1):not(#nx2){border-radius:999px!important}
