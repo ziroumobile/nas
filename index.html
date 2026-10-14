@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261014Y">
+<link rel="stylesheet" href="glass.css?v=20261014Z">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -242,7 +242,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261014Y"></script>
+<script src="glass.js?v=20261014Z"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -623,14 +623,16 @@ let drag=null;
 function dragFrame(){
   const d=drag;if(!d)return;
   const c=d.card,want=d.y-d.grab; // where the card's top edge should be on screen
-  const same=[...document.querySelectorAll('#list details.fold')].filter(x=>x!==c&&x.dataset.pinned===c.dataset.pinned); // can't cross the pinned boundary: use the pin button for that
+  const all=[...document.querySelectorAll('#list details.fold')];
+  // only visible top-level folders take part (a folder inside a collapsed folder is display:none, its box is 0x0 - treating it as a neighbour made the dragged card flip back and forth); can't cross the pinned boundary: use the pin button for that
+  const same=all.filter(x=>x!==c&&x.offsetParent!==null&&!x.dataset.f.includes('/')&&x.dataset.pinned===c.dataset.pinned);
   c.style.transform='';
   const center=want+c.getBoundingClientRect().height/2;
   const v0=new Map(same.map(x=>[x,x.getBoundingClientRect().top])); // where each neighbour is drawn right now
   let moved=false;
   for(const x of same){ // passing a neighbour's midpoint swaps places with it
     const r=x.getBoundingClientRect(),mid=r.top+r.height/2,after=c.compareDocumentPosition(x)&Node.DOCUMENT_POSITION_FOLLOWING;
-    if(after&&center>mid){x.after(c);moved=true}else if(!after&&center<mid){x.before(c);moved=true}
+    if(after&&center>mid){/* after the neighbour and everything inside it */(all.filter(y=>y.dataset.f.startsWith(x.dataset.f+'/')).pop()||x).after(c);moved=true}else if(!after&&center<mid){x.before(c);moved=true}
   }
   if(moved){
     d.moved=true;
@@ -664,7 +666,7 @@ async function dragEnd(e){
   c.classList.remove('dragging');document.body.classList.remove('dragmode');
   if(!d.moved)return;
   const pinnedGroup=c.dataset.pinned==='1';
-  const names=[...document.querySelectorAll('#list details.fold')].filter(x=>(x.dataset.pinned==='1')===pinnedGroup).map(x=>x.dataset.f);
+  const names=[...document.querySelectorAll('#list details.fold')].filter(x=>(x.dataset.pinned==='1')===pinnedGroup&&!x.dataset.f.includes('/')).map(x=>x.dataset.f); // only top-level folders have a manual position; sub-folders always sit under their parent
   await saveFolderPrefs(pinnedGroup?{pinned:names}:{order:names});
 }
 $('#list').addEventListener('pointerdown',e=>{
