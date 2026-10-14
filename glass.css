@@ -471,7 +471,7 @@ html.ios body .selbot button,html.android body .selbot button{background:rgba(24
 /* ===== every button = clear glass (faint fill, thin rim, light blur) - except: select-mode share / download (frosted), the 列表/中圖示/小圖示 switch, the dock, the preview arrows and the drag grips ===== */
 html body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button),
 html body a.btn:not(#nx1):not(#nx2){
-  background:rgba(255,255,255,.012)!important;background-image:none!important;border:1px solid transparent!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 4px 14px rgba(0,0,0,.3)!important;
+  background:rgba(255,255,255,.012)!important;background-image:none!important;border:1px solid transparent!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)!important;
   text-shadow:none!important}
 html:not(.android) body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button),
 html:not(.android) body a.btn:not(#nx1):not(#nx2){-webkit-backdrop-filter:blur(1.5px) saturate(160%)!important;backdrop-filter:blur(1.5px) saturate(160%)!important}
