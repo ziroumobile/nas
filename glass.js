@@ -7,7 +7,7 @@
 (function () {
   // (runs on every platform; the iOS-only touches are guarded where they differ)
   const DPR = Math.min(window.devicePixelRatio || 1, 3);
-  const GROW = 22, MAG = 1.18, SPAD = 24, TPAD = 28, BEZEL = 15;     // lens grows while held; shadow padding; texture padding; width of the curved edge (css px)
+  const GROW = 22, MAG = 1.18, SPAD = 24, TPAD = 28, BEZEL = 15, STMAX = 30;     // lens grows while held; shadow padding; texture padding; width of the curved edge (css px)
   const raf = fn => (document.hidden ? setTimeout(() => fn(performance.now()), 16) : requestAnimationFrame(fn));
 
   const VS = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
@@ -38,7 +38,9 @@ void main(){
   float edge=(1.-smoothstep(0.,1.6,-d))*(.55+.45*lightDir)*u_lift;          // hairline highlight right at the edge
   float sheen=smoothstep(.2,-.9,p.y/hs.y)*(1.-s)*.07*u_lift;
   if(u_dark>.5){
-    col=col*(1.+.03*u_lift)+vec3((1.-smoothstep(0.,1.4,-d))*.10*u_lift+rim*.04);   // same thin, even edge as every other glass piece            // dark page: light rim on the glass
+    col=col*(1.+.06*u_lift)+vec3(.075*u_lift)                                   // a clearer, lighter body than the page around it
+        +vec3((1.-smoothstep(0.,1.7,-d))*(.30+.22*abs(lightDir))*u_lift)        // bright hairline rim, strongest where the light hits
+        +vec3(rim*.20);                                                           // soft inner glow where the surface bends
   }else{
     float lit=max(lightDir,0.),shade=max(-lightDir,0.),r3=pow(s,3.);                     // light page: white highlight on the lit side, a soft shade on the other
     col=col*(1.-.22*r3*shade*u_lift-.03*s*u_lift)+vec3(r3*lit*.60*u_lift+edge*lit*.35*u_lift);
@@ -126,15 +128,15 @@ void main(){
   function draw(s) {
     const g = s.gl, L = s.lens; if (!g || !L) return;
     const r = geom(s)[selected(s)], H = r.h + GROW, t = r.t - GROW / 2;
-    const cssW = Math.ceil(s.maxW + GROW + 2 * SPAD), cssH = Math.ceil(H + 2 * SPAD);
+    const cssW = Math.ceil(s.maxW + GROW + STMAX + 2 * SPAD), cssH = Math.ceil(H + 2 * SPAD);
     const cv = s.canvas;
     if (cv.width !== Math.round(cssW * DPR) || cv.height !== Math.round(cssH * DPR)) { cv.width = Math.round(cssW * DPR); cv.height = Math.round(cssH * DPR); cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px'; }
-    const ox = L.cx - (L.w + L.grow) / 2 - SPAD, oy = t - SPAD;          // canvas origin in switch coordinates
+    const st = Math.max(0, L.st || 0), ox = L.cx - (L.w + L.grow + st) / 2 - SPAD, oy = t - SPAD;          // canvas origin in switch coordinates
     cv.style.transform = `translate(${ox}px,${oy}px)`;
     const { gl, u } = g;
     gl.viewport(0, 0, cv.width, cv.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniform2f(u.u_cssRes, cssW, cssH); gl.uniform1f(u.u_dpr, DPR);
-    gl.uniform4f(u.u_rect, SPAD, SPAD, L.w + L.grow, H);
+    gl.uniform4f(u.u_rect, SPAD, SPAD, L.w + L.grow + st, H);
     gl.uniform2f(u.u_org, ox, oy); gl.uniform2f(u.u_texSize, s.texW, s.texH); gl.uniform1f(u.u_pad, TPAD);
     gl.uniform1f(u.u_mag, L.mag); gl.uniform1f(u.u_bezel, BEZEL); gl.uniform1f(u.u_lift, Math.min(1, L.grow / GROW));
     gl.uniform3f(u.u_tint, 1, 1, 1);
@@ -161,7 +163,7 @@ void main(){
   const spring = (cur, vel, target, dt, k, c) => { const a = k * (target - cur) - c * vel; vel += a * dt; return [cur + vel * dt, vel]; };
   function startLens(s) {
     const r = geom(s)[selected(s)];
-    s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: GROW, tm: MAG };
+    s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: GROW, tm: MAG, st: 0, vst: 0, tst: 0 };
     s.active = true; s.hot = selected(s); s.seg.classList.add('dragging'); setHot(s, s.hot, true);
     makeTexture(s);                                                  // labels as they look right now
     s.pill.classList.add('hidden'); s.canvas.classList.add('on');
@@ -175,7 +177,8 @@ void main(){
   function trackHot(s, cx) { const k = s.nearest(cx); if (k !== s.hot) setHot(s, k); }
   function step(s, dt) {
     const L = s.lens; let moving = false;
-    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 1000, 50], ['w', 'vw', 'tw', 1000, 50], ['grow', 'vg', 'tg', 900, 48], ['mag', 'vm', 'tm', 900, 48]]) {
+    L.tst = (s.drag && s.drag.started) ? Math.min(STMAX, Math.abs(s.vel || 0) * 0.018) : 0; s.vel = (s.vel || 0) * Math.pow(0.03, dt);
+    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 1000, 42], ['w', 'vw', 'tw', 1000, 46], ['grow', 'vg', 'tg', 900, 48], ['mag', 'vm', 'tm', 900, 48], ['st', 'vst', 'tst', 700, 36]]) {
       if (s.drag && s.drag.started && (k === 'cx' || k === 'w')) { L[k] = L[t]; L[v] = 0; continue; }   // follows the finger 1:1 while dragging
       [L[k], L[v]] = spring(L[k], L[v], L[t], dt, kk, cc);
       if (Math.abs(L[t] - L[k]) > (k === 'mag' ? 0.002 : 0.25) || Math.abs(L[v]) > (k === 'mag' ? 0.02 : 4)) moving = true;
@@ -227,6 +230,7 @@ void main(){
         if (s.gl) { if (!s.active) startLens(s); else if (s.lens) { s.lens.tg = GROW; s.lens.tm = MAG; } }
         else { s.active = true; s.pill.classList.add('noanim'); seg.classList.add('dragging'); }
       }
+      { const now = performance.now(); if (d.lt && now > d.lt) s.vel = .55 * (s.vel || 0) + .45 * ((e.clientX - d.lx) / (now - d.lt) * 1000); d.lx = e.clientX; d.lt = now; }
       const t = target(e);
       if (s.gl && s.lens) { s.lens.tx = t.cx; s.lens.tw = t.w; s.lens.tg = GROW; s.lens.tm = MAG; if (!s.running) loop(s); }
       else { const r = geom(s)[0]; s.pill.style.transform = `translate(${t.cx - t.w / 2}px,${r.t}px)`; s.pill.style.width = t.w + 'px'; trackHot(s, t.cx); }  // no WebGL: the pill follows the finger
