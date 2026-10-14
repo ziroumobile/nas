@@ -460,3 +460,10 @@ html.ios .selbot button,html.android .selbot button{background:rgba(28,30,36,.55
 
 /* select mode share / download: nearly solid dark glass (blur alone was too see-through over photos) */
 html.ios body .selbot button,html.android body .selbot button{background:rgba(24,26,30,.9)!important;-webkit-backdrop-filter:blur(16px) saturate(170%)!important;backdrop-filter:blur(16px) saturate(170%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 10px 28px rgba(0,0,0,.45)!important}
+
+/* "clear glass" buttons (same look as 開啟連結): nearly no fill, a thin rim, light blur. Used for revoke-share and for every button on the login / lock screens. */
+#modal .srow button.del,#login button,#applock button{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;background:rgba(255,255,255,.04)!important;background-image:none!important;border:1px solid transparent!important;border-radius:999px!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)!important;-webkit-backdrop-filter:blur(3px) saturate(175%)!important;backdrop-filter:blur(3px) saturate(175%)!important}
+#modal .srow button.del:active,#login button:active,#applock button:active{background:rgba(120,120,128,.5)!important}
+#login button,#applock button:not(#lockout){color:#0a84ff!important}
+#modal .srow button.del,#lockout{color:#ff453a!important}
