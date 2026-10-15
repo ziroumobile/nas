@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261015B">
+<link rel="stylesheet" href="glass.css?v=20261015C">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -115,6 +115,7 @@ body.selecting .wrap{padding-bottom:100px}
 #peek{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;touch-action:none}
 #peek[hidden]{display:none}
 #peek .pbox{max-width:92vw;max-height:80vh;display:flex;flex-direction:column;align-items:center;gap:8px;animation:pk .18s ease-out}
+#peek video{max-width:92vw;max-height:72vh;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.6);background:#000}
 #peek img{max-width:92vw;max-height:72vh;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.6);background:#000}
 #peek .pico{width:42vmin;height:42vmin;display:flex;align-items:center;justify-content:center;font-size:20vmin;border-radius:18px;background:#1c1e21}
 #peek .pname{color:#fff;font-size:13px;max-width:92vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -242,7 +243,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261015B"></script>
+<script src="glass.js?v=20261015C"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -420,8 +421,8 @@ function buzz(){ // a short tick: Vibration API (Android), or an invisible switc
 
   // long press on a picture / video: a big preview while the finger stays down (works in select mode too)
   const peek=document.createElement('div');peek.id='peek';peek.hidden=true;document.body.appendChild(peek);
-  let peekAt=0;const hidePeek=()=>{peek.hidden=true;peek.innerHTML='';dragSwallow=Date.now()+400};
-  peek.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(Date.now()-peekAt>350)hidePeek()}); // the preview stays after letting go; a tap anywhere closes it
+  let peekAt=0;const hidePeek=()=>{peek.querySelectorAll('video').forEach(v=>{v.pause();v.removeAttribute('src');v.load()});peek.hidden=true;peek.innerHTML='';dragSwallow=Date.now()+400};
+  peek.addEventListener('pointerdown',e=>{if(e.target.closest('video')){e.stopPropagation();return} /* the player's own controls */e.preventDefault();e.stopPropagation();if(Date.now()-peekAt>350)hidePeek()}); // the preview stays after letting go; a tap anywhere closes it
   peek.addEventListener('click',e=>{e.preventDefault();e.stopPropagation()});peek.addEventListener('contextmenu',e=>e.preventDefault());
   const startPeek=(c,x0,y0,id)=>{
     clearTimeout(pk&&pk.t);pk={x:x0,y:y0,id,on:false};
@@ -429,7 +430,9 @@ function buzz(){ // a short tick: Vibration API (Android), or an invisible switc
       const k=c.dataset.k,x=k&&fileByKey(k);if(!x||ds&&ds.act){pk=null;return}
       pk.on=true;peekAt=Date.now();if(ds)ds=null; // a long press is not a drag-select
       const src=x.thumb?API+x.thumb:x.kind==='image'?API+(x.preview||x.url):'';
-      peek.innerHTML='<div class="pbox">'+(src?'<img alt="" src="'+src+'">':'<div class="pico">'+(ICON[x.kind]||'📄')+'</div>')+'<div class="pname">'+esc(x.name)+'</div></div>';peek.hidden=false;buzz();
+      const media=x.kind==='video'?'<video class="pvid" controls playsinline muted autoplay loop preload="auto" '+(src?'poster="'+src+'" ':'')+'src="'+API+x.url+'"></video>':src?'<img alt="" src="'+src+'">':'<div class="pico">'+(ICON[x.kind]||'📄')+'</div>';
+      peek.innerHTML='<div class="pbox">'+media+'<div class="pname">'+esc(x.name)+'</div></div>';peek.hidden=false;buzz();
+      const pv=peek.querySelector('video');if(pv){pv.addEventListener('error',()=>{/* format the browser cannot play: the still picture stays */});const pp=pv.play();if(pp&&pp.catch)pp.catch(()=>{})}
     },420);
   };
   list.addEventListener('pointerdown',e=>{
@@ -787,7 +790,7 @@ async function sharesManager(){ // every share: link, password (after entering t
         <div style="display:flex;gap:6px;margin:4px 0"><input type="text" readonly value="${esc(shareUrl(s.id))}" onfocus="this.select()" style="flex:1;min-width:0;padding:6px 8px;font-size:12px;margin:0"><button class="ghost" data-copy="${esc(s.id)}" style="padding:4px 10px;white-space:nowrap">複製連結</button></div>
         <div style="margin:4px 0">密碼：${pwCell(s)}</div>
         <div style="margin:4px 0">有效期限：${s.expires?when(s.expires)+'（'+left(s.expires)+'）':'永久有效'}</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin-top:4px"><button class="del" data-revoke="${esc(s.id)}">撤銷這個分享</button><a class="btn vlk" href="${esc(shareUrl(s.id))}" target="_blank" rel="noopener noreferrer">開啟連結</a></div></div>`).join(''):'<p class="sub">目前沒有任何分享。</p>')+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin-top:4px"><button class="del" data-revoke="${esc(s.id)}">撤銷這個分享</button><a class="btn vlk" href="${esc(shareUrl(s.id))}" >開啟連結</a></div></div>`).join(''):'<p class="sub">目前沒有任何分享。</p>')+
       '');
     $('#sx').onclick=closeModal;
     $('#mbox').onclick=async e=>{
@@ -1205,13 +1208,13 @@ const BIO_KEY='nas_bio2',b64u=b=>btoa(String.fromCharCode(...new Uint8Array(b)))
 const bioId=()=>{try{return ls.get(BIO_KEY)||''}catch{return ''}};
 let bioOK=false,bioActive=false;
 async function bioCheck(){ // is this device's credential known to the server?
+  const id=bioId();
+  if(id&&me?.admin){bioActive=true;bioPrefetch()} // assume yes right away so the button and the challenge are ready without waiting for the server; corrected below
   try{bioOK=!!(window.PublicKeyCredential&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable())}catch{bioOK=false}
-  bioActive=false;const id=bioId();
-  if(bioOK&&id&&me?.admin)try{const r=await api('/api/bio/mine');if(r.ok)bioActive=(await r.json()).ids.includes(id)}catch{}
-  syncBio();return bioActive;
+  let ok=false;
+  if(bioOK&&id&&me?.admin){try{const r=await api('/api/bio/mine');if(r.ok)ok=(await r.json()).ids.includes(id)}catch{ok=bioActive}} // offline: keep the assumption
+  bioActive=ok;syncBio();return ok;
 }
-// iOS / Safari only allow the fingerprint / face prompt straight from a tap: no awaiting (fetch, prompt(), confirm()) in between. So the one-time challenge is fetched BEFORE the tap,
-// and every approval happens from a button inside our own dialog instead of prompt().
 let bioPre=null; // {t, v:{cid,challenge}|null}
 function bioPrefetch(){
   if(!bioActive||(bioPre&&Date.now()-bioPre.t<50000))return;
@@ -1275,13 +1278,14 @@ const needLock=()=>!!(me?.admin&&me.hasEditPassword)&&sessionStorage.getItem('na
 let lockOpen=null;
 function askUnlock(){
   if(lockOpen)return lockOpen;
-  $('#lockpw').value='';$('#lockerr').textContent='';$('#lockgo').disabled=false;$('#applock').hidden=false;$('#lockbio').hidden=true;setTimeout(()=>{if(!bioId())$('#lockpw').focus()},50);
+  $('#lockpw').value='';$('#lockerr').textContent='';$('#lockgo').disabled=false;$('#applock').hidden=false;$('#lockbio').hidden=!bioId();$('#lockbio').disabled=true;if(bioId()&&me?.admin){bioActive=true;bioPrefetch()}setTimeout(()=>{if(!bioId())$('#lockpw').focus()},50);
   lockOpen=new Promise(res=>{
     const bio=()=>{$('#lockerr').textContent='';bioGet().then(async h=>{
       try{const r=await api('/api/unlock',{method:'POST',headers:{'X-Bio':h}});if(r.ok){sessionStorage.setItem('nas_unlocked','1');$('#applock').hidden=true;lockOpen=null;clearInterval(lt);res()}else $('#lockerr').textContent=(await r.json().catch(()=>({}))).error||'驗證失敗'}catch{$('#lockerr').textContent='連不到主機電腦'}},e=>{$('#lockerr').textContent=bioErr(e)})};
     $('#lockbio').onclick=bio;
     // the button appears once this device's credential is confirmed and a challenge is ready (a fresh tap is needed: Safari refuses to start it by itself)
-    let lt=null;bioCheck().then(ok=>{if(!ok)return;bioPrefetch();lt=setInterval(()=>{if($('#applock').hidden){clearInterval(lt);return}bioPrefetch();$('#lockbio').hidden=false;$('#lockbio').disabled=!(bioPre&&bioPre.v)},300)});
+    let lt=null;const tickBio=()=>{if($('#applock').hidden){clearInterval(lt);return}if(!bioActive){$('#lockbio').hidden=true;return}bioPrefetch();$('#lockbio').hidden=false;$('#lockbio').disabled=!(bioPre&&bioPre.v)};
+    lt=setInterval(tickBio,150);tickBio();bioCheck();
     const go=async()=>{const pw=$('#lockpw').value;if(!pw)return;$('#lockgo').disabled=true;
       try{const r=await api('/api/unlock',{method:'POST',headers:{'X-Edit-Password':pw}});
         if(r.ok){sessionStorage.setItem('nas_unlocked','1');$('#lockgo').disabled=false;$('#applock').hidden=true;lockOpen=null;res();return}
