@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261015I">
+<link rel="stylesheet" href="glass.css?v=20261015J">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -243,7 +243,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261015I"></script>
+<script src="glass.js?v=20261015J"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -273,7 +273,7 @@ async function api(path,o={}){
   o.headers=Object.assign({Authorization:'Bearer '+t,'X-NAS-Device':encodeURIComponent(device)},o.headers||{});
   let r;try{r=await fetch(API+path,o)}
   catch{await findApi();r=await fetch(API+path,o)} // tunnel may have restarted
-  if(r.status===401&&t&&!api.dead&&path!=='/api/me'){api.dead=true;try{await sb.auth.signOut()}catch{}sessionStorage.removeItem('nas_unlocked');location.reload()} // this device was signed out (from another device's settings)
+  if(r.status===401&&t&&!api.dead&&path!=='/api/me'){api.dead=true;try{await sb.auth.signOut({scope:'local'})}catch{}sessionStorage.removeItem('nas_unlocked');location.reload()} // this device was signed out (from another device's settings)
   return r;
 }
 let initRetry=null;
@@ -283,7 +283,7 @@ function hostBlocked(msg){ // the app stays hidden: without the host we can't kn
   initRetry=setInterval(()=>{if(--n<=0){clearInterval(initRetry);init();return}$('#offretry').textContent='（'+n+' 秒後自動重試）'},1000);
 }
 $('#offgo').onclick=()=>{clearInterval(initRetry);init()};
-$('#offout').onclick=async()=>{clearInterval(initRetry);try{await sb.auth.signOut()}catch{}sessionStorage.removeItem('nas_unlocked');location.reload()};
+$('#offout').onclick=async()=>{clearInterval(initRetry);try{await sb.auth.signOut({scope:'local'})}catch{}sessionStorage.removeItem('nas_unlocked');location.reload()};
 async function init(){
   clearInterval(initRetry);$('#offscreen').hidden=true;
   $('#dev').textContent=device;
@@ -291,7 +291,7 @@ async function init(){
   if(!t){$('#login').hidden=false;$('#app').hidden=true;return}
   $('#login').hidden=true; // the home page stays hidden until we know whether the lock screen must come first
   let r;try{r=await api('/api/me')}catch{return hostBlocked('主機可能關機，或通道還沒啟動（開機後要執行 start.ps1）。')}
-  if(!r.ok){if(r.status===401){await sb.auth.signOut();return init()}return hostBlocked('主機回應了錯誤（'+r.status+'），請稍後再試。')}
+  if(!r.ok){if(r.status===401){await sb.auth.signOut({scope:'local'});return init()}return hostBlocked('主機回應了錯誤（'+r.status+'），請稍後再試。')}
   $('#off').hidden=true;me=await r.json();
   if(needLock())await askUnlock(); // admin with an edit password: ask for it every time the app is opened
   $('#app').hidden=false;
@@ -303,7 +303,7 @@ $('#go').onclick=async()=>{
   if(error)$('#err').textContent='帳號或密碼錯誤';else{$('#err').textContent='';init()}
 };
 $('#p').onkeydown=e=>{if(e.key==='Enter')$('#go').click()};
-$('#out').onclick=async()=>{await sb.auth.signOut();location.reload()};
+$('#out').onclick=async()=>{await sb.auth.signOut({scope:'local'});location.reload()};
 $('#rename').onclick=()=>{const n=prompt('這台裝置的名稱（上傳預設會存到同名資料夾）',device);
   if(n&&n.trim()){device=n.trim();ls.set('nas_device',device);$('#dev').textContent=device;target=device;drawTarget()}};
 let target=device;
@@ -1324,7 +1324,7 @@ function askUnlock(){
       catch{$('#lockerr').textContent='連不到主機電腦'}
       $('#lockgo').disabled=false};
     $('#lockgo').onclick=go;$('#lockpw').onkeydown=e=>{if(e.key==='Enter')go()};
-    $('#lockout').onclick=async()=>{await sb.auth.signOut();sessionStorage.removeItem('nas_unlocked');location.reload()};
+    $('#lockout').onclick=async()=>{await sb.auth.signOut({scope:'local'});sessionStorage.removeItem('nas_unlocked');location.reload()};
   });
   return lockOpen;
 }
