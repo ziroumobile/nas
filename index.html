@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261014Z">
+<link rel="stylesheet" href="glass.css?v=20261015A">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -242,7 +242,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261014Z"></script>
+<script src="glass.js?v=20261015A"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1266,6 +1266,18 @@ function askUnlock(){
   return lockOpen;
 }
 let hiddenAt=0;
+// A page that stays open in the background keeps running its old code. Look for a newer release (the version number in index.html's script link) when the app comes back to the front,
+// and every 10 minutes; reload if there is one - but never in the middle of an upload, a selection, a drag or an open window.
+async function checkNewVersion(){
+  try{
+    const cur=(document.querySelector('script[src^="glass.js"]')?.getAttribute('src').match(/v=([\w]+)/)||[])[1];if(!cur)return;
+    const t=await (await fetch('index.html?_='+Date.now(),{cache:'no-store'})).text(),m=t.match(/glass\.js\?v=([\w]+)/);
+    if(m&&m[1]!==cur&&!allJobs.size&&!selMode&&!drag&&$('#modal').hidden&&!vOpen&&!document.querySelector('#editask'))location.reload();
+  }catch{}
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(checkNewVersion,800)});
+setInterval(()=>{if(!document.hidden)checkNewVersion()},600e3);
+setTimeout(checkNewVersion,4000);
 document.addEventListener('visibilitychange',()=>{
   if(!document.hidden){keepAwake();for(const j of allJobs)if(j.failed){j.failed=false;j.tries=0;j.d.querySelector('.rt').hidden=true;queue.push(j);pump()}} // resume uploads that stalled in the background
   if(document.hidden){hiddenAt=Date.now();if(needLock()===false&&me?.admin&&me.hasEditPassword)document.body.classList.add('covered');return}
