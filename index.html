@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261015C">
+<link rel="stylesheet" href="glass.css?v=20261015D">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -243,7 +243,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261015C"></script>
+<script src="glass.js?v=20261015D"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1221,17 +1221,20 @@ function bioPrefetch(){
   const o=bioPre={t:Date.now(),v:null};
   api('/api/bio/challenge').then(r=>r.ok?r.json():null).then(j=>{if(bioPre===o)o.v=j}).catch(()=>{});
 }
+let bioAbort=null;
 function bioGet(){ // call directly from a tap handler; resolves to the X-Bio header value, rejects with a readable message
+  if(bioAbort)try{bioAbort.abort()}catch{} // cancel a request that is still waiting, so a new tap never meets "a request is already pending"
+  const ac=bioAbort=new AbortController();
   const o=bioPre;
   if(!bioActive)return Promise.reject(new Error('這台裝置還沒啟用生物辨識'));
   if(!o||!o.v||Date.now()-o.t>80000){bioPre=null;bioPrefetch();return Promise.reject(new Error('還在準備，請再按一次'))}
   bioPre=null;const {cid,challenge}=o.v;
-  return navigator.credentials.get({publicKey:{challenge:unb64u(challenge),rpId:location.hostname,allowCredentials:[{type:'public-key',id:unb64u(bioId())}],userVerification:'required',timeout:60000}}).then(c=>{
+  return navigator.credentials.get({publicKey:{challenge:unb64u(challenge),rpId:location.hostname,allowCredentials:[{type:'public-key',id:unb64u(bioId())}],userVerification:'required',timeout:60000},signal:ac.signal}).then(c=>{
     const a=c.response;
     return b64u(new TextEncoder().encode(JSON.stringify({cid,id:bioId(),authData:b64u(a.authenticatorData),clientData:b64u(a.clientDataJSON),sig:b64u(a.signature)})));
-  }).finally(()=>setTimeout(bioPrefetch,300));
+  }).finally(()=>{if(bioAbort===ac)bioAbort=null;setTimeout(bioPrefetch,300)});
 }
-const bioErr=e=>e&&e.name==='NotAllowedError'?'已取消，或這個瀏覽器不允許（請再按一次）':(e&&e.message)||'驗證失敗';
+const bioErr=e=>e&&e.name==='AbortError'?'':e&&e.name==='NotAllowedError'?'已取消，或這個瀏覽器不允許（請再按一次）':(e&&e.message)||'驗證失敗';
 // one dialog for "prove it's you": biometric button (if enabled on this device) + edit password. act(headers) runs on success; opts.pwAction(pw) lets a caller start its own tap-bound API call.
 function editDialog(msg,{okText='確認',title='🔑 確認身分',bio=true,onPw}={}){
   return new Promise(res=>{
@@ -1280,8 +1283,14 @@ function askUnlock(){
   if(lockOpen)return lockOpen;
   $('#lockpw').value='';$('#lockerr').textContent='';$('#lockgo').disabled=false;$('#applock').hidden=false;$('#lockbio').hidden=!bioId();$('#lockbio').disabled=true;if(bioId()&&me?.admin){bioActive=true;bioPrefetch()}setTimeout(()=>{if(!bioId())$('#lockpw').focus()},50);
   lockOpen=new Promise(res=>{
-    const bio=()=>{$('#lockerr').textContent='';bioGet().then(async h=>{
-      try{const r=await api('/api/unlock',{method:'POST',headers:{'X-Bio':h}});if(r.ok){sessionStorage.setItem('nas_unlocked','1');$('#applock').hidden=true;lockOpen=null;clearInterval(lt);res()}else $('#lockerr').textContent=(await r.json().catch(()=>({}))).error||'驗證失敗'}catch{$('#lockerr').textContent='連不到主機電腦'}},e=>{$('#lockerr').textContent=bioErr(e)})};
+    let bioBusy=false;
+    const bio=()=>{if(bioBusy)return;bioBusy=true;$('#lockerr').textContent='';$('#lockbio').disabled=true;
+      bioGet().then(h=>{
+        sessionStorage.setItem('nas_unlocked','1');$('#applock').hidden=true;lockOpen=null;clearInterval(lt);res(); // in at once
+        api('/api/unlock',{method:'POST',headers:{'X-Bio':h}}).then(async r=>{ // the server checks the signature; if it does not agree, lock again
+          if(!r.ok){sessionStorage.removeItem('nas_unlocked');askUnlock();$('#lockerr').textContent=(await r.json().catch(()=>({}))).error||'驗證失敗'}
+        }).catch(()=>{});
+      },e=>{const m=bioErr(e);if(m)$('#lockerr').textContent=m}).finally(()=>{bioBusy=false});};
     $('#lockbio').onclick=bio;
     // the button appears once this device's credential is confirmed and a challenge is ready (a fresh tap is needed: Safari refuses to start it by itself)
     let lt=null;const tickBio=()=>{if($('#applock').hidden){clearInterval(lt);return}if(!bioActive){$('#lockbio').hidden=true;return}bioPrefetch();$('#lockbio').hidden=false;$('#lockbio').disabled=!(bioPre&&bioPre.v)};
