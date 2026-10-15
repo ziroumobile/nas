@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261015N">
+<link rel="stylesheet" href="glass.css?v=20261015O">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -132,6 +132,20 @@ body.selecting #list{-webkit-user-select:none;user-select:none;-webkit-touch-cal
 #disk .dleg b{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:baseline}
 /* in-page preview */
 #viewer{position:fixed;inset:0;background:#000;z-index:50;display:flex;flex-direction:column}
+/* phones: round back (top left) + info (top right) over the picture, share / download (bottom left) and delete (bottom right) as round buttons; no title, counter or centre pills */
+html.ios #viewer .vtop{position:fixed;left:0;right:0;top:0;z-index:53;display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:flex-start;padding:calc(env(safe-area-inset-top) + 6px) 14px 0;pointer-events:none}
+html.ios #viewer .vtop>*{pointer-events:auto}
+html.ios #viewer #vtitle,html.ios #viewer #vpos,html.ios #viewer #vclose{display:none!important}
+html.ios #viewer #vbot{position:fixed;left:0;right:0;bottom:0;z-index:53;display:flex;justify-content:space-between;align-items:center;padding:0 14px calc(env(safe-area-inset-bottom) + 12px);pointer-events:none}
+html.ios #viewer #vbot>*{pointer-events:auto}
+html.ios #viewer #vbot .vl{display:flex;gap:10px;align-items:center}
+html.ios #viewer #vstage{padding:calc(env(safe-area-inset-top) + 62px) 8px calc(env(safe-area-inset-bottom) + 76px)}
+html.ios #viewer .vtop>.vbtns{display:none!important} /* what is left of the old button rows (the close button stays in the page, just unused) */
+html body #viewer .vc:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;display:inline-flex!important;align-items:center;justify-content:center;
+  background:rgba(32,34,40,.78)!important;-webkit-backdrop-filter:blur(14px) saturate(170%)!important;backdrop-filter:blur(14px) saturate(170%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important;color:#fff!important;border:0!important;font-size:0;line-height:0}
+html body #viewer .vc.del:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#ff453a!important}
+#viewer .vc svg{width:24px;height:24px;display:block}
+html body #viewer #vdlj.vc2:not(#nx1):not(#nx2):not(#nx3){padding:0 14px!important;height:46px;border-radius:999px!important;display:inline-flex!important;align-items:center;background:rgba(32,34,40,.78)!important;color:#fff!important;font-size:14px;line-height:1}
 #viewer[hidden]{display:none}
 .vtop{display:flex;gap:8px;align-items:center;padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top));color:#fff}
 .vtop{flex-wrap:wrap}
@@ -246,7 +260,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261015N"></script>
+<script src="glass.js?v=20261015O"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -600,7 +614,7 @@ async function dlFile(url,name,btn){
     for(;;){const{done,value}=await rd.read();if(done)break;parts.push(value);got+=value.length;if(btn&&btn.dataset.pct!==undefined&&total)btn.textContent=Math.floor(got/total*100)+'%'}
     return new File(parts,name,{type:r.headers.get('content-type')||'application/octet-stream'})}
   catch{alert('下載失敗：'+name);return null}
-  finally{if(btn){btn.disabled=false;btn.style.opacity='';if(btn.dataset.pct!==undefined)btn.textContent=btn.dataset.pct}}
+  finally{if(btn){btn.disabled=false;btn.style.opacity='';if(btn.dataset.pct!==undefined){if(btn.dataset.pcth!==undefined)btn.innerHTML=btn.dataset.pcth;else btn.textContent=btn.dataset.pct}}}
 }
 $('#seldl').onclick=async()=>{ // browsers may ask to allow multiple downloads the first time
   const got=[];
@@ -933,6 +947,19 @@ async function pickVideoSrc(folder,x,u,seq,msg){
       if(skip){note.remove();return u}
     }
   }catch{return u}
+}
+if(document.documentElement.classList.contains('ios')){
+  const ic=p=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';
+  const ICN={back:ic('<path d="M15 5l-7 7 7 7"/>'),info:ic('<circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="7.6" r=".6" fill="currentColor"/>'),
+    share:ic('<path d="M12 14.5V3.5M8 7l4-4 4 4"/><path d="M7.5 10H6.5A2.5 2.5 0 0 0 4 12.5v6A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5v-6a2.5 2.5 0 0 0-2.5-2.5h-1"/>'),
+    dl:ic('<path d="M12 3.5v11M8 11l4 4 4-4"/><path d="M4.5 17v1.5A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5V17"/>'),trash:ic('<path d="M4 7h16M9 7V4.5h6V7M6 7l1 13h10l1-13M10 11v6M14 11v6"/>')};
+  const top=document.querySelector('#viewer .vtop'),bot=document.createElement('div'),left=document.createElement('div');bot.id='vbot';left.className='vl';
+  const set=(id,svg,label)=>{const b=$(id);b.classList.add('vc');b.innerHTML=svg;b.setAttribute('aria-label',label);b.title=label;return b};
+  set('#vback',ICN.back,'返回');set('#vinfo',ICN.info,'檔案資訊');set('#vshare',ICN.share,'分享');set('#vdel',ICN.trash,'刪除');
+  const dl=set('#vdl',ICN.dl,'下載');dl.dataset.pcth=dl.innerHTML;
+  $('#vdlj').classList.add('vc2');
+  top.append($('#vback'),$('#vinfo'));              // back top left, info top right
+  left.append($('#vshare'),dl,$('#vdlj'));bot.append(left,$('#vdel'));$('#viewer').append(bot);
 }
 function stopMedia(){for(const m of $('#vstage').querySelectorAll('video,audio')){m.pause();m.removeAttribute('src');m.load()}}
 // file info panel (the ℹ️ button): facts about the file being previewed; size/resolution/length come from the file itself once it has loaded
