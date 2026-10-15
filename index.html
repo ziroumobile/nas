@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261015G">
+<link rel="stylesheet" href="glass.css?v=20261015H">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -198,7 +198,7 @@ body.covered #app{visibility:hidden}
   <header><h1>📁 我的 NAS</h1></header>
   <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></span>
   <nav id="dock"><button id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button><button id="dflt" type="button" aria-label="拖動排序" title="拖動排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg class="uring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="dupArc" cx="22" cy="22" r="19" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4" transform="rotate(-90 22 22)"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
-  <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="actlog" hidden>🕘 活動紀錄</button><button class="ghost" id="biobtn" hidden></button><button class="ghost" id="locknow" hidden>🔒 立即鎖定這台裝置</button><button class="ghost" id="devices">📱 已登入的裝置</button><button class="ghost" id="logoutall">🚪 登出其他所有裝置</button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button></div><div class="mbtns" style="justify-content:space-between"><button class="ghost" id="out">登出</button><button class="ghost" id="setclose">完成</button></div></div></div>
+  <div id="setpanel" hidden><div class="mbox card"><h3 style="margin:0 0 10px">設定</h3><div id="setbody"><span id="who" style="color:var(--mut);word-break:break-all"></span><button class="ghost" id="shares" hidden>🔗 已分享連結</button><button class="ghost" id="actlog" hidden>🕘 活動紀錄</button><button class="ghost" id="biobtn" hidden></button><button class="ghost" id="locknow" hidden>🔒 立即鎖定這台裝置</button><button class="ghost" id="devices" hidden>📱 已登入的裝置</button><button class="ghost" id="logoutall" hidden>🚪 登出其他所有裝置</button><button class="ghost" id="setpw" hidden>🔑 編輯密碼</button></div><div class="mbtns" style="justify-content:space-between"><button class="ghost" id="out">登出</button><button class="ghost" id="setclose">完成</button></div></div></div>
   
   <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
   <div class="bar">
@@ -243,7 +243,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261015G"></script>
+<script src="glass.js?v=20261015H"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -854,17 +854,21 @@ async function devicesWindow(){ // every device signed in to this account; sign 
   showModal('<div class="mhead"><h3>📱 已登入的裝置（'+j.sessions.length+'）</h3><button class="ghost" id="dvx">關閉</button></div><p class="sub">只列出主機看過的登入。登出後那台裝置會回到登入畫面，要重新輸入密碼。</p>'+
     (j.sessions.length?j.sessions.map(x=>'<div class="srow"><b>'+esc(x.dev||'（未命名）')+(x.id===j.current?'　<span class="sub">（目前這台）</span>':'')+'</b><small>'+esc(uaShort(x.ua))+'<br>最近使用 '+when(x.last)+' · 首次 '+when(x.first)+'</small>'+(x.id===j.current?'':'<div class="mbtns" style="margin-top:6px"><button class="del" data-sid="'+esc(x.id)+'">登出這台</button></div>')+'</div>').join(''):'<p class="sub">沒有紀錄</p>'));
   $('#dvx').onclick=closeModal;
-  $('#mbox').onclick=async e=>{const b=e.target.closest('button[data-sid]');if(!b)return;if(!confirm('登出這台裝置？'))return;b.disabled=true;
-    const r=await api('/api/sessions/revoke',{method:'POST',body:JSON.stringify({id:b.dataset.sid})});
+  $('#mbox').onclick=async e=>{const b=e.target.closest('button[data-sid]');if(!b)return;if(!confirm('登出這台裝置？'))return;
+    const bh=await askBioOnly('用生物辨識確認，登出這台裝置');if(!bh)return;b.disabled=true;
+    const r=await api('/api/sessions/revoke',{method:'POST',headers:bh,body:JSON.stringify({id:b.dataset.sid})});
     if(!r.ok){alert((await r.json().catch(()=>({}))).error||'登出失敗');b.disabled=false;return}devicesWindow()};
 }
 $('#devices').onclick=devicesWindow;
 $('#locknow').onclick=()=>{if(!(me?.admin&&me.hasEditPassword))return alert('要先設定編輯密碼，才能使用鎖定');sessionStorage.removeItem('nas_unlocked');askUnlock()};
 // sign out every OTHER device (this one stays signed in): their sessions end at Supabase, and the host forgets its cached approvals for them
 $('#logoutall').onclick=async()=>{
+  if(!bioActive)return alert('只有已啟用生物辨識的裝置可以使用這個功能');
   if(!confirm('登出其他所有裝置？\n其他裝置會回到登入畫面，這台不受影響。'))return;
-  try{const {error}=await sb.auth.signOut({scope:'others'});if(error)throw error}catch(e){return alert('登出失敗：'+(e&&e.message||e))}
-  try{await api('/api/logout-others',{method:'POST'})}catch{}
+  const bh=await askBioOnly('用生物辨識確認，登出其他所有裝置');if(!bh)return;
+  const r=await api('/api/logout-others',{method:'POST',headers:bh}).catch(()=>null);
+  if(!r||!r.ok)return alert((r&&(await r.json().catch(()=>({}))).error)||'登出失敗');
+  try{await sb.auth.signOut({scope:'others'})}catch{}
   alert('已登出其他所有裝置。它們最慢約一分鐘內會回到登入畫面。');
 };
 $('#shares').onclick=sharesManager;
@@ -1266,24 +1270,25 @@ function bioLocal(){
 }
 const bioErr=e=>e&&e.name==='AbortError'?'':e&&e.name==='NotAllowedError'?'已取消，或這個瀏覽器不允許（請再按一次）':(e&&e.message)||'驗證失敗';
 // one dialog for "prove it's you": biometric button (if enabled on this device) + edit password. act(headers) runs on success; opts.pwAction(pw) lets a caller start its own tap-bound API call.
-function editDialog(msg,{okText='確認',title='🔑 確認身分',bio=true,onPw}={}){
+function editDialog(msg,{okText='確認',title='🔑 確認身分',bio=true,onPw,noPw=false}={}){
   return new Promise(res=>{
     const o=document.createElement('div');o.id='editask';
     o.innerHTML='<div class="mbox card"><h3 style="margin:0 0 6px">'+esc(title)+'</h3><p class="sub" style="margin:0 0 10px">'+esc(msg||'請輸入編輯密碼')+'</p>'
       +(bio&&bioActive?'<button class="ghost" id="eabio" style="width:100%;margin-bottom:10px" disabled>🔐 準備中…</button>':'')
-      +'<input id="eapw" type="password" autocomplete="off" autocapitalize="off" placeholder="編輯密碼"><p class="merr" id="eaerr"></p>'
-      +'<div class="mbtns" style="justify-content:space-between"><button class="ghost" id="eacancel">取消</button><button class="ghost" id="eaok">'+esc(okText)+'</button></div></div>';
+      +(noPw?'':'<input id="eapw" type="password" autocomplete="off" autocapitalize="off" placeholder="編輯密碼">')+'<p class="merr" id="eaerr"></p>'
+      +'<div class="mbtns" style="justify-content:space-between"><button class="ghost" id="eacancel">取消</button>'+(noPw?'':'<button class="ghost" id="eaok">'+esc(okText)+'</button>')+'</div></div>';
     document.body.appendChild(o);
     const done=v=>{clearInterval(tk);o.remove();res(v)},err=t=>{$('#eaerr').textContent=t};
     let tk=null;const bb=$('#eabio');
     if(bb){bioPrefetch();tk=setInterval(()=>{bioPrefetch();const ok=!!(bioPre&&bioPre.v);bb.disabled=!ok;bb.textContent=ok?'🔐 用生物辨識確認':'🔐 準備中…'},250);
       bb.onclick=()=>{bb.disabled=true;bioGet().then(h=>done({'X-Bio':h}),e=>{err(bioErr(e));bb.disabled=false})}}
-    else setTimeout(()=>$('#eapw').focus(),50);
-    const ok=()=>{const pw=$('#eapw').value;if(!pw)return;if(onPw){$('#eaok').disabled=true;Promise.resolve(onPw(pw)).then(v=>done(v),e=>{err(bioErr(e));$('#eaok').disabled=false})}else done({'X-Edit-Password':pw})};
-    $('#eaok').onclick=ok;$('#eapw').onkeydown=e=>{if(e.key==='Enter')ok()};$('#eacancel').onclick=()=>done(null);
+    else if(!noPw)setTimeout(()=>$('#eapw').focus(),50);
+    const ok=()=>{if(noPw)return;const pw=$('#eapw').value;if(!pw)return;if(onPw){$('#eaok').disabled=true;Promise.resolve(onPw(pw)).then(v=>done(v),e=>{err(bioErr(e));$('#eaok').disabled=false})}else done({'X-Edit-Password':pw})};
+    if(!noPw){$('#eaok').onclick=ok;$('#eapw').onkeydown=e=>{if(e.key==='Enter')ok()}}$('#eacancel').onclick=()=>done(null);
   });
 }
-const askEdit=msg=>editDialog(msg); // -> headers object or null
+const askEdit=msg=>editDialog(msg);
+const askBioOnly=msg=>editDialog(msg,{title:'🔐 生物辨識確認',noPw:true}); // -> {'X-Bio':...} or null // -> headers object or null
 async function bioEnable(){
   await editDialog('請輸入編輯密碼，再按「啟用」，接著用指紋／臉部確認',{okText:'啟用',title:'🔐 啟用生物辨識',bio:false,onPw:pw=>{
     // navigator.credentials.create is called right here, inside the tap (nothing awaited before it)
@@ -1298,7 +1303,7 @@ async function bioEnable(){
   }});
   if(bioActive)alert('已啟用：這台裝置之後可以用生物辨識解鎖，以及刪除檔案時確認身分');
 }
-function syncBio(){const b=$('#biobtn');if(!b)return;b.hidden=!(me?.admin&&bioOK);b.textContent=bioActive?'🔐 生物辨識：已開啟':'🔐 啟用生物辨識'}
+function syncBio(){$('#devices').hidden=$('#logoutall').hidden=!bioActive;const b=$('#biobtn');if(!b)return;b.hidden=!(me?.admin&&bioOK);b.textContent=bioActive?'🔐 生物辨識：已開啟':'🔐 啟用生物辨識'}
 $('#biobtn').onclick=async()=>{
   if(!bioActive)return bioEnable();
   const eh=await askEdit('關閉這台裝置的生物辨識：請確認身分');if(!eh)return;
