@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261015K">
+<link rel="stylesheet" href="glass.css?v=20261015L">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -120,6 +120,8 @@ body.selecting .wrap{padding-bottom:100px}
 #peek .pico{width:42vmin;height:42vmin;display:flex;align-items:center;justify-content:center;font-size:20vmin;border-radius:18px;background:#1c1e21}
 #peek .pname{color:#fff;font-size:13px;max-width:92vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @keyframes pk{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+html.ios #toolsticky{position:sticky;top:calc(env(safe-area-inset-top) + 36px);z-index:57;background:#000;margin:0 -16px;padding:2px 16px 0}
+html.ios body.selecting #toolsticky{position:static;background:none;margin:0;padding:0} /* select mode keeps its own layout */
 body.selecting #list{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:pan-y} /* sideways drags reach the page (drag-select), vertical ones still scroll */
 #disk{margin:4px 2px 10px;padding:14px 16px;border-radius:18px;background:var(--card);border:1px solid var(--bd)}
 #disk .dtop{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px}#disk .dtop span:last-child{color:var(--mut)}
@@ -243,7 +245,7 @@ body.covered #app{visibility:hidden}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261015K"></script>
+<script src="glass.js?v=20261015L"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -519,6 +521,7 @@ if(document.documentElement.classList.contains('ios')||matchMedia('(max-width:69
   const up=$('#target').parentElement,w=document.createElement('span');w.append('上傳到：',$('#target'));up.remove();
   const sb=$('.seg').parentElement,segBar=mk();segBar.classList.add('segrow');segBar.append('顯示方式：',$('.seg'));sb.before(segBar);
   const last=mk();last.append(w,$('#selmode'));segBar.before(last);   // order: upload target / view switch / sort
+  { const ts=document.createElement('div');ts.id='toolsticky';last.before(ts);ts.append(last,segBar,sb); } // these three rows stay pinned under the title while the list scrolls
   const sbar=$('#selbar'),top=document.createElement('div'),bot=document.createElement('div');top.className='seltop';bot.className='selbot';   // select mode: close + bulk actions on top, share / download as round icons in the bottom corners
   top.append($('#selcount'),$('#seldel'),$('#selnone'),$('#selall'),$('#selexit'));bot.append($('#selshare'),$('#seldl'));sbar.append(top,bot);
   $('#selshare').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14.5V3.5M8 7l4-4 4 4"/><path d="M7.5 10H6.5a2.5 2.5 0 0 0-2.5 2.5v6A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5v-6A2.5 2.5 0 0 0 17.5 10h-1"/></svg>';$('#selshare').setAttribute('aria-label','分享選取');
