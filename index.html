@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v5.22">
+<meta name="app-version" content="v5.23">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261017Q">
+<link rel="stylesheet" href="glass.css?v=20261017R">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -388,7 +388,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261017Q"></script>
+<script src="glass.js?v=20261017R"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1573,12 +1573,16 @@ $('#dclip').onclick=clipOpen;
   new MutationObserver(m=>{if(!d&&m.some(r=>r.target!==pill))rest(true)}).observe(dock,{subtree:true,attributes:true,attributeFilter:['class','hidden']});addEventListener('resize',()=>rest(false));setTimeout(()=>rest(false),0);
   let d=null,mute=false;
   dock.addEventListener('pointerdown',e=>{if(e.button>0)return;const b=nearest(e.clientX);if(!b)return;
-    d={id:e.pointerId,b};try{dock.setPointerCapture(e.pointerId)}catch{}
+    d={id:e.pointerId,b,t0:Date.now()};try{dock.setPointerCapture(e.pointerId)}catch{}
     put(b,true);pill.classList.add('on');});
-  dock.addEventListener('pointermove',e=>{if(!d||e.pointerId!==d.id)return;const b=nearest(e.clientX);if(b&&b!==d.b){d.b=b;put(b,true)}});
+  dock.addEventListener('pointermove',e=>{if(!d||e.pointerId!==d.id)return;const b=nearest(e.clientX);if(b)d.b=b;
+    if(Date.now()-d.t0<140||!b)return;  // first moment: the pill is still gliding to the touched button, then it sticks to the finger
+    const r=dock.getBoundingClientRect(),first=btns()[0],last=btns().slice(-1)[0],w=b.offsetWidth;
+    let cx=e.clientX-r.left-dock.clientLeft;cx=Math.max(first.offsetLeft+w/2,Math.min(last.offsetLeft+last.offsetWidth-w/2,cx));
+    pill.style.transition='none';pill.style.width=w+'px';pill.style.height=b.offsetHeight+'px';pill.style.top=b.offsetTop+'px';pill.style.left=(cx-w/2)+'px'});
   const end=e=>{if(!d||e.pointerId!==d.id)return;const b=e.type==='pointerup'?nearest(e.clientX):null;d=null;
     setTimeout(()=>{pill.classList.remove('on');rest(true)},90);
-    if(b){mute=true;setTimeout(()=>{mute=false},60);b.click()}};
+    if(b){put(b,true);mute=true;setTimeout(()=>{mute=false},60);b.click()}};
   dock.addEventListener('pointerup',end);dock.addEventListener('pointercancel',end);
   dock.addEventListener('click',e=>{if(mute||e.detail===0)return;e.stopImmediatePropagation();e.preventDefault()},true); // the lift above already made the choice
 }

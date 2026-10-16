@@ -540,3 +540,7 @@ html body button.dlbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!imp
 /* the one dark pill is also the "you are here" marker: it rests under the current page and swells while pressed */
 #dock #dockpill.rest{opacity:1;transform:none;background:rgba(0,0,0,.55);-webkit-backdrop-filter:none;backdrop-filter:none}
 #dock #dockpill.on{opacity:1;transform:scale(1.12);background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(6px) saturate(160%);backdrop-filter:blur(6px) saturate(160%)}
+
+/* no blue ring / highlight on dock buttons */
+#dock,#dock button{-webkit-tap-highlight-color:transparent!important;outline:none!important}
+#dock button:focus,#dock button:focus-visible{outline:none!important;box-shadow:none!important}
