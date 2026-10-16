@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v4.41">
+<meta name="app-version" content="v4.42">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261016M">
+<link rel="stylesheet" href="glass.css?v=20261016N">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -126,6 +126,19 @@ html.ios #toolsticky{display:flow-root;position:fixed;left:0;right:0;top:calc(en
 html.ios body.selecting #toolsticky{position:static;background:none;padding:0} /* select mode keeps its own layout */
 html.ios body.selecting #toolph{height:0!important}
 body.selecting #list{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:pan-y} /* sideways drags reach the page (drag-select), vertical ones still scroll */
+/* uploads: no list at the bottom of the page any more - a frosted round button bottom right opens the progress page */
+#ups{display:none}#uppage #ups{display:block;margin:0}
+#upsum{display:none!important}body.uploading #dup .uring{display:none!important}
+html body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom) + 84px);z-index:62;width:56px;height:56px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;
+  background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(24px) saturate(190%)!important;backdrop-filter:blur(24px) saturate(190%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 10px 28px rgba(0,0,0,.4)!important;color:#fff!important;border:0!important}
+html body button#upfab[hidden]{display:none!important}
+#upfab .fring{position:absolute;inset:0;width:100%;height:100%}#upfab .fic{width:26px;height:26px;position:relative}
+#upfab #fabbad{position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#ff453a;box-shadow:0 0 0 2px rgba(30,32,38,.9)}#upfab #fabbad[hidden]{display:none}
+#uppage{position:fixed;inset:0;z-index:96;background:#000;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 66px) 16px calc(env(safe-area-inset-bottom) + 30px)}
+#uppage[hidden]{display:none}
+#uppage h2{margin:0 4px 4px;font-size:34px;font-weight:800}
+html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:fixed;left:14px;top:calc(env(safe-area-inset-top) + 8px);z-index:2;width:46px;height:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important}
+#upback svg{width:24px;height:24px}
 #disk{cursor:pointer;-webkit-tap-highlight-color:transparent}#disk:active{background:rgba(120,120,128,.18)}
 #storage{position:fixed;inset:0;z-index:100;background:#000;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch}
 #storage[hidden]{display:none}
@@ -308,6 +321,8 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
   <div id="list"></div>
   <div id="ups" style="margin-top:12px"></div>
 </div>
+<button id="upfab" type="button" hidden aria-label="上傳進度"><svg class="fring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="fabArc" cx="28" cy="28" r="25" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="157.1" stroke-dashoffset="157.1" transform="rotate(-90 28 28)"/></svg><svg class="fic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5V4M8 8l4-4 4 4"/><path d="M5 14v3.5A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5V14"/></svg><i id="fabbad" hidden></i></button>
+<div id="uppage" hidden><button id="upback" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>上傳進度</h2><p id="upsum2" class="sub"></p><div id="upslot"></div></div>
 <div id="storage" hidden><div class="sthead"><button id="stback" class="stbtn" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>儲存空間</h2></div><div id="stbody"></div></div>
 <div id="viewer" hidden>
   <div class="vtop"><div class="vbtns" style="flex:none"><button class="ghost" id="vback">‹ 返回</button></div><span id="vtitle"></span><span id="vpos"></span><div class="vbtns"><button class="ghost" id="vshare" hidden style="color:#fff">🔗 分享</button><button class="ghost del" id="vdel" hidden>刪除</button><button class="ghost" id="vinfo" style="color:#fff" title="檔案資訊">ℹ️ 資訊</button><a id="vdlj" class="btn vlk" hidden title="下載轉好的 JPG 版本（不能開 HEIC 的裝置用這個）">JPG</a><a id="vdl" class="btn vlk">下載</a><button class="ghost" id="vclose" style="color:#fff">✕</button></div></div>
@@ -332,7 +347,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261016M"></script>
+<script src="glass.js?v=20261016N"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -648,9 +663,9 @@ async function refresh(){
 }
 syncToolbar();fitSel($('#sort'));
 // no scrolling of the page behind the settings / shared-links windows
-{let y=0;const b=document.body,lock=()=>{const open=!$('#modal').hidden||!$('#setpanel').hidden||!$('#viewer').hidden||!$('#storage').hidden,on=b.classList.contains('mlock');
+{let y=0;const b=document.body,lock=()=>{const open=!$('#modal').hidden||!$('#setpanel').hidden||!$('#viewer').hidden||!$('#storage').hidden||!$('#uppage').hidden,on=b.classList.contains('mlock');
     if(open&&!on){y=scrollY;b.style.top=-y+'px';b.classList.add('mlock')}else if(!open&&on){b.classList.remove('mlock');b.style.top='';scrollTo(0,y)}};
-  for(const id of['#modal','#setpanel','#viewer','#storage'])new MutationObserver(lock).observe($(id),{attributes:true,attributeFilter:['hidden']})}
+  for(const id of['#modal','#setpanel','#viewer','#storage','#uppage'])new MutationObserver(lock).observe($(id),{attributes:true,attributeFilter:['hidden']})}
 // settings panel (gear, top right)
 {const p=$('#setpanel'),close=()=>{p.hidden=true};
   $('#dset').onclick=()=>{p.hidden=!p.hidden};$('#setclose').onclick=close;
@@ -1214,15 +1229,23 @@ const upsum=$('#upsum');
 upsum.onclick=()=>$('#ups').scrollIntoView({behavior:'smooth',block:'start'});
 // progress: a ring drawn around the "+" in the dock (blue arc = how much of the whole batch is done), plus the one-line summary under the drop zone
 function updateUploadUI(){
-  const cs=$('#ups').children.length;
+  const cs=$('#ups').children.length,fab=$('#upfab');
   document.body.classList.toggle('uploading',cs>0);
-  if(!cs){upsum.hidden=true;releaseAwake();return}
+  upsum.hidden=true;
+  if(!cs){fab.hidden=true;releaseAwake();if(!$('#uppage').hidden)$('#upsum2').textContent='全部上傳完成 ✓';return}
   const f=[...$('#ups').querySelectorAll('.rt')].filter(b=>!b.hidden).length;
   let got=batch.done;for(const j of allJobs)got+=j.loaded||0;
   const pct=batch.bytes?Math.min(100,Math.round(got/batch.bytes*100)):0;
-  upsum.hidden=false;upsum.textContent='⬆ 上傳中 '+pct+'%（'+batch.doneFiles+'/'+batch.files+'）'+(f?'・'+f+' 個失敗':'')+'　點此看進度';
-  $('#dupArc').style.strokeDashoffset=(119.4*(1-pct/100)).toFixed(1);
+  fab.hidden=false;$('#fabArc').style.strokeDashoffset=(157.1*(1-pct/100)).toFixed(1);$('#fabbad').hidden=!f;fab.title='上傳中 '+pct+'%';
+  $('#upsum2').textContent='上傳中 '+pct+'%（'+batch.doneFiles+'/'+batch.files+'）'+(f?'・'+f+' 個失敗，可按該檔的「重試」':'');
+  if($('#dupArc'))$('#dupArc').style.strokeDashoffset=(119.4*(1-pct/100)).toFixed(1);
 }
+function openUps(){$('#upslot').append($('#ups'));$('#uppage').hidden=false;document.body.style.overflow='hidden';history.pushState({ups:1},'');updateUploadUI()}
+function closeUps(fromPop){
+  if($('#uppage').hidden)return;$('#list').after($('#ups'));$('#uppage').hidden=true;document.body.style.overflow='';
+  if(!fromPop&&history.state&&history.state.ups)history.back();
+}
+$('#upfab').onclick=openUps;$('#upback').onclick=()=>closeUps();addEventListener('popstate',()=>closeUps(true));
 setInterval(updateUploadUI,500);
 const queue=[];let running=0;const MAX_PAR=10,MAX_TRY=3;
 const allJobs=new Set(),batch={bytes:0,done:0,files:0,doneFiles:0}; // everything still to upload / the totals of the current batch (drives the progress ring)
