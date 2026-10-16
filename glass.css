@@ -536,3 +536,7 @@ html.ios body .seltop button#selexit svg{width:24px;height:24px}
 html body #dock button:is(:active,.gpress,.act){background:transparent!important}
 html body #dock button{z-index:1}
 html body button.dlbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
+
+/* the one dark pill is also the "you are here" marker: it rests under the current page and swells while pressed */
+#dock #dockpill.rest{opacity:1;transform:none;background:rgba(0,0,0,.55);-webkit-backdrop-filter:none;backdrop-filter:none}
+#dock #dockpill.on{opacity:1;transform:scale(1.12);background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(6px) saturate(160%);backdrop-filter:blur(6px) saturate(160%)}
