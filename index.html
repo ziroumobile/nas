@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v5.18">
+<meta name="app-version" content="v5.19">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261017M">
+<link rel="stylesheet" href="glass.css?v=20261017N">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -388,7 +388,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261017M"></script>
+<script src="glass.js?v=20261017N"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1532,12 +1532,12 @@ async function clipSendImage(file){
   return true;
 }
 async function clipSendFiles(files){let ok=false;for(const f of files)if(/^image\//.test(f.type))ok=(await clipSendImage(f))||ok;if(ok){clipSig='';clipRefresh()}}
-function clipOpen(){ // the clipboard lives in a window, like the share list
-  showModal('<div class="mhead"><h3>📋 剪貼簿</h3><button class="ghost" id="clipx">關閉</button></div>'+
+function clipOpen(){
+  try{closeSearchPage(true,true)}catch{}document.body.classList.add('dockover');setDock('dclip');
+  showPage('<div class="mhead"><h3>📋 剪貼簿</h3></div>'+
     '<textarea id="clipin" rows="2" placeholder="輸入或貼上文字、圖片…（永久保存直到你刪除，只有你的裝置看得到）" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--fg);font:inherit;resize:vertical;min-height:52px"></textarea>'+
     '<div class="mbtns" style="margin:8px 0"><button class="ghost" id="clippaste">📋 貼上</button><button class="ghost" id="clipsend">送出文字</button><button class="ghost" id="clippic">🖼 選圖片</button><button class="del" id="clipclear" hidden>全部清除</button></div>'+
     '<input id="clipfile" class="fpick" type="file" accept="image/*" multiple><div id="cliplist"></div>');
-  $('#clipx').onclick=closeModal;
   $('#clipsend').onclick=async()=>{if(await clipSendText($('#clipin').value))$('#clipin').value=''};
   $('#clippic').onclick=()=>$('#clipfile').click();
   $('#clipfile').onchange=e=>{clipSendFiles([...e.target.files]);e.target.value=''};
