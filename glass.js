@@ -51,6 +51,7 @@ void main(){
     vec3 w0=vec3(1.,.1,.1),w1=vec3(.9,.8,.1),w2=vec3(.2,1.,.3),w3=vec3(.1,.8,1.),w4=vec3(.5,.2,1.);
     vec3 wsum=w0+w1+w2+w3+w4;
     vec3 body=(s0.rgb*s0.a*w0+s1.rgb*s1.a*w1+s2.rgb*s2.a*w2+s3.rgb*s3.a*w3+s4.rgb*s4.a*w4)/wsum;
+    body=mix(body*vec3(.04,.52,1.),body*vec3(.35,.8,1.),.35*clamp(s*1.6,0.,1.))+body*vec3(.10,0.,.18)*s;   // inside the lens every label turns blue; near the bevel the colour split pulls it towards cyan / violet
     float ca=max(max(s0.a,s1.a),max(max(s2.a,s3.a),s4.a));
     float topbot=abs(g.y);
     float darkA=pow(s,2.2)*(.10+.90*topbot)*.34*u_lift;                          // soft dark crescents just inside the top and bottom edge
@@ -140,8 +141,8 @@ void main(){
     const g = s.gl; if (!g) return;
     const W = s.seg.clientWidth, H = s.seg.clientHeight, T = TPAD;
     let ckey = null;
-    const bi = force != null ? force : (s.active && s.hot >= 0 ? s.hot : selected(s));
-    { ckey = bi + '|' + W + 'x' + H + '|' + s.btns.length; s.tc = s.tc || {}; if (s.tc[ckey]) { if (force == null) g.tex = s.tc[ckey]; s.texW = W + 2 * T; s.texH = H + 2 * T; return; } }
+    const bi = -1;   // the labels are always painted white: the lens tints whatever is inside it blue, the bar outside stays white
+    { ckey = 'w|' + W + 'x' + H + '|' + s.btns.length; s.tc = s.tc || {}; if (s.tc[ckey]) { if (force == null) g.tex = s.tc[ckey]; s.texW = W + 2 * T; s.texH = H + 2 * T; return; } }
     const c = s.tex2d || (s.tex2d = document.createElement('canvas'));
     const cw = Math.ceil((W + 2 * T) * DPR), ch = Math.ceil((H + 2 * T) * DPR); if (c.width !== cw || c.height !== ch) { c.width = cw; c.height = ch; }
     const x = c.getContext('2d'); x.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -160,14 +161,14 @@ void main(){
     s.btns.forEach((b, i) => {
       const ic = s.dock && b.querySelector('svg');
       if (ic) {
-        const col = i === blueIdx ? blue : white, im = iconImg(s, b, col), mx = T + b.offsetLeft + b.offsetWidth / 2, my = T + b.offsetTop + b.offsetHeight / 2, dl = b.querySelector('.dl');
+        const col = white, im = iconImg(s, b, col), mx = T + b.offsetLeft + b.offsetWidth / 2, my = T + b.offsetTop + b.offsetHeight / 2, dl = b.querySelector('.dl');
         if (im) x.drawImage(im, mx - 12, my - (dl ? 23 : 12), 24, 24);
         if (dl) { x.font = '600 11px ' + getComputedStyle(dl).fontFamily; x.fillStyle = col; x.fillText(dl.textContent, mx, my + 16); }
         return;
       }
       const cs = getComputedStyle(b);
       x.font = `500 ${cs.fontSize} ${cs.fontFamily}`;
-      x.fillStyle = i === blueIdx ? blue : white;
+      x.fillStyle = white;
       x.fillText(b.textContent.trim(), T + b.offsetLeft + b.offsetWidth / 2, T + b.offsetTop + b.offsetHeight / 2 + 1);
     });
     const { gl } = g; let tex = g.tex;
@@ -220,7 +221,6 @@ void main(){
   const spring = (cur, vel, target, dt, k, c) => { const a = k * (target - cur) - c * vel; vel += a * dt; return [cur + vel * dt, vel]; };
   function startLens(s) {
     s.gc = null; s.active = false; const r = geom(s)[selected(s)];
-    for (let i = 0; i < s.btns.length; i++) makeTexture(s, i);   // all highlight variants are painted/uploaded once, up front
     s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: GROW, tm: MAG, st: 0, vst: 0, tst: 0 };
     s.active = true; s.hot = selected(s); s.seg.classList.add('dragging', 'pressing', 'lensing'); setHot(s, s.hot, true);
     makeTexture(s);                                                  // labels as they look right now
@@ -230,7 +230,7 @@ void main(){
   // the option the lens is over turns blue (the others stay white); the lens's own copy of the labels is repainted to match
   function setHot(s, k, quiet) {
     s.hot = k; s.btns.forEach((b, i) => b.classList.toggle('glass-hot', i === k));
-    if (!quiet && s.gl) makeTexture(s);
+    
   }
   function trackHot(s, cx) {
     const k = s.nearest(cx); if (k === s.hot) return; setHot(s, k);
