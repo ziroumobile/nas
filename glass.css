@@ -555,3 +555,5 @@ html:not(.android) body #dock button.on:is(:active,.gpress){background:rgba(0,0,
 html body:is(.dockover,.selecting):not(.uploading) button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
 html body:has(#setpanel:not([hidden])):not(.uploading) button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
 html body:has(#modal:not([hidden])):not(.uploading) button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important}
+html.ios body .seltop button#seldel:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;color:#ff453a!important}
+html.ios body .seltop button#seldel svg{width:26px;height:26px}
