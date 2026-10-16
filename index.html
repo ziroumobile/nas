@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v5.20">
+<meta name="app-version" content="v5.21">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261017O">
+<link rel="stylesheet" href="glass.css?v=20261017P">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -388,7 +388,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261017O"></script>
+<script src="glass.js?v=20261017P"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -775,7 +775,7 @@ function addMenu(e){ // upload files / upload a folder / new folder
   m.style.left='auto';m.style.right='16px';m.style.top='auto';m.style.bottom='calc(env(safe-area-inset-bottom) + 84px + 60px + 10px)';m.style.transformOrigin='100% 100%';
 }
 document.addEventListener('pointerdown',e=>{if(addPm&&!e.target.closest('.gmenu')&&!e.target.closest('#upfab'))closeAddMenu()},true);
-$('#dock').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.id==='dshare'||b.id==='sbtn')return;if(document.body.classList.contains('dockover')){if(!$('#modal').hidden&&$('#modal').classList.contains('fullpage'))closeModal();closeSearchPage(true,true)}},true);
+$('#dock').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.id==='dshare'||b.id==='sbtn'||b.id==='dclip')return;if(document.body.classList.contains('dockover')){if(!$('#modal').hidden&&$('#modal').classList.contains('fullpage'))closeModal();closeSearchPage(true,true)}},true);
 // ---- search as its own full-screen page: a field on top, matching files below (tap one to preview; the list swipes in the preview) ----
 let spTimer=null;
 function renderSearch(){
@@ -824,7 +824,7 @@ function goHome(){ // back to the top of the file list: close whatever is open o
   const w=document.documentElement.classList.contains('android')?document.querySelector('.wrap'):null;(w||window).scrollTo({top:0,behavior:'smooth'});
 }
 $('#dhome').onclick=goHome;
-$('#dshare').onclick=()=>{try{closeViewer(true)}catch{}try{closeSearchPage(true,true)}catch{}if(document.body.classList.contains('dockover')&&!$('#modal').hidden)return;sharesManager()};
+$('#dshare').onclick=()=>{try{closeViewer(true)}catch{}try{closeSearchPage(true,true)}catch{}if(document.querySelector('#dock button.on')?.id==='dshare'&&!$('#modal').hidden)return;sharesManager()};
 $('#dflt').onclick=()=>{const on=document.body.classList.toggle('reorder');$('#dflt').classList.toggle('act',on)}; // the drag handles only show while this is on
 $('#dsel').onclick=()=>$('#selmode').click();
 $('#selmode').onclick=()=>{selMode=!selMode;if(!selMode)selected.clear();render(true)};
@@ -1489,7 +1489,7 @@ let clipItems=[],clipSig='';
 const clipAgo=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?'剛剛':m<60?m+' 分鐘前':m<1440?Math.round(m/60)+' 小時前':Math.round(m/1440)+' 天前'};
 async function clipRefresh(){
   try{const r=await api('/api/clip');if(!r.ok)return;const l=await r.json();const sig=JSON.stringify(l.map(c=>c.id));
-    clipItems=l;$('#clipn').textContent=l.length?String(l.length):'';if($('#clipclear'))$('#clipclear').hidden=!l.length;
+    clipItems=l;$('#clipn').textContent=l.length?String(l.length):'';
     if(sig!==clipSig){clipSig=sig;if($('#cliplist'))clipRender()}}catch{}
 }
 function clipRender(){
@@ -1504,7 +1504,7 @@ function clipRender(){
     const bt=document.createElement('div');bt.className='clipbtns mbtns';
     const mk=(label,fn,cls)=>{const x=document.createElement('button');x.className=cls||'ghost';x.textContent=label;x.onclick=()=>fn(x);bt.append(x)};
     mk(c.type==='text'?'複製':'複製圖片',x=>clipCopy(c,x));
-    if(c.type==='image')mk('下載',()=>{const a=document.createElement('a');a.href=API+c.url;a.download='clip.'+(c.mime.split('/')[1]||'png').replace('jpeg','jpg');document.body.append(a);a.click();a.remove()});
+    if(c.type==='image')mk('下載',()=>{const a=document.createElement('a');a.href=API+c.url;a.download='clip.'+(c.mime.split('/')[1]||'png').replace('jpeg','jpg');document.body.append(a);a.click();a.remove()},'dlbtn');
     mk('刪除',async()=>{await api('/api/clip?id='+c.id,{method:'DELETE'});clipSig='';clipRefresh()},'del');
     b.append(bt);d.append(b);box.append(d);
   }
@@ -1533,10 +1533,11 @@ async function clipSendImage(file){
 }
 async function clipSendFiles(files){let ok=false;for(const f of files)if(/^image\//.test(f.type))ok=(await clipSendImage(f))||ok;if(ok){clipSig='';clipRefresh()}}
 function clipOpen(){
-  try{closeSearchPage(true,true)}catch{}document.body.classList.add('dockover');setDock('dclip');
+  try{closeViewer(true)}catch{}try{closeSearchPage(true,true)}catch{}
+  if(document.querySelector('#dock button.on')?.id==='dclip'&&!$('#modal').hidden&&$('#clipin'))return;document.body.classList.add('dockover');setDock('dclip');
   showPage('<div class="mhead"><h3>📋 剪貼簿</h3></div>'+
     '<textarea id="clipin" rows="2" placeholder="輸入或貼上文字、圖片…（永久保存直到你刪除，只有你的裝置看得到）" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--fg);font:inherit;resize:vertical;min-height:52px"></textarea>'+
-    '<div class="mbtns" style="margin:8px 0"><button class="ghost" id="clippaste">📋 貼上</button><button class="ghost" id="clipsend">送出文字</button><button class="ghost" id="clippic">🖼 選圖片</button><button class="del" id="clipclear" hidden>全部清除</button></div>'+
+    '<div class="mbtns" style="margin:8px 0"><button class="ghost" id="clippaste">📋 貼上</button><button class="ghost" id="clipsend">送出文字</button><button class="ghost" id="clippic">🖼 選圖片</button></div>'+
     '<input id="clipfile" class="fpick" type="file" accept="image/*" multiple><div id="cliplist"></div>');
   $('#clipsend').onclick=async()=>{if(await clipSendText($('#clipin').value))$('#clipin').value=''};
   $('#clippic').onclick=()=>$('#clipfile').click();
@@ -1559,10 +1560,26 @@ function clipOpen(){
       catch{alert('瀏覽器不讓網頁讀取剪貼簿。請長按上面的輸入框貼上，再按「送出文字」。')}
     }
   };
-  $('#clipclear').onclick=async()=>{if(!confirm('清除剪貼簿裡全部的內容？'))return;await api('/api/clip',{method:'DELETE'});clipSig='';clipRefresh()};
-  clipSig='';clipRender();$('#clipclear').hidden=!clipItems.length;clipRefresh();
+  clipSig='';clipRender();clipRefresh();
 }
 $('#dclip').onclick=clipOpen;
+{ // press-and-slide on the dock: a dark glass pill follows the finger, lifting the finger opens the button under it
+  const dock=$('#dock'),pill=document.createElement('span');pill.id='dockpill';pill.setAttribute('aria-hidden','true');dock.prepend(pill);
+  const btns=()=>[...dock.querySelectorAll('button')].filter(b=>b.offsetWidth>0);
+  const at=x=>{const l=btns();let k=l[0];for(const b of l){const r=b.getBoundingClientRect();if(x>=r.left)k=b}return k};
+  const nearest=x=>{let best=null,bd=1e9;for(const b of btns()){const r=b.getBoundingClientRect(),d=Math.abs(x-(r.left+r.width/2));if(d<bd){bd=d;best=b}}return best};
+  const put=(b,anim)=>{pill.style.transition=anim?'':'none';pill.style.left=b.offsetLeft+'px';pill.style.top=b.offsetTop+'px';pill.style.width=b.offsetWidth+'px';pill.style.height=b.offsetHeight+'px'};
+  let d=null,mute=false;
+  dock.addEventListener('pointerdown',e=>{if(e.button>0)return;const b=nearest(e.clientX);if(!b)return;
+    d={id:e.pointerId,b};try{dock.setPointerCapture(e.pointerId)}catch{}
+    put(b,false);pill.classList.add('on');requestAnimationFrame(()=>{});});
+  dock.addEventListener('pointermove',e=>{if(!d||e.pointerId!==d.id)return;const b=nearest(e.clientX);if(b&&b!==d.b){d.b=b;put(b,true)}});
+  const end=e=>{if(!d||e.pointerId!==d.id)return;const b=e.type==='pointerup'?nearest(e.clientX):null;d=null;
+    setTimeout(()=>pill.classList.remove('on'),90);
+    if(b){mute=true;setTimeout(()=>{mute=false},60);b.click()}};
+  dock.addEventListener('pointerup',end);dock.addEventListener('pointercancel',end);
+  dock.addEventListener('click',e=>{if(mute||e.detail===0)return;e.stopImmediatePropagation();e.preventDefault()},true); // the lift above already made the choice
+}
 setInterval(()=>{if(me&&!document.hidden&&$('#applock').hidden&&$('#offscreen').hidden)clipRefresh()},8000);
 
 // ---- app lock: the login stays, but opening the app (or coming back after a minute away) asks for the edit password ----
