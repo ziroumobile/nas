@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v4.42">
+<meta name="app-version" content="v4.43">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261016N">
+<link rel="stylesheet" href="glass.css?v=20261016O">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -131,7 +131,7 @@ body.selecting #list{-webkit-user-select:none;user-select:none;-webkit-touch-cal
 #upsum{display:none!important}body.uploading #dup .uring{display:none!important}
 html body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom) + 84px);z-index:62;width:56px;height:56px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;
   background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(24px) saturate(190%)!important;backdrop-filter:blur(24px) saturate(190%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 10px 28px rgba(0,0,0,.4)!important;color:#fff!important;border:0!important}
-html body button#upfab[hidden]{display:none!important}
+html body button#upfab[hidden]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important} /* must outweigh the display:flex rule above, otherwise the button never hides */
 #upfab .fring{position:absolute;inset:0;width:100%;height:100%}#upfab .fic{width:26px;height:26px;position:relative}
 #upfab #fabbad{position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#ff453a;box-shadow:0 0 0 2px rgba(30,32,38,.9)}#upfab #fabbad[hidden]{display:none}
 #uppage{position:fixed;inset:0;z-index:96;background:#000;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 66px) 16px calc(env(safe-area-inset-bottom) + 30px)}
@@ -347,7 +347,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261016N"></script>
+<script src="glass.js?v=20261016O"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
