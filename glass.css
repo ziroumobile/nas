@@ -576,3 +576,7 @@ html.ios body .seltop button#seldl[hidden]:not(#nx1):not(#nx2):not(#nx3):not(#nx
 html.ios body .seltop button#seldl svg{width:24px;height:24px}
 html.ios body .selbot button#seldel:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:56px;height:56px;color:#ff453a!important}
 html.ios body .selbot #selcount{background:rgba(255,255,255,.07)!important;-webkit-backdrop-filter:blur(22px) saturate(180%)!important;backdrop-filter:blur(22px) saturate(180%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 1px 6px rgba(255,255,255,.12)!important}
+/* dock = exactly the 長條 glass (same fill, blur and rim) */
+html.ios body #dock{background:var(--g-fill)!important;-webkit-backdrop-filter:var(--g-glass-blur)!important;backdrop-filter:var(--g-glass-blur)!important;box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),inset 0 -1px 1.5px var(--g-lo),var(--g-shadow)!important;border:1px solid transparent}
+html.ios body #dock::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--g-rim);z-index:3;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+html.ios:not(.android) #dock svg{filter:none}
