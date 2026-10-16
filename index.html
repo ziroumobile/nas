@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v5.7">
+<meta name="app-version" content="v5.8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261017B">
+<link rel="stylesheet" href="glass.css?v=20261017C">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -142,12 +142,16 @@ html body button#upfab[hidden]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:n
 html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:fixed;left:14px;top:calc(env(safe-area-inset-top) + 8px);z-index:2;width:46px;height:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important}
 #upback svg{width:24px;height:24px}
 #total{display:none}
+html body #dock button.on:not(#nx1):not(#nx2){background:rgba(0,0,0,.62)!important;border-radius:999px!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)!important}
+body.dockover #dock{z-index:120} /* while the shared-links page is open the dock stays on top, like a tab bar */
+body.dockover #modal.fullpage #mbox{padding-bottom:calc(env(safe-area-inset-bottom) + 100px)}
 #disk{padding:9px 16px 11px!important}#disk .dbar{height:12px;margin:7px 0 0}#disk .dtop{font-size:14px}
-.hdrbtns{display:flex;gap:10px;align-items:center;flex:none;margin-top:4px}
-html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:relative;width:34px;height:34px;min-width:34px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;
-  background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(18px) saturate(170%)!important;backdrop-filter:blur(18px) saturate(170%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)!important;color:#fff!important;border:0!important}
+.hdrbtns{display:flex;gap:10px;align-items:center;flex:none}
+html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:relative;width:40px;height:40px;min-width:40px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.012)!important;-webkit-backdrop-filter:blur(1.5px) saturate(160%)!important;backdrop-filter:blur(1.5px) saturate(160%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)!important;color:#fff!important;border:0!important}
 html body #app>header button.hb.act:not(#nx1):not(#nx2){color:#0a84ff!important;box-shadow:inset 0 0 0 1.5px rgba(10,132,255,.85)!important}
-#app>header button.hb svg{width:20px;height:20px}
+#app>header button.hb svg{width:22px;height:22px}
+html.ios #app>header{height:52px!important}
 #disk{cursor:pointer;-webkit-tap-highlight-color:transparent}#disk:active{background:rgba(120,120,128,.18)}
 #storage{position:fixed;inset:0;z-index:100;background:#000;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch}
 #storage[hidden]{display:none}
@@ -307,7 +311,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 <div id="app" hidden>
   <header><h1>📁 我的 NAS</h1><div class="hdrbtns"><button class="hb" id="dflt" type="button" aria-label="拖動排序" title="拖動排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button class="hb" id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button></div></header>
   <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></span>
-  <nav id="dock"><button id="dhome" type="button" aria-label="首頁" title="首頁"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.2L12 4l8 7.2V19.5a.5.5 0 0 1-.5.5H15v-5.2H9V20H4.5a.5.5 0 0 1-.5-.5z"/></svg></button><button id="dshare" type="button" aria-label="已分享連結" title="已分享連結" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg class="uring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="dupArc" cx="22" cy="22" r="19" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4" transform="rotate(-90 22 22)"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
+  <nav id="dock"><button id="dhome" class="on" type="button" aria-label="首頁" title="首頁"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.2L12 4l8 7.2V19.5a.5.5 0 0 1-.5.5H15v-5.2H9V20H4.5a.5.5 0 0 1-.5-.5z"/></svg></button><button id="dshare" type="button" aria-label="已分享連結" title="已分享連結" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg class="uring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="dupArc" cx="22" cy="22" r="19" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4" transform="rotate(-90 22 22)"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
   <div id="setpanel" hidden><div id="setpage"><div class="sethead"><button id="setclose" class="setdone" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div><h2 class="settitle">設定</h2><div class="sgrp"><div class="sacct"><span class="sav" id="sav">👤</span><div class="sat"><b id="who"></b><small id="whorole"></small></div></div></div><div class="sgrp"><button class="srw" id="setdev" type="button"><span class="sic" style="background:#636366">📱</span><span class="slb">這台裝置的名稱</span><span class="sv" id="setdevv"></span><span class="sch">›</span></button><button class="srw" id="biobtn" type="button" hidden><span class="sic" style="background:#30d158">🔐</span><span class="slb">生物辨識</span><span class="sv" id="biobtnv"></span><span class="sch">›</span></button><button class="srw" id="devices" hidden><span class="sic" style="background:#34c759">💻</span><span class="slb">其他已登入的裝置</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="lockset" type="button" hidden><span class="sic" style="background:#5e5ce6">🔒</span><span class="slb">鎖定時間</span><span class="sv" id="locksetv"></span><span class="sch">›</span></button><button class="srw" id="vqset" type="button"><span class="sic" style="background:#ff375f">🎞</span><span class="slb">預覽畫質</span><span class="sv" id="vqsetv"></span><span class="sch">›</span></button></div>
   <div class="sgrp"><button class="srw" id="shares" hidden><span class="sic" style="background:#0a84ff">🔗</span><span class="slb">已分享連結</span><span class="sch">›</span></button><button class="srw" id="actlog" hidden><span class="sic" style="background:#ff9f0a">🕘</span><span class="slb">活動紀錄</span><span class="sch">›</span></button><button class="srw" id="trash" hidden><span class="sic" style="background:#8e8e93">🗑</span><span class="slb">回收區</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="setpw" hidden><span class="sic" style="background:#8e8e93">🔑</span><span class="slb">編輯密碼</span><span class="sch">›</span></button></div><div class="sgrp"><div class="sinfo"><span class="sic" style="background:#636366">🏷</span><span class="slb">版本</span><span class="sv" id="appver"></span></div><button class="srw" id="reloadapp" type="button"><span class="sic" style="background:#0a84ff">🔄</span><span class="slb">重新載入最新版本</span><span class="sch">›</span></button></div>
   <div class="sgrp"><button class="srw sred" id="out" type="button"><span class="slb">登出</span></button></div></div></div>
@@ -358,7 +362,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261017B"></script>
+<script src="glass.js?v=20261017C"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -745,13 +749,14 @@ function setSel(k,on){on?selected.add(k):selected.delete(k);
     let left=du.left+du.width/2-w/2;left=Math.max(8,Math.min(left,innerWidth-8-w)); // viewport coordinates, kept on screen
     m.style.left=(left-dk.left)+'px';m.style.transformOrigin=Math.round(du.left+du.width/2-left)+'px 100%';m.style.visibility='visible'};
   document.addEventListener('pointerdown',e=>{if(pm&&!e.target.closest('.gmenu')&&!e.target.closest('#dup'))closePm()},true)}
+$('#dock').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.id==='dshare')return;if(!$('#modal').hidden&&$('#modal').classList.contains('fullpage')&&document.body.classList.contains('dockover'))closeModal()},true);
 function goHome(){ // back to the top of the file list: close whatever is open on top of it
   try{closeViewer(true)}catch{}try{closeStorage(true)}catch{}try{closeUps(true)}catch{}closeModal();$('#setpanel').hidden=true;
   if(selMode){selMode=false;selected.clear();render(true)}
   const w=document.documentElement.classList.contains('android')?document.querySelector('.wrap'):null;(w||window).scrollTo({top:0,behavior:'smooth'});
 }
 $('#dhome').onclick=goHome;
-$('#dshare').onclick=()=>{try{closeViewer(true)}catch{}sharesManager()};
+$('#dshare').onclick=()=>{try{closeViewer(true)}catch{}if(document.body.classList.contains('dockover')&&!$('#modal').hidden)return;sharesManager()};
 $('#dflt').onclick=()=>{const on=document.body.classList.toggle('reorder');$('#dflt').classList.toggle('act',on)}; // the drag handles only show while this is on
 $('#dsel').onclick=()=>$('#selmode').click();
 $('#selmode').onclick=()=>{selMode=!selMode;if(!selMode)selected.clear();render(true)};
@@ -924,7 +929,8 @@ const shareUrl=id=>new URL('share.html',location.href).href.split('#')[0].split(
 const showPage=html=>{const m=$('#modal'),keep=m.classList.contains('fullpage')&&!m.hidden?$('#mbox').scrollTop:0;showModal(html);m.classList.add('fullpage');$('#mbox').scrollTop=keep};
 $('#pgback').onclick=()=>closeModal(); // back = the home page
 const showModal=html=>{$('#modal').classList.remove('fullpage');$('#mbox').innerHTML=html;$('#modal').classList.toggle('top',vOpen);$('#modal').hidden=false};
-const closeModal=()=>{$('#modal').hidden=true;$('#modal').classList.remove('top','fullpage');$('#mbox').innerHTML=''}; // also drops any password fields from the page
+const setDock=id=>{document.querySelectorAll('#dock button').forEach(b=>b.classList.toggle('on',b.id===id))};
+const closeModal=()=>{document.body.classList.remove('dockover');setDock('dhome');$('#modal').hidden=true;$('#modal').classList.remove('top','fullpage');$('#mbox').innerHTML=''}; // also drops any password fields from the page
 $('#modal').onclick=e=>{if(e.target.id==='modal')closeModal()};
 async function copyText(text,btn){
   try{await navigator.clipboard.writeText(text)}catch{const i=document.createElement('input');i.value=text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove()}
@@ -973,6 +979,7 @@ function shareDialog(label,payload){
   };
 }
 async function sharesManager(){ // every share: link, password (after entering the edit password), expiry, usage; copy / revoke
+  document.body.classList.add('dockover');setDock('dshare');
   showPage('<h3>🔗 已分享連結</h3><p class="sub">載入中…</p>');
   let list=[],revealed=null; // revealed passwords live only in this dialog and are dropped when it closes
   const load=async()=>{const r=await api('/api/shares');if(!r.ok)throw 0;list=await r.json()};
