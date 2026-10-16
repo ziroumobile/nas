@@ -208,6 +208,17 @@ void main(){
     gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    dent(s, L, lw, segW, segH);
+  }
+  // the bar's glass is pushed in a little at the top and bottom where the lens sits on it (a notch cut out of its ::before layer; the shadow around it stays)
+  function dent(s, L, lw, W, Hs) {
+    const R = Hs / 2, D0 = Math.max(0, Math.min(1, L.grow / GROW)) * 4.5, half = lw / 2 * 0.92;
+    let xa = Math.max(R, L.cx - half), xb = Math.min(W - R, L.cx + half);
+    if (xb - xa < 8 || D0 < .2) { s.seg.style.removeProperty('--lensclip'); return; }
+    const D = D0 * Math.min(1, (xb - xa) / (half * 2)), cx = Math.min(W - R, Math.max(R, L.cx)), k = (xb - xa) * 0.28, f = n => n.toFixed(1);
+    const top = `M${f(xa)},0C${f(xa + k)},0 ${f(cx - k)},${f(D)} ${f(cx)},${f(D)}C${f(cx + k)},${f(D)} ${f(xb - k)},0 ${f(xb)},0Z`;
+    const bot = `M${f(xa)},${f(Hs)}C${f(xa + k)},${f(Hs)} ${f(cx - k)},${f(Hs - D)} ${f(cx)},${f(Hs - D)}C${f(cx + k)},${f(Hs - D)} ${f(xb - k)},${f(Hs)} ${f(xb)},${f(Hs)}Z`;
+    s.seg.style.setProperty('--lensclip', `path(evenodd,"M-80,-80H${f(W + 80)}V${f(Hs + 80)}H-80Z${top}${bot}")`);
   }
 
   // ---------- layout / pill ----------
@@ -270,7 +281,7 @@ void main(){
   }
   function finishLens(s) {                                           // lens has settled into its option: swap back to the resting pill
     s.canvas.classList.remove('on'); s.active = false; s.lens = null;
-    s.gc = null; s.seg.classList.remove('pressing', 'lensing'); s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); });
+    s.gc = null; s.seg.style.removeProperty('--lensclip'); s.seg.classList.remove('pressing', 'lensing'); s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); });
     const pk = s.pendingK; s.pendingK = null;                        // the (heavy) view switch runs only now, after the lens has landed, so it can't stutter the animation
     if (pk == null) { s.seg.classList.remove('dragging'); setHot(s, -1, true); }
     placePill(s, pk == null ? selected(s) : pk, false); s.pill.classList.remove('hidden');
