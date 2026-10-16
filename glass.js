@@ -218,10 +218,11 @@ void main(){
     // flat as well, so at either end of the dock the edge inside the lens is a straight line too. Full depth from the first frame of a press;
     // its size never depends on how fast you drag.
     const D0 = (L.tg > 0 ? 1 : Math.max(0, Math.min(1, L.grow / (gr(s) * 0.5)))) * 4 * (s.dock ? 1 : Math.min(1, Hs / 70));   // the view switch is a thinner bar: same proportions as the dock
-    const LH = (geom(s)[0] || { h: Hs }).h + gr(s), half = (s.dock ? L.tw + gr(s) : Math.min(L.tw + gr(s), Math.max(LH * 1.45, (s.labW || 0) * MAG + 2 * BEZEL * Math.min(1, LH / 80) + 6))) * 0.31;
+    const LH = (geom(s)[0] || { h: Hs }).h + gr(s); let half = (s.dock ? L.tw + gr(s) : Math.min(L.tw + gr(s), Math.max(LH * 1.45, (s.labW || 0) * MAG + 2 * BEZEL * Math.min(1, LH / 80) + 6))) * 0.31;
+    if (!s.dock) { const lwS = half / 0.31, hh = LH / 2; s._lhS = lwS / 2; const dy = Math.min(hh - .5, Hs / 2); half = Math.max(half, lwS / 2 - hh + Math.sqrt(Math.max(0, hh * hh - dy * dy)) - 2); }   // view switch: the notch spans the lens right out to where its outline crosses the bar edge
     let xa = Math.max(-2, L.cx - half), xb = Math.min(W + 2, L.cx + half);
     if (!s.dock) {   // view switch: as the lens slides over a rounded end, the notch stretches out to the very edge with it (cut straight, like the dock); before that it stays put
-      const lh = half / 0.31 / 2, R = Hs / 2, kR = Math.max(0, Math.min(1, (L.cx + lh - (W - R)) / R)), kL = Math.max(0, Math.min(1, (R - (L.cx - lh)) / R));
+      const lh = s._lhS || half / 0.31 / 2, R = Hs / 2, kR = Math.max(0, Math.min(1, (L.cx + lh - (W - R)) / R)), kL = Math.max(0, Math.min(1, (R - (L.cx - lh)) / R));
       xb += (W + 2 - xb) * kR; xa += (-2 - xa) * kL;
     }
     const D = Math.min(D0, (xb - xa) / 2 - 1);
