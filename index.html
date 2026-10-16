@@ -3,12 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
+<meta name="app-version" content="v4.36">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261016G">
+<link rel="stylesheet" href="glass.css?v=20261016H">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -324,7 +325,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261016G"></script>
+<script src="glass.js?v=20261016H"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -390,8 +391,7 @@ $('#go').onclick=async()=>{
 };
 $('#p').onkeydown=e=>{if(e.key==='Enter')$('#go').click()};
 $('#out').onclick=async()=>{await dropLogin();location.reload()};
-{const m=(document.querySelector('script[src^="glass.js"]')?.getAttribute('src')||'').match(/v=(\d{4})(\d{2})(\d{2})([A-Za-z]?)/);
-  $('#appver').textContent=m?'v0.'+m[2]+'.'+m[3]+(m[4]?' · '+m[4].toUpperCase():''):'v0';}
+$('#appver').textContent=document.querySelector('meta[name=app-version]')?.content||'';
 $('#setdev').onclick=()=>$('#rename').click();
 const syncSetDev=()=>{$('#setdevv').textContent=device;const w=$('#who').textContent;$('#sav').textContent=(w||'?').trim().charAt(0).toUpperCase()||'👤'};
 $('#dset').addEventListener('click',()=>setTimeout(syncSetDev,0));
