@@ -69,14 +69,6 @@ void main(){
     float tint=pow(s,2.8)*topbot*u_lift*.14;                                    // a faint green/violet cast along the top and bottom, as on the reference
     vec3 pr=rb*tint+vec3(edgeL);
     float oa=clamp(ca+tint+edgeL+darkA*(1.-ca)+outline*(1.-ca),0.,1.);
-    // like Apple: inside the lens the bar's top and bottom edge are pushed in, which leaves a dark rounded slot (flat capsule, soft ends) just under the lens outline, at both the top and the bottom
-    float spill=hs.y-u_cy,dd=6.*u_lift;                                         // how far the lens reaches beyond the bar, and how far the bar edge is pushed in
-    float sTop=-hs.y+2.,sBot=-u_cy+dd;                                          // slot spans from just inside the lens outline to the pushed-in bar edge
-    float sh=max((sBot-sTop)*.5,1.),sc=(sTop+sBot)*.5,sw=hs.x*.62;
-    float pyy=abs(p.y);float cyy=abs(sc);
-    float dsl=sdRR(vec2(p.x,pyy-cyy),vec2(sw,sh),min(sw,sh));
-    float band=(1.-smoothstep(-2.,3.2,dsl))*.94*clamp(u_lift*1.4,0.,1.);
-    oa=oa+band*(1.-ca)*(1.-oa);
     body=body+pr;
     vec4 pre=vec4(body,oa)*inside+basePre*(1.-inside);pre.a=pre.a+shadow*(1.-pre.a);gl_FragColor=pre;return;
   }
@@ -216,6 +208,7 @@ void main(){
     gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    dent(s, L, lw, segW, segH, H);
   }
   // the bar's glass is pushed in a little at the top and bottom where the lens sits on it (a notch cut out of its ::before layer; the shadow around it stays)
   function dent(s, L, lw, W, Hs, LH) {
@@ -224,7 +217,7 @@ void main(){
     const dy = Math.min(hh - 1, Hs / 2), half = Math.max(0, lw / 2 - hh + Math.sqrt(Math.max(0, hh * hh - dy * dy))) - 1;
     let xa = Math.max(R, L.cx - half), xb = Math.min(W - R, L.cx + half);
     if (xb - xa < 8 || D0 < .2) { s.seg.style.removeProperty('--lensclip'); return; }
-    const D = D0 * Math.min(1, (xb - xa) / (half * 2)) * 1.25, e = Math.min(11, (xb - xa) / 3), f = n => n.toFixed(1);   // like Apple: the edge folds in over a short stretch, then runs straight across the middle
+    const D = D0 * Math.min(1, (xb - xa) / (half * 2)) * 1.25, e = Math.min(24, (xb - xa) / 2.2), f = n => n.toFixed(1);   // like Apple: the edge folds in over a short stretch, then runs straight across the middle
     const slot = y0 => { const sg = y0 === 0 ? 1 : -1, yd = y0 + sg * D; return `M${f(xa)},${f(y0)}C${f(xa + e * .6)},${f(y0)} ${f(xa + e * .4)},${f(yd)} ${f(xa + e)},${f(yd)}L${f(xb - e)},${f(yd)}C${f(xb - e * .4)},${f(yd)} ${f(xb - e * .6)},${f(y0)} ${f(xb)},${f(y0)}Z`; };
     const top = slot(0), bot = slot(Hs);
     s.seg.style.setProperty('--lensclip', `path(evenodd,"M-80,-80H${f(W + 80)}V${f(Hs + 80)}H-80Z${top}${bot}")`);
