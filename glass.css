@@ -836,3 +836,6 @@ html:not(.ios) body #dock button{flex:1 1 0;width:auto;min-width:0}
 html:not(.ios) body .pinb{top:-9px;right:-10px;padding:6px;margin:-6px}
 /* desktop: the select-mode bars stay inside the centred column instead of stretching across the whole window */
 html:not(.ios) body .seltop,html:not(.ios) body .selbot{left:max(12px,calc((100vw - 828px)/2))!important;right:max(12px,calc((100vw - 828px)/2))!important}
+@media(min-width:900px){
+  html body #storage button.stbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){left:max(14px,calc((100vw - 828px)/2 - 2px))!important}
+}

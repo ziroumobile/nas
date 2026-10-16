@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v6.35">
+<meta name="app-version" content="v6.36">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261020E">
+<link rel="stylesheet" href="glass.css?v=20261020F">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -391,7 +391,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261020E"></script>
+<script src="glass.js?v=20261020F"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -587,7 +587,7 @@ function closeStorage(fromPop){
   if($('#storage').hidden)return;$('#storage').hidden=true;document.body.style.overflow='';
   if(!fromPop&&history.state&&history.state.storage)history.back();
 }
-$('#stback').onclick=()=>closeStorage();
+$('#stback').onclick=()=>{closeStorage();if(window.__setBack){window.__setBack=false;$('#setpanel').hidden=false}};
 addEventListener('popstate',()=>closeStorage(true));
 $('#disk').onclick=openStorage;
 $('#storerow').onclick=async()=>{if(!diskView)await drawDisk();openStorage()}; // from the settings
@@ -721,8 +721,9 @@ syncToolbar();fitSel($('#sort'));
   for(const id of['#modal','#setpanel','#viewer','#storage','#uppage'])new MutationObserver(lock).observe($(id),{attributes:true,attributeFilter:['hidden']})}
 // settings panel (gear, top right)
 {const p=$('#setpanel'),close=()=>{p.hidden=true};
-  $('#dset').onclick=()=>{p.hidden=!p.hidden};$('#setclose').onclick=close;
-  p.addEventListener('click',e=>{const b=e.target.closest('button');if(e.target===p||(b&&!['out','setdev','biobtn','setpw'].includes(b.id)))close()},true)} // rows that only open a small dialog (device name, biometrics, edit password) stay on the settings page
+  window.__setBack=false;   // true while a page opened from the settings is showing: its back arrow returns to the settings, the settings' own back arrow goes home
+  $('#dset').onclick=()=>{window.__setBack=false;p.hidden=!p.hidden};$('#setclose').onclick=()=>{window.__setBack=false;close()};
+  p.addEventListener('click',e=>{const b=e.target.closest('button');if(e.target===p||(b&&!['out','setdev','biobtn','setpw'].includes(b.id))){window.__setBack=!!(b&&['storerow','lockset','vqset','devices','actlog','trash'].includes(b.id));close()}},true)} // rows that only open a small dialog (device name, biometrics, edit password) stay on the settings page
 // phone layout (iPhone / iPad / Android): title + gear / new folder / sort / view switch / upload target, select / search
 { // select mode (top: back / clear / download, bottom: count / share / delete) is built on every platform now
   const sbar=$('#selbar'),top=document.createElement('div'),bot=document.createElement('div');top.className='seltop';bot.className='selbot';   // select mode: close + bulk actions on top, share / download as round icons in the bottom corners
@@ -830,7 +831,7 @@ $('#spres').addEventListener('click',e=>{const a=e.target.closest('a.sprow');if(
 addEventListener('popstate',()=>closeSearchPage(true));
 $('#sbtn').onclick=e=>{e.stopImmediatePropagation();if(!$('#spage').hidden){$('#spq').focus();return}openSearchPage()};
 function goHome(){ // back to the top of the file list: close whatever is open on top of it
-  try{closeViewer(true)}catch{}try{closeStorage(true)}catch{}try{closeUps(true)}catch{}closeModal();try{closeSearchPage(true,true)}catch{}$('#setpanel').hidden=true;
+  try{closeViewer(true)}catch{}try{closeStorage(true)}catch{}try{closeUps(true)}catch{}closeModal();try{closeSearchPage(true,true)}catch{}$('#setpanel').hidden=true;window.__setBack=false;
   if(selMode){selMode=false;selected.clear();render(true)}
   const w=document.documentElement.classList.contains('android')?document.querySelector('.wrap'):null;(w||window).scrollTo({top:0,behavior:'smooth'});
 }
@@ -1018,7 +1019,7 @@ const shareUrl=id=>new URL('share.html',location.href).href.split('#')[0].split(
 // a preview opened from a dialog (a thumbnail in the shared-links list) goes above that dialog.
 // a page of its own (like pushing a screen in iOS Settings): full screen, round back button top left, back returns to the settings page
 const showPage=html=>{const m=$('#modal'),keep=m.classList.contains('fullpage')&&!m.hidden?$('#mbox').scrollTop:0;showModal(html);m.classList.add('fullpage');$('#mbox').scrollTop=keep};
-$('#pgback').onclick=()=>closeModal(); // back = the home page
+$('#pgback').onclick=()=>{closeModal();if(window.__setBack){window.__setBack=false;$('#setpanel').hidden=false}}; // back = the home page
 const showModal=html=>{$('#modal').classList.remove('fullpage');$('#mbox').innerHTML=html;$('#modal').classList.toggle('top',vOpen);$('#modal').hidden=false};
 const setDock=id=>{document.querySelectorAll('#dock button').forEach(b=>b.classList.toggle('on',b.id===id))};
 const closeModal=()=>{document.body.classList.remove('dockover');setDock('dhome');$('#modal').hidden=true;$('#modal').classList.remove('top','fullpage');$('#mbox').innerHTML=''}; // also drops any password fields from the page
