@@ -23,10 +23,6 @@ vec3 bgSim(vec2 p){   // stand-in for what is behind the bar: the bar itself (da
   float rimT=exp(-abs(p.y)*.8)*.30,rimB=exp(-abs(p.y-H)*.8)*.22;
   return mix(page,bar,inBar)+vec3(rimT+rimB);
 }
-float scn(vec2 q){   // what the rim refracts besides the labels: the bar's body and the light lines along its top and bottom edge
-  float Hb=u_cy*2.;
-  return smoothstep(-1.,0.,q.y)*(1.-smoothstep(Hb,Hb+1.,q.y))*.16+exp(-abs(q.y)*1.2)*.6+exp(-abs(q.y-Hb)*1.2)*.5;
-}
 float bandf(float dd){float tt=clamp(-dd/u_bezel,0.,1.);float ss=1.-tt;return pow(ss,3.)*u_lift;}
 float texA(vec2 seg){vec2 uv=(seg+vec2(u_pad))/u_texSize;return texture2D(u_tex,vec2(uv.x,1.-uv.y)).a;}
 vec4 tex4(vec2 seg){vec2 uv=(seg+vec2(u_pad))/u_texSize;return texture2D(u_tex,vec2(uv.x,1.-uv.y));}
@@ -58,17 +54,12 @@ void main(){
   float lightDir0=clamp(dot(g,normalize(vec2(-.55,-.83))),-1.,1.);
   if(u_clear>.5){   // clear glass (dock / switch): a transparent body. The colour comes from the labels themselves being bent and split into R/G/B by the curved edge (like the reference)
     // spectral dispersion: five taps, each bent a little more than the last and tinted red -> blue, so a white label smears into soft colour bands
-    vec2 ro=g*slope*u_bezel*1.1*u_lift;                                       // like iOS: the curved edge shows what lies just OUTSIDE the lens, squeezed into the rim (each colour bent a little differently)
-    vec4 s0=tex4(mp+ro*.8),s1=tex4(mp+ro*1.),s2=tex4(mp+ro*1.2),s3=tex4(mp+ro*1.4),s4=tex4(mp+ro*1.6);
+    vec4 s0=tex4(mp+refr*.85),s1=tex4(mp+refr*1.05),s2=tex4(mp+refr*1.25),s3=tex4(mp+refr*1.45),s4=tex4(mp+refr*1.65);
     vec3 w0=vec3(1.,.1,.1),w1=vec3(.9,.8,.1),w2=vec3(.2,1.,.3),w3=vec3(.1,.8,1.),w4=vec3(.5,.2,1.);
     vec3 wsum=w0+w1+w2+w3+w4;
     vec3 body=(s0.rgb*s0.a*w0+s1.rgb*s1.a*w1+s2.rgb*s2.a*w2+s3.rgb*s3.a*w3+s4.rgb*s4.a*w4)/wsum;
     body=mix(body*vec3(.04,.52,1.),body*vec3(.35,.8,1.),.35*clamp(s*1.6,0.,1.))+body*vec3(.10,0.,.18)*s;   // inside the lens every label turns blue; near the bevel the colour split pulls it towards cyan / violet
     float ca=max(max(s0.a,s1.a),max(max(s2.a,s3.a),s4.a));
-    // colour split of the bar's own edges seen through the curved rim (iOS shows rainbow arcs along the top and bottom of the lens)
-    vec3 sp=(scn(mp+ro*.8)*w0+scn(mp+ro*1.)*w1+scn(mp+ro*1.2)*w2+scn(mp+ro*1.4)*w3+scn(mp+ro*1.6)*w4)/wsum;
-    vec3 chroma=max(sp-vec3(dot(sp,vec3(.3333)))*.45,0.)*pow(s,1.2)*u_lift*2.6;
-    body+=chroma*(1.-ca);ca=max(ca,min(1.,max(chroma.r,max(chroma.g,chroma.b))));
     float topbot=abs(g.y);
     float darkA=pow(s,2.2)*(.10+.90*topbot)*.34*u_lift;                          // soft dark crescents just inside the top and bottom edge
     float outline=(1.-smoothstep(0.,1.2,-d))*.34*u_lift;                         // thin dark outline
