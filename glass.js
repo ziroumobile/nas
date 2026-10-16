@@ -272,9 +272,10 @@ void main(){
     const k = s.nearest(cx); if (k === s.hot) return; setHot(s, k);
     if (s.drag && s.drag.started) {   // dock: the page switches as soon as the lens has rested on a button for a moment, no need to lift the finger
       clearTimeout(s.liveT);
-      s.liveT = setTimeout(() => { if (!(s.active && s.hot === k && k !== selected(s))) return;
-        raf(() => setTimeout(() => { if (!(s.active && s.hot === k)) return; s.liveK = k; const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; }, 0));   // the (heavy) page build starts right after a frame has been drawn, not inside it
-      }, 120);
+      s.liveT = setTimeout(() => {   // the page switches as soon as the lens has rested on an option for a moment (short, so fast sweeps don't open every page on the way)
+        if (!(s.active && s.hot === k && k !== selected(s))) return;
+        s.liveK = k; const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc;
+      }, 55);
     }
   }
   function step(s, dt) {
