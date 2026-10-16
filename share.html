@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
-<link rel="stylesheet" href="glass.css?v=20261019Z">
+<link rel="stylesheet" href="glass.css?v=20261020A">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <title>檔案分享</title>
 <style>
@@ -114,6 +114,13 @@ html body #viewer #vdlj.vc2[hidden]:not(#nx1){display:none!important}
 html body #viewer #vdlj.vc2:not([hidden]):not(#nx1):not(#nx2):not(#nx3){padding:0 14px!important;height:46px;border-radius:999px!important;display:inline-flex!important;align-items:center;background:rgba(32,34,40,.78)!important;color:#fff!important;font-size:14px;line-height:1}
 body.vlock{position:fixed;left:0;right:0;overflow:hidden}body.vlock #appback{display:none!important}
 html.ios #viewer{z-index:100}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap}
+header h1{margin:0}
+.hdrbtns{display:flex;gap:10px;align-items:center;flex:none}
+body.selecting #app>header .hdrbtns{visibility:hidden}
+html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:relative;width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(24px) saturate(190%)!important;backdrop-filter:blur(24px) saturate(190%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(255,255,255,.08),0 10px 28px rgba(0,0,0,.4)!important;color:#fff!important;border:0!important}
+#app>header button.hb svg{width:24px;height:24px}
+html.ios #app>header{height:58px!important}
 </style></head><body><div id="topsent" aria-hidden="true"></div><div class="wrap"><div id="appback" role="button" tabindex="0" aria-label="返回" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div>
 <div id="gate" class="card">
   <h1>🔒 檔案分享</h1>
@@ -125,14 +132,14 @@ html.ios #viewer{z-index:100}
   </div>
 </div>
 <div id="app" hidden>
-  <h1 id="title">📁 分享</h1>
+  <header><h1 id="title">📁 分享</h1><div class="hdrbtns"><button class="hb" id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button></div></header>
   <p class="sub" id="sub"></p>
   <div class="note">🔒 唯讀分享：你只能檢視和下載這裡的檔案。</div>
   <div class="bar">
     <span class="seg"><button class="ghost" id="vlist">☰ 列表</button><button class="ghost" id="vnine">▩ 中圖示</button><button class="ghost" id="vsmall">▪ 小圖示</button></span>
     排序：<select id="sort"><option value="name">名稱</option><option value="date">更新日期</option><option value="size">大小</option></select>
     <button class="ghost" id="order"></button>
-    <button class="ghost" id="selmode">☑ 選取</button>
+    <button class="ghost" id="selmode" hidden>☑ 選取</button>
   </div>
   <div class="card" id="list"></div>
 </div>
@@ -144,12 +151,12 @@ html.ios #viewer{z-index:100}
 </div>
 <div id="selbar" hidden>
   <b id="selcount">已選 0 個</b>
-  <button class="ghost" id="selall">全選</button>
-  <button class="ghost" id="selnone">清除選取</button>
+  <button class="ghost" id="selall" hidden>全選</button>
+  <button class="ghost" id="selnone">取消選取</button>
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="glass.js?v=20261019Z"></script>
+<script src="glass.js?v=20261020A"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
@@ -206,7 +213,14 @@ function render(){
 const setView=v=>{view=v;render()};
 $('#vlist').onclick=()=>setView('list');$('#vnine').onclick=()=>setView('nine');$('#vsmall').onclick=()=>setView('small');
 $('#sort').onchange=e=>{sortBy=e.target.value;asc=sortBy==='name';render()};$('#order').onclick=()=>{asc=!asc;render()};
-$('#selmode').onclick=()=>{selMode=!selMode;if(!selMode)selected.clear();render()};
+$('#selmode').onclick=$('#dsel').onclick=()=>{selMode=!selMode;if(!selMode)selected.clear();render()};
+{ // same select-mode layout as the home page (glass.css does the styling)
+  const sbar=$('#selbar'),top=document.createElement('div'),bot=document.createElement('div');top.className='seltop';bot.className='selbot';
+  $('#selexit').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>';$('#selexit').setAttribute('aria-label','返回');
+  $('#seldl').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M8 11l4 4 4-4"/><path d="M4.5 17v1.5A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5V17"/></svg>';$('#seldl').setAttribute('aria-label','下載選取');
+  top.append($('#selexit'),$('#selnone'),$('#seldl'));bot.append($('#selcount'));sbar.append(top,bot);
+  const band=document.createElement('div');band.id='topband';band.style.cssText='background:#000;opacity:1;-webkit-backdrop-filter:none;backdrop-filter:none';band.setAttribute('aria-hidden','true');$('#app').appendChild(band);
+}
 $('#selexit').onclick=()=>{selMode=false;selected.clear();render()};
 $('#selall').onclick=()=>{files.forEach(x=>selected.add(x.url));render()};$('#selnone').onclick=()=>{selected.clear();render()};
 $('#seldl').onclick=async()=>{ // browsers may ask to allow multiple downloads the first time

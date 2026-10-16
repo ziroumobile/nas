@@ -339,7 +339,7 @@ void main(){
       s.drag = null;
       if (!d.started) return;                                        // a plain tap: the button's own click does the work
       const rect = seg.getBoundingClientRect();
-      const k = e && e.type === 'pointerup' ? nearest(e.clientX - rect.left - seg.clientLeft) : selected(s);
+      const k = e && e.type === 'pointerup' ? nearest(e.clientX - rect.left - seg.clientLeft) : (s.hot >= 0 ? s.hot : selected(s));   // a cancelled touch (iOS does this) still counts as a tap on the option under the lens
       const wait = s.gl && s.lens ? Math.max(0, 110 - (Date.now() - d.t0)) : 0;   // a quick tap still shows the lens swelling before it lands
       s.suppressClick = true; setTimeout(() => { s.suppressClick = false; }, wait + 80);
       if (wait) { const t = e ? target(e) : null; if (t && s.lens) { s.lens.tx = t.cx; s.lens.tw = t.w; } s.hold = true; setTimeout(() => { s.hold = false; release(k); }, wait); } else release(k);
