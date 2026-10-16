@@ -655,3 +655,6 @@ html.ios body #dock.pressing,html.ios:not(.android) body #dock.pressing,html.and
 html.ios body #dock.pressing::before,html.ios body .seg.pressing::before{background:rgba(150,152,160,.30)}
 
 html.ios body #dock,html.ios body .seg{transition:transform .12s ease-out,background-color .12s,box-shadow .12s}
+/* before sign-in (app hidden) neither the "+" nor anything of the dock may show */
+html body:has(#app[hidden]) button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important}
+html body:has(#app[hidden]) #dock{display:none!important}
