@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v4.37">
+<meta name="app-version" content="v4.38">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261016I">
+<link rel="stylesheet" href="glass.css?v=20261016J">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -37,6 +37,7 @@ select{padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(-
 #drop{border:2px dashed var(--bd);border-radius:12px;padding:22px;text-align:center;color:var(--mut);margin-bottom:12px;cursor:pointer}
 #drop.over{border-color:var(--ac);color:var(--ac)}
 details.fold{margin-bottom:12px;position:relative}
+details.fold.allsel{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac)}
 .pinb{position:absolute;top:5px;right:6px;color:var(--ac);display:flex;padding:6px;margin:-6px;transform:rotate(35deg)}
 details.fold>summary{display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;list-style:none;padding:2px 0}
 details.fold>summary::-webkit-details-marker{display:none}
@@ -278,7 +279,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
   <header><h1>📁 我的 NAS</h1></header>
   <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></span>
   <nav id="dock"><button id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button><button id="dflt" type="button" aria-label="拖動排序" title="拖動排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg class="uring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="dupArc" cx="22" cy="22" r="19" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4" transform="rotate(-90 22 22)"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
-  <div id="setpanel" hidden><div id="setpage"><div class="sethead"><button id="setclose" class="setdone" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div><h2 class="settitle">設定</h2><div class="sgrp"><div class="sacct"><span class="sav" id="sav">👤</span><div class="sat"><b id="who"></b><small id="whorole"></small></div></div></div><div class="sgrp"><button class="srw" id="setdev" type="button"><span class="sic" style="background:#636366">📱</span><span class="slb">這台裝置的名稱</span><span class="sv" id="setdevv"></span><span class="sch">›</span></button><button class="srw" id="biobtn" type="button" hidden><span class="sic" style="background:#30d158">🔐</span><span class="slb">生物辨識</span><span class="sv" id="biobtnv"></span><span class="sch">›</span></button><button class="srw" id="devices" hidden><span class="sic" style="background:#34c759">💻</span><span class="slb">其他已登入的裝置</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="shares" hidden><span class="sic" style="background:#0a84ff">🔗</span><span class="slb">已分享連結</span><span class="sch">›</span></button><button class="srw" id="actlog" hidden><span class="sic" style="background:#ff9f0a">🕘</span><span class="slb">活動紀錄</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="setpw" hidden><span class="sic" style="background:#8e8e93">🔑</span><span class="slb">編輯密碼</span><span class="sch">›</span></button></div><div class="sgrp"><div class="sinfo"><span class="sic" style="background:#636366">🏷</span><span class="slb">版本</span><span class="sv" id="appver"></span></div></div>
+  <div id="setpanel" hidden><div id="setpage"><div class="sethead"><button id="setclose" class="setdone" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div><h2 class="settitle">設定</h2><div class="sgrp"><div class="sacct"><span class="sav" id="sav">👤</span><div class="sat"><b id="who"></b><small id="whorole"></small></div></div></div><div class="sgrp"><button class="srw" id="setdev" type="button"><span class="sic" style="background:#636366">📱</span><span class="slb">這台裝置的名稱</span><span class="sv" id="setdevv"></span><span class="sch">›</span></button><button class="srw" id="biobtn" type="button" hidden><span class="sic" style="background:#30d158">🔐</span><span class="slb">生物辨識</span><span class="sv" id="biobtnv"></span><span class="sch">›</span></button><button class="srw" id="devices" hidden><span class="sic" style="background:#34c759">💻</span><span class="slb">其他已登入的裝置</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="shares" hidden><span class="sic" style="background:#0a84ff">🔗</span><span class="slb">已分享連結</span><span class="sch">›</span></button><button class="srw" id="actlog" hidden><span class="sic" style="background:#ff9f0a">🕘</span><span class="slb">活動紀錄</span><span class="sch">›</span></button><button class="srw" id="trash" hidden><span class="sic" style="background:#8e8e93">🗑</span><span class="slb">回收區</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="setpw" hidden><span class="sic" style="background:#8e8e93">🔑</span><span class="slb">編輯密碼</span><span class="sch">›</span></button></div><div class="sgrp"><div class="sinfo"><span class="sic" style="background:#636366">🏷</span><span class="slb">版本</span><span class="sv" id="appver"></span></div></div>
   <div class="sgrp"><button class="srw sred" id="out" type="button"><span class="slb">登出</span></button></div></div></div>
   
   <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
@@ -325,7 +326,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261016I"></script>
+<script src="glass.js?v=20261016J"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -383,7 +384,7 @@ async function init(){
   if(needLock())await askUnlock(); // admin with an edit password: ask for it every time the app is opened
   $('#app').hidden=false;
   $('#who').textContent=me.name;$('#whorole').textContent=me.admin?'管理員':'一般使用者';
-  bioCheck();$('#setpw').hidden=$('#shares').hidden=$('#actlog').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh().then(()=>setTimeout(prefetchThumbs,600));clipRefresh();
+  bioCheck();$('#trash').hidden=!me.admin;$('#setpw').hidden=$('#shares').hidden=$('#actlog').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh().then(()=>setTimeout(prefetchThumbs,600));clipRefresh();
 }
 $('#go').onclick=async()=>{
   const{error}=await sb.auth.signInWithPassword({email:$('#u').value.trim(),password:$('#p').value});
@@ -566,7 +567,14 @@ function buzz(){ // a short tick: Vibration API (Android), or an invisible switc
   addEventListener('pointerup',pend,true);addEventListener('pointercancel',pend,true);
   list.addEventListener('contextmenu',e=>{if(e.target.closest(SEL))e.preventDefault()});
 }
+function markFullFolders(){ // a folder with every one of its files selected gets a blue ring
+  if(!selMode&&!document.querySelector('details.fold.allsel'))return;
+  const by=new Map(folders.map(f=>[f.name,f]));
+  for(const el of document.querySelectorAll('#list details.fold')){const f=by.get(el.dataset.f);
+    el.classList.toggle('allsel',!!(selMode&&f&&f.files.length&&f.files.every(x=>selected.has(keyOf(f.name,x.name)))))}
+}
 function updateSelUI(){
+  markFullFolders();
   document.body.classList.toggle('selecting',selMode);
   $('#selbar').hidden=!selMode;$('#selmode').classList.toggle('on',selMode);
   $('#selcount').textContent='已選 '+selected.size+' 個';
@@ -953,7 +961,7 @@ async function sharesManager(){ // every share: link, password (after entering t
   };
   draw();
 }
-const ACT={'login':'登入／開啟','logout-others':'登出其他所有裝置','logout-device':'登出單一裝置','upload':'上傳','delete-file':'刪除檔案','delete-folder':'刪除資料夾','create-folder':'建立資料夾','share-create':'建立分享','share-revoke':'撤銷分享','share-open':'分享被開啟','unlock':'解鎖','password-wrong':'編輯密碼輸入錯誤','edit-password':'變更編輯密碼','assistant-delete':'助手：刪除','assistant-move':'助手：搬移','assistant-stop':'助手：停止伺服器','assistant-start':'助手：啟動伺服器','assistant-note':'助手：備註'};
+const ACT={'login':'登入／開啟','logout-others':'登出其他所有裝置','restore':'還原檔案','trash-empty':'清空回收區','logout-device':'登出單一裝置','upload':'上傳','delete-file':'刪除檔案','delete-folder':'刪除資料夾','create-folder':'建立資料夾','share-create':'建立分享','share-revoke':'撤銷分享','share-open':'分享被開啟','unlock':'解鎖','password-wrong':'編輯密碼輸入錯誤','edit-password':'變更編輯密碼','assistant-delete':'助手：刪除','assistant-move':'助手：搬移','assistant-stop':'助手：停止伺服器','assistant-start':'助手：啟動伺服器','assistant-note':'助手：備註'};
 function uaShort(u){u=u||'';const os=/iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Android/.test(u)?'Android':/Windows/.test(u)?'Windows':/Mac OS X/.test(u)?'Mac':'';const br=/Edg\//.test(u)?'Edge':/CriOS|Chrome\//.test(u)?'Chrome':/Firefox|FxiOS/.test(u)?'Firefox':/Safari\//.test(u)?'Safari':'';return [os,br].filter(Boolean).join(' · ')}
 async function activityWindow(){ // admin: which device did what, when (the log is written before anything is deleted)
   showPage('<h3>🕘 活動紀錄</h3><p class="sub">載入中…</p>');
@@ -994,6 +1002,27 @@ async function devicesWindow(){ // the other devices signed in to this account; 
     const r=await api('/api/sessions/revoke',{method:'POST',headers:bh,body:JSON.stringify({id:b.dataset.sid})});
     if(!r.ok){alert((await r.json().catch(()=>({}))).error||'登出失敗');b.disabled=false;return}devicesWindow()};
 }
+async function trashWindow(){ // everything that was deleted but is still kept on the NAS: put it back, or empty it for good
+  showPage('<h3>🗑 回收區</h3><p class="sub">載入中…</p>');
+  const when=t=>new Date(t).toLocaleString('zh-TW',{hour12:false});
+  let j;try{const r=await api('/api/trash');if(!r.ok)throw 0;j=await r.json()}catch{showPage('<h3>🗑 回收區</h3><p class="merr">無法載入</p>');return}
+  showPage('<div class="mhead"><h3>🗑 回收區</h3></div><p class="sub">刪除的檔案會先放在這裡，使用者看起來已經刪除，但其實還在主機上。這裡可以還原。'+(j.items.length?'共 '+j.items.length+' 個項目，'+fmtTotal(j.size)+'。':'')+'</p>'+
+    (j.items.length?j.items.map(x=>'<div class="srow"><b>'+(x.kind==='folder'?'📁 資料夾「'+esc(x.path)+'」':'📄 '+esc(x.path))+'</b><small>'+(x.kind==='folder'?x.count+' 個檔案 · ':'')+fmtTotal(x.size)+' · 刪除於 '+when(x.t)+'<br>'+esc(x.user)+(x.dev?' · '+esc(x.dev):'')+'</small><div class="mbtns" style="margin-top:6px"><button data-restore="'+esc(x.id)+'">還原</button></div></div>').join('')
+      +'<div class="mbtns" style="margin-top:16px"><button class="del" id="trempty">清空回收區（永久刪除）</button></div>':'<p class="sub">回收區是空的。</p>'));
+  $('#mbox').onclick=async e=>{
+    const rb=e.target.closest('button[data-restore]');
+    if(rb){rb.disabled=true;const r=await api('/api/trash/restore',{method:'POST',body:JSON.stringify({id:rb.dataset.restore})});const jj=await r.json().catch(()=>({}));
+      if(!r.ok){alert(jj.error||'還原失敗');rb.disabled=false;return}
+      alert('已還原到：'+jj.restoredTo);await refresh();return trashWindow()}
+    if(e.target.closest('#trempty')){
+      if(!confirm('永久刪除回收區裡的全部項目？\n這個動作無法復原。'))return;
+      const eh=await askEdit('請確認身分，以清空回收區');if(!eh)return;
+      const r=await api('/api/trash/empty',{method:'POST',headers:eh});
+      if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'清空失敗');
+      trashWindow()}
+  };
+}
+$('#trash').onclick=trashWindow;
 $('#devices').onclick=devicesWindow;
 $('#shares').onclick=sharesManager;
 $('#selshare').onclick=()=>{const items=[...selected].map(splitKey);if(items.length)shareDialog(`${items.length} 個檔案`,{items})};
