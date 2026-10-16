@@ -6,7 +6,7 @@
 html.ios{
   --g-fill:rgba(255,255,255,.055);--g-fill-press:rgba(255,255,255,.14);
   --g-inner:rgba(255,255,255,.05);--g-hi:rgba(255,255,255,.06);--g-lo:rgba(255,255,255,.05);
-  --g-rim:linear-gradient(145deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.04) 26%,rgba(255,255,255,.01) 52%,rgba(255,255,255,.03) 76%,rgba(255,255,255,.12) 100%);   /* soft edge light, like the iOS 26 tab bar */
+  --g-rim:linear-gradient(180deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.08) 20%,rgba(255,255,255,0) 40%,rgba(255,255,255,0) 62%,rgba(255,255,255,.06) 80%,rgba(255,255,255,.28) 100%);   /* soft edge light, like the iOS 26 tab bar */
   --g-sheen:radial-gradient(120% 90% at 18% 0%,rgba(255,255,255,.05),rgba(255,255,255,0) 58%);
   --g-shadow:0 8px 22px rgba(0,0,0,.38),0 1px 3px rgba(0,0,0,.3);
   --g-glass-blur:blur(3px) saturate(175%) brightness(1.12);
@@ -24,7 +24,7 @@ html.ios{--seg-fg:#fff;--seg-blue:#0a84ff}
   html.ios{
     --g-fill:rgba(255,255,255,.42);--g-fill-press:rgba(255,255,255,.72);
     --g-inner:rgba(255,255,255,.4);--g-hi:rgba(255,255,255,.6);--g-lo:rgba(60,60,67,.07);
-    --g-rim:linear-gradient(145deg,rgba(255,255,255,.85) 0%,rgba(255,255,255,.25) 26%,rgba(60,60,67,.06) 52%,rgba(255,255,255,.25) 76%,rgba(255,255,255,.75) 100%);
+    --g-rim:linear-gradient(180deg,rgba(255,255,255,.95) 0%,rgba(255,255,255,.2) 20%,rgba(255,255,255,0) 45%,rgba(255,255,255,0) 60%,rgba(255,255,255,.2) 80%,rgba(255,255,255,.8) 100%);
     --g-sheen:radial-gradient(120% 90% at 18% 0%,rgba(255,255,255,.55),rgba(255,255,255,0) 58%);
     --g-shadow:0 8px 20px rgba(40,50,120,.16),0 1px 3px rgba(0,0,0,.08);
     --g-glass-blur:blur(6px) saturate(170%);
@@ -91,9 +91,9 @@ html.ios .seg button:not(#_).on,html.ios .seg button:not(#_).glass-hot{color:var
 html.ios .seg.dragging button:not(#_).on:not(.glass-hot){color:var(--seg-fg)!important}
 html.ios .seg-pill{position:absolute;left:0;top:0;z-index:0;border-radius:999px;pointer-events:none;will-change:transform,width,opacity;
   /* the "selected" marker is nearly transparent: a slightly darker smoky capsule set into the bar, no bright rim, no outer shadow (as in the iOS 26 tab bar) */
-  background:rgba(0,0,0,.24);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05),inset 0 1px 4px rgba(0,0,0,.22);
+  background:rgba(0,0,0,.24);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 -1px 0 rgba(255,255,255,.03),inset 0 1px 4px rgba(0,0,0,.22);
   transition:transform .4s cubic-bezier(.2,.9,.3,1.25),width .4s cubic-bezier(.2,.9,.3,1.25),opacity .18s}
-@media not all{html.ios .seg-pill{background:rgba(60,60,67,.09);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),inset 0 1px 3px rgba(60,60,67,.12)}}
+@media not all{html.ios .seg-pill{background:rgba(60,60,67,.09);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(255,255,255,.17),inset 0 1px 3px rgba(60,60,67,.12)}}
 html.ios .seg-pill.noanim{transition:none}
 html.ios .seg-pill.hidden{opacity:0}
 html.ios .seg-gl{position:absolute;left:0;top:0;z-index:4;pointer-events:none;display:none}
@@ -117,7 +117,7 @@ html.ios .bar select{-webkit-appearance:none;appearance:none;padding-right:14px}
 /* drop-down menu: opens just under its button and grows out of it, like the iOS context menu */
 .gmenu{position:fixed;z-index:2000;min-width:150px;padding:6px;border-radius:22px;background:rgba(40,40,44,.72);
   -webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 14px 40px rgba(0,0,0,.5);transform-origin:top left;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06),0 14px 40px rgba(0,0,0,.5);transform-origin:top left;
   animation:gmenu-in .26s cubic-bezier(.2,.9,.3,1.2)}
 .gmenu.out{animation:gmenu-out .16s ease forwards}
 .gmenu div{padding:11px 14px;border-radius:16px;color:#fff;display:flex;gap:10px;justify-content:space-between;align-items:center;white-space:nowrap}
@@ -136,7 +136,7 @@ html.ios .gpress{background-color:rgba(120,120,128,.5)!important;background-imag
 /* bottom selection bar: a floating glass dock instead of a full-width dark strip */
 html.ios #selbar{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));padding:10px 12px;gap:8px 6px;border:0;border-radius:30px;
   background:rgba(34,34,38,.55);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 1.5px rgba(255,255,255,.18),0 14px 40px rgba(0,0,0,.55)}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.07),inset 0 1px 1.5px rgba(255,255,255,.18),0 14px 40px rgba(0,0,0,.55)}
 html.ios #selbar>span,html.ios #selbar>b,html.ios #selbar #selcount{font-size:14px;margin-right:2px;color:#fff}
 html.ios #selbar button{padding:8px 13px;font-size:14px;color:#fff!important;white-space:nowrap}
 html.ios #selbar button.del{color:#ff453a!important}
@@ -166,12 +166,12 @@ html.ios .srch input{-webkit-appearance:none;appearance:none}
 /* Windows / Android / desktop: the same frosted-glass pills as the dock (iOS has its own fuller glass above) */
 html:not(.ios) .bar :is(button.ghost,select){border-radius:999px;border:0;color:var(--fg);background:rgba(255,255,255,.06);
   -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),inset 0 1px 1.5px rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.35);transition:background .15s}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 -1px 0 rgba(255,255,255,.04),inset 0 1px 1.5px rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.35);transition:background .15s}
 html:not(.ios) .bar :is(button.ghost,select):hover{background:rgba(255,255,255,.1)}
 html:not(.ios) .bar :is(button.ghost,select):active{background:rgba(0,0,0,.35)}
 html:not(.ios) .bar select{padding:8px 16px}
 html:not(.ios) .seg{padding:3px;border-radius:999px;background:rgba(255,255,255,.06);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),inset 0 1px 1.5px rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.35)}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 -1px 0 rgba(255,255,255,.04),inset 0 1px 1.5px rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.35)}
 html:not(.ios) .seg button.ghost{background:transparent;box-shadow:none;border:0;border-radius:999px!important;padding:6px 16px;-webkit-backdrop-filter:none;backdrop-filter:none}
 html:not(.ios) .seg button.ghost.on{background:rgba(0,0,0,.35);color:#60a5fa}
 html:not(.ios) .seg button.ghost:hover:not(.on){background:rgba(255,255,255,.08)}
@@ -179,7 +179,7 @@ html:not(.ios) .seg button.ghost:hover:not(.on){background:rgba(255,255,255,.08)
 /* Windows / Android: every button gets the frosted-glass pill (white text; delete / danger = red; only the view switch's chosen option and the settings 完成 button are blue) */
 html:not(.ios) button:not(#dock button):not(.seg button):not(.vnav):not(.grip):not(.icon){border-radius:999px;border:0;color:var(--seg-fg,#fff);background:rgba(255,255,255,.06);
   -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),inset 0 1px 1.5px rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.35);transition:background .15s}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 -1px 0 rgba(255,255,255,.04),inset 0 1px 1.5px rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.35);transition:background .15s}
 html:not(.ios) button.del:not(#dock button),html:not(.ios) button.danger:not(#dock button){color:#f87171!important}
 html:not(.ios) button:not(#dock button):not(.seg button):not(.vnav):not(.grip):not(.icon):hover{background:rgba(255,255,255,.1)}
 html:not(.ios) button:not(#dock button):not(.seg button):not(.vnav):not(.grip):not(.icon):active{background:rgba(0,0,0,.35)}
@@ -217,8 +217,8 @@ html.ios #dock button,html.ios #dock button.txt{flex:1 1 0;width:auto;min-width:
 .segrow{flex-wrap:nowrap}.segrow .seg{width:auto;flex:1 1 0;min-width:0;max-width:300px}.segrow{white-space:nowrap}
 
 /* one uniform, very soft edge on every iOS glass piece (no brighter corners, no inner glow) */
-html.ios{--g-rim:linear-gradient(rgba(255,255,255,.09),rgba(255,255,255,.09));--g-sheen:none;--g-inner:rgba(255,255,255,0);--g-hi:rgba(255,255,255,0);--g-lo:rgba(255,255,255,0)}
-html.ios #dock{box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 12px 34px rgba(0,0,0,.5)}
+html.ios{--g-rim:linear-gradient(180deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.06) 22%,rgba(255,255,255,0) 42%,rgba(255,255,255,0) 62%,rgba(255,255,255,.05) 80%,rgba(255,255,255,.28) 100%);--g-sheen:none;--g-inner:rgba(255,255,255,0);--g-hi:rgba(255,255,255,0);--g-lo:rgba(255,255,255,0)}
+html.ios #dock{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -1px 0 rgba(255,255,255,.04),0 12px 34px rgba(0,0,0,.5)}
 html.ios .vnav{box-shadow:0 8px 22px rgba(0,0,0,.4)}
 html.ios .seg-pill{box-shadow:none}
 @media not all{html.ios{--g-rim:linear-gradient(rgba(60,60,67,.14),rgba(60,60,67,.14));--g-sheen:none;--g-inner:rgba(255,255,255,0);--g-hi:rgba(255,255,255,0);--g-lo:rgba(255,255,255,0)}}
@@ -256,7 +256,7 @@ html.ios .selbot button:disabled,html.ios .seltop button:disabled{opacity:.4}
 html.ios body::before{height:env(safe-area-inset-top)}
 html.ios .wrap{padding-top:calc(env(safe-area-inset-top) - 8px)}
 html.ios .seltop{top:calc(env(safe-area-inset-top) - 2px)}
-html.ios .seltop button,html.ios .seltop button:disabled{opacity:1!important;background:rgba(44,44,48,.96)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)!important}
+html.ios .seltop button,html.ios .seltop button:disabled{opacity:1!important;background:rgba(44,44,48,.96)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -1px 0 rgba(255,255,255,.04)!important}
 html.ios .seltop button:disabled{color:rgba(255,255,255,.4)!important}
 html.ios .seltop button#seldel:disabled{color:rgba(255,69,58,.45)!important}
 html.ios .seltop #selcount{text-shadow:none}
@@ -318,7 +318,7 @@ html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 76px)}
 
 /* dock: clearer glass, as see-through as the view-switch bar */
 #dock{background:rgba(255,255,255,.012)!important;-webkit-backdrop-filter:blur(1.5px) saturate(160%)!important;backdrop-filter:blur(1.5px) saturate(160%)!important;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 10px 28px rgba(0,0,0,.35)!important}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -1px 0 rgba(255,255,255,.04),0 10px 28px rgba(0,0,0,.35)!important}
 /* settings buttons also grey out while pressed */
 #setpanel #setbody button:active,#setpanel .mbtns button:active,#setpanel #setbody button.gpress,#setpanel .mbtns button.gpress{background:rgba(120,120,128,.5)!important}
 
@@ -334,7 +334,7 @@ html.ios #modal,html.ios #setpanel{z-index:90;padding-top:calc(env(safe-area-ins
 html.ios #viewer{z-index:100}
 .vtop #vtitle{flex:1 1 60px}
 .vbtns a.vlk{border-radius:999px;border:0;color:#fff!important;text-decoration:none;background:rgba(255,255,255,.06);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 6px 18px rgba(0,0,0,.35)}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -1px 0 rgba(255,255,255,.04),0 6px 18px rgba(0,0,0,.35)}
 html.ios .vbtns a.vlk{background:var(--g-fill)!important;background-image:none!important;border:1px solid transparent;
   -webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);box-shadow:inset 0 0 14px var(--g-inner),var(--g-shadow)!important}
 html.ios .vbtns a.vlk::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--g-rim);
@@ -360,7 +360,7 @@ html.ios #modal button:active{background:rgba(120,120,128,.5)!important}
 
 /* "downloaded - save" pill (iPhone) */
 #savepill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom));z-index:150;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 18px;border-radius:999px;
-  background:rgba(40,40,44,.96);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 12px 30px rgba(0,0,0,.5);white-space:nowrap}
+  background:rgba(40,40,44,.96);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 -1px 0 rgba(255,255,255,.05),0 12px 30px rgba(0,0,0,.5);white-space:nowrap}
 #savepill button{border-radius:999px;border:0;padding:9px 18px;font:inherit;background:#0a84ff;color:#fff}
 #savepill button.ghost{background:rgba(120,120,128,.3);padding:9px 14px}
 
@@ -395,14 +395,14 @@ html.android body,html.android{background:#000}
 /* Android: no outer drop shadows (a phone browser's dark-mode conversion turns black shadows into a light halo); keep just the thin rim */
 html.android{--g-shadow:0 0 0 rgba(0,0,0,0)}
 html.android :is(button,select,.seg,.card,details.fold,.srch input,#savepill){box-shadow:none}
-html.android .seg{box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)}
+html.android .seg{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -1px 0 rgba(255,255,255,.04)}
 
 /* Windows / desktop: the view switch gets the same draggable liquid-glass lens as on the phones */
 html:not(.ios) .seg{position:relative;user-select:none;-webkit-user-select:none}
 html:not(.ios) .seg button.ghost{position:relative;z-index:1;background:transparent!important;box-shadow:none!important;color:#fff!important;font-weight:500!important;transition:color .12s}
 html:not(.ios) .seg button.ghost.on,html:not(.ios) .seg button.ghost.glass-hot{color:#60a5fa!important}
 html:not(.ios) .seg.dragging button.ghost.on:not(.glass-hot){color:#fff!important}
-html:not(.ios) .seg-pill{position:absolute;left:0;top:0;z-index:0;border-radius:999px;pointer-events:none;background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
+html:not(.ios) .seg-pill{position:absolute;left:0;top:0;z-index:0;border-radius:999px;pointer-events:none;background:rgba(0,0,0,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 -1px 0 rgba(255,255,255,.03);
   transition:transform .4s cubic-bezier(.2,.9,.3,1.25),width .4s cubic-bezier(.2,.9,.3,1.25),opacity .18s}
 html:not(.ios) .seg-pill.noanim{transition:none}html:not(.ios) .seg-pill.hidden{opacity:0}
 html:not(.ios) .seg-gl{position:absolute;left:0;top:0;z-index:4;pointer-events:none;display:none}
@@ -417,17 +417,17 @@ html.android .wrap{position:fixed;inset:0;overflow-y:auto;overflow-x:clip;max-wi
 [hidden]{display:none!important}
 /* download buttons in the preview: clear liquid-glass, blue text, no fill */
 .vbtns a.vlk,html.ios .vbtns a.vlk,html:not(.ios) .vbtns a.vlk{color:#0a84ff!important;background:rgba(255,255,255,.04)!important;background-image:none!important;border:1px solid transparent!important;border-radius:999px;text-decoration:none;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)!important;-webkit-backdrop-filter:blur(3px) saturate(175%);backdrop-filter:blur(3px) saturate(175%)}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -1px 0 rgba(255,255,255,.04)!important;-webkit-backdrop-filter:blur(3px) saturate(175%);backdrop-filter:blur(3px) saturate(175%)}
 .vbtns a.vlk:active{background:rgba(120,120,128,.5)!important}
 
 /* "open link" in the shared-links window: same clear glass, blue text */
 #modal a.vlk,html.ios #modal a.vlk,html:not(.ios) #modal a.vlk{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;color:#0a84ff!important;background:rgba(255,255,255,.04)!important;background-image:none!important;border:1px solid transparent!important;border-radius:999px;text-decoration:none;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)!important;-webkit-backdrop-filter:blur(3px) saturate(175%);backdrop-filter:blur(3px) saturate(175%)}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -1px 0 rgba(255,255,255,.04)!important;-webkit-backdrop-filter:blur(3px) saturate(175%);backdrop-filter:blur(3px) saturate(175%)}
 #modal a.vlk:active{background:rgba(120,120,128,.5)!important}
 #modal a.vlk{font:inherit;line-height:normal;box-sizing:border-box;margin:0}
 
 /* lock screen: unlock = clear glass with blue text */
-#applock #lockgo{color:#0a84ff!important;background:rgba(255,255,255,.04)!important;background-image:none!important;border:1px solid transparent!important;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)!important}
+#applock #lockgo{color:#0a84ff!important;background:rgba(255,255,255,.04)!important;background-image:none!important;border:1px solid transparent!important;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -1px 0 rgba(255,255,255,.04)!important}
 #applock #lockgo:active{background:rgba(120,120,128,.5)!important}
 #applock #lockgo:disabled{opacity:.5}
 
@@ -456,14 +456,14 @@ body.uploading #dup .uring{display:block}
 
 /* select mode: share / download round buttons: blurred dark glass, denser than the dock so the icons stay readable over photos */
 html.ios .selbot button,html.android .selbot button{background:rgba(28,30,36,.55)!important;-webkit-backdrop-filter:blur(14px) saturate(170%)!important;backdrop-filter:blur(14px) saturate(170%)!important;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 10px 28px rgba(0,0,0,.4)!important;border:0!important}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.07),0 10px 28px rgba(0,0,0,.4)!important;border:0!important}
 
 /* select mode share / download: nearly solid dark glass (blur alone was too see-through over photos) */
-html.ios body .selbot button,html.android body .selbot button{background:rgba(24,26,30,.9)!important;-webkit-backdrop-filter:blur(16px) saturate(170%)!important;backdrop-filter:blur(16px) saturate(170%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 10px 28px rgba(0,0,0,.45)!important}
+html.ios body .selbot button,html.android body .selbot button{background:rgba(24,26,30,.9)!important;-webkit-backdrop-filter:blur(16px) saturate(170%)!important;backdrop-filter:blur(16px) saturate(170%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(255,255,255,.08),0 10px 28px rgba(0,0,0,.45)!important}
 
 /* "clear glass" buttons (same look as 開啟連結): nearly no fill, a thin rim, light blur. Used for revoke-share and for every button on the login / lock screens. */
 #modal .srow button.del,#login button,#applock button{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;background:rgba(255,255,255,.04)!important;background-image:none!important;border:1px solid transparent!important;border-radius:999px!important;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)!important;-webkit-backdrop-filter:blur(3px) saturate(175%)!important;backdrop-filter:blur(3px) saturate(175%)!important}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -1px 0 rgba(255,255,255,.04)!important;-webkit-backdrop-filter:blur(3px) saturate(175%)!important;backdrop-filter:blur(3px) saturate(175%)!important}
 #modal .srow button.del:active,#login button:active,#applock button:active{background:rgba(120,120,128,.5)!important}
 #login button,#applock button:not(#lockout){color:#0a84ff!important}
 #modal .srow button.del,#lockout{color:#ff453a!important}
@@ -471,7 +471,7 @@ html.ios body .selbot button,html.android body .selbot button{background:rgba(24
 /* ===== every button = clear glass (faint fill, thin rim, light blur) - except: select-mode share / download (frosted), the 列表/中圖示/小圖示 switch, the dock, the preview arrows and the drag grips ===== */
 html body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button),
 html body a.btn:not(#nx1):not(#nx2){
-  background:rgba(255,255,255,.012)!important;background-image:none!important;border:1px solid transparent!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)!important;
+  background:rgba(255,255,255,.012)!important;background-image:none!important;border:1px solid transparent!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -1px 0 rgba(255,255,255,.04)!important;
   text-shadow:none!important}
 html:not(.android) body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button),
 html:not(.android) body a.btn:not(#nx1):not(#nx2){-webkit-backdrop-filter:blur(1.5px) saturate(160%)!important;backdrop-filter:blur(1.5px) saturate(160%)!important}
@@ -493,11 +493,11 @@ html body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#d
 
 /* dock + search pill (iPhone / iPad only - Android keeps its own look): frosted grey glass like the iOS controls - strong blur and a grey tint, so what is behind never competes with the icons */
 html.ios:not(.android) body #dock{background:rgba(54,56,62,.64)!important;-webkit-backdrop-filter:blur(26px) saturate(190%)!important;backdrop-filter:blur(26px) saturate(190%)!important;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.17),inset 0 1px 1.5px rgba(255,255,255,.2),0 10px 30px rgba(0,0,0,.4)!important}
-html.ios:not(.android) body .srch input{background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(26px) saturate(190%)!important;backdrop-filter:blur(26px) saturate(190%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.17)!important;border-color:transparent!important}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.17),inset 0 -1px 0 rgba(255,255,255,.09),inset 0 1px 1.5px rgba(255,255,255,.2),0 10px 30px rgba(0,0,0,.4)!important}
+html.ios:not(.android) body .srch input{background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(26px) saturate(190%)!important;backdrop-filter:blur(26px) saturate(190%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.17),inset 0 -1px 0 rgba(255,255,255,.09)!important;border-color:transparent!important}
 
 /* Android dock: white icons vanished over white thumbnails. A dark tint under the glass + a thin dark outline around every icon (iPhone / iPad keep their frosted grey dock) */
-html.android body #dock{background:transparent!important;-webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 8px 24px rgba(0,0,0,.4)!important}
+html.android body #dock{background:transparent!important;-webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.07),0 8px 24px rgba(0,0,0,.4)!important}
 html.android #dock svg,html.android body.selecting .selbot svg{filter:drop-shadow(0 0 1px rgba(0,0,0,.9)) drop-shadow(0 0 3px rgba(0,0,0,.55))}
 
 /* press feedback on the round buttons: the iOS white / grey glow while the finger is down (glass.js keeps .gpress for a moment so even a quick tap is visible) */
@@ -527,11 +527,11 @@ html body a.btn:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){back
 html.ios body .seltop{justify-content:flex-start}
 html.ios body .seltop #selcount{margin-right:0;margin-left:auto;order:9}
 html.ios body .seltop button#selall{display:none!important}
-html.ios body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(32,34,40,.92)!important;color:#fff!important;width:46px;height:46px;min-width:46px;min-height:46px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important}
+html.ios body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(32,34,40,.92)!important;color:#fff!important;width:46px;height:46px;min-width:46px;min-height:46px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important}
 html.ios body .seltop button#selexit svg{width:24px;height:24px}
 
 /* dock: press / slide = a dark see-through glass pill (no flat grey flash) */
-#dock #dockpill{position:absolute;z-index:0;border-radius:999px;pointer-events:none;opacity:0;transform:scale(.9);background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(6px) saturate(160%);backdrop-filter:blur(6px) saturate(160%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 6px rgba(255,255,255,.08);transition:left .22s cubic-bezier(.3,1.3,.5,1),top .22s,width .22s,height .22s,opacity .16s,transform .22s cubic-bezier(.3,1.3,.5,1)}
+#dock #dockpill{position:absolute;z-index:0;border-radius:999px;pointer-events:none;opacity:0;transform:scale(.9);background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(6px) saturate(160%);backdrop-filter:blur(6px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.07),inset 0 1px 6px rgba(255,255,255,.08);transition:left .22s cubic-bezier(.3,1.3,.5,1),top .22s,width .22s,height .22s,opacity .16s,transform .22s cubic-bezier(.3,1.3,.5,1)}
 #dock #dockpill.on{opacity:1;transform:scale(1.1)}
 html.android body #dock button:is(:active,.gpress,.act){background:transparent!important}
 html body #dock button{z-index:1}
@@ -548,7 +548,7 @@ html body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.seg butto
 
 /* iPhone keeps its old dock feedback: the pill is Android-only */
 html:not(.android) #dock #dockpill{display:none!important}
-html:not(.android) body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.seg button){box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)!important}
+html:not(.android) body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.seg button){box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -1px 0 rgba(255,255,255,.04)!important}
 html:not(.android) body #dock button:is(:active,.gpress){background:rgba(235,235,245,.22)!important}
 html:not(.android) body #dock button.on:is(:active,.gpress){background:rgba(0,0,0,.62)!important}
 /* the "+" upload button belongs to the home page only (the upload cloud still shows while a transfer runs) */
@@ -562,25 +562,25 @@ html.ios body .seltop button#seldel svg{width:26px;height:26px}
 html:not(.android) #dock #dockpill{display:block!important}
 html:not(.android) body #dock button:is(:active,.gpress,.act),html:not(.android) body #dock button.on:is(:active,.gpress){background:transparent!important}
 html:not(.android) body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.seg button){box-shadow:none!important}
-html:not(.android) #dock #dockpill.rest{background:rgba(255,255,255,.13);-webkit-backdrop-filter:blur(8px) saturate(170%) brightness(1.15);backdrop-filter:blur(8px) saturate(170%) brightness(1.15);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 1px 7px rgba(255,255,255,.18)}
-html:not(.android) #dock #dockpill.on{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px) saturate(190%) brightness(1.25);backdrop-filter:blur(10px) saturate(190%) brightness(1.25);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3),inset 0 1px 9px rgba(255,255,255,.22),0 6px 18px rgba(0,0,0,.25)}
+html:not(.android) #dock #dockpill.rest{background:rgba(255,255,255,.13);-webkit-backdrop-filter:blur(8px) saturate(170%) brightness(1.15);backdrop-filter:blur(8px) saturate(170%) brightness(1.15);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(255,255,255,.11),inset 0 1px 7px rgba(255,255,255,.18)}
+html:not(.android) #dock #dockpill.on{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px) saturate(190%) brightness(1.25);backdrop-filter:blur(10px) saturate(190%) brightness(1.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.30),inset 0 -1px 0 rgba(255,255,255,.15),inset 0 1px 9px rgba(255,255,255,.22),0 6px 18px rgba(0,0,0,.25)}
 /* select mode, bottom row: share · "已選 N 個" pill · download, sitting lower on the screen */
 html.ios body .selbot{bottom:max(0px,calc(env(safe-area-inset-bottom) - 14px));align-items:center}
-html.ios body .selbot #selcount{pointer-events:none;flex:none;height:56px;padding:0 28px;border-radius:999px;display:flex;align-items:center;justify-content:center;margin:0;font-size:17px;font-weight:700;color:#fff;white-space:nowrap;background:rgba(38,38,40,.96);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 10px 28px rgba(0,0,0,.45);text-shadow:none}
+html.ios body .selbot #selcount{pointer-events:none;flex:none;height:56px;padding:0 28px;border-radius:999px;display:flex;align-items:center;justify-content:center;margin:0;font-size:17px;font-weight:700;color:#fff;white-space:nowrap;background:rgba(38,38,40,.96);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(255,255,255,.08),0 10px 28px rgba(0,0,0,.45);text-shadow:none}
 /* iPhone dock: clear glass like Android (no grey frosted fill) */
-html.ios:not(.android) body #dock{background:transparent!important;-webkit-backdrop-filter:blur(10px) saturate(150%)!important;backdrop-filter:blur(10px) saturate(150%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),inset 0 1px 2px rgba(255,255,255,.12),0 8px 24px rgba(0,0,0,.35)!important}
+html.ios:not(.android) body #dock{background:transparent!important;-webkit-backdrop-filter:blur(10px) saturate(150%)!important;backdrop-filter:blur(10px) saturate(150%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(255,255,255,.08),inset 0 1px 2px rgba(255,255,255,.12),0 8px 24px rgba(0,0,0,.35)!important}
 html.ios:not(.android) #dock svg{filter:drop-shadow(0 0 1px rgba(0,0,0,.9)) drop-shadow(0 0 3px rgba(0,0,0,.55))}
 /* select mode: download top-right, trash bottom-right, frosted-glass count pill */
 html.ios body .seltop button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){margin-left:auto;width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;color:#fff!important;display:flex!important;align-items:center;justify-content:center}
 html.ios body .seltop button#seldl[hidden]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important}
 html.ios body .seltop button#seldl svg{width:24px;height:24px}
 html.ios body .selbot button#seldel:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:56px;height:56px;color:#ff453a!important}
-html.ios body .selbot #selcount{background:rgba(255,255,255,.07)!important;-webkit-backdrop-filter:blur(22px) saturate(180%)!important;backdrop-filter:blur(22px) saturate(180%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 1px 6px rgba(255,255,255,.12)!important}
+html.ios body .selbot #selcount{background:rgba(255,255,255,.07)!important;-webkit-backdrop-filter:blur(22px) saturate(180%)!important;backdrop-filter:blur(22px) saturate(180%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(255,255,255,.11),inset 0 1px 6px rgba(255,255,255,.12)!important}
 /* dock = exactly the 長條 glass (same fill, blur and rim) */
 html.ios body #dock{background:var(--g-fill)!important;-webkit-backdrop-filter:var(--g-glass-blur)!important;backdrop-filter:var(--g-glass-blur)!important;box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),inset 0 -1px 1.5px var(--g-lo),var(--g-shadow)!important;border:1px solid transparent}
 html.ios body #dock::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--g-rim);z-index:3;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 html.ios:not(.android) #dock svg{filter:none}
 /* truly see-through: almost no blur, no fill (dock, its pill, and the count pill) */
-html.ios:not(.android) body #dock,html.android body #dock,html.ios body #dock{background:transparent!important;-webkit-backdrop-filter:blur(2px)!important;backdrop-filter:blur(2px)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2),inset 0 1px 2px rgba(255,255,255,.12),0 6px 18px rgba(0,0,0,.18)!important}
+html.ios:not(.android) body #dock,html.android body #dock,html.ios body #dock{background:transparent!important;-webkit-backdrop-filter:blur(2px)!important;backdrop-filter:blur(2px)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.20),inset 0 -1px 0 rgba(255,255,255,.10),inset 0 1px 2px rgba(255,255,255,.12),0 6px 18px rgba(0,0,0,.18)!important}
 html:not(.android) #dock #dockpill.rest,html:not(.android) #dock #dockpill.on{-webkit-backdrop-filter:blur(2px)!important;backdrop-filter:blur(2px)!important;background:rgba(255,255,255,.07)}
-html.ios body .selbot #selcount{background:transparent!important;-webkit-backdrop-filter:blur(2px)!important;backdrop-filter:blur(2px)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28),inset 0 1px 3px rgba(255,255,255,.14)!important;text-shadow:0 0 3px rgba(0,0,0,.7)}
+html.ios body .selbot #selcount{background:transparent!important;-webkit-backdrop-filter:blur(2px)!important;backdrop-filter:blur(2px)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(255,255,255,.14),inset 0 1px 3px rgba(255,255,255,.14)!important;text-shadow:0 0 3px rgba(0,0,0,.7)}

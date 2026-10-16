@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v5.33">
+<meta name="app-version" content="v5.34">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261018B">
+<link rel="stylesheet" href="glass.css?v=20261018C">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -77,7 +77,7 @@ details.fold>summary{flex-wrap:wrap;row-gap:8px}
 .srch input{width:100%;padding:12px 18px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(30,32,38,.72);-webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);color:var(--fg);font:inherit;font-size:16px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
 #dock{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;display:flex;gap:4px;padding:7px;border-radius:999px;
   background:rgba(255,255,255,.06);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),inset 0 1px 1.5px rgba(255,255,255,.2),0 12px 34px rgba(0,0,0,.5)}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 -1px 0 rgba(255,255,255,.04),inset 0 1px 1.5px rgba(255,255,255,.2),0 12px 34px rgba(0,0,0,.5)}
 #dock button{width:64px;height:48px;padding:0;border:0;border-radius:999px;background:transparent;color:var(--fg);display:flex;align-items:center;justify-content:center;transition:background .15s}
 #dock button svg{width:27px;height:27px}
 #dock button:active,#dock button.act{background:rgba(0,0,0,.35)}
@@ -131,7 +131,7 @@ body.selecting #list{-webkit-user-select:none;user-select:none;-webkit-touch-cal
 #ups{display:none}#uppage #ups{display:block;margin:0}
 #upsum{display:none!important}body.uploading #dup .uring{display:none!important}
 html body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom) + 84px);z-index:62;width:60px;height:60px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;
-  background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(24px) saturate(190%)!important;backdrop-filter:blur(24px) saturate(190%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 10px 28px rgba(0,0,0,.4)!important;color:#fff!important;border:0!important}
+  background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(24px) saturate(190%)!important;backdrop-filter:blur(24px) saturate(190%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(255,255,255,.08),0 10px 28px rgba(0,0,0,.4)!important;color:#fff!important;border:0!important}
 html body button#upfab[hidden]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important} /* must outweigh the display:flex rule above, otherwise the button never hides */
 #upfab .fplus{width:28px;height:28px;position:relative}
 #upfab .fring,#upfab .fic,#upfab #fabt{display:none}
@@ -143,7 +143,7 @@ body.uploading #upfab .fring{display:block}body.uploading #upfab .fic{display:bl
 #uppage[hidden]{display:none}
 #uppage h2{margin:0 4px 4px;font-size:34px;font-weight:800}
 #uppage #upsum2{white-space:pre-line;font-size:15px;line-height:1.6;margin:0 4px 12px}
-html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:fixed;left:14px;top:calc(env(safe-area-inset-top) + 8px);z-index:2;width:46px;height:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important}
+html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:fixed;left:14px;top:calc(env(safe-area-inset-top) + 8px);z-index:2;width:46px;height:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important}
 #upback svg{width:24px;height:24px}
 #total{display:none}
 #dock button{position:relative}
@@ -152,7 +152,7 @@ body.selecting #app>header .hdrbtns{visibility:hidden}
 #spage{position:fixed;inset:0;z-index:96;background:#000;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 76px) 16px calc(env(safe-area-inset-bottom) + 110px)}
 #spage[hidden]{display:none}
 #spage .sphead{position:fixed;left:0;right:0;top:0;z-index:2;display:flex;gap:10px;align-items:center;padding:calc(env(safe-area-inset-top) + 10px) 14px 8px 16px;background:#000}
-html body #spage button#spback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){flex:none;width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important}
+html body #spage button#spback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){flex:none;width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important}
 #spback svg{width:24px;height:24px}
 #spage #spq{flex:1;min-width:0;height:46px;padding:0 18px;border:0;border-radius:999px;background:rgba(54,56,62,.72);color:#fff;font-size:17px;outline:none;-webkit-appearance:none;appearance:none}
 #spage #spq::placeholder{color:rgba(235,235,245,.45)}
@@ -174,7 +174,7 @@ body.dockover #modal.fullpage #mbox{padding-bottom:calc(env(safe-area-inset-bott
 #disk{padding:0!important;margin:-2px 4px 10px!important;background:none!important;border:0!important;border-radius:0!important;color:var(--mut);font-size:13px}#disk:active{background:none}
 .hdrbtns{display:flex;gap:10px;align-items:center;flex:none}
 html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:relative;width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;
-  background:rgba(255,255,255,.012)!important;-webkit-backdrop-filter:blur(1.5px) saturate(160%)!important;backdrop-filter:blur(1.5px) saturate(160%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)!important;color:#fff!important;border:0!important}
+  background:rgba(255,255,255,.012)!important;-webkit-backdrop-filter:blur(1.5px) saturate(160%)!important;backdrop-filter:blur(1.5px) saturate(160%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.07)!important;color:#fff!important;border:0!important}
 html body #app>header button.hb.act:not(#nx1):not(#nx2){color:#0a84ff!important;box-shadow:inset 0 0 0 1.5px rgba(10,132,255,.85)!important}
 #app>header button.hb svg{width:24px;height:24px}
 html.ios #app>header{height:58px!important}
@@ -183,7 +183,7 @@ html.ios #app>header{height:58px!important}
 #storage[hidden]{display:none}
 #storage .sthead{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:center;min-height:54px;padding:calc(env(safe-area-inset-top) + 6px) 14px 8px;background:#000}
 #storage .sthead h2{margin:0;font-size:17px;font-weight:700}
-html body #storage button.stbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:absolute;left:14px;top:calc(env(safe-area-inset-top) + 6px);width:46px;height:46px;border-radius:50%!important;padding:0!important;display:flex!important;align-items:center;justify-content:center;background:rgba(32,34,40,.9)!important;color:#fff!important;border:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important}
+html body #storage button.stbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:absolute;left:14px;top:calc(env(safe-area-inset-top) + 6px);width:46px;height:46px;border-radius:50%!important;padding:0!important;display:flex!important;align-items:center;justify-content:center;background:rgba(32,34,40,.9)!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important}
 #storage .stbtn svg{width:24px;height:24px}
 #stbody{padding:8px 16px calc(env(safe-area-inset-bottom) + 30px);max-width:700px;margin:0 auto}
 #storage .stcard{background:#1c1c1e;border-radius:20px;padding:16px;margin-bottom:6px}
@@ -221,12 +221,12 @@ html.ios #viewer #vbot>*{pointer-events:auto}
 html.ios #viewer .vtop .vr{display:flex;gap:10px;align-items:center}
 html.ios #viewer #vbot .vl{display:flex;gap:10px;align-items:center}
 html.ios #viewer #vinfop{background:rgba(54,56,62,.64);-webkit-backdrop-filter:blur(28px) saturate(190%);backdrop-filter:blur(28px) saturate(190%);border:0;border-radius:24px;color:#fff;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),inset 0 1px 1.5px rgba(255,255,255,.18),0 14px 40px rgba(0,0,0,.45)}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(255,255,255,.08),inset 0 1px 1.5px rgba(255,255,255,.18),0 14px 40px rgba(0,0,0,.45)}
 html.ios #viewer #vinfop .ir{border-top-color:rgba(255,255,255,.14)}html.ios #viewer #vinfop .ik{color:rgba(235,235,245,.62)}
 html.ios #viewer #vstage{padding:calc(env(safe-area-inset-top) + 62px) 8px calc(env(safe-area-inset-bottom) + 76px)}
 html.ios #viewer .vtop>.vbtns{display:none!important} /* what is left of the old button rows (the close button stays in the page, just unused) */
 html body #viewer .vc:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;display:inline-flex!important;align-items:center;justify-content:center;
-  background:rgba(32,34,40,.78)!important;-webkit-backdrop-filter:blur(14px) saturate(170%)!important;backdrop-filter:blur(14px) saturate(170%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important;color:#fff!important;border:0!important;font-size:0;line-height:0}
+  background:rgba(32,34,40,.78)!important;-webkit-backdrop-filter:blur(14px) saturate(170%)!important;backdrop-filter:blur(14px) saturate(170%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important;color:#fff!important;border:0!important;font-size:0;line-height:0}
 html body #viewer .vc.del:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#ff453a!important}
 #viewer .vc svg{width:24px;height:24px;display:block}
 html body #viewer #vdlj.vc2[hidden]:not(#nx1){display:none!important}
@@ -303,9 +303,9 @@ html body #modal .prow:not(#nx1):not(#nx2):not(#nx3):not(#nx4):active{background
 .prow .chk{color:#0a84ff;font-weight:700}
 #modal.fullpage .srow{background:#1c1c1e;border:0;border-radius:18px;padding:14px 16px;margin:0 0 10px}
 #pgback{display:none}
-html body #modal.fullpage button#pgback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:flex;position:fixed;z-index:3;left:14px;top:calc(env(safe-area-inset-top) + 8px);width:46px;height:46px;padding:0!important;border-radius:50%!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html body #modal.fullpage button#pgback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:flex;position:fixed;z-index:3;left:14px;top:calc(env(safe-area-inset-top) + 8px);width:46px;height:46px;padding:0!important;border-radius:50%!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 #pgback svg{width:24px;height:24px}
-html body #setpage button.setdone:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:46px;height:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html body #setpage button.setdone:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:46px;height:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 #setpage .setdone svg{width:24px;height:24px}
 #setpage .settitle{margin:0 20px 14px;font-size:34px;font-weight:800;letter-spacing:.2px}
 #setpage .sgrp{background:#1c1c1e;border-radius:20px;overflow:hidden;margin:0 16px 22px;display:flex;flex-direction:column}
@@ -389,7 +389,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261018B"></script>
+<script src="glass.js?v=20261018C"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
