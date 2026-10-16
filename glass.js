@@ -23,6 +23,10 @@ vec3 bgSim(vec2 p){   // stand-in for what is behind the bar: the bar itself (da
   float rimT=exp(-abs(p.y)*.8)*.30,rimB=exp(-abs(p.y-H)*.8)*.22;
   return mix(page,bar,inBar)+vec3(rimT+rimB);
 }
+float scn(vec2 q){   // what the rim refracts besides the labels: the bar's body and the light lines along its top and bottom edge
+  float Hb=u_cy*2.;
+  return smoothstep(-1.,0.,q.y)*(1.-smoothstep(Hb,Hb+1.,q.y))*.16+exp(-abs(q.y)*1.2)*.6+exp(-abs(q.y-Hb)*1.2)*.5;
+}
 float bandf(float dd){float tt=clamp(-dd/u_bezel,0.,1.);float ss=1.-tt;return pow(ss,3.)*u_lift;}
 float texA(vec2 seg){vec2 uv=(seg+vec2(u_pad))/u_texSize;return texture2D(u_tex,vec2(uv.x,1.-uv.y)).a;}
 vec4 tex4(vec2 seg){vec2 uv=(seg+vec2(u_pad))/u_texSize;return texture2D(u_tex,vec2(uv.x,1.-uv.y));}
@@ -61,6 +65,10 @@ void main(){
     vec3 body=(s0.rgb*s0.a*w0+s1.rgb*s1.a*w1+s2.rgb*s2.a*w2+s3.rgb*s3.a*w3+s4.rgb*s4.a*w4)/wsum;
     body=mix(body*vec3(.04,.52,1.),body*vec3(.35,.8,1.),.35*clamp(s*1.6,0.,1.))+body*vec3(.10,0.,.18)*s;   // inside the lens every label turns blue; near the bevel the colour split pulls it towards cyan / violet
     float ca=max(max(s0.a,s1.a),max(max(s2.a,s3.a),s4.a));
+    // colour split of the bar's own edges seen through the curved rim (iOS shows rainbow arcs along the top and bottom of the lens)
+    vec3 sp=(scn(mp+ro*.8)*w0+scn(mp+ro*1.)*w1+scn(mp+ro*1.2)*w2+scn(mp+ro*1.4)*w3+scn(mp+ro*1.6)*w4)/wsum;
+    vec3 chroma=max(sp-vec3(dot(sp,vec3(.3333)))*.45,0.)*pow(s,1.2)*u_lift*2.6;
+    body+=chroma*(1.-ca);ca=max(ca,min(1.,max(chroma.r,max(chroma.g,chroma.b))));
     float topbot=abs(g.y);
     float darkA=pow(s,2.2)*(.10+.90*topbot)*.34*u_lift;                          // soft dark crescents just inside the top and bottom edge
     float outline=(1.-smoothstep(0.,1.2,-d))*.34*u_lift;                         // thin dark outline
@@ -204,7 +212,7 @@ void main(){
     gl.uniform2f(u.u_cssRes, cssW, cssH); gl.uniform1f(u.u_dpr, DPR);
     gl.uniform4f(u.u_rect, L.cx - lw / 2 - ox, t - oy, lw, H);
     gl.uniform2f(u.u_org, ox, oy); gl.uniform2f(u.u_texSize, s.texW, s.texH); gl.uniform1f(u.u_pad, TPAD);
-    gl.uniform1f(u.u_mag, L.mag); gl.uniform1f(u.u_bezel, s.dock ? BEZEL : BEZEL * Math.min(1, H / 80));   // a thinner bar gets a proportionally thinner curved edge (the dock keeps its own) gl.uniform1f(u.u_lift, Math.min(1, L.grow / gr(s)));
+    gl.uniform1f(u.u_mag, L.mag); gl.uniform1f(u.u_bezel, s.dock ? BEZEL : BEZEL * Math.min(1, H / 80)); gl.uniform1f(u.u_lift, Math.min(1, L.grow / gr(s)));   // (a thinner bar gets a proportionally thinner curved edge; the dock keeps its own)
     gl.uniform3f(u.u_tint, 1, 1, 1);
     { const gm = geom(s), c = gm.slice(0, 4).map(q => q.l + q.w / 2); while (c.length < 4) c.push(-9999); gl.uniform4f(u.u_ax, c[0], c[1], c[2], c[3]); gl.uniform1f(u.u_n, Math.min(4, gm.length)); gl.uniform1f(u.u_cy, gm[0].t + gm[0].h / 2); }
     gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1);
