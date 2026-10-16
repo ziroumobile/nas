@@ -190,7 +190,13 @@ void main(){
     s.hot = k; s.btns.forEach((b, i) => b.classList.toggle('glass-hot', i === k));
     if (!quiet && s.gl) makeTexture(s);
   }
-  function trackHot(s, cx) { const k = s.nearest(cx); if (k !== s.hot) setHot(s, k); }
+  function trackHot(s, cx) {
+    const k = s.nearest(cx); if (k === s.hot) return; setHot(s, k);
+    if (s.dock && s.drag && s.drag.started) {   // dock: the page switches as soon as the lens has rested on a button for a moment, no need to lift the finger
+      clearTimeout(s.liveT);
+      s.liveT = setTimeout(() => { if (s.active && s.hot === k && k !== selected(s)) { s.liveK = k; const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; } }, 90);
+    }
+  }
   function step(s, dt) {
     const L = s.lens; let moving = false;
     L.tst = (s.drag && s.drag.started) ? Math.min(STMAX, Math.abs(s.vel || 0) * 0.018) : 0; s.vel = (s.vel || 0) * Math.pow(0.03, dt);
@@ -232,7 +238,7 @@ void main(){
       return { cx: fx, w: g[i].w + (g[i + 1].w - g[i].w) * t };      // between two options the lens stretches to blend their widths
     };
     seg.addEventListener('pointerdown', e => {
-      if (e.button > 0) return; s.drag = { id: e.pointerId, x0: e.clientX, started: false, t0: Date.now() };
+      if (e.button > 0) return; s.liveK = null; s.drag = { id: e.pointerId, x0: e.clientX, started: false, t0: Date.now() };
       if (!s.gl) return;
       s.drag.started = true;   // the lens swells the moment it is touched, no drag needed
       if (!s.active) startLens(s);
@@ -265,7 +271,8 @@ void main(){
       const changed = k !== selected(s), g = geom(s)[k];
       if (s.gl && s.lens) { s.lens.tx = g.l + g.w / 2; s.lens.tw = g.w; s.lens.tg = 0; s.lens.tm = 1; loop(s); }   // spring into the slot, then finishLens
       else { s.active = false; s.pill.classList.remove('noanim'); seg.classList.remove('dragging'); setHot(s, -1, true); }
-      if (changed || s.dock) { if (s.lens) s.pendingK = k; else { const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; } }                                // choose through the normal handler
+      clearTimeout(s.liveT);
+      if ((changed || s.dock) && s.liveK !== k) { if (s.lens) s.pendingK = k; else { const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; } }                                // choose through the normal handler
       if (!s.lens) placePill(s, selected(s), true);
     };
     seg.addEventListener('pointerup', end); seg.addEventListener('pointercancel', end);
