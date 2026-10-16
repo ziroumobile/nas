@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v4.43">
+<meta name="app-version" content="v4.44">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261016O">
+<link rel="stylesheet" href="glass.css?v=20261016Q">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -129,10 +129,11 @@ body.selecting #list{-webkit-user-select:none;user-select:none;-webkit-touch-cal
 /* uploads: no list at the bottom of the page any more - a frosted round button bottom right opens the progress page */
 #ups{display:none}#uppage #ups{display:block;margin:0}
 #upsum{display:none!important}body.uploading #dup .uring{display:none!important}
-html body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom) + 84px);z-index:62;width:56px;height:56px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;
+html body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom) + 84px);z-index:62;width:60px;height:60px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;
   background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(24px) saturate(190%)!important;backdrop-filter:blur(24px) saturate(190%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 10px 28px rgba(0,0,0,.4)!important;color:#fff!important;border:0!important}
 html body button#upfab[hidden]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important} /* must outweigh the display:flex rule above, otherwise the button never hides */
-#upfab .fring{position:absolute;inset:0;width:100%;height:100%}#upfab .fic{width:26px;height:26px;position:relative}
+#upfab .fring{position:absolute;inset:0;width:100%;height:100%}#upfab .fic{width:30px;height:21px;position:relative;margin-top:-7px}
+#upfab #fabt{position:absolute;left:0;right:0;bottom:13px;text-align:center;font-size:8px;font-weight:800;line-height:1;letter-spacing:-.2px;white-space:nowrap;color:#fff;font-variant-numeric:tabular-nums}
 #upfab #fabbad{position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#ff453a;box-shadow:0 0 0 2px rgba(30,32,38,.9)}#upfab #fabbad[hidden]{display:none}
 #uppage{position:fixed;inset:0;z-index:96;background:#000;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 66px) 16px calc(env(safe-area-inset-bottom) + 30px)}
 #uppage[hidden]{display:none}
@@ -321,7 +322,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
   <div id="list"></div>
   <div id="ups" style="margin-top:12px"></div>
 </div>
-<button id="upfab" type="button" hidden aria-label="上傳進度"><svg class="fring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="fabArc" cx="28" cy="28" r="25" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="157.1" stroke-dashoffset="157.1" transform="rotate(-90 28 28)"/></svg><svg class="fic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5V4M8 8l4-4 4 4"/><path d="M5 14v3.5A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5V14"/></svg><i id="fabbad" hidden></i></button>
+<button id="upfab" type="button" hidden aria-label="上傳進度"><svg class="fring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="fabArc" cx="28" cy="28" r="25" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="157.1" stroke-dashoffset="157.1" transform="rotate(-90 28 28)"/></svg><svg class="fic" viewBox="0 0 64 44"><defs><linearGradient id="fcg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#a5e0ff"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs><path d="M17 40a12 12 0 0 1-1.5-23.9A16 16 0 0 1 46 14.5 13.5 13.5 0 0 1 48 40z" fill="url(#fcg)"/><circle cx="23" cy="25" r="11" fill="#d6f1ff" opacity=".5"/></svg><span id="fabt">--h--min</span><i id="fabbad" hidden></i></button>
 <div id="uppage" hidden><button id="upback" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>上傳進度</h2><p id="upsum2" class="sub"></p><div id="upslot"></div></div>
 <div id="storage" hidden><div class="sthead"><button id="stback" class="stbtn" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>儲存空間</h2></div><div id="stbody"></div></div>
 <div id="viewer" hidden>
@@ -347,7 +348,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261016O"></script>
+<script src="glass.js?v=20261016Q"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1228,16 +1229,22 @@ $('#setpw').onclick=async()=>{
 const upsum=$('#upsum');
 upsum.onclick=()=>$('#ups').scrollIntoView({behavior:'smooth',block:'start'});
 // progress: a ring drawn around the "+" in the dock (blue arc = how much of the whole batch is done), plus the one-line summary under the drop zone
+const eta={t:0,got:0,spd:0};
 function updateUploadUI(){
   const cs=$('#ups').children.length,fab=$('#upfab');
   document.body.classList.toggle('uploading',cs>0);
   upsum.hidden=true;
-  if(!cs){fab.hidden=true;releaseAwake();if(!$('#uppage').hidden)$('#upsum2').textContent='全部上傳完成 ✓';return}
+  if(!cs){fab.hidden=true;eta.t=0;releaseAwake();if(!$('#uppage').hidden)$('#upsum2').textContent='全部上傳完成 ✓';return}
   const f=[...$('#ups').querySelectorAll('.rt')].filter(b=>!b.hidden).length;
   let got=batch.done;for(const j of allJobs)got+=j.loaded||0;
   const pct=batch.bytes?Math.min(100,Math.round(got/batch.bytes*100)):0;
+  const now=performance.now();
+  if(!eta.t||got<eta.got){eta.t=now;eta.got=got;eta.spd=0}                      // a new batch started
+  else if(now-eta.t>=1500){const inst=(got-eta.got)/((now-eta.t)/1000);eta.spd=eta.spd?eta.spd*.7+inst*.3:inst;eta.t=now;eta.got=got} // smoothed bytes per second
+  const left=eta.spd>1?(batch.bytes-got)/eta.spd:NaN,mins=Number.isFinite(left)?Math.min(99*60+59,Math.ceil(left/60)):NaN;
+  $('#fabt').textContent=Number.isFinite(mins)?String(Math.floor(mins/60)).padStart(2,'0')+'h'+String(mins%60).padStart(2,'0')+'min':'--h--min';
   fab.hidden=false;$('#fabArc').style.strokeDashoffset=(157.1*(1-pct/100)).toFixed(1);$('#fabbad').hidden=!f;fab.title='上傳中 '+pct+'%';
-  $('#upsum2').textContent='上傳中 '+pct+'%（'+batch.doneFiles+'/'+batch.files+'）'+(f?'・'+f+' 個失敗，可按該檔的「重試」':'');
+  $('#upsum2').textContent='上傳中 '+pct+'%（'+batch.doneFiles+'/'+batch.files+'）・剩餘 '+$('#fabt').textContent+(f?'・'+f+' 個失敗，可按該檔的「重試」':'');
   if($('#dupArc'))$('#dupArc').style.strokeDashoffset=(119.4*(1-pct/100)).toFixed(1);
 }
 function openUps(){$('#upslot').append($('#ups'));$('#uppage').hidden=false;document.body.style.overflow='hidden';history.pushState({ups:1},'');updateUploadUI()}
