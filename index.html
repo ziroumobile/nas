@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261016C">
+<link rel="stylesheet" href="glass.css?v=20261016D">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -174,7 +174,8 @@ html body #viewer .vc:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:46px;height:
   background:rgba(32,34,40,.78)!important;-webkit-backdrop-filter:blur(14px) saturate(170%)!important;backdrop-filter:blur(14px) saturate(170%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important;color:#fff!important;border:0!important;font-size:0;line-height:0}
 html body #viewer .vc.del:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#ff453a!important}
 #viewer .vc svg{width:24px;height:24px;display:block}
-html body #viewer #vdlj.vc2:not(#nx1):not(#nx2):not(#nx3){padding:0 14px!important;height:46px;border-radius:999px!important;display:inline-flex!important;align-items:center;background:rgba(32,34,40,.78)!important;color:#fff!important;font-size:14px;line-height:1}
+html body #viewer #vdlj.vc2[hidden]:not(#nx1){display:none!important}
+html body #viewer #vdlj.vc2:not([hidden]):not(#nx1):not(#nx2):not(#nx3){padding:0 14px!important;height:46px;border-radius:999px!important;display:inline-flex!important;align-items:center;background:rgba(32,34,40,.78)!important;color:#fff!important;font-size:14px;line-height:1}
 #viewer[hidden]{display:none}
 .vtop{display:flex;gap:8px;align-items:center;padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top));color:#fff}
 .vtop{flex-wrap:wrap}
@@ -233,7 +234,7 @@ body.covered #app{visibility:hidden}
 /* settings: the iOS Settings look - black page, large title, grouped rounded lists with coloured icon tiles and chevrons */
 html body #setpanel:not([hidden]){display:block;padding:0;background:#000;overflow-y:auto;-webkit-overflow-scrolling:touch;align-items:initial;justify-content:initial}
 #setpage{max-width:640px;margin:0 auto;min-height:100%;padding-bottom:calc(env(safe-area-inset-bottom) + 40px)}
-#setpage .sethead{display:flex;justify-content:flex-end;padding:calc(env(safe-area-inset-top) + 10px) 16px 0}
+#setpage .sethead{display:flex;justify-content:flex-start;padding:calc(env(safe-area-inset-top) + 10px) 16px 0}
 #modal.fullpage{padding:0;align-items:stretch;justify-content:stretch;background:#000}
 #modal.fullpage #mbox{width:100%;max-width:none;height:100%;max-height:none;margin:0;border:0;border-radius:0;background:#000;box-shadow:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 66px) 16px calc(env(safe-area-inset-bottom) + 30px);text-align:left}
 #modal.fullpage .mhead{display:block;margin:0 0 6px}#modal.fullpage .mhead h3{font-size:30px;font-weight:800;margin:0 0 4px}
@@ -242,7 +243,8 @@ html body #setpanel:not([hidden]){display:block;padding:0;background:#000;overfl
 #pgback{display:none}
 html body #modal.fullpage button#pgback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:flex;position:fixed;z-index:3;left:14px;top:calc(env(safe-area-inset-top) + 8px);width:46px;height:46px;padding:0!important;border-radius:50%!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 #pgback svg{width:24px;height:24px}
-html body #setpage button.setdone:not(#nx1):not(#nx2):not(#nx3):not(#nx4){height:40px;padding:0 18px!important;border-radius:999px!important;background:rgba(54,56,62,.8)!important;color:#0a84ff!important;font-size:16px;font-weight:600}
+html body #setpage button.setdone:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:46px;height:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+#setpage .setdone svg{width:24px;height:24px}
 #setpage .settitle{margin:6px 20px 14px;font-size:34px;font-weight:800;letter-spacing:.2px}
 #setpage .sgrp{background:#1c1c1e;border-radius:20px;overflow:hidden;margin:0 16px 22px;display:flex;flex-direction:column}
 #setpage .sgrp:not(:has(.srw:not([hidden]))):not(:has(.sacct)){display:none}
@@ -273,7 +275,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
   <header><h1>📁 我的 NAS</h1></header>
   <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></span>
   <nav id="dock"><button id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button><button id="dflt" type="button" aria-label="拖動排序" title="拖動排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg class="uring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="dupArc" cx="22" cy="22" r="19" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4" transform="rotate(-90 22 22)"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
-  <div id="setpanel" hidden><div id="setpage"><div class="sethead"><button id="setclose" class="setdone" type="button">完成</button></div><h2 class="settitle">設定</h2><div class="sgrp"><div class="sacct"><span class="sav" id="sav">👤</span><div class="sat"><b id="who"></b><small id="whorole"></small></div></div></div><div class="sgrp"><button class="srw" id="setdev" type="button"><span class="sic" style="background:#636366">📱</span><span class="slb">這台裝置的名稱</span><span class="sv" id="setdevv"></span><span class="sch">›</span></button><button class="srw" id="biobtn" type="button" hidden><span class="sic" style="background:#30d158">🔐</span><span class="slb">生物辨識</span><span class="sv" id="biobtnv"></span><span class="sch">›</span></button><button class="srw" id="devices" hidden><span class="sic" style="background:#34c759">💻</span><span class="slb">其他已登入的裝置</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="shares" hidden><span class="sic" style="background:#0a84ff">🔗</span><span class="slb">已分享連結</span><span class="sch">›</span></button><button class="srw" id="actlog" hidden><span class="sic" style="background:#ff9f0a">🕘</span><span class="slb">活動紀錄</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="setpw" hidden><span class="sic" style="background:#8e8e93">🔑</span><span class="slb">編輯密碼</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw sred" id="out" type="button"><span class="slb">登出</span></button></div></div></div>
+  <div id="setpanel" hidden><div id="setpage"><div class="sethead"><button id="setclose" class="setdone" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div><h2 class="settitle">設定</h2><div class="sgrp"><div class="sacct"><span class="sav" id="sav">👤</span><div class="sat"><b id="who"></b><small id="whorole"></small></div></div></div><div class="sgrp"><button class="srw" id="setdev" type="button"><span class="sic" style="background:#636366">📱</span><span class="slb">這台裝置的名稱</span><span class="sv" id="setdevv"></span><span class="sch">›</span></button><button class="srw" id="biobtn" type="button" hidden><span class="sic" style="background:#30d158">🔐</span><span class="slb">生物辨識</span><span class="sv" id="biobtnv"></span><span class="sch">›</span></button><button class="srw" id="devices" hidden><span class="sic" style="background:#34c759">💻</span><span class="slb">其他已登入的裝置</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="shares" hidden><span class="sic" style="background:#0a84ff">🔗</span><span class="slb">已分享連結</span><span class="sch">›</span></button><button class="srw" id="actlog" hidden><span class="sic" style="background:#ff9f0a">🕘</span><span class="slb">活動紀錄</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="setpw" hidden><span class="sic" style="background:#8e8e93">🔑</span><span class="slb">編輯密碼</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw sred" id="out" type="button"><span class="slb">登出</span></button></div></div></div>
   
   <div id="off" hidden>⚠️ 連不到主機電腦（可能關機或通道未啟動）</div>
   <div class="bar">
@@ -319,7 +321,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261016C"></script>
+<script src="glass.js?v=20261016D"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
