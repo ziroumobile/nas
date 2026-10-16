@@ -69,6 +69,10 @@ void main(){
     float tint=pow(s,2.8)*topbot*u_lift*.14;                                    // a faint green/violet cast along the top and bottom, as on the reference
     vec3 pr=rb*tint+vec3(edgeL);
     float oa=clamp(ca+tint+edgeL+darkA*(1.-ca)+outline*(1.-ca),0.,1.);
+    // the bar's top / bottom edge is pushed in inside the lens: a soft (blurred) dark band along them, feathered towards the lens ends so it has no hard corners
+    float yT=segPos.y,yB=u_cy*2.-segPos.y,dp=5.5*u_lift;
+    float band=max(1.-smoothstep(dp-3.5,dp+4.5,yT),1.-smoothstep(dp-3.5,dp+4.5,yB))*smoothstep(0.,16.,-d)*.7*u_lift;
+    oa=oa+band*(1.-ca)*(1.-oa);
     body=body+pr;
     vec4 pre=vec4(body,oa)*inside+basePre*(1.-inside);pre.a=pre.a+shadow*(1.-pre.a);gl_FragColor=pre;return;
   }
@@ -208,7 +212,6 @@ void main(){
     gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    dent(s, L, lw, segW, segH, H);
   }
   // the bar's glass is pushed in a little at the top and bottom where the lens sits on it (a notch cut out of its ::before layer; the shadow around it stays)
   function dent(s, L, lw, W, Hs, LH) {
