@@ -13,8 +13,9 @@
   const VS = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
   const FS = `precision highp float;
 uniform vec2 u_cssRes;uniform float u_dpr;uniform vec4 u_rect;uniform vec2 u_org;uniform vec2 u_texSize;uniform float u_pad;
-uniform sampler2D u_tex;uniform float u_mag;uniform float u_bezel;uniform float u_lift;uniform vec3 u_tint;uniform float u_dark;
+uniform sampler2D u_tex;uniform float u_mag;uniform float u_bezel;uniform float u_lift;uniform vec3 u_tint;uniform float u_dark;uniform float u_clear;
 float sdRR(vec2 p,vec2 hs,float r){vec2 q=abs(p)-hs+r;return length(max(q,0.))+min(max(q.x,q.y),0.)-r;}
+float texA(vec2 seg){vec2 uv=(seg+vec2(u_pad))/u_texSize;return texture2D(u_tex,vec2(uv.x,1.-uv.y)).a;}
 vec3 tex(vec2 seg){vec2 uv=(seg+vec2(u_pad))/u_texSize;return texture2D(u_tex,vec2(uv.x,1.-uv.y)).rgb;}
 void main(){
   vec2 px=vec2(gl_FragCoord.x,u_cssRes.y*u_dpr-gl_FragCoord.y)/u_dpr;      // css pixels, origin top-left of the canvas
@@ -32,6 +33,17 @@ void main(){
   vec2 mp=centre+(segPos-centre)/u_mag;                                     // magnification about the lens centre
   vec2 refr=-g*slope*u_bezel*.50*u_lift;                                    // refraction: content from outside the edge is pulled inwards
   vec3 col;col.r=tex(mp+refr).r;col.g=tex(mp+refr*1.05).g;col.b=tex(mp+refr*1.10).b;   // slight dispersion
+  float lightDir0=clamp(dot(g,normalize(vec2(-.55,-.83))),-1.,1.);
+  if(u_clear>.5){   // clear glass (dock): transparent body that only carries the magnified labels, plus a bent rim with a hint of rainbow dispersion
+    float ca=(texA(mp+refr)+texA(mp+refr*1.05)+texA(mp+refr*1.10))/3.;
+    float rimL=pow(s,3.)*(.30+.70*abs(lightDir0))*u_lift;
+    float edgeL=(1.-smoothstep(0.,1.6,-d))*(.55+.45*lightDir0)*u_lift;
+    float rimA=clamp(edgeL*.60+rimL*.50,0.,1.);
+    vec3 rc=mix(vec3(1.),.6+.4*cos(6.2831*(vec3(0.,.33,.67)+atan(g.y,g.x)/6.2831)),.5*s);
+    vec3 body=col*ca+rc*rimA*(1.-ca)+vec3(.92)*.05*(1.-ca);
+    float oa=clamp(ca+rimA*(1.-ca)+.05*(1.-ca),0.,1.);
+    gl_FragColor=vec4(body*inside,oa*inside+shadow);return;
+  }
   // lighting: bright rim where the light hits (top-left) and the opposite edge, a faint glow inside, a soft sheen on the upper half
   float lightDir=clamp(dot(g,normalize(vec2(-.55,-.83))),-1.,1.);
   float rim=pow(s,3.)*(.30+.70*abs(lightDir))*u_lift;
@@ -88,7 +100,7 @@ void main(){
     gl.useProgram(pr);
     const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    const u = {}; for (const n of ['u_cssRes', 'u_dpr', 'u_rect', 'u_org', 'u_texSize', 'u_pad', 'u_tex', 'u_mag', 'u_bezel', 'u_lift', 'u_tint', 'u_dark']) u[n] = gl.getUniformLocation(pr, n);
+    const u = {}; for (const n of ['u_cssRes', 'u_dpr', 'u_rect', 'u_org', 'u_texSize', 'u_pad', 'u_tex', 'u_mag', 'u_bezel', 'u_lift', 'u_tint', 'u_dark', 'u_clear']) u[n] = gl.getUniformLocation(pr, n);
     const tex = gl.createTexture();
     s.canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); s.gl = null; });
     return { gl, u, tex };
@@ -112,10 +124,13 @@ void main(){
     const c = s.tex2d || (s.tex2d = document.createElement('canvas'));
     const cw = Math.ceil((W + 2 * T) * DPR), ch = Math.ceil((H + 2 * T) * DPR); if (c.width !== cw || c.height !== ch) { c.width = cw; c.height = ch; }
     const x = c.getContext('2d'); x.setTransform(DPR, 0, 0, DPR, 0, 0);
-    x.fillStyle = s.dock ? '#6a6d76' : (getComputedStyle(document.body).backgroundColor || '#111318'); x.fillRect(0, 0, W + 2 * T, H + 2 * T);
-    const sc = getComputedStyle(s.seg);
-    x.fillStyle = sc.backgroundColor; rrect(x, T, T, W, H, H / 2); x.fill();
-    x.strokeStyle = 'rgba(255,255,255,.07)'; x.lineWidth = 1; rrect(x, T + .5, T + .5, W - 1, H - 1, H / 2); x.stroke();
+    if (s.dock) x.clearRect(0, 0, W + 2 * T, H + 2 * T);
+    else {
+      x.fillStyle = getComputedStyle(document.body).backgroundColor || '#111318'; x.fillRect(0, 0, W + 2 * T, H + 2 * T);
+      const sc = getComputedStyle(s.seg);
+      x.fillStyle = sc.backgroundColor; rrect(x, T, T, W, H, H / 2); x.fill();
+      x.strokeStyle = 'rgba(255,255,255,.07)'; x.lineWidth = 1; rrect(x, T + .5, T + .5, W - 1, H - 1, H / 2); x.stroke();
+    }
     x.textAlign = 'center'; x.textBaseline = 'middle';
     // colours come straight from the CSS variables (not from the buttons' animated colour): white, except the blue one = the option the lens is over
     const root = getComputedStyle(document.documentElement);
@@ -160,7 +175,8 @@ void main(){
     gl.uniform2f(u.u_org, ox, oy); gl.uniform2f(u.u_texSize, s.texW, s.texH); gl.uniform1f(u.u_pad, TPAD);
     gl.uniform1f(u.u_mag, L.mag); gl.uniform1f(u.u_bezel, BEZEL); gl.uniform1f(u.u_lift, Math.min(1, L.grow / GROW));
     gl.uniform3f(u.u_tint, 1, 1, 1);
-    gl.uniform1f(u.u_dark, 1);
+    gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, s.dock ? 1 : 0);
+    if (s.dock) { const half = (L.w + L.grow + st) / 2 - 6; s.btns.forEach(b => b.classList.toggle('lens-hide', Math.abs(b.offsetLeft + b.offsetWidth / 2 - L.cx) + 16 <= half)); }   // the real icon under the lens is hidden: the lens shows its magnified copy
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
@@ -223,6 +239,7 @@ void main(){
   }
   function finishLens(s) {                                           // lens has settled into its option: swap back to the resting pill
     s.canvas.classList.remove('on'); s.active = false; s.lens = null;
+    if (s.dock) s.btns.forEach(b => b.classList.remove('lens-hide'));
     const pk = s.pendingK; s.pendingK = null;                        // the (heavy) view switch runs only now, after the lens has landed, so it can't stutter the animation
     if (pk == null) { s.seg.classList.remove('dragging'); setHot(s, -1, true); }
     placePill(s, pk == null ? selected(s) : pk, false); s.pill.classList.remove('hidden');
@@ -281,6 +298,7 @@ void main(){
       if (!s.lens) placePill(s, selected(s), true);
     };
     seg.addEventListener('pointerup', end); seg.addEventListener('pointercancel', end);
+    if (s.dock) setInterval(() => { if (!s.active && !s.drag) seg.querySelectorAll('.lens-hide').forEach(b => b.classList.remove('lens-hide')); }, 400);   // safety net: a hidden icon can never stay hidden
     seg.addEventListener('click', e => { if (s.suppressClick) { e.stopPropagation(); e.preventDefault(); } }, true);
   }
 
@@ -294,7 +312,7 @@ void main(){
       const s = build(dk, true);
       if (s) { const root = getComputedStyle(document.documentElement); for (const col of [root.getPropertyValue('--seg-fg').trim() || '#fff', root.getPropertyValue('--seg-blue').trim() || '#0a84ff']) s.btns.forEach(b => b.querySelector('svg') && iconImg(s, b, col));   // decode the icons ahead of time so the lens never shows an empty frame
       }
-      if (s) { let t = 0; new MutationObserver(() => { if (s.active || t) return; t = setTimeout(() => { t = 0; if (!s.active) { placePill(s, selected(s), true); makeTexture(s); } }, 0); }).observe(dk, { subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'style'] }); }
+      if (s) { let t = 0; new MutationObserver(() => { if (s.active || t) return; t = setTimeout(() => { t = 0; if (!s.active) { s.btns.forEach(b => b.classList.remove('lens-hide')); placePill(s, selected(s), true); makeTexture(s); } }, 0); }).observe(dk, { subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'style'] }); }
     }
   };
   // ---------- drop-down menus (replace the native <select> list, which iOS draws far from the button) ----------

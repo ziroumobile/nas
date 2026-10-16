@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v5.38">
+<meta name="app-version" content="v5.39">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261018G">
+<link rel="stylesheet" href="glass.css?v=20261018I">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -389,7 +389,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261018G"></script>
+<script src="glass.js?v=20261018I"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -447,7 +447,9 @@ async function init(){
   if(needLock())await askUnlock(); // admin with an edit password: ask for it every time the app is opened
   $('#app').hidden=false;
   $('#who').textContent=me.name;$('#whorole').textContent=me.admin?'管理員':'一般使用者';
-  bioCheck();$('#dshare').hidden=!me.admin;$('#lockset').hidden=!(me.admin&&me.hasEditPassword);$('#trash').hidden=!me.admin;$('#setpw').hidden=$('#shares').hidden=$('#actlog').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh().then(()=>setTimeout(prefetchThumbs,600));clipRefresh();
+  bioCheck();$('#dshare').hidden=!me.admin;
+  if(me.admin)setTimeout(()=>{const pre=()=>api('/api/shares').then(r=>r.ok?r.json():null).then(l=>{if(l)window.__sharesCache=l}).catch(()=>{});pre();clipRefresh();setInterval(()=>{if(!document.hidden)pre()},60000)},800); // warm the pages behind the dock so sliding onto them is instant
+ $('#lockset').hidden=!(me.admin&&me.hasEditPassword);$('#trash').hidden=!me.admin;$('#setpw').hidden=$('#shares').hidden=$('#actlog').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh().then(()=>setTimeout(prefetchThumbs,600));clipRefresh();
 }
 $('#go').onclick=async()=>{
   const{error}=await sb.auth.signInWithPassword({email:$('#u').value.trim(),password:$('#p').value});
@@ -1050,10 +1052,12 @@ function shareDialog(label,payload){
 }
 async function sharesManager(){ // every share: link, password (after entering the edit password), expiry, usage; copy / revoke
   document.body.classList.add('dockover');setDock('dshare');
-  showPage('<h3>🔗 已分享連結</h3><p class="sub">載入中…</p>');
-  let list=[],revealed=null; // revealed passwords live only in this dialog and are dropped when it closes
-  const load=async()=>{const r=await api('/api/shares');if(!r.ok)throw 0;list=await r.json()};
-  try{await load()}catch{showPage('<h3>🔗 已分享連結</h3><p class="merr">無法載入</p><div class="mbtns"><button class="ghost" id="sx">關閉</button></div>');$('#sx').onclick=closeModal;return}
+  const cached=window.__sharesCache; // preloaded when the app started, so the page opens at once and refreshes behind the scenes
+  if(!cached)showPage('<h3>🔗 已分享連結</h3><p class="sub">載入中…</p>');
+  let list=cached||[],revealed=null; // revealed passwords live only in this dialog and are dropped when it closes
+  const load=async()=>{const r=await api('/api/shares');if(!r.ok)throw 0;list=await r.json();window.__sharesCache=list};
+  if(cached)load().then(()=>{if(document.querySelector('#dock button.on')?.id==='dshare'&&!$('#modal').hidden&&typeof draw==='function')draw()}).catch(()=>{});
+  else try{await load()}catch{showPage('<h3>🔗 已分享連結</h3><p class="merr">無法載入</p><div class="mbtns"><button class="ghost" id="sx">關閉</button></div>');$('#sx').onclick=closeModal;return}
   const when=t=>new Date(t).toLocaleString();
   const left=t=>{const ms=t-Date.now();if(ms<=0)return'已到期';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return d?`剩 ${d} 天 ${h} 小時`:h?`剩 ${h} 小時 ${m} 分`:`剩 ${m} 分鐘`};
   const keysOf=s=>s.type==='folder'?(folders.find(f=>f.name===s.folder)?.files.map(x=>keyOf(s.folder,x.name))||[]):(s.items||[]).map(i=>keyOf(i.folder,i.name)).filter(k=>fileByKey(k));
