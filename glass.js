@@ -196,7 +196,7 @@ void main(){
     const ox = -SPAD, oy = Math.min(t, 0) - SPAD, cssW = Math.ceil(segW + 2 * SPAD), cssH = Math.ceil(Math.max(t + H, segH) - Math.min(t, 0) + 2 * SPAD);   // fixed canvas over the whole bar
     const cv = s.canvas;
     if (cv.width !== Math.round(cssW * DPR) || cv.height !== Math.round(cssH * DPR)) { cv.width = Math.round(cssW * DPR); cv.height = Math.round(cssH * DPR); cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px'; }
-    const st = Math.max(0, L.st || 0), lw = L.w + L.grow + st;
+    const st = Math.max(0, L.st || 0), lw = s.dock ? L.w + L.grow + st : Math.min(L.w + L.grow, H * 1.45) + st;
     cv.style.transform = `translate(${ox}px,${oy}px)`;
     const { gl, u } = g;
     gl.viewport(0, 0, cv.width, cv.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
@@ -218,8 +218,10 @@ void main(){
     // flat as well, so at either end of the dock the edge inside the lens is a straight line too. Full depth from the first frame of a press;
     // its size never depends on how fast you drag.
     const D0 = (L.tg > 0 ? 1 : Math.max(0, Math.min(1, L.grow / (gr(s) * 0.5)))) * 4 * (s.dock ? 1 : Math.min(1, Hs / 70));   // the view switch is a thinner bar: same proportions as the dock
-    const half = (L.tw + gr(s)) * 0.31;
-    const xa = Math.max(-2, L.cx - half), xb = Math.min(W + 2, L.cx + half), D = Math.min(D0, (xb - xa) / 2 - 1);
+    const LH = (geom(s)[0] || { h: Hs }).h + gr(s), half = (s.dock ? L.tw + gr(s) : Math.min(L.tw + gr(s), LH * 1.45)) * 0.31;
+    let xa = Math.max(-2, L.cx - half), xb = Math.min(W + 2, L.cx + half);
+    if (!s.dock) { const lh = half / 0.31 / 2; if (L.cx - lh < Hs / 2) xa = -2; if (L.cx + lh > W - Hs / 2) xb = W + 2; }   // view switch: at either end the notch runs out to the very edge, so the end is cut straight like the dock's
+    const D = Math.min(D0, (xb - xa) / 2 - 1);
     if (D < .3) { s.seg.style.removeProperty('--lensclip'); return; }
     const f = n => n.toFixed(1);
     const top = `M${f(xa)},-3L${f(xa)},0A${f(D)},${f(D)} 0 0 0 ${f(xa + D)},${f(D)}L${f(xb - D)},${f(D)}A${f(D)},${f(D)} 0 0 0 ${f(xb)},0L${f(xb)},-3Z`;
