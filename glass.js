@@ -51,7 +51,7 @@ void main(){
     if(u_n>1.5&&abs(segPos.x-u_ax.y)<bd){ax=u_ax.y;bd=abs(segPos.x-u_ax.y);}
     if(u_n>2.5&&abs(segPos.x-u_ax.z)<bd){ax=u_ax.z;bd=abs(segPos.x-u_ax.z);}
     if(u_n>3.5&&abs(segPos.x-u_ax.w)<bd){ax=u_ax.w;}
-    vec2 an=vec2(ax,u_cy);mp=an+(segPos-an)/u_mag;
+    mp=segPos;   // no zoom inside the lens (the press already swells the bar): only the curved edge bends what is under it
   }
   vec2 refr=-g*slope*u_bezel*.50*u_lift;                                    // refraction: content from outside the edge is pulled inwards
   vec3 col;col.r=tex(mp+refr).r;col.g=tex(mp+refr*1.05).g;col.b=tex(mp+refr*1.10).b;   // slight dispersion
