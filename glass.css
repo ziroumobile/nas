@@ -653,3 +653,5 @@ html.ios body #dock,html.ios:not(.android) body #dock,html.android body #dock,ht
 html.ios body #dock::before,html.ios:not(.android) body #dock::before,html.android body #dock::before,html.ios body .seg::before{display:block!important;content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none;padding:0!important;-webkit-mask:none!important;mask:none!important;background:rgba(18,19,24,.30);-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);box-shadow:inset 0 .5px 0 rgba(255,255,255,.34),inset 0 -.5px 0 rgba(255,255,255,.16),0 6px 16px rgba(0,0,0,.3);clip-path:var(--lensclip,none)}
 html.ios body #dock.pressing,html.ios:not(.android) body #dock.pressing,html.android body #dock.pressing,html.ios body .seg.pressing{background:transparent!important}
 html.ios body #dock.pressing::before,html.ios body .seg.pressing::before{background:rgba(150,152,160,.30)}
+
+html.ios body #dock,html.ios body .seg{transition:transform .12s ease-out,background-color .12s,box-shadow .12s}
