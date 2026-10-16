@@ -123,7 +123,12 @@ void main(){
     const blueIdx = s.active && s.hot >= 0 ? s.hot : selected(s);
     s.btns.forEach((b, i) => {
       const ic = s.dock && b.querySelector('svg');
-      if (ic) { const im = iconImg(s, b, i === blueIdx ? blue : white); if (im) x.drawImage(im, T + b.offsetLeft + b.offsetWidth / 2 - 13.5, T + b.offsetTop + b.offsetHeight / 2 - 13.5, 27, 27); return; }
+      if (ic) {
+        const col = i === blueIdx ? blue : white, im = iconImg(s, b, col), mx = T + b.offsetLeft + b.offsetWidth / 2, my = T + b.offsetTop + b.offsetHeight / 2, dl = b.querySelector('.dl');
+        if (im) x.drawImage(im, mx - 12, my - (dl ? 23 : 12), 24, 24);
+        if (dl) { x.font = '600 11px ' + getComputedStyle(dl).fontFamily; x.fillStyle = col; x.fillText(dl.textContent, mx, my + 16); }
+        return;
+      }
       const cs = getComputedStyle(b);
       x.font = `500 ${cs.fontSize} ${cs.fontFamily}`;
       x.fillStyle = i === blueIdx ? blue : white;
