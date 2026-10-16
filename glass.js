@@ -69,11 +69,13 @@ void main(){
     float tint=pow(s,2.8)*topbot*u_lift*.14;                                    // a faint green/violet cast along the top and bottom, as on the reference
     vec3 pr=rb*tint+vec3(edgeL);
     float oa=clamp(ca+tint+edgeL+darkA*(1.-ca)+outline*(1.-ca),0.,1.);
-    // the bar's top / bottom edge is pushed in inside the lens: a soft (blurred) dark band along them, feathered towards the lens ends so it has no hard corners
-    float yT=segPos.y,yB=u_cy*2.-segPos.y,dp=6.*u_lift;
-    float hwy=hs.x-r+sqrt(max(r*r-p.y*p.y,0.));                              // half-width of the lens (a capsule) on this row
-    float endFade=smoothstep(2.,18.,hwy-abs(p.x));                          // soft ends, measured along the row (not from the outline)
-    float band=max(1.-smoothstep(dp-4.,dp+4.5,yT),1.-smoothstep(dp-4.,dp+4.5,yB))*endFade*.9*u_lift;
+    // like Apple: inside the lens the bar's top and bottom edge are pushed in, which leaves a dark rounded slot (flat capsule, soft ends) just under the lens outline, at both the top and the bottom
+    float spill=hs.y-u_cy,dd=6.*u_lift;                                         // how far the lens reaches beyond the bar, and how far the bar edge is pushed in
+    float sTop=-hs.y+2.,sBot=-u_cy+dd;                                          // slot spans from just inside the lens outline to the pushed-in bar edge
+    float sh=max((sBot-sTop)*.5,1.),sc=(sTop+sBot)*.5,sw=hs.x*.62;
+    float pyy=abs(p.y);float cyy=abs(sc);
+    float dsl=sdRR(vec2(p.x,pyy-cyy),vec2(sw,sh),min(sw,sh));
+    float band=(1.-smoothstep(-2.,3.2,dsl))*.94*clamp(u_lift*1.4,0.,1.);
     oa=oa+band*(1.-ca)*(1.-oa);
     body=body+pr;
     vec4 pre=vec4(body,oa)*inside+basePre*(1.-inside);pre.a=pre.a+shadow*(1.-pre.a);gl_FragColor=pre;return;
