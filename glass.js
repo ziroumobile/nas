@@ -212,12 +212,12 @@ void main(){
   }
   // the bar's glass is pushed in a little at the top and bottom where the lens sits on it (a notch cut out of its ::before layer; the shadow around it stays)
   function dent(s, L, lw, W, Hs) {
-    const R = Hs / 2, D0 = Math.max(0, Math.min(1, L.grow / GROW)) * 4.5, half = lw / 2 * 0.92;
+    const R = Hs / 2, D0 = Math.max(0, Math.min(1, L.grow / GROW)) * 4.5, half = lw / 2 * 0.98;
     let xa = Math.max(R, L.cx - half), xb = Math.min(W - R, L.cx + half);
     if (xb - xa < 8 || D0 < .2) { s.seg.style.removeProperty('--lensclip'); return; }
-    const D = D0 * Math.min(1, (xb - xa) / (half * 2)), cx = Math.min(W - R, Math.max(R, L.cx)), k = (xb - xa) * 0.28, f = n => n.toFixed(1);
-    const top = `M${f(xa)},0C${f(xa + k)},0 ${f(cx - k)},${f(D)} ${f(cx)},${f(D)}C${f(cx + k)},${f(D)} ${f(xb - k)},0 ${f(xb)},0Z`;
-    const bot = `M${f(xa)},${f(Hs)}C${f(xa + k)},${f(Hs)} ${f(cx - k)},${f(Hs - D)} ${f(cx)},${f(Hs - D)}C${f(cx + k)},${f(Hs - D)} ${f(xb - k)},${f(Hs)} ${f(xb)},${f(Hs)}Z`;
+    const D = D0 * Math.min(1, (xb - xa) / (half * 2)) * 1.25, e = Math.min(11, (xb - xa) / 3), f = n => n.toFixed(1);   // like Apple: the edge folds in over a short stretch, then runs straight across the middle
+    const slot = y0 => { const sg = y0 === 0 ? 1 : -1, yd = y0 + sg * D; return `M${f(xa)},${f(y0)}C${f(xa + e * .6)},${f(y0)} ${f(xa + e * .4)},${f(yd)} ${f(xa + e)},${f(yd)}L${f(xb - e)},${f(yd)}C${f(xb - e * .4)},${f(yd)} ${f(xb - e * .6)},${f(y0)} ${f(xb)},${f(y0)}Z`; };
+    const top = slot(0), bot = slot(Hs);
     s.seg.style.setProperty('--lensclip', `path(evenodd,"M-80,-80H${f(W + 80)}V${f(Hs + 80)}H-80Z${top}${bot}")`);
   }
 
