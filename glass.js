@@ -212,18 +212,20 @@ void main(){
   }
   // the bar's glass is pushed in a little at the top and bottom where the lens sits on it (a notch cut out of its ::before layer; the shadow around it stays)
   function dent(s, L, W, Hs) {
-    // Measured from the App Store recording: inside the lens the bar's top and bottom edge are pushed in by a capsule-shaped notch.
-    // It is ~62% of the resting lens width, centred on the lens, ~4px deep, and its ends are quarter circles (radius = depth):
-    // the edge drops straight down, turns, and runs flat. Its size never depends on how fast you drag.
+    // Inside the lens the bar's top and bottom edge become a straight line pushed in by D: a flat notch, ~62% of the resting lens wide,
+    // centred on the lens, with quarter-circle ends. It is NOT stopped at the rounded ends of the bar: there the notch simply cuts the cap
+    // flat as well, so at either end of the dock the edge inside the lens is a straight line too. Full depth from the first frame of a press;
+    // its size never depends on how fast you drag.
     const D0 = (L.tg > 0 ? 1 : Math.max(0, Math.min(1, L.grow / (GROW * 0.5)))) * 4;
-    const R = Hs / 2, half = (L.tw + GROW) * 0.31;
-    const xa = Math.max(R, L.cx - half), xb = Math.min(W - R, L.cx + half), D = Math.min(D0, (xb - xa) / 2 - 1);
+    const half = (L.tw + GROW) * 0.31;
+    const xa = Math.max(-2, L.cx - half), xb = Math.min(W + 2, L.cx + half), D = Math.min(D0, (xb - xa) / 2 - 1);
     if (D < .3) { s.seg.style.removeProperty('--lensclip'); return; }
     const f = n => n.toFixed(1);
-    const top = `M${f(xa)},0A${f(D)},${f(D)} 0 0 0 ${f(xa + D)},${f(D)}L${f(xb - D)},${f(D)}A${f(D)},${f(D)} 0 0 0 ${f(xb)},0Z`;
-    const bot = `M${f(xa)},${f(Hs)}A${f(D)},${f(D)} 0 0 1 ${f(xa + D)},${f(Hs - D)}L${f(xb - D)},${f(Hs - D)}A${f(D)},${f(D)} 0 0 1 ${f(xb)},${f(Hs)}Z`;
+    const top = `M${f(xa)},-3L${f(xa)},0A${f(D)},${f(D)} 0 0 0 ${f(xa + D)},${f(D)}L${f(xb - D)},${f(D)}A${f(D)},${f(D)} 0 0 0 ${f(xb)},0L${f(xb)},-3Z`;
+    const bot = `M${f(xa)},${f(Hs + 3)}L${f(xa)},${f(Hs)}A${f(D)},${f(D)} 0 0 1 ${f(xa + D)},${f(Hs - D)}L${f(xb - D)},${f(Hs - D)}A${f(D)},${f(D)} 0 0 1 ${f(xb)},${f(Hs)}L${f(xb)},${f(Hs + 3)}Z`;
     s.seg.style.setProperty('--lensclip', `path(evenodd,"M-80,-80H${f(W + 80)}V${f(Hs + 80)}H-80Z${top}${bot}")`);
   }
+
 
 
 
