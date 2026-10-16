@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
-<link rel="stylesheet" href="glass.css?v=20261020H">
+<link rel="stylesheet" href="glass.css?v=20261020I">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <title>檔案分享</title>
 <style>
@@ -123,6 +123,7 @@ html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position
 html.ios #app>header{height:auto!important}
 /* the round select button sits on the same row as the back arrow (top right); the title starts below that row so the two never overlap */
 #app{padding-top:60px}
+html.ios body #app>header,html body #app>header{position:static!important;top:auto!important;height:auto!important;padding:0!important;margin:0 0 4px!important;background:none!important}
 .hdrbtns{position:fixed;z-index:900;top:calc(env(safe-area-inset-top) + 10px);right:16px}
 @media(min-width:900px){.hdrbtns{right:max(16px,calc((100vw - 828px)/2 - 2px))}}
 </style></head><body><div id="topsent" aria-hidden="true"></div><div class="wrap"><div id="appback" role="button" tabindex="0" aria-label="返回" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div>
@@ -160,7 +161,7 @@ html.ios #app>header{height:auto!important}
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="glass.js?v=20261020H"></script>
+<script src="glass.js?v=20261020I"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
