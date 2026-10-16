@@ -270,13 +270,7 @@ void main(){
   }
   function trackHot(s, cx) {
     const k = s.nearest(cx); if (k === s.hot) return; setHot(s, k);
-    if (s.drag && s.drag.started) {   // dock: the page switches as soon as the lens has rested on a button for a moment, no need to lift the finger
-      clearTimeout(s.liveT);
-      s.liveT = setTimeout(() => {   // the page switches as soon as the lens has rested on an option for a moment (short, so fast sweeps don't open every page on the way)
-        if (!(s.active && s.hot === k && k !== selected(s))) return;
-        s.liveK = k; const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc;
-      }, 55);
-    }
+    // (no live page switching: the highlight follows the lens while the finger is down, the page changes only when it lifts)
   }
   function step(s, dt) {
     const L = s.lens; let moving = false;
@@ -302,6 +296,7 @@ void main(){
     s.gc = null; s.seg.style.removeProperty('--lensclip'); s.seg.classList.remove('pressing', 'lensing'); s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); });
     const pk = s.pendingK; s.pendingK = null;                        // the (heavy) view switch runs only now, after the lens has landed, so it can't stutter the animation
     if (pk == null) { s.seg.classList.remove('dragging'); setHot(s, -1, true); }
+    if (pk != null) s.btns.forEach((b, i) => b.classList.toggle('on', i === pk));   // move the marker + blue label to the chosen option right now, so nothing of the old one flashes while the page loads
     placePill(s, pk == null ? selected(s) : pk, false); s.pill.classList.remove('hidden');
     if (pk == null) makeTexture(s);
     else { s.seg.classList.remove('dragging'); setHot(s, -1, true); setTimeout(() => { const sc = s.suppressClick; s.suppressClick = false; s.btns[pk].click(); s.suppressClick = sc; }, 90); }
