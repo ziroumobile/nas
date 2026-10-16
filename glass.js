@@ -299,7 +299,7 @@ void main(){
     if (pk != null) s.btns.forEach((b, i) => b.classList.toggle('on', i === pk));   // move the marker + blue label to the chosen option right now, so nothing of the old one flashes while the page loads
     placePill(s, pk == null ? selected(s) : pk, false); s.pill.classList.remove('hidden');
     if (pk == null) makeTexture(s);
-    else { s.seg.classList.remove('dragging'); setHot(s, -1, true); setTimeout(() => { const sc = s.suppressClick; s.suppressClick = false; s.btns[pk].click(); s.suppressClick = sc; }, 90); }
+    else { s.seg.classList.remove('dragging'); setHot(s, -1, true); if (s.earlyK === -1) { s.earlyK = null; return; } if (s.earlyK === pk) return; setTimeout(() => { const sc = s.suppressClick; s.suppressClick = false; s.btns[pk].click(); s.suppressClick = sc; }, 90); }
   }
 
   // ---------- interaction ----------
@@ -349,7 +349,8 @@ void main(){
       if (s.gl && s.lens) { s.lens.tx = g.l + g.w / 2; s.lens.tw = g.w; s.lens.tg = 0; s.lens.tm = 1; loop(s); }   // spring into the slot, then finishLens
       else { s.active = false; s.pill.classList.remove('noanim'); seg.classList.remove('dragging'); setHot(s, -1, true); }
       clearTimeout(s.liveT);
-      if ((changed || s.dock) && s.liveK !== k) { if (s.lens) s.pendingK = k; else { const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; } }                                // choose through the normal handler
+      if ((changed || s.dock) && s.liveK !== k) { if (s.lens) { s.pendingK = k; s.earlyK = k; setTimeout(() => { if (s.earlyK !== k) return; s.earlyK = -1; const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; }, 40); }   // the page starts switching right after the finger lifts (not after the lens has settled)
+        else { const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; } }                                // choose through the normal handler
       if (!s.lens) placePill(s, selected(s), true);
     };
     seg.addEventListener('pointerup', end); seg.addEventListener('pointercancel', end);
