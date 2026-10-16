@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261016D">
+<link rel="stylesheet" href="glass.css?v=20261016E">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -235,7 +235,7 @@ body.covered #app{visibility:hidden}
 html body #setpanel:not([hidden]){display:block;padding:0;background:#000;overflow-y:auto;-webkit-overflow-scrolling:touch;align-items:initial;justify-content:initial}
 #setpage{max-width:640px;margin:0 auto;min-height:100%;padding-bottom:calc(env(safe-area-inset-bottom) + 40px)}
 #setpage .sethead{display:flex;justify-content:flex-start;padding:calc(env(safe-area-inset-top) + 10px) 16px 0}
-#modal.fullpage{padding:0;align-items:stretch;justify-content:stretch;background:#000}
+html.ios #modal.fullpage,#modal.fullpage{padding:0!important;align-items:stretch;justify-content:stretch;background:#000}
 #modal.fullpage #mbox{width:100%;max-width:none;height:100%;max-height:none;margin:0;border:0;border-radius:0;background:#000;box-shadow:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 66px) 16px calc(env(safe-area-inset-bottom) + 30px);text-align:left}
 #modal.fullpage .mhead{display:block;margin:0 0 6px}#modal.fullpage .mhead h3{font-size:30px;font-weight:800;margin:0 0 4px}
 #modal.fullpage .mhead button{display:none}
@@ -321,7 +321,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261016D"></script>
+<script src="glass.js?v=20261016E"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -391,7 +391,7 @@ $('#setdev').onclick=()=>$('#rename').click();
 const syncSetDev=()=>{$('#setdevv').textContent=device;const w=$('#who').textContent;$('#sav').textContent=(w||'?').trim().charAt(0).toUpperCase()||'👤'};
 $('#dset').addEventListener('click',()=>setTimeout(syncSetDev,0));
 $('#rename').onclick=()=>{const n=prompt('這台裝置的名稱（上傳預設會存到同名資料夾）',device);
-  if(n&&n.trim()){device=n.trim();ls.set('nas_device',device);$('#dev').textContent=device;target=device;drawTarget()}};
+  if(n&&n.trim()){device=n.trim();ls.set('nas_device',device);$('#dev').textContent=device;target=device;drawTarget();$('#setdevv').textContent=device}};
 let target=device;
 function fitSel(sel){if(!sel||!sel.options.length)return;const sp=fitSel.sp||(fitSel.sp=Object.assign(document.createElement('span'),{style:'position:absolute;visibility:hidden;white-space:nowrap;left:-9999px'}));
   const cs=getComputedStyle(sel);sp.style.font=cs.font;document.body.appendChild(sp);sp.textContent=sel.options[sel.selectedIndex]?.text||'';
@@ -620,7 +620,7 @@ syncToolbar();fitSel($('#sort'));
 // settings panel (gear, top right)
 {const p=$('#setpanel'),close=()=>{p.hidden=true};
   $('#dset').onclick=()=>{p.hidden=!p.hidden};$('#setclose').onclick=close;
-  p.addEventListener('click',e=>{if(e.target===p||(e.target.closest('button')&&e.target.id!=='out'))close()},true)}
+  p.addEventListener('click',e=>{const b=e.target.closest('button');if(e.target===p||(b&&!['out','setdev','biobtn'].includes(b.id)))close()},true)} // rows that only open a small dialog (device name, biometrics) stay on the settings page
 // phone layout (iPhone / iPad / Android): title + gear / new folder / sort / view switch / upload target, select / search
 if(document.documentElement.classList.contains('ios')||matchMedia('(max-width:699px)').matches)try{
   const bar1=$('#newf').parentElement,mk=()=>{const d=document.createElement('div');d.className='bar';return d};
@@ -908,7 +908,7 @@ async function sharesManager(){ // every share: link, password (after entering t
     const keys=keysOf(s);keyMap[s.id]=keys;
     if(!keys.length)return '<div class="sub" style="margin:6px 0">（這些檔案已不存在）</div>';
     const MAX=40;
-    return `<div class="stsec">${keys.slice(0,MAX).map(k=>{const x=fileByKey(k);
+    return `<div class="sth">${keys.slice(0,MAX).map(k=>{const x=fileByKey(k);
       const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-kind="${x.kind}" src="${thumbSrc(x.thumb)}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
       return `<a class="sc" href="#" data-pv="${esc(k)}" data-sid="${esc(s.id)}" title="${esc(x.name)}">${inner}${x.kind==='video'?'<span class="play">▶</span>':''}</a>`}).join('')}${keys.length>MAX?`<span class="sub" style="align-self:center;margin:0 4px">+${keys.length-MAX} 個</span>`:''}</div>`;
   };
