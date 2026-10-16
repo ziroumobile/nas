@@ -54,7 +54,8 @@ void main(){
   float lightDir0=clamp(dot(g,normalize(vec2(-.55,-.83))),-1.,1.);
   if(u_clear>.5){   // clear glass (dock / switch): a transparent body. The colour comes from the labels themselves being bent and split into R/G/B by the curved edge (like the reference)
     // spectral dispersion: five taps, each bent a little more than the last and tinted red -> blue, so a white label smears into soft colour bands
-    vec4 s0=tex4(mp+refr*.85),s1=tex4(mp+refr*1.05),s2=tex4(mp+refr*1.25),s3=tex4(mp+refr*1.45),s4=tex4(mp+refr*1.65);
+    vec2 ro=g*slope*u_bezel*1.1*u_lift;                                       // like iOS: the curved edge shows what lies just OUTSIDE the lens, squeezed into the rim (each colour bent a little differently)
+    vec4 s0=tex4(mp+ro*.8),s1=tex4(mp+ro*1.),s2=tex4(mp+ro*1.2),s3=tex4(mp+ro*1.4),s4=tex4(mp+ro*1.6);
     vec3 w0=vec3(1.,.1,.1),w1=vec3(.9,.8,.1),w2=vec3(.2,1.,.3),w3=vec3(.1,.8,1.),w4=vec3(.5,.2,1.);
     vec3 wsum=w0+w1+w2+w3+w4;
     vec3 body=(s0.rgb*s0.a*w0+s1.rgb*s1.a*w1+s2.rgb*s2.a*w2+s3.rgb*s3.a*w3+s4.rgb*s4.a*w4)/wsum;
