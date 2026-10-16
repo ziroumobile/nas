@@ -645,3 +645,5 @@ html:not(.ios) body #dock .dbadge{right:calc(50% - 62px)}
 /* while the lens is up the bar's own labels are drawn by the lens canvas, so the DOM ones are hidden */
 html body #dock.lensing button>svg,html body #dock.lensing button>.dl{opacity:0!important;transition:none!important}
 html.ios .seg.lensing button:not(#_):not(#__){color:transparent!important;transition:none!important}
+
+.seg .seg-pill,#dock .seg-pill{background:rgba(0,0,0,.5)!important}

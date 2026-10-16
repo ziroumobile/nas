@@ -45,20 +45,21 @@ void main(){
   vec2 refr=-g*slope*u_bezel*.50*u_lift;                                    // refraction: content from outside the edge is pulled inwards
   vec3 col;col.r=tex(mp+refr).r;col.g=tex(mp+refr*1.05).g;col.b=tex(mp+refr*1.10).b;   // slight dispersion
   float lightDir0=clamp(dot(g,normalize(vec2(-.55,-.83))),-1.,1.);
-  if(u_clear>.5){   // clear glass (dock): transparent body that only carries the magnified labels, plus a bent rim with a hint of rainbow dispersion
-    float ca=(texA(mp+refr)+texA(mp+refr*1.05)+texA(mp+refr*1.10))/3.;
-    float edgeL=(1.-smoothstep(0.,1.4,-d))*(.55+.45*lightDir0)*u_lift;
-    // Apple-style bevel: what is behind the bar is bent and split into its colours (red bends least, blue most), but only inside the thin curved edge
+  if(u_clear>.5){   // clear glass (dock / switch): a transparent body. The colour comes from the labels themselves being bent and split into R/G/B by the curved edge (like the reference)
+    vec2 r1=refr*1.6,r2=refr*1.95,r3=refr*2.4;                                  // the bevel bends content strongly; each colour channel a bit differently
+    vec4 cR=tex4(mp+r1),cG=tex4(mp+r2),cB=tex4(mp+r3);
+    vec3 body=vec3(cR.r*cR.a,cG.g*cG.a,cB.b*cB.a);
+    float ca=max(cR.a,max(cG.a,cB.a));
+    float topbot=abs(g.y);
+    float darkA=pow(s,2.2)*(.10+.90*topbot)*.34*u_lift;                          // soft dark crescents just inside the top and bottom edge
+    float outline=(1.-smoothstep(0.,1.2,-d))*.34*u_lift;                         // thin dark outline
+    float edgeL=(1.-smoothstep(0.,1.2,-d))*(.5+.5*lightDir0)*u_lift*.10;          // hairline of light
     float dep=max(-d,0.);
-    vec3 rb=.5+.5*cos(6.2831*(vec3(0.,.33,.67)+dep*.075+.22*sin(p.x*.085+p.y*.04)));   // colour fringes running parallel to the edge (the split of what lies behind)
-    float strength=pow(s,2.6)*(.14+.86*abs(g.y))*u_lift;                            // strongest along the top and bottom of the lens, like the reference
-    vec3 bgc=mix(vec3(.50),rb,.75);
-    float ab=clamp(strength*.8,0.,1.);
-    vec3 pr=bgc*ab*.8+vec3(edgeL*.30);
-    float ra=clamp(ab+edgeL*.30,0.,1.);
-    vec3 body=col*ca+pr*(1.-ca);
-    float oa=clamp(ca+ra*(1.-ca)+.035*(1.-ca),0.,1.);
-    float darkA=(1.-smoothstep(0.,1.3,-d))*.30*u_lift;oa=oa+darkA*(1.-oa);   // hairline dark outline
+    vec3 rb=.5+.5*cos(6.2831*(vec3(0.,.33,.67)+dep*.08+.22*sin(p.x*.085)));
+    float tint=pow(s,2.8)*topbot*u_lift*.14;                                    // a faint green/violet cast along the top and bottom, as on the reference
+    vec3 pr=rb*tint+vec3(edgeL);
+    float oa=clamp(ca+tint+edgeL+darkA*(1.-ca)+outline*(1.-ca),0.,1.);
+    body=body+pr;
     vec4 pre=vec4(body,oa)*inside+basePre*(1.-inside);pre.a=pre.a+shadow*(1.-pre.a);gl_FragColor=pre;return;
   }
   // lighting: bright rim where the light hits (top-left) and the opposite edge, a faint glow inside, a soft sheen on the upper half
