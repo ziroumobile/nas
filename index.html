@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v6.39">
+<meta name="app-version" content="v6.40">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261020I">
+<link rel="stylesheet" href="glass.css?v=20261020J">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -391,7 +391,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261020I"></script>
+<script src="glass.js?v=20261020J"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -637,7 +637,9 @@ function buzz(){ // a short tick: Vibration API (Android), or an invisible switc
       const src=x.thumb?API+x.thumb:x.kind==='image'?API+(x.preview||x.url):'';
       const media=x.kind==='video'?'<video class="pvid" controls playsinline muted autoplay loop preload="auto" '+(src?'poster="'+src+'" ':'')+'src="'+API+x.url+'"></video>':src?'<img alt="" src="'+src+'">':'<div class="pico">'+(ICON[x.kind]||'📄')+'</div>';
       peek.innerHTML='<div class="pbox">'+media+'<div class="pname">'+esc(x.name)+'</div></div>';peek.hidden=false;buzz();
-      const pv=peek.querySelector('video');if(pv){pv.addEventListener('error',()=>{/* format the browser cannot play: the still picture stays */});const pp=pv.play();if(pp&&pp.catch)pp.catch(()=>{})}
+      const pv=peek.querySelector('video');if(pv){pv.addEventListener('error',()=>{/* format the browser cannot play: the still picture stays */});const pp=pv.play();if(pp&&pp.catch)pp.catch(()=>{})
+        // the peek starts on the original at once; if a converted preview (the 預覽畫質 setting: 720p by default) is already made it switches to that lighter file, otherwise one is queued for next time
+        if(vq()!=='orig'&&x.kind==='video')api('/api/vprep?folder='+encodeURIComponent(splitKey(k).folder)+'&name='+encodeURIComponent(x.name)+'&h='+previewHeight()).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.state==='ready'&&peek.contains(pv)&&!pv.paused){const t=pv.currentTime;pv.src=API+j.url;pv.currentTime=t;const p2=pv.play();if(p2&&p2.catch)p2.catch(()=>{})}}).catch(()=>{})}
     },420);
   };
   list.addEventListener('pointerdown',e=>{
