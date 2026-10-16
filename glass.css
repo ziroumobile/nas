@@ -491,9 +491,7 @@ html body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#d
 /* oval (pill) buttons everywhere the clear glass applies */
 html body button:not(#nx1):not(#nx2):not(.selbot button):not(.seg button):not(#dock button):not(.vnav):not(.grip):not(.srch button),html body a.btn:not(#nx1):not(#nx2){border-radius:999px!important}
 
-/* dock + search pill: frosted grey glass like the iOS controls - strong blur and a grey tint, so what is behind never competes with the icons */
-html body #dock{background:rgba(54,56,62,.64)!important;-webkit-backdrop-filter:blur(26px) saturate(190%)!important;backdrop-filter:blur(26px) saturate(190%)!important;
+/* dock + search pill (iPhone / iPad only - Android keeps its own look): frosted grey glass like the iOS controls - strong blur and a grey tint, so what is behind never competes with the icons */
+html.ios:not(.android) body #dock{background:rgba(54,56,62,.64)!important;-webkit-backdrop-filter:blur(26px) saturate(190%)!important;backdrop-filter:blur(26px) saturate(190%)!important;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.17),inset 0 1px 1.5px rgba(255,255,255,.2),0 10px 30px rgba(0,0,0,.4)!important}
-html body .srch input{background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(26px) saturate(190%)!important;backdrop-filter:blur(26px) saturate(190%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.17)!important;border-color:transparent!important}
-html.android body #dock{background:rgba(48,50,56,.9)!important}
-html.android body .srch input{background:rgba(48,50,56,.94)!important}
+html.ios:not(.android) body .srch input{background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(26px) saturate(190%)!important;backdrop-filter:blur(26px) saturate(190%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.17)!important;border-color:transparent!important}
