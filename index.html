@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v6.33">
+<meta name="app-version" content="v6.34">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261020C">
+<link rel="stylesheet" href="glass.css?v=20261020D">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -391,7 +391,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261020C"></script>
+<script src="glass.js?v=20261020D"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -847,7 +847,7 @@ $('#dhome').onclick=goHome;
     else{bio.style.background='#ff453a';bio.innerHTML=sv('<path d="M6.3 6.8A7.4 7.4 0 0 1 12 4a7.4 7.4 0 0 1 7.4 7.4v1.2"/><path d="M4.6 12.6V11.4c0-1.1.2-2.1.6-3"/><path d="M8 12.6v-1.2a4 4 0 0 1 8 0v1.2c0 2 .3 3.9 1 5.6"/><path d="M12 11.4v1.9c0 2.1.4 4.1 1.2 5.9"/><path d="M8 15.6c.1 1.3.4 2.6.9 3.8"/><path d="M15.7 18.6c-.5-1.7-.8-3.6-.8-5.6"/>')}
   }
 }
-$('#dshare').onclick=()=>{try{closeViewer(true)}catch{}try{closeSearchPage(true,true)}catch{}if(document.querySelector('#dock button.on')?.id==='dshare'&&!$('#modal').hidden)return;sharesManager()};
+$('#dshare').onclick=()=>{try{closeViewer(true)}catch{}try{closeSearchPage(true,true)}catch{}if($('#sx')&&!$('#modal').hidden)return;sharesManager()};   // already showing the shared-links page: nothing to do (judged by the page itself, not by the dock marker, which already moved)
 $('#dflt').onclick=()=>{const on=document.body.classList.toggle('reorder');$('#dflt').classList.toggle('act',on)}; // the drag handles only show while this is on
 $('#dsel').onclick=()=>$('#selmode').click();
 $('#selmode').onclick=()=>{selMode=!selMode;if(!selMode)selected.clear();render(true)};
@@ -1559,7 +1559,8 @@ async function clipSendImage(file){
 async function clipSendFiles(files){let ok=false;for(const f of files)if(/^image\//.test(f.type))ok=(await clipSendImage(f))||ok;if(ok){clipSig='';clipRefresh()}}
 function clipOpen(){
   try{closeViewer(true)}catch{}try{closeSearchPage(true,true)}catch{}
-  if(document.querySelector('#dock button.on')?.id==='dclip'&&!$('#modal').hidden&&$('#clipin'))return;document.body.classList.add('dockover');setDock('dclip');
+  if($('#clipin')&&!$('#modal').hidden)return;   // already showing the clipboard
+  document.body.classList.add('dockover');setDock('dclip');
   showPage('<div class="mhead"><h3>📋 剪貼簿</h3></div>'+
     '<textarea id="clipin" rows="2" placeholder="輸入或貼上文字、圖片…（永久保存直到你刪除，只有你的裝置看得到）" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--fg);font:inherit;resize:vertical;min-height:52px"></textarea>'+
     '<div class="mbtns" style="margin:8px 0"><button class="ghost" id="clippaste">📋 貼上</button><button class="ghost" id="clipsend">送出文字</button><button class="ghost" id="clippic">🖼 選圖片</button></div>'+
