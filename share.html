@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
-<link rel="stylesheet" href="glass.css?v=20261020G">
+<link rel="stylesheet" href="glass.css?v=20261020H">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <title>檔案分享</title>
 <style>
@@ -120,7 +120,11 @@ header h1{margin:0}
 body.selecting #app>header .hdrbtns{visibility:hidden}
 html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:relative;width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(24px) saturate(190%)!important;backdrop-filter:blur(24px) saturate(190%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(255,255,255,.08),0 10px 28px rgba(0,0,0,.4)!important;color:#fff!important;border:0!important}
 #app>header button.hb svg{width:24px;height:24px}
-html.ios #app>header{height:58px!important}
+html.ios #app>header{height:auto!important}
+/* the round select button sits on the same row as the back arrow (top right); the title starts below that row so the two never overlap */
+#app{padding-top:60px}
+.hdrbtns{position:fixed;z-index:900;top:calc(env(safe-area-inset-top) + 10px);right:16px}
+@media(min-width:900px){.hdrbtns{right:max(16px,calc((100vw - 828px)/2 - 2px))}}
 </style></head><body><div id="topsent" aria-hidden="true"></div><div class="wrap"><div id="appback" role="button" tabindex="0" aria-label="返回" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div>
 <div id="gate" class="card">
   <h1>🔒 檔案分享</h1>
@@ -156,7 +160,7 @@ html.ios #app>header{height:58px!important}
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="glass.js?v=20261020G"></script>
+<script src="glass.js?v=20261020H"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
