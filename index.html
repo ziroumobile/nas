@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v4.39">
+<meta name="app-version" content="v4.40">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261016K">
+<link rel="stylesheet" href="glass.css?v=20261016L">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -332,7 +332,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261016K"></script>
+<script src="glass.js?v=20261016L"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -401,10 +401,10 @@ $('#out').onclick=async()=>{await dropLogin();location.reload()};
 $('#appver').textContent=document.querySelector('meta[name=app-version]')?.content||'';
 // ---- preferences kept on this device ----
 const LOCKS=[['0','立即',3000],['60','1 分鐘',60000],['300','5 分鐘',300000],['1800','30 分鐘',1800000],['never','不鎖（只有重新打開 App 才要解鎖）',Infinity]];
-const VQS=[['auto','自動（依螢幕大小）'],['720','720p（省流量）'],['1080','1080p（標準）'],['1440','1440p（高畫質）'],['orig','原檔（不轉檔）']];
+const VQS=[['720','預設（720p）'],['1080','1080p（標準）'],['1440','1440p（高畫質）'],['orig','原檔（不轉檔）']];
 const lockKey=()=>{try{return ls.get('nas_lock')||'60'}catch{return '60'}};
 const lockMs=()=>(LOCKS.find(x=>x[0]===lockKey())||LOCKS[1])[2];
-const vq=()=>{try{const q=ls.get('nas_vq');return VQS.some(x=>x[0]===q)?q:'auto'}catch{return 'auto'}};
+const vq=()=>{try{const q=ls.get('nas_vq');return VQS.some(x=>x[0]===q)?q:'720'}catch{return '720'}};
 const prefLabel=(list,key)=>((list.find(x=>x[0]===key)||list[0])[1]).replace(/（.*$/,'');
 const syncPrefs=()=>{$('#locksetv').textContent=prefLabel(LOCKS,lockKey());$('#vqsetv').textContent=prefLabel(VQS,vq())};
 function pickPage(title,note,list,cur,save){ // a list of choices (check mark on the current one); picking one saves it and goes back to the settings page
@@ -1014,13 +1014,16 @@ async function devicesWindow(){ // the other devices signed in to this account; 
   showPage('<h3>📱 其他已登入的裝置</h3><p class="sub">載入中…</p>');
   const when=t=>new Date(t).toLocaleString('zh-TW',{hour12:false});
   let j;try{const r=await api('/api/sessions');if(!r.ok)throw 0;j=await r.json()}catch{showPage('<h3>📱 其他已登入的裝置</h3><p class="merr">無法載入</p><div class="mbtns"><button class="ghost" id="dvx">關閉</button></div>');$('#dvx').onclick=closeModal;return}
-  const others=j.sessions.filter(x=>x.id!==j.current);
+  const groups=new Map(); // the same phone can hold several logins (an old one, the browser, the installed app): show it once
+  for(const x of j.sessions.filter(x=>x.id!==j.current)){const key=(x.dev||'')+'|'+uaShort(x.ua),g=groups.get(key);
+    if(!g)groups.set(key,{...x,ids:[x.id]});else{g.ids.push(x.id);g.last=Math.max(g.last,x.last);g.first=Math.min(g.first,x.first)}}
+  const others=[...groups.values()].sort((a,b)=>b.last-a.last);
   showPage('<div class="mhead"><h3>📱 其他已登入的裝置（'+others.length+'）</h3><button class="ghost" id="dvx">關閉</button></div><p class="sub">選擇要登出哪一台。登出後那台裝置會回到登入畫面，要重新輸入密碼。只列出主機看過的登入。</p>'+
-    (others.length?others.map(x=>'<div class="srow"><b>'+esc(x.dev||'（未命名）')+'</b><small>'+esc(uaShort(x.ua))+'<br>最近使用 '+when(x.last)+' · 首次 '+when(x.first)+'</small><div class="mbtns" style="margin-top:6px"><button class="del" data-sid="'+esc(x.id)+'">登出這台</button></div></div>').join(''):'<p class="sub">沒有其他已登入的裝置。</p>'));
+    (others.length?others.map(x=>'<div class="srow"><b>'+esc(x.dev||'（未命名）')+'</b><small>'+esc(uaShort(x.ua))+'<br>最近使用 '+when(x.last)+' · 首次 '+when(x.first)+'</small><div class="mbtns" style="margin-top:6px"><button class="del" data-sid="'+esc(x.ids.join(','))+'">登出這台</button></div></div>').join(''):'<p class="sub">沒有其他已登入的裝置。</p>'));
   $('#dvx').onclick=closeModal;
   $('#mbox').onclick=async e=>{const b=e.target.closest('button[data-sid]');if(!b)return;if(!confirm('登出這台裝置？'))return;
     const bh=await askBioOnly('用生物辨識確認，登出這台裝置');if(!bh)return;b.disabled=true;
-    const r=await api('/api/sessions/revoke',{method:'POST',headers:bh,body:JSON.stringify({id:b.dataset.sid})});
+    const r=await api('/api/sessions/revoke',{method:'POST',headers:bh,body:JSON.stringify({ids:b.dataset.sid.split(',')})});
     if(!r.ok){alert((await r.json().catch(()=>({}))).error||'登出失敗');b.disabled=false;return}devicesWindow()};
 }
 async function trashWindow(){ // everything that was deleted but is still kept on the NAS: put it back, or empty it for good
@@ -1070,7 +1073,7 @@ function openViewer(k,keys){ // keys = an explicit list to browse (e.g. the file
 }
 // the preview player does not need the original 4K file: phones and FHD / 2K screens get <= 1080p, 4K screens <= 1440p (converted once on the PC, then cached)
 // photos: phones show up to 2K (shorter side 1440); desktops follow the same rule as videos
-const photoHeight=()=>{const q=vq();if(q==='720'||q==='1080'||q==='1440')return +q;return document.documentElement.classList.contains('ios')?1440:previewHeight()};
+const photoHeight=()=>{const q=vq();return q==='orig'?1080:+q};
 async function pickImageSrc(folder,x,fallback){
   if(vq()==='orig')return{src:fallback};
   try{
@@ -1080,7 +1083,7 @@ async function pickImageSrc(folder,x,fallback){
     return{src:j.state==='ready'?API+j.url:fallback,w:j.w,h:j.h};
   }catch{return{src:fallback}}
 }
-const previewHeight=()=>{const q=vq();if(q==='720'||q==='1080'||q==='1440')return +q;if(document.documentElement.classList.contains('ios'))return 1080;const long=Math.max(screen.width,screen.height)*(window.devicePixelRatio||1);return long>=3300?1440:1080};
+const previewHeight=()=>{const q=vq();if(q!=='orig')return +q;if(document.documentElement.classList.contains('ios'))return 1080;const long=Math.max(screen.width,screen.height)*(window.devicePixelRatio||1);return long>=3300?1440:1080};
 async function pickVideoSrc(folder,x,u,seq,msg){
   if(vq()==='orig')return u; // original file, no conversion
   const h=previewHeight();let note=null,skip=false;
