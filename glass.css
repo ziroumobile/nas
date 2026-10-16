@@ -522,3 +522,10 @@ html body button:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.seg button):not(#d
 html body a.btn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){transition:background-color .14s ease,box-shadow .14s ease,transform .14s ease}
 html body button:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.seg button):not(#dock button):not(.srw):not(.prow):not(.grip):not(.vnav):not(.srch button):is(:active,.gpress),
 html body a.btn:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){background:rgba(235,235,245,.30)!important;box-shadow:inset 0 0 9px rgba(255,255,255,.30)!important;transform:scale(.94)!important}
+
+/* select mode: back arrow on the left, count on the right, no 全選 */
+html.ios body .seltop{justify-content:flex-start}
+html.ios body .seltop #selcount{margin-right:0;margin-left:auto;order:9}
+html.ios body .seltop button#selall{display:none!important}
+html.ios body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(32,34,40,.92)!important;color:#fff!important;width:46px;height:46px;min-width:46px;min-height:46px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important}
+html.ios body .seltop button#selexit svg{width:24px;height:24px}
