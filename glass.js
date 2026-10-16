@@ -208,20 +208,23 @@ void main(){
     gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    dent(s, L, L.w + GROW + st, segW, segH, r.h + GROW);   // sized for the fully swollen lens, not the one still growing
+    dent(s, L, segW, segH);
   }
   // the bar's glass is pushed in a little at the top and bottom where the lens sits on it (a notch cut out of its ::before layer; the shadow around it stays)
-  function dent(s, L, lw, W, Hs, LH) {
-    const R = Hs / 2, D0 = (L.tg > 0 ? 1 : Math.max(0, Math.min(1, L.grow / (GROW * 0.5)))) * 4.5, hh = LH / 2;   // full depth from the very first frame of a press
-    // the notch lives INSIDE the lens: at the bar's edge the lens (a capsule) is narrower than at its middle, so use that chord, not its full width
-    const dy = Math.min(hh - 1, Hs / 2), half = Math.max(0, lw / 2 - hh + Math.sqrt(Math.max(0, hh * hh - dy * dy))) - 1;
-    let xa = Math.max(R, L.cx - half), xb = Math.min(W - R, L.cx + half);
-    if (xb - xa < 8 || D0 < .2) { s.seg.style.removeProperty('--lensclip'); return; }
-    const D = D0 * Math.min(1, (xb - xa) / (half * 2)) * 1.25, e = Math.min(10, (xb - xa) / 3), f = n => n.toFixed(1);   // like Apple: the edge folds in over a short stretch, then runs straight across the middle
-    const slot = y0 => { const sg = y0 === 0 ? 1 : -1, yd = y0 + sg * D; return `M${f(xa)},${f(y0)}C${f(xa)},${f(y0 + sg * D * .25)} ${f(xa + e * .15)},${f(yd)} ${f(xa + e)},${f(yd)}L${f(xb - e)},${f(yd)}C${f(xb - e * .15)},${f(yd)} ${f(xb)},${f(y0 + sg * D * .25)} ${f(xb)},${f(y0)}Z`; };
-    const top = slot(0), bot = slot(Hs);
+  function dent(s, L, W, Hs) {
+    // Measured from the App Store recording: inside the lens the bar's top and bottom edge are pushed in by a capsule-shaped notch.
+    // It is ~62% of the resting lens width, centred on the lens, ~4px deep, and its ends are quarter circles (radius = depth):
+    // the edge drops straight down, turns, and runs flat. Its size never depends on how fast you drag.
+    const D0 = (L.tg > 0 ? 1 : Math.max(0, Math.min(1, L.grow / (GROW * 0.5)))) * 4;
+    const R = Hs / 2, half = (L.tw + GROW) * 0.31;
+    const xa = Math.max(R, L.cx - half), xb = Math.min(W - R, L.cx + half), D = Math.min(D0, (xb - xa) / 2 - 1);
+    if (D < .3) { s.seg.style.removeProperty('--lensclip'); return; }
+    const f = n => n.toFixed(1);
+    const top = `M${f(xa)},0A${f(D)},${f(D)} 0 0 0 ${f(xa + D)},${f(D)}L${f(xb - D)},${f(D)}A${f(D)},${f(D)} 0 0 0 ${f(xb)},0Z`;
+    const bot = `M${f(xa)},${f(Hs)}A${f(D)},${f(D)} 0 0 1 ${f(xa + D)},${f(Hs - D)}L${f(xb - D)},${f(Hs - D)}A${f(D)},${f(D)} 0 0 1 ${f(xb)},${f(Hs)}Z`;
     s.seg.style.setProperty('--lensclip', `path(evenodd,"M-80,-80H${f(W + 80)}V${f(Hs + 80)}H-80Z${top}${bot}")`);
   }
+
 
   // ---------- layout / pill ----------
   function placePill(s, i, animate) {
