@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v4.46">
+<meta name="app-version" content="v4.47">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261016S">
+<link rel="stylesheet" href="glass.css?v=20261016T">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -349,7 +349,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261016S"></script>
+<script src="glass.js?v=20261016T"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -609,7 +609,8 @@ function markFullFolders(){ // a folder with every one of its files selected get
   if(!selMode&&!document.querySelector('details.fold.allsel'))return;
   const by=new Map(folders.map(f=>[f.name,f]));
   for(const el of document.querySelectorAll('#list details.fold')){const f=by.get(el.dataset.f);
-    el.classList.toggle('allsel',!!(selMode&&f&&f.files.length&&f.files.every(x=>selected.has(keyOf(f.name,x.name)))))}
+    const all=!!(selMode&&f&&f.files.length&&f.files.every(x=>selected.has(keyOf(f.name,x.name))));
+    el.classList.toggle('allsel',all);const sb=el.querySelector(':scope>summary [data-selfolder]');if(sb)sb.textContent=all?'取消全選':'全選'}
 }
 function updateSelUI(){
   markFullFolders();
@@ -736,7 +737,11 @@ $('#selmode').onclick=()=>{selMode=!selMode;if(!selMode)selected.clear();render(
 $('#selexit').onclick=()=>{selMode=false;selected.clear();render(true)};
 $('#selall').onclick=()=>{allKeys().forEach(k=>setSel(k,true));updateSelUI()};
 $('#selnone').onclick=()=>{[...selected].forEach(k=>setSel(k,false));updateSelUI()};
-function selectFolder(name){folders.find(f=>f.name===name)?.files.forEach(x=>setSel(keyOf(name,x.name),true));updateSelUI()}
+function selectFolder(name){ // toggles: everything selected already -> deselect the folder's files, otherwise select them all
+  const f=folders.find(f=>f.name===name);if(!f)return;
+  const all=f.files.length>0&&f.files.every(x=>selected.has(keyOf(name,x.name)));
+  f.files.forEach(x=>setSel(keyOf(name,x.name),!all));updateSelUI();
+}
 // iPhone / iPad: a link to the API (another site) opens "Open in Safari?" and the file is lost. So fetch the file here and save it as a blob (files over ~600 MB can't be held in memory -> normal link).
 const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),BLOB_MAX=600*1024*1024;
 // after the download finishes, show a "save" pill: tapping it (a fresh tap, which iOS requires) opens the share sheet with 儲存到檔案 / 儲存影像
