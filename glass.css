@@ -834,3 +834,5 @@ html:not(.ios) body #dock{width:min(92vw,620px)!important;gap:0}
 html:not(.ios) body #dock button{flex:1 1 0;width:auto;min-width:0}
 /* desktop: the pin mark sits in the card's top-right corner, clear of the drag handle */
 html:not(.ios) body .pinb{top:-9px;right:-10px;padding:6px;margin:-6px}
+/* desktop: the select-mode bars stay inside the centred column instead of stretching across the whole window */
+html:not(.ios) body .seltop,html:not(.ios) body .selbot{left:max(12px,calc((100vw - 828px)/2))!important;right:max(12px,calc((100vw - 828px)/2))!important}
