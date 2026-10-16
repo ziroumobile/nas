@@ -212,18 +212,33 @@ void main(){
   }
   // the bar's glass is pushed in a little at the top and bottom where the lens sits on it (a notch cut out of its ::before layer; the shadow around it stays)
   function dent(s, L, W, Hs) {
-    // Measured from the App Store recording: inside the lens the bar's top and bottom edge are pushed in by a capsule-shaped notch.
-    // It is ~62% of the resting lens width, centred on the lens, ~4px deep, and its ends are quarter circles (radius = depth):
-    // the edge drops straight down, turns, and runs flat. Its size never depends on how fast you drag.
+    // Measured from the App Store recording: inside the lens the bar's top and bottom edge are pushed in by a notch
+    // ~62% of the resting lens width, centred on the lens, ~4px deep, with quarter-circle ends. It follows the bar's outline,
+    // so at either end of the bar it bends round the rounded cap too. Its size never depends on how fast you drag.
     const D0 = (L.tg > 0 ? 1 : Math.max(0, Math.min(1, L.grow / (GROW * 0.5)))) * 4;
     const R = Hs / 2, half = (L.tw + GROW) * 0.31;
-    const xa = Math.max(R, L.cx - half), xb = Math.min(W - R, L.cx + half), D = Math.min(D0, (xb - xa) / 2 - 1);
+    const xa = Math.max(3, L.cx - half), xb = Math.min(W - 3, L.cx + half), D = Math.min(D0, (xb - xa) / 3);
     if (D < .3) { s.seg.style.removeProperty('--lensclip'); return; }
     const f = n => n.toFixed(1);
-    const top = `M${f(xa)},0A${f(D)},${f(D)} 0 0 0 ${f(xa + D)},${f(D)}L${f(xb - D)},${f(D)}A${f(D)},${f(D)} 0 0 0 ${f(xb)},0Z`;
-    const bot = `M${f(xa)},${f(Hs)}A${f(D)},${f(D)} 0 0 1 ${f(xa + D)},${f(Hs - D)}L${f(xb - D)},${f(Hs - D)}A${f(D)},${f(D)} 0 0 1 ${f(xb)},${f(Hs)}Z`;
-    s.seg.style.setProperty('--lensclip', `path(evenodd,"M-80,-80H${f(W + 80)}V${f(Hs + 80)}H-80Z${top}${bot}")`);
+    // point on the bar outline at x (top or bottom half) and the inward normal there
+    const at = (x, top) => {
+      let px = x, py, nx, ny;
+      if (x < R || x > W - R) { const cx = x < R ? R : W - R, dx = x - cx, dy = Math.sqrt(Math.max(0, R * R - dx * dx)); py = top ? R - dy : R + dy; nx = (cx - px) / R; ny = (R - py) / R; }
+      else { py = top ? 0 : Hs; nx = 0; ny = top ? 1 : -1; }
+      return { x: px, y: py, nx, ny, tx: top ? ny : -ny, ty: top ? -nx : nx };   // t points towards larger x along the outline
+    };
+    const notch = top => {
+      const sw = top ? 0 : 1, A = at(xa, top), B = at(xb, top);
+      const Ai = { x: A.x + A.nx * D + A.tx * D, y: A.y + A.ny * D + A.ty * D }, Bi = { x: B.x + B.nx * D - B.tx * D, y: B.y + B.ny * D - B.ty * D };
+      let p = `M${f(A.x)},${f(A.y)}A${f(D)},${f(D)} 0 0 ${sw} ${f(Ai.x)},${f(Ai.y)}`;
+      for (let x = Ai.x + 3; x < Bi.x - 1; x += 3) { const q = at(x, top); p += `L${f(q.x + q.nx * D)},${f(q.y + q.ny * D)}`; }   // the pushed-in edge, parallel to the outline
+      p += `L${f(Bi.x)},${f(Bi.y)}A${f(D)},${f(D)} 0 0 ${sw} ${f(B.x)},${f(B.y)}`;
+      for (let x = xb - 3; x > xa + 1; x -= 3) { const q = at(x, top); p += `L${f(q.x)},${f(q.y)}`; }                     // back along the bar's own outline
+      return p + 'Z';
+    };
+    s.seg.style.setProperty('--lensclip', `path(evenodd,"M-80,-80H${f(W + 80)}V${f(Hs + 80)}H-80Z${notch(true)}${notch(false)}")`);
   }
+
 
 
   // ---------- layout / pill ----------
