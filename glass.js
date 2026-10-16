@@ -70,8 +70,10 @@ void main(){
     vec3 pr=rb*tint+vec3(edgeL);
     float oa=clamp(ca+tint+edgeL+darkA*(1.-ca)+outline*(1.-ca),0.,1.);
     // the bar's top / bottom edge is pushed in inside the lens: a soft (blurred) dark band along them, feathered towards the lens ends so it has no hard corners
-    float yT=segPos.y,yB=u_cy*2.-segPos.y,dp=5.5*u_lift;
-    float band=max(1.-smoothstep(dp-3.5,dp+4.5,yT),1.-smoothstep(dp-3.5,dp+4.5,yB))*smoothstep(0.,16.,-d)*.7*u_lift;
+    float yT=segPos.y,yB=u_cy*2.-segPos.y,dp=6.*u_lift;
+    float hwy=hs.x-r+sqrt(max(r*r-p.y*p.y,0.));                              // half-width of the lens (a capsule) on this row
+    float endFade=smoothstep(2.,18.,hwy-abs(p.x));                          // soft ends, measured along the row (not from the outline)
+    float band=max(1.-smoothstep(dp-4.,dp+4.5,yT),1.-smoothstep(dp-4.,dp+4.5,yB))*endFade*.9*u_lift;
     oa=oa+band*(1.-ca)*(1.-oa);
     body=body+pr;
     vec4 pre=vec4(body,oa)*inside+basePre*(1.-inside);pre.a=pre.a+shadow*(1.-pre.a);gl_FragColor=pre;return;
