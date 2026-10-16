@@ -551,3 +551,7 @@ html:not(.android) #dock #dockpill{display:none!important}
 html:not(.android) body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.seg button){box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)!important}
 html:not(.android) body #dock button:is(:active,.gpress){background:rgba(235,235,245,.22)!important}
 html:not(.android) body #dock button.on:is(:active,.gpress){background:rgba(0,0,0,.62)!important}
+/* the "+" upload button belongs to the home page only (the upload cloud still shows while a transfer runs) */
+html body:is(.dockover,.selecting):not(.uploading) button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
+html body:has(#setpanel:not([hidden])):not(.uploading) button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
+html body:has(#modal:not([hidden])):not(.uploading) button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important}
