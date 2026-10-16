@@ -216,8 +216,9 @@ void main(){
     // the notch lives INSIDE the lens: at the bar's edge the lens (a capsule) is narrower than at its middle, so use that chord, not its full width
     const dy = Math.min(hh - 1, Hs / 2), half = Math.max(0, lw / 2 - hh + Math.sqrt(Math.max(0, hh * hh - dy * dy))) - 1;
     let xa = Math.max(R, L.cx - half), xb = Math.min(W - R, L.cx + half);
-    if (xb - xa < 8 || D0 < .2) { s.seg.style.removeProperty('--lensclip'); return; }
-    const D = D0 * Math.min(1, (xb - xa) / (half * 2)) * 1.25, e = Math.min(24, (xb - xa) / 2.2), f = n => n.toFixed(1);   // like Apple: the edge folds in over a short stretch, then runs straight across the middle
+    const endF = Math.min(1, Math.max(0, (L.cx - .4 * lw) / (.5 * lw)), Math.max(0, (W - L.cx - .4 * lw) / (.5 * lw)));   // at either end of the bar the lens covers the cap and the edge stays straight (Apple)
+    if (xb - xa < 8 || D0 * endF < .2) { s.seg.style.removeProperty('--lensclip'); return; }
+    const D = D0 * endF * Math.min(1, (xb - xa) / (half * 2)) * 1.25, e = Math.min(24, (xb - xa) / 2.2), f = n => n.toFixed(1);   // like Apple: the edge folds in over a short stretch, then runs straight across the middle
     const slot = y0 => { const sg = y0 === 0 ? 1 : -1, yd = y0 + sg * D; return `M${f(xa)},${f(y0)}C${f(xa + e * .6)},${f(y0)} ${f(xa + e * .4)},${f(yd)} ${f(xa + e)},${f(yd)}L${f(xb - e)},${f(yd)}C${f(xb - e * .4)},${f(yd)} ${f(xb - e * .6)},${f(y0)} ${f(xb)},${f(y0)}Z`; };
     const top = slot(0), bot = slot(Hs);
     s.seg.style.setProperty('--lensclip', `path(evenodd,"M-80,-80H${f(W + 80)}V${f(Hs + 80)}H-80Z${top}${bot}")`);
