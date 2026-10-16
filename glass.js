@@ -55,13 +55,14 @@ void main(){
   const rrect = (x, X, Y, W, H, R) => { x.beginPath(); x.moveTo(X + R, Y); x.arcTo(X + W, Y, X + W, Y + H, R); x.arcTo(X + W, Y + H, X, Y + H, R); x.arcTo(X, Y + H, X, Y, R); x.arcTo(X, Y, X + W, Y, R); x.closePath(); };
   const rgb = css => { const m = css.match(/[\d.]+/g) || [0, 0, 0]; return [m[0] / 255, m[1] / 255, m[2] / 255]; };
 
-  function build(seg) {
+  function build(seg, isDock) {
     const btns = [...seg.querySelectorAll('button')];
     if (btns.length < 2) return;
     const pill = document.createElement('span'); pill.className = 'seg-pill'; pill.setAttribute('aria-hidden', 'true');
     const canvas = document.createElement('canvas'); canvas.className = 'seg-gl'; canvas.setAttribute('aria-hidden', 'true');
     seg.append(pill, canvas);
-    const s = { seg, btns, pill, canvas, drag: null, active: false, lens: null, gl: null, running: false, lw: 0, lh: 0, hot: -1 };
+    const s = { seg, btns, pill, canvas, drag: null, active: false, lens: null, gl: null, running: false, lw: 0, lh: 0, hot: -1, dock: !!isDock };
+    if (isDock) Object.defineProperty(s, 'btns', { get: () => [...seg.querySelectorAll('button')].filter(b => b.offsetWidth > 0) });   // admin-only buttons come and go
     s.nearest = cx => { const c = geom(s).map(g => g.l + g.w / 2); let k = 0; c.forEach((v, i) => { if (Math.abs(v - cx) < Math.abs(c[k] - cx)) k = i; }); return k; };
     s.gl = initGL(s);
     switches.push(s); wire(s);
@@ -93,6 +94,15 @@ void main(){
     return { gl, u, tex };
   }
 
+  // the dock's labels are SVG icons: render each one (in the wanted colour) to an image once, then reuse it for the lens texture
+  function iconImg(s, b, color) {
+    const c = b._ic || (b._ic = {}), hit = c[color]; if (hit) return hit.ok ? hit.img : null;
+    const cl = b.querySelector('svg').cloneNode(true); cl.setAttribute('xmlns', 'http://www.w3.org/2000/svg'); cl.setAttribute('width', '27'); cl.setAttribute('height', '27');
+    const img = new Image(), e = c[color] = { img, ok: false };
+    img.onload = () => { e.ok = true; if (!s.dragging) makeTexture(s); };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(cl).replace(/currentColor/g, color));
+    return null;
+  }
   // paint what the switch looks like (page, capsule, labels) so the lens can refract it
   function makeTexture(s) {
     const g = s.gl; if (!g) return;
@@ -100,7 +110,7 @@ void main(){
     const c = s.tex2d || (s.tex2d = document.createElement('canvas'));
     const cw = Math.ceil((W + 2 * T) * DPR), ch = Math.ceil((H + 2 * T) * DPR); if (c.width !== cw || c.height !== ch) { c.width = cw; c.height = ch; }
     const x = c.getContext('2d'); x.setTransform(DPR, 0, 0, DPR, 0, 0);
-    x.fillStyle = getComputedStyle(document.body).backgroundColor || '#111318'; x.fillRect(0, 0, W + 2 * T, H + 2 * T);
+    x.fillStyle = s.dock ? '#2f3137' : (getComputedStyle(document.body).backgroundColor || '#111318'); x.fillRect(0, 0, W + 2 * T, H + 2 * T);
     const sc = getComputedStyle(s.seg);
     x.fillStyle = sc.backgroundColor; rrect(x, T, T, W, H, H / 2); x.fill();
     x.strokeStyle = 'rgba(255,255,255,.07)'; x.lineWidth = 1; rrect(x, T + .5, T + .5, W - 1, H - 1, H / 2); x.stroke();
@@ -110,6 +120,8 @@ void main(){
     const white = root.getPropertyValue('--seg-fg').trim() || '#fff', blue = root.getPropertyValue('--seg-blue').trim() || '#0a84ff';
     const blueIdx = s.active && s.hot >= 0 ? s.hot : selected(s);
     s.btns.forEach((b, i) => {
+      const ic = s.dock && b.querySelector('svg');
+      if (ic) { const im = iconImg(s, b, i === blueIdx ? blue : white); if (im) x.drawImage(im, T + b.offsetLeft + b.offsetWidth / 2 - 13.5, T + b.offsetTop + b.offsetHeight / 2 - 13.5, 27, 27); return; }
       const cs = getComputedStyle(b);
       x.font = `500 ${cs.fontSize} ${cs.fontFamily}`;
       x.fillStyle = i === blueIdx ? blue : white;
@@ -249,7 +261,7 @@ void main(){
       const changed = k !== selected(s), g = geom(s)[k];
       if (s.gl && s.lens) { s.lens.tx = g.l + g.w / 2; s.lens.tw = g.w; s.lens.tg = 0; s.lens.tm = 1; loop(s); }   // spring into the slot, then finishLens
       else { s.active = false; s.pill.classList.remove('noanim'); seg.classList.remove('dragging'); setHot(s, -1, true); }
-      if (changed) { if (s.lens) s.pendingK = k; else { const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; } }                                // choose through the normal handler
+      if (changed || s.dock) { if (s.lens) s.pendingK = k; else { const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; } }                                // choose through the normal handler
       if (!s.lens) placePill(s, selected(s), true);
     };
     seg.addEventListener('pointerup', end); seg.addEventListener('pointercancel', end);
@@ -259,7 +271,14 @@ void main(){
   // called by the page whenever the selected option changed (a tap, or any other code)
   window.glassSegSync = () => switches.forEach(s => { if (s.active) return; placePill(s, selected(s), true); makeTexture(s); });
 
-  const init = () => document.querySelectorAll('.seg').forEach(build);
+  const init = () => {
+    document.querySelectorAll('.seg').forEach(x => build(x));
+    const dk = document.getElementById('dock');
+    if (dk) {
+      const s = build(dk, true);
+      if (s) { let t = 0; new MutationObserver(() => { if (s.active || t) return; t = setTimeout(() => { t = 0; if (!s.active) { placePill(s, selected(s), true); makeTexture(s); } }, 0); }).observe(dk, { subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'style'] }); }
+    }
+  };
   // ---------- drop-down menus (replace the native <select> list, which iOS draws far from the button) ----------
   let gm = null;
   function closeMenu() { if (!gm) return; const m = gm; gm = null; m.classList.add('out'); setTimeout(() => m.remove(), 170); }

@@ -584,3 +584,9 @@ html.ios:not(.android) #dock svg{filter:none}
 html.ios:not(.android) body #dock,html.android body #dock,html.ios body #dock{background:transparent!important;-webkit-backdrop-filter:blur(2px)!important;backdrop-filter:blur(2px)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.20),inset 0 -1px 0 rgba(255,255,255,.10),inset 0 1px 2px rgba(255,255,255,.12),0 6px 18px rgba(0,0,0,.18)!important}
 html:not(.android) #dock #dockpill.rest,html:not(.android) #dock #dockpill.on{-webkit-backdrop-filter:blur(2px)!important;backdrop-filter:blur(2px)!important;background:rgba(255,255,255,.07)}
 html.ios body .selbot #selcount{background:transparent!important;-webkit-backdrop-filter:blur(2px)!important;backdrop-filter:blur(2px)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(255,255,255,.14),inset 0 1px 3px rgba(255,255,255,.14)!important;text-shadow:0 0 3px rgba(0,0,0,.7)}
+
+/* dock driven by the same liquid-glass lens as the view switch: the icon under the lens turns blue, the rest stay white while sliding */
+#dock .seg-pill,#dock .seg-gl{position:absolute;left:0;top:0}
+html.ios body #dock button.glass-hot:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:var(--seg-blue,#0a84ff)!important}
+html.ios body #dock.dragging button.on:not(.glass-hot):not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:var(--seg-fg,#fff)!important}
+html body #dock button:is(:active,.gpress):not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:transparent!important}
