@@ -90,6 +90,7 @@ void main(){
 }`.replace('SPADCUT', (SPAD * 0.95).toFixed(1));
 
   const switches = [];
+  const gr = s => s.dock ? GROW : (s.grow || GROW);
   const geom = s => (s.active && s.gc) ? s.gc : (s.gc = s.btns.map(b => ({ l: b.offsetLeft, w: b.offsetWidth, t: b.offsetTop, h: b.offsetHeight })));   // cached while the lens is moving: no layout reads per frame
   const selected = s => Math.max(0, s.btns.findIndex(b => b.classList.contains('on')));
   const rrect = (x, X, Y, W, H, R) => { x.beginPath(); x.moveTo(X + R, Y); x.arcTo(X + W, Y, X + W, Y + H, R); x.arcTo(X + W, Y + H, X, Y + H, R); x.arcTo(X, Y + H, X, Y, R); x.arcTo(X, Y, X + W, Y, R); x.closePath(); };
@@ -191,7 +192,7 @@ void main(){
   // draw the lens for the current state (cx = centre x, w = width, grow = extra size while held, mag, lift = strength 0..1)
   function draw(s) {
     const g = s.gl, L = s.lens; if (!g || !L) return;
-    const r = geom(s)[selected(s)], H = r.h + GROW, t = r.t - GROW / 2, segW = s.seg.clientWidth, segH = s.seg.clientHeight;
+    const r = geom(s)[selected(s)], H = r.h + gr(s), t = r.t - gr(s) / 2, segW = s.seg.clientWidth, segH = s.seg.clientHeight;
     const ox = -SPAD, oy = Math.min(t, 0) - SPAD, cssW = Math.ceil(segW + 2 * SPAD), cssH = Math.ceil(Math.max(t + H, segH) - Math.min(t, 0) + 2 * SPAD);   // fixed canvas over the whole bar
     const cv = s.canvas;
     if (cv.width !== Math.round(cssW * DPR) || cv.height !== Math.round(cssH * DPR)) { cv.width = Math.round(cssW * DPR); cv.height = Math.round(cssH * DPR); cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px'; }
@@ -202,7 +203,7 @@ void main(){
     gl.uniform2f(u.u_cssRes, cssW, cssH); gl.uniform1f(u.u_dpr, DPR);
     gl.uniform4f(u.u_rect, L.cx - lw / 2 - ox, t - oy, lw, H);
     gl.uniform2f(u.u_org, ox, oy); gl.uniform2f(u.u_texSize, s.texW, s.texH); gl.uniform1f(u.u_pad, TPAD);
-    gl.uniform1f(u.u_mag, L.mag); gl.uniform1f(u.u_bezel, BEZEL); gl.uniform1f(u.u_lift, Math.min(1, L.grow / GROW));
+    gl.uniform1f(u.u_mag, L.mag); gl.uniform1f(u.u_bezel, s.dock ? BEZEL : BEZEL * Math.min(1, H / 80));   // a thinner bar gets a proportionally thinner curved edge (the dock keeps its own) gl.uniform1f(u.u_lift, Math.min(1, L.grow / gr(s)));
     gl.uniform3f(u.u_tint, 1, 1, 1);
     { const gm = geom(s), c = gm.slice(0, 4).map(q => q.l + q.w / 2); while (c.length < 4) c.push(-9999); gl.uniform4f(u.u_ax, c[0], c[1], c[2], c[3]); gl.uniform1f(u.u_n, Math.min(4, gm.length)); gl.uniform1f(u.u_cy, gm[0].t + gm[0].h / 2); }
     gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1);
@@ -216,8 +217,8 @@ void main(){
     // centred on the lens, with quarter-circle ends. It is NOT stopped at the rounded ends of the bar: there the notch simply cuts the cap
     // flat as well, so at either end of the dock the edge inside the lens is a straight line too. Full depth from the first frame of a press;
     // its size never depends on how fast you drag.
-    const D0 = (L.tg > 0 ? 1 : Math.max(0, Math.min(1, L.grow / (GROW * 0.5)))) * 4;
-    const half = (L.tw + GROW) * 0.31;
+    const D0 = (L.tg > 0 ? 1 : Math.max(0, Math.min(1, L.grow / (gr(s) * 0.5)))) * 4 * (s.dock ? 1 : Math.min(1, Hs / 70));   // the view switch is a thinner bar: same proportions as the dock
+    const half = (L.tw + gr(s)) * 0.31;
     const xa = Math.max(-2, L.cx - half), xb = Math.min(W + 2, L.cx + half), D = Math.min(D0, (xb - xa) / 2 - 1);
     if (D < .3) { s.seg.style.removeProperty('--lensclip'); return; }
     const f = n => n.toFixed(1);
@@ -237,6 +238,7 @@ void main(){
     if (!animate) { p.getBoundingClientRect(); p.classList.remove('noanim'); }
   }
   function relayout(s) {
+    if (!s.dock) { const b0 = s.btns[0]; if (b0 && b0.offsetHeight) s.grow = Math.max(8, s.seg.clientHeight - b0.offsetHeight + 10); }
     s.tc = null; s._b = null; s.gc = null;
     s.lw = s.seg.clientWidth; s.lh = s.seg.clientHeight;
     s.maxW = Math.max(...geom(s).map(g => g.w));
@@ -248,7 +250,7 @@ void main(){
   const spring = (cur, vel, target, dt, k, c) => { const a = k * (target - cur) - c * vel; vel += a * dt; return [cur + vel * dt, vel]; };
   function startLens(s) {
     s.gc = null; s.active = false; const r = geom(s)[selected(s)];
-    s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: GROW, tm: MAG, st: 0, vst: 0, tst: 0 };
+    s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: gr(s), tm: MAG, st: 0, vst: 0, tst: 0 };
     s.active = true; s.hot = selected(s); s.seg.classList.add('dragging', 'pressing', 'lensing'); setHot(s, s.hot, true);
     makeTexture(s);                                                  // labels as they look right now
     s.pill.classList.add('hidden'); s.canvas.classList.add('on');
@@ -314,19 +316,19 @@ void main(){
       if (!s.gl) return;
       s.drag.started = true;   // the lens swells the moment it is touched, no drag needed
       if (!s.active) startLens(s);
-      const t = target(e); s.lens.tx = t.cx; s.lens.tw = t.w; s.lens.tg = GROW; s.lens.tm = MAG; if (!s.running) loop(s);
+      const t = target(e); s.lens.tx = t.cx; s.lens.tw = t.w; s.lens.tg = gr(s); s.lens.tm = MAG; if (!s.running) loop(s);
     });
     seg.addEventListener('pointermove', e => {
       const d = s.drag; if (!d || e.pointerId !== d.id) return;
       if (!d.started) {
         if (Math.abs(e.clientX - d.x0) < 5) return;
         d.started = true; try { seg.setPointerCapture(e.pointerId); } catch { }
-        if (s.gl) { if (!s.active) startLens(s); else if (s.lens) { s.lens.tg = GROW; s.lens.tm = MAG; } }
+        if (s.gl) { if (!s.active) startLens(s); else if (s.lens) { s.lens.tg = gr(s); s.lens.tm = MAG; } }
         else { s.active = true; s.pill.classList.add('noanim'); seg.classList.add('dragging'); }
       }
       { const now = performance.now(); if (d.lt && now > d.lt) s.vel = .55 * (s.vel || 0) + .45 * ((e.clientX - d.lx) / (now - d.lt) * 1000); d.lx = e.clientX; d.lt = now; }
       const t = target(e);
-      if (s.gl && s.lens) { s.lens.tx = t.cx; s.lens.tw = t.w; s.lens.tg = GROW; s.lens.tm = MAG; if (!s.running) loop(s); }
+      if (s.gl && s.lens) { s.lens.tx = t.cx; s.lens.tw = t.w; s.lens.tg = gr(s); s.lens.tm = MAG; if (!s.running) loop(s); }
       else { const r = geom(s)[0]; s.pill.style.transform = `translate(${t.cx - t.w / 2}px,${r.t}px)`; s.pill.style.width = t.w + 'px'; trackHot(s, t.cx); }  // no WebGL: the pill follows the finger
     });
     const end = e => {
