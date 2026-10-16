@@ -25,6 +25,7 @@ vec3 bgSim(vec2 p){   // stand-in for what is behind the bar: the bar itself (da
 }
 float bandf(float dd){float tt=clamp(-dd/u_bezel,0.,1.);float ss=1.-tt;return pow(ss,3.)*u_lift;}
 float texA(vec2 seg){vec2 uv=(seg+vec2(u_pad))/u_texSize;return texture2D(u_tex,vec2(uv.x,1.-uv.y)).a;}
+vec4 tex4(vec2 seg){vec2 uv=(seg+vec2(u_pad))/u_texSize;return texture2D(u_tex,vec2(uv.x,1.-uv.y));}
 vec3 tex(vec2 seg){vec2 uv=(seg+vec2(u_pad))/u_texSize;return texture2D(u_tex,vec2(uv.x,1.-uv.y)).rgb;}
 void main(){
   vec2 px=vec2(gl_FragCoord.x,u_cssRes.y*u_dpr-gl_FragCoord.y)/u_dpr;      // css pixels, origin top-left of the canvas
@@ -33,7 +34,8 @@ void main(){
   float aa=1./u_dpr;
   float inside=1.-smoothstep(-aa,aa,d);
   float shadow=exp(-max(d,0.)/8.)*.30*u_lift*(1.-inside);                   // soft drop shadow outside the lens
-  if(d>SPADCUT){gl_FragColor=vec4(0.);return;}
+  vec4 b4=tex4(u_org+px);vec4 basePre=vec4(b4.rgb*b4.a,b4.a);                // the bar's own labels, drawn here while the lens is up (the DOM ones are hidden)
+  if(d>SPADCUT){gl_FragColor=basePre;return;}
   vec2 e=vec2(.75,0.);
   vec2 g=vec2(sdRR(p+e.xy,hs,r)-sdRR(p-e.xy,hs,r),sdRR(p+e.yx,hs,r)-sdRR(p-e.yx,hs,r));g=g/(length(g)+1e-4);   // outward direction
   float t=clamp(-d/u_bezel,0.,1.);float s=1.-t;                             // s=1 at the very edge, 0 once inside the flat middle
@@ -57,7 +59,7 @@ void main(){
     vec3 body=col*ca+pr*(1.-ca);
     float oa=clamp(ca+ra*(1.-ca)+.035*(1.-ca),0.,1.);
     float darkA=(1.-smoothstep(0.,1.3,-d))*.30*u_lift;oa=oa+darkA*(1.-oa);   // hairline dark outline
-    gl_FragColor=vec4(body*inside,oa*inside+shadow);return;
+    vec4 pre=vec4(body,oa)*inside+basePre*(1.-inside);pre.a=pre.a+shadow*(1.-pre.a);gl_FragColor=pre;return;
   }
   // lighting: bright rim where the light hits (top-left) and the opposite edge, a faint glow inside, a soft sheen on the upper half
   float lightDir=clamp(dot(g,normalize(vec2(-.55,-.83))),-1.,1.);
@@ -153,7 +155,6 @@ void main(){
     const white = root.getPropertyValue('--seg-fg').trim() || '#fff', blue = root.getPropertyValue('--seg-blue').trim() || '#0a84ff';
     const blueIdx = bi;
     s.btns.forEach((b, i) => {
-      if (i !== blueIdx) return;
       const ic = s.dock && b.querySelector('svg');
       if (ic) {
         const col = i === blueIdx ? blue : white, im = iconImg(s, b, col), mx = T + b.offsetLeft + b.offsetWidth / 2, my = T + b.offsetTop + b.offsetHeight / 2, dl = b.querySelector('.dl');
@@ -179,21 +180,20 @@ void main(){
   // draw the lens for the current state (cx = centre x, w = width, grow = extra size while held, mag, lift = strength 0..1)
   function draw(s) {
     const g = s.gl, L = s.lens; if (!g || !L) return;
-    const r = geom(s)[selected(s)], H = r.h + GROW, t = r.t - GROW / 2;
-    const cssW = Math.ceil(s.maxW + GROW + STMAX + 2 * SPAD), cssH = Math.ceil(H + 2 * SPAD);
+    const r = geom(s)[selected(s)], H = r.h + GROW, t = r.t - GROW / 2, segW = s.seg.clientWidth, segH = s.seg.clientHeight;
+    const ox = -SPAD, oy = Math.min(t, 0) - SPAD, cssW = Math.ceil(segW + 2 * SPAD), cssH = Math.ceil(Math.max(t + H, segH) - Math.min(t, 0) + 2 * SPAD);   // fixed canvas over the whole bar
     const cv = s.canvas;
     if (cv.width !== Math.round(cssW * DPR) || cv.height !== Math.round(cssH * DPR)) { cv.width = Math.round(cssW * DPR); cv.height = Math.round(cssH * DPR); cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px'; }
-    const st = Math.max(0, L.st || 0), ox = L.cx - (L.w + L.grow + st) / 2 - SPAD, oy = t - SPAD;          // canvas origin in switch coordinates
+    const st = Math.max(0, L.st || 0), lw = L.w + L.grow + st;
     cv.style.transform = `translate(${ox}px,${oy}px)`;
     const { gl, u } = g;
     gl.viewport(0, 0, cv.width, cv.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniform2f(u.u_cssRes, cssW, cssH); gl.uniform1f(u.u_dpr, DPR);
-    gl.uniform4f(u.u_rect, SPAD, SPAD, L.w + L.grow + st, H);
+    gl.uniform4f(u.u_rect, L.cx - lw / 2 - ox, t - oy, lw, H);
     gl.uniform2f(u.u_org, ox, oy); gl.uniform2f(u.u_texSize, s.texW, s.texH); gl.uniform1f(u.u_pad, TPAD);
     gl.uniform1f(u.u_mag, L.mag); gl.uniform1f(u.u_bezel, BEZEL); gl.uniform1f(u.u_lift, Math.min(1, L.grow / GROW));
     gl.uniform3f(u.u_tint, 1, 1, 1);
     gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1);
-    { const half = (L.w + L.grow + st) / 2, gm = geom(s); s.btns.forEach((b, i) => { const on = i === s.hot && Math.abs(gm[i].l + gm[i].w / 2 - L.cx) <= half + 10; if (on !== !!b._lh) { b._lh = on; b.classList.toggle('lens-hide', on); } }); }   // the real icon under the lens is hidden: the lens shows its magnified copy
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
@@ -219,7 +219,7 @@ void main(){
     s.gc = null; s.active = false; const r = geom(s)[selected(s)];
     for (let i = 0; i < s.btns.length; i++) makeTexture(s, i);   // all highlight variants are painted/uploaded once, up front
     s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: GROW, tm: MAG, st: 0, vst: 0, tst: 0 };
-    s.active = true; s.hot = selected(s); s.seg.classList.add('dragging', 'pressing'); setHot(s, s.hot, true);
+    s.active = true; s.hot = selected(s); s.seg.classList.add('dragging', 'pressing', 'lensing'); setHot(s, s.hot, true);
     makeTexture(s);                                                  // labels as they look right now
     s.pill.classList.add('hidden'); s.canvas.classList.add('on');
     draw(s); loop(s);
@@ -259,7 +259,7 @@ void main(){
   }
   function finishLens(s) {                                           // lens has settled into its option: swap back to the resting pill
     s.canvas.classList.remove('on'); s.active = false; s.lens = null;
-    s.gc = null; s.seg.classList.remove('pressing'); s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); });
+    s.gc = null; s.seg.classList.remove('pressing', 'lensing'); s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); });
     const pk = s.pendingK; s.pendingK = null;                        // the (heavy) view switch runs only now, after the lens has landed, so it can't stutter the animation
     if (pk == null) { s.seg.classList.remove('dragging'); setHot(s, -1, true); }
     placePill(s, pk == null ? selected(s) : pk, false); s.pill.classList.remove('hidden');
@@ -318,7 +318,7 @@ void main(){
       if (!s.lens) placePill(s, selected(s), true);
     };
     seg.addEventListener('pointerup', end); seg.addEventListener('pointercancel', end);
-    setInterval(() => { if (!s.active && !s.drag) seg.querySelectorAll('.lens-hide').forEach(b => { b._lh = false; b.classList.remove('lens-hide'); }); }, 400);   // safety net: a hidden icon can never stay hidden
+    setInterval(() => { if (!s.active && !s.drag) seg.classList.remove('lensing'); }, 400);   // safety net: a hidden icon can never stay hidden
     seg.addEventListener('click', e => { if (s.suppressClick) { e.stopPropagation(); e.preventDefault(); } }, true);
   }
 

@@ -641,3 +641,7 @@ html:not(.ios) body #dock{width:min(92vw,620px);gap:0;justify-content:stretch;pa
 html:not(.ios) body #dock button{flex:1 1 0;width:auto;min-width:0;padding:0 10px;gap:8px;white-space:nowrap}
 html:not(.ios) body #dock button .dl{white-space:nowrap;font-size:15px;font-weight:600}
 html:not(.ios) body #dock .dbadge{right:calc(50% - 62px)}
+
+/* while the lens is up the bar's own labels are drawn by the lens canvas, so the DOM ones are hidden */
+html body #dock.lensing button>svg,html body #dock.lensing button>.dl{opacity:0!important;transition:none!important}
+html.ios .seg.lensing button:not(#_):not(#__){color:transparent!important;transition:none!important}
