@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v5.9">
+<meta name="app-version" content="v5.10">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261017D">
+<link rel="stylesheet" href="glass.css?v=20261017E">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -145,13 +145,13 @@ html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position
 html body #dock button.on:not(#nx1):not(#nx2){background:rgba(0,0,0,.62)!important;border-radius:999px!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)!important}
 body.dockover #dock{z-index:120} /* while the shared-links page is open the dock stays on top, like a tab bar */
 body.dockover #modal.fullpage #mbox{padding-bottom:calc(env(safe-area-inset-bottom) + 100px)}
-#disk{padding:9px 16px 11px!important}#disk .dbar{height:12px;margin:7px 0 0}#disk .dtop{font-size:14px}
+#disk{padding:0!important;margin:-2px 4px 10px!important;background:none!important;border:0!important;border-radius:0!important;color:var(--mut);font-size:13px}#disk:active{background:none}
 .hdrbtns{display:flex;gap:10px;align-items:center;flex:none}
-html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:relative;width:40px;height:40px;min-width:40px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;
+html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:relative;width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;
   background:rgba(255,255,255,.012)!important;-webkit-backdrop-filter:blur(1.5px) saturate(160%)!important;backdrop-filter:blur(1.5px) saturate(160%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)!important;color:#fff!important;border:0!important}
 html body #app>header button.hb.act:not(#nx1):not(#nx2){color:#0a84ff!important;box-shadow:inset 0 0 0 1.5px rgba(10,132,255,.85)!important}
-#app>header button.hb svg{width:22px;height:22px}
-html.ios #app>header{height:52px!important}
+#app>header button.hb svg{width:24px;height:24px}
+html.ios #app>header{height:58px!important}
 #disk{cursor:pointer;-webkit-tap-highlight-color:transparent}#disk:active{background:rgba(120,120,128,.18)}
 #storage{position:fixed;inset:0;z-index:100;background:#000;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch}
 #storage[hidden]{display:none}
@@ -329,9 +329,9 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
     <button class="ghost" id="order"></button>
     <button class="ghost" id="selmode">☑ 選取</button>
   </div>
-  <div id="disk" hidden></div>
-  <div id="drop">點擊或拖動檔案到這裡上傳<input id="f" class="fpick" type="file" multiple><input id="fdir" class="fpick" type="file" webkitdirectory multiple></div>
+    <div id="drop">點擊或拖動檔案到這裡上傳<input id="f" class="fpick" type="file" multiple><input id="fdir" class="fpick" type="file" webkitdirectory multiple></div>
   <div id="upsum" hidden></div>
+  <div id="disk" hidden></div>
   <div id="total" style="color:var(--mut);font-size:13px;margin:0 2px 8px"></div>
   <div id="list"></div>
   <div id="ups" style="margin-top:12px"></div>
@@ -362,7 +362,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261017D"></script>
+<script src="glass.js?v=20261017E"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -528,7 +528,7 @@ async function drawDisk(){ // capacity card under the toolbar: headline + bar; t
   const nas=Object.values(by).reduce((a,b)=>a+b,0),t=nas+diskInfo.free; // total = what the NAS can use: other data on the drive is not part of the capacity
   diskView={by,nas,t,free:diskInfo.free};
   const u=fmtTotal(nas),tt=fmtTotal(t),both=u.endsWith(' GB')&&tt.endsWith(' GB');
-  el.innerHTML='<div class="dtop"><span class="dl">💾 '+(both?u.slice(0,-3):u)+' / '+tt+' 已使用</span><span class="dr">剩餘 '+fmtTotal(diskInfo.free)+' ›</span></div>'+storageBar();
+  el.innerHTML='💾 '+fmtTotal(nas)+' / '+fmtTotal(t)+' 已使用 ›';
   el.hidden=false;
 }
 const ST_COL={video:'#ff453a',image:'#ff9f0a',other:'#8e8e93'};
