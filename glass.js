@@ -208,11 +208,11 @@ void main(){
     gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    dent(s, L, lw, segW, segH, H);
+    dent(s, L, L.w + GROW + st, segW, segH, r.h + GROW);   // sized for the fully swollen lens, not the one still growing
   }
   // the bar's glass is pushed in a little at the top and bottom where the lens sits on it (a notch cut out of its ::before layer; the shadow around it stays)
   function dent(s, L, lw, W, Hs, LH) {
-    const R = Hs / 2, D0 = Math.max(0, Math.min(1, L.grow / GROW)) * 4.5, hh = LH / 2;
+    const R = Hs / 2, D0 = Math.max(0, Math.min(1, L.grow / (GROW * 0.25))) * 4.5, hh = LH / 2;
     // the notch lives INSIDE the lens: at the bar's edge the lens (a capsule) is narrower than at its middle, so use that chord, not its full width
     const dy = Math.min(hh - 1, Hs / 2), half = Math.max(0, lw / 2 - hh + Math.sqrt(Math.max(0, hh * hh - dy * dy))) - 1;
     let xa = Math.max(R, L.cx - half), xb = Math.min(W - R, L.cx + half);
