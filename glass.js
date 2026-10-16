@@ -177,7 +177,7 @@ void main(){
       const cs = getComputedStyle(b);
       x.font = `500 ${cs.fontSize} ${cs.fontFamily}`;
       x.fillStyle = white;
-      x.fillText(b.textContent.trim(), T + b.offsetLeft + b.offsetWidth / 2, T + b.offsetTop + b.offsetHeight / 2 + 1);
+      x.fillText(b.textContent.trim().replace(/▪(?!︎)/g, '▪︎'), T + b.offsetLeft + b.offsetWidth / 2, T + b.offsetTop + b.offsetHeight / 2 + 1);
     });
     const { gl } = g; let tex = g.tex;
     if (ckey) { tex = gl.createTexture(); s.tc[ckey] = tex; if (force == null) g.tex = tex; }
@@ -220,7 +220,10 @@ void main(){
     const D0 = (L.tg > 0 ? 1 : Math.max(0, Math.min(1, L.grow / (gr(s) * 0.5)))) * 4 * (s.dock ? 1 : Math.min(1, Hs / 70));   // the view switch is a thinner bar: same proportions as the dock
     const LH = (geom(s)[0] || { h: Hs }).h + gr(s), half = (s.dock ? L.tw + gr(s) : Math.min(L.tw + gr(s), Math.max(LH * 1.45, (s.labW || 0) * MAG + 2 * BEZEL * Math.min(1, LH / 80) + 6))) * 0.31;
     let xa = Math.max(-2, L.cx - half), xb = Math.min(W + 2, L.cx + half);
-    if (!s.dock) { const lh = half / 0.31 / 2; if (L.cx - lh < Hs / 2) xa = -2; if (L.cx + lh > W - Hs / 2) xb = W + 2; }   // view switch: at either end the notch runs out to the very edge, so the end is cut straight like the dock's
+    if (!s.dock) {   // view switch: as the lens slides over a rounded end, the notch stretches out to the very edge with it (cut straight, like the dock); before that it stays put
+      const lh = half / 0.31 / 2, R = Hs / 2, kR = Math.max(0, Math.min(1, (L.cx + lh - (W - R)) / R)), kL = Math.max(0, Math.min(1, (R - (L.cx - lh)) / R));
+      xb += (W + 2 - xb) * kR; xa += (-2 - xa) * kL;
+    }
     const D = Math.min(D0, (xb - xa) / 2 - 1);
     if (D < .3) { s.seg.style.removeProperty('--lensclip'); return; }
     const f = n => n.toFixed(1);
@@ -240,7 +243,7 @@ void main(){
     if (!animate) { p.getBoundingClientRect(); p.classList.remove('noanim'); }
   }
   function relayout(s) {
-    if (!s.dock) { const b0 = s.btns[0]; if (b0 && b0.offsetHeight) s.grow = Math.max(8, s.seg.clientHeight - b0.offsetHeight + 10);
+    if (!s.dock) { const b0 = s.btns[0]; if (b0 && b0.offsetHeight) s.grow = Math.max(8, s.seg.clientHeight - b0.offsetHeight + 18);
       s.labW = Math.max(0, ...s.btns.map(b => { const rg = document.createRange(); rg.selectNodeContents(b); return rg.getBoundingClientRect().width; })); }
     s.tc = null; s._b = null; s.gc = null;
     s.lw = s.seg.clientWidth; s.lh = s.seg.clientHeight;
