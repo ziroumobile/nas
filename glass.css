@@ -839,3 +839,7 @@ html:not(.ios) body .seltop,html:not(.ios) body .selbot{left:max(12px,calc((100v
 @media(min-width:900px){
   html body #storage button.stbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){left:max(14px,calc((100vw - 828px)/2 - 2px))!important}
 }
+/* shared-link page on wide screens: the back arrow sits at the left edge of the centred column */
+@media(min-width:900px){
+  html body #appback{left:max(16px,calc((100vw - 828px)/2 - 2px))!important}
+}
