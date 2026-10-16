@@ -544,3 +544,4 @@ html body button.dlbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!imp
 /* no blue ring / highlight on dock buttons */
 #dock,#dock button{-webkit-tap-highlight-color:transparent!important;outline:none!important}
 #dock button:focus,#dock button:focus-visible{outline:none!important;box-shadow:none!important}
+html body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.seg button){box-shadow:none!important;border:0!important}
