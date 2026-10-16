@@ -6,7 +6,7 @@
 html.ios{
   --g-fill:rgba(255,255,255,.055);--g-fill-press:rgba(255,255,255,.14);
   --g-inner:rgba(255,255,255,.05);--g-hi:rgba(255,255,255,.06);--g-lo:rgba(255,255,255,.05);
-  --g-rim:linear-gradient(180deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.08) 20%,rgba(255,255,255,0) 40%,rgba(255,255,255,0) 62%,rgba(255,255,255,.06) 80%,rgba(255,255,255,.28) 100%);   /* soft edge light, like the iOS 26 tab bar */
+  --g-rim:linear-gradient(transparent,transparent);   /* soft edge light, like the iOS 26 tab bar */
   --g-sheen:radial-gradient(120% 90% at 18% 0%,rgba(255,255,255,.05),rgba(255,255,255,0) 58%);
   --g-shadow:0 8px 22px rgba(0,0,0,.38),0 1px 3px rgba(0,0,0,.3);
   --g-glass-blur:blur(3px) saturate(175%) brightness(1.12);
@@ -24,7 +24,7 @@ html.ios{--seg-fg:#fff;--seg-blue:#0a84ff}
   html.ios{
     --g-fill:rgba(255,255,255,.42);--g-fill-press:rgba(255,255,255,.72);
     --g-inner:rgba(255,255,255,.4);--g-hi:rgba(255,255,255,.6);--g-lo:rgba(60,60,67,.07);
-    --g-rim:linear-gradient(180deg,rgba(255,255,255,.95) 0%,rgba(255,255,255,.2) 20%,rgba(255,255,255,0) 45%,rgba(255,255,255,0) 60%,rgba(255,255,255,.2) 80%,rgba(255,255,255,.8) 100%);
+    --g-rim:linear-gradient(transparent,transparent);
     --g-sheen:radial-gradient(120% 90% at 18% 0%,rgba(255,255,255,.55),rgba(255,255,255,0) 58%);
     --g-shadow:0 8px 20px rgba(40,50,120,.16),0 1px 3px rgba(0,0,0,.08);
     --g-glass-blur:blur(6px) saturate(170%);
@@ -217,7 +217,7 @@ html.ios #dock button,html.ios #dock button.txt{flex:1 1 0;width:auto;min-width:
 .segrow{flex-wrap:nowrap}.segrow .seg{width:auto;flex:1 1 0;min-width:0;max-width:300px}.segrow{white-space:nowrap}
 
 /* one uniform, very soft edge on every iOS glass piece (no brighter corners, no inner glow) */
-html.ios{--g-rim:linear-gradient(180deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.06) 22%,rgba(255,255,255,0) 42%,rgba(255,255,255,0) 62%,rgba(255,255,255,.05) 80%,rgba(255,255,255,.28) 100%);--g-sheen:none;--g-inner:rgba(255,255,255,0);--g-hi:rgba(255,255,255,0);--g-lo:rgba(255,255,255,0)}
+html.ios{--g-rim:linear-gradient(transparent,transparent);--g-sheen:none;--g-inner:rgba(255,255,255,0);--g-hi:rgba(255,255,255,0);--g-lo:rgba(255,255,255,0)}
 html.ios #dock{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -1px 0 rgba(255,255,255,.04),0 12px 34px rgba(0,0,0,.5)}
 html.ios .vnav{box-shadow:0 8px 22px rgba(0,0,0,.4)}
 html.ios .seg-pill{box-shadow:none}
@@ -590,3 +590,14 @@ html.ios body .selbot #selcount{background:transparent!important;-webkit-backdro
 html.ios body #dock button.glass-hot:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:var(--seg-blue,#0a84ff)!important}
 html.ios body #dock.dragging button.on:not(.glass-hot):not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:var(--seg-fg,#fff)!important}
 html body #dock button:is(:active,.gpress):not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:transparent!important}
+
+/* wide screens (Windows): full-screen pages use the same centred column as the home page */
+@media(min-width:900px){
+  html body #modal.fullpage #mbox:not(#nx1){padding-left:max(16px,calc((100vw - 828px)/2))!important;padding-right:max(16px,calc((100vw - 828px)/2))!important}
+  html body #uppage{padding-left:max(16px,calc((100vw - 828px)/2))!important;padding-right:max(16px,calc((100vw - 828px)/2))!important}
+  html body #spage{padding-left:max(16px,calc((100vw - 828px)/2))!important;padding-right:max(16px,calc((100vw - 828px)/2))!important}
+  html body #spage .sphead{padding-left:max(16px,calc((100vw - 828px)/2))!important;padding-right:max(16px,calc((100vw - 828px)/2))!important}
+  html body #modal.fullpage button#pgback:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){left:max(14px,calc((100vw - 828px)/2 - 2px))!important}
+  html body #setpage{max-width:860px!important}
+  html body #stbody{max-width:860px!important}
+}

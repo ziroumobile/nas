@@ -99,7 +99,7 @@ void main(){
     const c = b._ic || (b._ic = {}), hit = c[color]; if (hit) return hit.ok ? hit.img : null;
     const cl = b.querySelector('svg').cloneNode(true); cl.setAttribute('xmlns', 'http://www.w3.org/2000/svg'); cl.setAttribute('width', '27'); cl.setAttribute('height', '27');
     const img = new Image(), e = c[color] = { img, ok: false };
-    img.onload = () => { e.ok = true; if (!s.dragging) makeTexture(s); };
+    img.onload = () => { e.ok = true; s.tc = null; makeTexture(s); };
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(cl).replace(/currentColor/g, color));
     return null;
   }
@@ -107,10 +107,12 @@ void main(){
   function makeTexture(s) {
     const g = s.gl; if (!g) return;
     const W = s.seg.clientWidth, H = s.seg.clientHeight, T = TPAD;
+    let ckey = null;
+    if (s.dock) { ckey = (s.active && s.hot >= 0 ? s.hot : selected(s)) + '|' + W + 'x' + H + '|' + s.btns.length; s.tc = s.tc || {}; if (s.tc[ckey]) { g.tex = s.tc[ckey]; s.texW = W + 2 * T; s.texH = H + 2 * T; return; } }
     const c = s.tex2d || (s.tex2d = document.createElement('canvas'));
     const cw = Math.ceil((W + 2 * T) * DPR), ch = Math.ceil((H + 2 * T) * DPR); if (c.width !== cw || c.height !== ch) { c.width = cw; c.height = ch; }
     const x = c.getContext('2d'); x.setTransform(DPR, 0, 0, DPR, 0, 0);
-    x.fillStyle = s.dock ? '#2f3137' : (getComputedStyle(document.body).backgroundColor || '#111318'); x.fillRect(0, 0, W + 2 * T, H + 2 * T);
+    x.fillStyle = s.dock ? '#6a6d76' : (getComputedStyle(document.body).backgroundColor || '#111318'); x.fillRect(0, 0, W + 2 * T, H + 2 * T);
     const sc = getComputedStyle(s.seg);
     x.fillStyle = sc.backgroundColor; rrect(x, T, T, W, H, H / 2); x.fill();
     x.strokeStyle = 'rgba(255,255,255,.07)'; x.lineWidth = 1; rrect(x, T + .5, T + .5, W - 1, H - 1, H / 2); x.stroke();
@@ -127,7 +129,8 @@ void main(){
       x.fillStyle = i === blueIdx ? blue : white;
       x.fillText(b.textContent.trim(), T + b.offsetLeft + b.offsetWidth / 2, T + b.offsetTop + b.offsetHeight / 2 + 1);
     });
-    const { gl, tex } = g;
+    const { gl } = g; let tex = g.tex;
+    if (ckey) { tex = gl.createTexture(); s.tc[ckey] = tex; g.tex = tex; }
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
@@ -165,6 +168,7 @@ void main(){
     if (!animate) { p.getBoundingClientRect(); p.classList.remove('noanim'); }
   }
   function relayout(s) {
+    s.tc = null;
     s.lw = s.seg.clientWidth; s.lh = s.seg.clientHeight;
     s.maxW = Math.max(...geom(s).map(g => g.w));
     placePill(s, selected(s), false);
@@ -276,6 +280,8 @@ void main(){
     const dk = document.getElementById('dock');
     if (dk) {
       const s = build(dk, true);
+      if (s) { const root = getComputedStyle(document.documentElement); for (const col of [root.getPropertyValue('--seg-fg').trim() || '#fff', root.getPropertyValue('--seg-blue').trim() || '#0a84ff']) s.btns.forEach(b => b.querySelector('svg') && iconImg(s, b, col));   // decode the icons ahead of time so the lens never shows an empty frame
+      }
       if (s) { let t = 0; new MutationObserver(() => { if (s.active || t) return; t = setTimeout(() => { t = 0; if (!s.active) { placePill(s, selected(s), true); makeTexture(s); } }, 0); }).observe(dk, { subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'style'] }); }
     }
   };
