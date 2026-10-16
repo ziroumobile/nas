@@ -15,6 +15,14 @@
 uniform vec2 u_cssRes;uniform float u_dpr;uniform vec4 u_rect;uniform vec2 u_org;uniform vec2 u_texSize;uniform float u_pad;
 uniform sampler2D u_tex;uniform float u_mag;uniform float u_bezel;uniform float u_lift;uniform vec3 u_tint;uniform float u_dark;uniform float u_clear;
 float sdRR(vec2 p,vec2 hs,float r){vec2 q=abs(p)-hs+r;return length(max(q,0.))+min(max(q.x,q.y),0.)-r;}
+vec3 bgSim(vec2 p){   // stand-in for what is behind the bar: the bar itself (dark, with light top/bottom edges) over a lighter page
+  float H=u_texSize.y-2.*u_pad;
+  float inBar=smoothstep(-1.,1.,p.y)*(1.-smoothstep(H-1.,H+1.,p.y));
+  vec3 page=vec3(.30,.31,.34)+vec3(.08)*sin(p.x*.05+1.3);
+  vec3 bar=vec3(.15,.16,.18);
+  float rimT=exp(-abs(p.y)*.8)*.30,rimB=exp(-abs(p.y-H)*.8)*.22;
+  return mix(page,bar,inBar)+vec3(rimT+rimB);
+}
 float bandf(float dd){float tt=clamp(-dd/u_bezel,0.,1.);float ss=1.-tt;return pow(ss,3.)*u_lift;}
 float texA(vec2 seg){vec2 uv=(seg+vec2(u_pad))/u_texSize;return texture2D(u_tex,vec2(uv.x,1.-uv.y)).a;}
 vec3 tex(vec2 seg){vec2 uv=(seg+vec2(u_pad))/u_texSize;return texture2D(u_tex,vec2(uv.x,1.-uv.y)).rgb;}
@@ -38,13 +46,17 @@ void main(){
   if(u_clear>.5){   // clear glass (dock): transparent body that only carries the magnified labels, plus a bent rim with a hint of rainbow dispersion
     float ca=(texA(mp+refr)+texA(mp+refr*1.05)+texA(mp+refr*1.10))/3.;
     float edgeL=(1.-smoothstep(0.,1.4,-d))*(.55+.45*lightDir0)*u_lift;
-    vec3 bnd=vec3(bandf(d+1.0),bandf(d),bandf(d-1.0));                       // dispersion: each colour's highlight sits at a slightly different depth of the bevel
-    float lit=max(lightDir0,0.),shade=max(-lightDir0,0.);
-    vec3 chroma=vec3(1.,.66,.42)*lit+vec3(.42,.68,1.)*shade+vec3(.7)*(1.-max(lit,shade));   // warm on the lit side, cool on the far side
-    vec3 pr=bnd*(.5+.5*abs(lightDir0))*(vec3(.72)+chroma*.5)+vec3(edgeL*.40);
-    float ra=clamp(max(pr.r,max(pr.g,pr.b)),0.,1.);
-    vec3 body=col*ca+pr*(1.-ca)+vec3(.95)*.035*(1.-ca);
+    // Apple-style bevel: what is behind the bar is bent and split into its colours (red bends least, blue most), but only inside the thin curved edge
+    float dep=max(-d,0.);
+    vec3 rb=.5+.5*cos(6.2831*(vec3(0.,.33,.67)+dep*.075+.22*sin(p.x*.085+p.y*.04)));   // colour fringes running parallel to the edge (the split of what lies behind)
+    float strength=pow(s,2.6)*(.14+.86*abs(g.y))*u_lift;                            // strongest along the top and bottom of the lens, like the reference
+    vec3 bgc=mix(vec3(.50),rb,.75);
+    float ab=clamp(strength*.8,0.,1.);
+    vec3 pr=bgc*ab*.8+vec3(edgeL*.30);
+    float ra=clamp(ab+edgeL*.30,0.,1.);
+    vec3 body=col*ca+pr*(1.-ca);
     float oa=clamp(ca+ra*(1.-ca)+.035*(1.-ca),0.,1.);
+    float darkA=(1.-smoothstep(0.,1.3,-d))*.30*u_lift;oa=oa+darkA*(1.-oa);   // hairline dark outline
     gl_FragColor=vec4(body*inside,oa*inside+shadow);return;
   }
   // lighting: bright rim where the light hits (top-left) and the opposite edge, a faint glow inside, a soft sheen on the upper half
