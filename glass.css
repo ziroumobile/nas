@@ -533,7 +533,7 @@ html.ios body .seltop button#selexit svg{width:24px;height:24px}
 /* dock: press / slide = a dark see-through glass pill (no flat grey flash) */
 #dock #dockpill{position:absolute;z-index:0;border-radius:999px;pointer-events:none;opacity:0;transform:scale(.9);background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(6px) saturate(160%);backdrop-filter:blur(6px) saturate(160%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 1px 6px rgba(255,255,255,.08);transition:left .22s cubic-bezier(.3,1.3,.5,1),top .22s,width .22s,height .22s,opacity .16s,transform .22s cubic-bezier(.3,1.3,.5,1)}
 #dock #dockpill.on{opacity:1;transform:scale(1.1)}
-html body #dock button:is(:active,.gpress,.act){background:transparent!important}
+html.android body #dock button:is(:active,.gpress,.act){background:transparent!important}
 html body #dock button{z-index:1}
 html body button.dlbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
 
@@ -545,3 +545,9 @@ html body button.dlbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!imp
 #dock,#dock button{-webkit-tap-highlight-color:transparent!important;outline:none!important}
 #dock button:focus,#dock button:focus-visible{outline:none!important;box-shadow:none!important}
 html body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.seg button){box-shadow:none!important;border:0!important}
+
+/* iPhone keeps its old dock feedback: the pill is Android-only */
+html:not(.android) #dock #dockpill{display:none!important}
+html:not(.android) body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.seg button){box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)!important}
+html:not(.android) body #dock button:is(:active,.gpress){background:rgba(235,235,245,.22)!important}
+html:not(.android) body #dock button.on:is(:active,.gpress){background:rgba(0,0,0,.62)!important}
