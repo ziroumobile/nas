@@ -557,3 +557,10 @@ html body:has(#setpanel:not([hidden])):not(.uploading) button#upfab:not(#nx1):no
 html body:has(#modal:not([hidden])):not(.uploading) button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important}
 html.ios body .seltop button#seldel:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;color:#ff453a!important}
 html.ios body .seltop button#seldel svg{width:26px;height:26px}
+
+/* iPhone: the same follow-the-finger pill, as clear glass instead of black */
+html:not(.android) #dock #dockpill{display:block!important}
+html:not(.android) body #dock button:is(:active,.gpress,.act),html:not(.android) body #dock button.on:is(:active,.gpress){background:transparent!important}
+html:not(.android) body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.seg button){box-shadow:none!important}
+html:not(.android) #dock #dockpill.rest{background:rgba(255,255,255,.13);-webkit-backdrop-filter:blur(8px) saturate(170%) brightness(1.15);backdrop-filter:blur(8px) saturate(170%) brightness(1.15);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 1px 7px rgba(255,255,255,.18)}
+html:not(.android) #dock #dockpill.on{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px) saturate(190%) brightness(1.25);backdrop-filter:blur(10px) saturate(190%) brightness(1.25);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3),inset 0 1px 9px rgba(255,255,255,.22),0 6px 18px rgba(0,0,0,.25)}

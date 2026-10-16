@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v5.27">
+<meta name="app-version" content="v5.28">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261017V">
+<link rel="stylesheet" href="glass.css?v=20261017W">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -167,7 +167,7 @@ html body #spage button#spback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){flex:none
 #spage .sprow mark{background:rgba(10,132,255,.35);color:#fff;border-radius:3px}
 #spage .sprow:active{background:rgba(120,120,128,.2)}
 html.android body #dock button.on:not(#nx1):not(#nx2){background:transparent!important}
-html:not(.android) body #dock button.on:not(#nx1):not(#nx2){background:rgba(0,0,0,.62)!important;border-radius:999px!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)!important}
+html:not(.android) body #dock button.on:not(#nx1):not(#nx2){background:transparent!important}
 body.dockover #dock{z-index:120} /* while the shared-links page is open the dock stays on top, like a tab bar */
 html.android body #modal.fullpage #mbox:not(#nx1){background:#000!important}
 body.dockover #modal.fullpage #mbox{padding-bottom:calc(env(safe-area-inset-bottom) + 100px)}
@@ -389,7 +389,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261017V"></script>
+<script src="glass.js?v=20261017W"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1566,7 +1566,7 @@ function clipOpen(){
 }
 $('#dclip').onclick=clipOpen;
 { // press-and-slide on the dock: a dark glass pill follows the finger, lifting the finger opens the button under it
-  const dock=$('#dock'),isAnd=()=>document.documentElement.classList.contains('android'),pill=document.createElement('span');pill.id='dockpill';pill.setAttribute('aria-hidden','true');dock.prepend(pill);
+  const dock=$('#dock'),isAnd=()=>true,pill=document.createElement('span');pill.id='dockpill';pill.setAttribute('aria-hidden','true');dock.prepend(pill);
   const btns=()=>[...dock.querySelectorAll('button')].filter(b=>b.offsetWidth>0);
   const at=x=>{const l=btns();let k=l[0];for(const b of l){const r=b.getBoundingClientRect();if(x>=r.left)k=b}return k};
   const nearest=x=>{let best=null,bd=1e9;for(const b of btns()){const r=b.getBoundingClientRect(),d=Math.abs(x-(r.left+r.width/2));if(d<bd){bd=d;best=b}}return best};
