@@ -196,7 +196,7 @@ void main(){
     const ox = -SPAD, oy = Math.min(t, 0) - SPAD, cssW = Math.ceil(segW + 2 * SPAD), cssH = Math.ceil(Math.max(t + H, segH) - Math.min(t, 0) + 2 * SPAD);   // fixed canvas over the whole bar
     const cv = s.canvas;
     if (cv.width !== Math.round(cssW * DPR) || cv.height !== Math.round(cssH * DPR)) { cv.width = Math.round(cssW * DPR); cv.height = Math.round(cssH * DPR); cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px'; }
-    const st = Math.max(0, L.st || 0), lw = s.dock ? L.w + L.grow + st : Math.min(L.w + L.grow, H * 1.45) + st;
+    const st = Math.max(0, L.st || 0), lw = s.dock ? L.w + L.grow + st : Math.min(L.w + L.grow, Math.max(H * 1.45, (s.labW || 0) * MAG + 2 * BEZEL * Math.min(1, H / 80) + 6)) + st;
     cv.style.transform = `translate(${ox}px,${oy}px)`;
     const { gl, u } = g;
     gl.viewport(0, 0, cv.width, cv.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
@@ -218,7 +218,7 @@ void main(){
     // flat as well, so at either end of the dock the edge inside the lens is a straight line too. Full depth from the first frame of a press;
     // its size never depends on how fast you drag.
     const D0 = (L.tg > 0 ? 1 : Math.max(0, Math.min(1, L.grow / (gr(s) * 0.5)))) * 4 * (s.dock ? 1 : Math.min(1, Hs / 70));   // the view switch is a thinner bar: same proportions as the dock
-    const LH = (geom(s)[0] || { h: Hs }).h + gr(s), half = (s.dock ? L.tw + gr(s) : Math.min(L.tw + gr(s), LH * 1.45)) * 0.31;
+    const LH = (geom(s)[0] || { h: Hs }).h + gr(s), half = (s.dock ? L.tw + gr(s) : Math.min(L.tw + gr(s), Math.max(LH * 1.45, (s.labW || 0) * MAG + 2 * BEZEL * Math.min(1, LH / 80) + 6))) * 0.31;
     let xa = Math.max(-2, L.cx - half), xb = Math.min(W + 2, L.cx + half);
     if (!s.dock) { const lh = half / 0.31 / 2; if (L.cx - lh < Hs / 2) xa = -2; if (L.cx + lh > W - Hs / 2) xb = W + 2; }   // view switch: at either end the notch runs out to the very edge, so the end is cut straight like the dock's
     const D = Math.min(D0, (xb - xa) / 2 - 1);
@@ -240,7 +240,8 @@ void main(){
     if (!animate) { p.getBoundingClientRect(); p.classList.remove('noanim'); }
   }
   function relayout(s) {
-    if (!s.dock) { const b0 = s.btns[0]; if (b0 && b0.offsetHeight) s.grow = Math.max(8, s.seg.clientHeight - b0.offsetHeight + 10); }
+    if (!s.dock) { const b0 = s.btns[0]; if (b0 && b0.offsetHeight) s.grow = Math.max(8, s.seg.clientHeight - b0.offsetHeight + 10);
+      s.labW = Math.max(0, ...s.btns.map(b => { const rg = document.createRange(); rg.selectNodeContents(b); return rg.getBoundingClientRect().width; })); }
     s.tc = null; s._b = null; s.gc = null;
     s.lw = s.seg.clientWidth; s.lh = s.seg.clientHeight;
     s.maxW = Math.max(...geom(s).map(g => g.w));
