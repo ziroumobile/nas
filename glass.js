@@ -38,10 +38,10 @@ void main(){
     float ca=(texA(mp+refr)+texA(mp+refr*1.05)+texA(mp+refr*1.10))/3.;
     float rimL=pow(s,3.)*(.30+.70*abs(lightDir0))*u_lift;
     float edgeL=(1.-smoothstep(0.,1.6,-d))*(.55+.45*lightDir0)*u_lift;
-    float rimA=clamp(edgeL*.60+rimL*.50,0.,1.);
-    vec3 rc=mix(vec3(1.),.6+.4*cos(6.2831*(vec3(0.,.33,.67)+atan(g.y,g.x)/6.2831)),.5*s);
-    vec3 body=col*ca+rc*rimA*(1.-ca)+vec3(.92)*.05*(1.-ca);
-    float oa=clamp(ca+rimA*(1.-ca)+.05*(1.-ca),0.,1.);
+    float rimA=clamp(edgeL*.50+rimL*.34,0.,1.);
+    vec3 rc=mix(vec3(1.),.75+.25*cos(6.2831*(vec3(0.,.33,.67)+atan(g.y,g.x)/6.2831)),.14*s);
+    vec3 body=col*ca+rc*rimA*(1.-ca)+vec3(.95)*.035*(1.-ca);
+    float oa=clamp(ca+rimA*(1.-ca)+.035*(1.-ca),0.,1.);
     gl_FragColor=vec4(body*inside,oa*inside+shadow);return;
   }
   // lighting: bright rim where the light hits (top-left) and the opposite edge, a faint glow inside, a soft sheen on the upper half
@@ -138,6 +138,7 @@ void main(){
     const white = root.getPropertyValue('--seg-fg').trim() || '#fff', blue = root.getPropertyValue('--seg-blue').trim() || '#0a84ff';
     const blueIdx = bi;
     s.btns.forEach((b, i) => {
+      if (i !== blueIdx) return;
       const ic = s.dock && b.querySelector('svg');
       if (ic) {
         const col = i === blueIdx ? blue : white, im = iconImg(s, b, col), mx = T + b.offsetLeft + b.offsetWidth / 2, my = T + b.offsetTop + b.offsetHeight / 2, dl = b.querySelector('.dl');
@@ -177,7 +178,7 @@ void main(){
     gl.uniform1f(u.u_mag, L.mag); gl.uniform1f(u.u_bezel, BEZEL); gl.uniform1f(u.u_lift, Math.min(1, L.grow / GROW));
     gl.uniform3f(u.u_tint, 1, 1, 1);
     gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1);
-    { const half = (L.w + L.grow + st) / 2 - 6, gm = geom(s); s.btns.forEach((b, i) => { const lh = s.dock ? 16 : Math.min(gm[i].w / 2, 7.5 * b.textContent.trim().length + 8), on = Math.abs(gm[i].l + gm[i].w / 2 - L.cx) + lh <= half; if (on !== !!b._lh) { b._lh = on; b.classList.toggle('lens-hide', on); } }); }   // the real icon under the lens is hidden: the lens shows its magnified copy
+    { const half = (L.w + L.grow + st) / 2, gm = geom(s); s.btns.forEach((b, i) => { const on = i === s.hot && Math.abs(gm[i].l + gm[i].w / 2 - L.cx) <= half + 10; if (on !== !!b._lh) { b._lh = on; b.classList.toggle('lens-hide', on); } }); }   // the real icon under the lens is hidden: the lens shows its magnified copy
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
@@ -246,7 +247,7 @@ void main(){
     if (pk == null) { s.seg.classList.remove('dragging'); setHot(s, -1, true); }
     placePill(s, pk == null ? selected(s) : pk, false); s.pill.classList.remove('hidden');
     if (pk == null) makeTexture(s);
-    else setTimeout(() => { const sc = s.suppressClick; s.suppressClick = false; s.btns[pk].click(); s.suppressClick = sc; s.seg.classList.remove('dragging'); setHot(s, -1, true); }, 16);
+    else { s.seg.classList.remove('dragging'); setHot(s, -1, true); setTimeout(() => { const sc = s.suppressClick; s.suppressClick = false; s.btns[pk].click(); s.suppressClick = sc; }, 90); }
   }
 
   // ---------- interaction ----------

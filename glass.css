@@ -629,3 +629,10 @@ html.ios body #dock,html.ios body .seg{transition:transform .28s cubic-bezier(.2
 html.ios body #dock.pressing{transform:translateX(-50%) scale(1.06)!important;background:rgba(150,152,160,.30)!important}
 html.ios:not(.android) body #dock.pressing,html.android body #dock.pressing{background:rgba(150,152,160,.30)!important}
 html.ios body .seg.pressing{transform:scale(1.04)!important;background:rgba(150,152,160,.30)!important}
+
+/* header buttons use the "+" button's parameters */
+html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(24px) saturate(190%)!important;backdrop-filter:blur(24px) saturate(190%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(255,255,255,.08),0 10px 28px rgba(0,0,0,.4)!important;color:#fff!important;border:0!important;transition:background-color .14s ease,box-shadow .14s ease,transform .14s ease}
+html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){background:rgba(235,235,245,.30)!important;box-shadow:inset 0 0 9px rgba(255,255,255,.30)!important;transform:scale(.94)!important;-webkit-backdrop-filter:blur(10px) brightness(1.25)!important;backdrop-filter:blur(10px) brightness(1.25)!important}
+html body #app>header button.hb.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
+/* the "+" never starts a scroll / selection / callout when pressed */
+html body button#upfab{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
