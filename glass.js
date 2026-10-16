@@ -6,7 +6,7 @@
 // chosen through the buttons' own click handlers. Only runs on iPhone / iPad (html.ios); without WebGL the pill just follows the finger.
 (function () {
   // (runs on every platform; the iOS-only touches are guarded where they differ)
-  const DPR = Math.min(window.devicePixelRatio || 1, 3);
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);   // (2 is plenty for a lens this small and keeps the per-frame cost down)
   const GROW = 22, MAG = 1.18, SPAD = 24, TPAD = 28, BEZEL = 15, STMAX = 30;     // lens grows while held; shadow padding; texture padding; width of the curved edge (css px)
   const raf = fn => (document.hidden ? setTimeout(() => fn(performance.now()), 16) : requestAnimationFrame(fn));
 
@@ -62,7 +62,7 @@ void main(){
 }`.replace('SPADCUT', (SPAD * 0.95).toFixed(1));
 
   const switches = [];
-  const geom = s => s.btns.map(b => ({ l: b.offsetLeft, w: b.offsetWidth, t: b.offsetTop, h: b.offsetHeight }));
+  const geom = s => (s.active && s.gc) ? s.gc : (s.gc = s.btns.map(b => ({ l: b.offsetLeft, w: b.offsetWidth, t: b.offsetTop, h: b.offsetHeight })));   // cached while the lens is moving: no layout reads per frame
   const selected = s => Math.max(0, s.btns.findIndex(b => b.classList.contains('on')));
   const rrect = (x, X, Y, W, H, R) => { x.beginPath(); x.moveTo(X + R, Y); x.arcTo(X + W, Y, X + W, Y + H, R); x.arcTo(X + W, Y + H, X, Y + H, R); x.arcTo(X, Y + H, X, Y, R); x.arcTo(X, Y, X + W, Y, R); x.closePath(); };
   const rgb = css => { const m = css.match(/[\d.]+/g) || [0, 0, 0]; return [m[0] / 255, m[1] / 255, m[2] / 255]; };
@@ -74,7 +74,7 @@ void main(){
     const canvas = document.createElement('canvas'); canvas.className = 'seg-gl'; canvas.setAttribute('aria-hidden', 'true');
     seg.append(pill, canvas);
     const s = { seg, btns, pill, canvas, drag: null, active: false, lens: null, gl: null, running: false, lw: 0, lh: 0, hot: -1, dock: !!isDock };
-    if (isDock) Object.defineProperty(s, 'btns', { get: () => [...seg.querySelectorAll('button')].filter(b => b.offsetWidth > 0) });   // admin-only buttons come and go
+    if (isDock) Object.defineProperty(s, 'btns', { get: () => s._b || (s._b = [...seg.querySelectorAll('button')].filter(b => b.offsetWidth > 0)) });   // admin-only buttons come and go
     s.nearest = cx => { const c = geom(s).map(g => g.l + g.w / 2); let k = 0; c.forEach((v, i) => { if (Math.abs(v - cx) < Math.abs(c[k] - cx)) k = i; }); return k; };
     s.gl = initGL(s);
     switches.push(s); wire(s);
@@ -116,15 +116,16 @@ void main(){
     return null;
   }
   // paint what the switch looks like (page, capsule, labels) so the lens can refract it
-  function makeTexture(s) {
+  function makeTexture(s, force) {
     const g = s.gl; if (!g) return;
     const W = s.seg.clientWidth, H = s.seg.clientHeight, T = TPAD;
     let ckey = null;
-    if (s.dock) { ckey = (s.active && s.hot >= 0 ? s.hot : selected(s)) + '|' + W + 'x' + H + '|' + s.btns.length; s.tc = s.tc || {}; if (s.tc[ckey]) { g.tex = s.tc[ckey]; s.texW = W + 2 * T; s.texH = H + 2 * T; return; } }
+    const bi = force != null ? force : (s.active && s.hot >= 0 ? s.hot : selected(s));
+    { ckey = bi + '|' + W + 'x' + H + '|' + s.btns.length; s.tc = s.tc || {}; if (s.tc[ckey]) { if (force == null) g.tex = s.tc[ckey]; s.texW = W + 2 * T; s.texH = H + 2 * T; return; } }
     const c = s.tex2d || (s.tex2d = document.createElement('canvas'));
     const cw = Math.ceil((W + 2 * T) * DPR), ch = Math.ceil((H + 2 * T) * DPR); if (c.width !== cw || c.height !== ch) { c.width = cw; c.height = ch; }
     const x = c.getContext('2d'); x.setTransform(DPR, 0, 0, DPR, 0, 0);
-    if (s.dock) x.clearRect(0, 0, W + 2 * T, H + 2 * T);
+    if (true) x.clearRect(0, 0, W + 2 * T, H + 2 * T);
     else {
       x.fillStyle = getComputedStyle(document.body).backgroundColor || '#111318'; x.fillRect(0, 0, W + 2 * T, H + 2 * T);
       const sc = getComputedStyle(s.seg);
@@ -135,7 +136,7 @@ void main(){
     // colours come straight from the CSS variables (not from the buttons' animated colour): white, except the blue one = the option the lens is over
     const root = getComputedStyle(document.documentElement);
     const white = root.getPropertyValue('--seg-fg').trim() || '#fff', blue = root.getPropertyValue('--seg-blue').trim() || '#0a84ff';
-    const blueIdx = s.active && s.hot >= 0 ? s.hot : selected(s);
+    const blueIdx = bi;
     s.btns.forEach((b, i) => {
       const ic = s.dock && b.querySelector('svg');
       if (ic) {
@@ -150,7 +151,7 @@ void main(){
       x.fillText(b.textContent.trim(), T + b.offsetLeft + b.offsetWidth / 2, T + b.offsetTop + b.offsetHeight / 2 + 1);
     });
     const { gl } = g; let tex = g.tex;
-    if (ckey) { tex = gl.createTexture(); s.tc[ckey] = tex; g.tex = tex; }
+    if (ckey) { tex = gl.createTexture(); s.tc[ckey] = tex; if (force == null) g.tex = tex; }
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
@@ -175,8 +176,8 @@ void main(){
     gl.uniform2f(u.u_org, ox, oy); gl.uniform2f(u.u_texSize, s.texW, s.texH); gl.uniform1f(u.u_pad, TPAD);
     gl.uniform1f(u.u_mag, L.mag); gl.uniform1f(u.u_bezel, BEZEL); gl.uniform1f(u.u_lift, Math.min(1, L.grow / GROW));
     gl.uniform3f(u.u_tint, 1, 1, 1);
-    gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, s.dock ? 1 : 0);
-    if (s.dock) { const half = (L.w + L.grow + st) / 2 - 6; s.btns.forEach(b => b.classList.toggle('lens-hide', Math.abs(b.offsetLeft + b.offsetWidth / 2 - L.cx) + 16 <= half)); }   // the real icon under the lens is hidden: the lens shows its magnified copy
+    gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1);
+    { const half = (L.w + L.grow + st) / 2 - 6, gm = geom(s); s.btns.forEach((b, i) => { const lh = s.dock ? 16 : Math.min(gm[i].w / 2, 7.5 * b.textContent.trim().length + 8), on = Math.abs(gm[i].l + gm[i].w / 2 - L.cx) + lh <= half; if (on !== !!b._lh) { b._lh = on; b.classList.toggle('lens-hide', on); } }); }   // the real icon under the lens is hidden: the lens shows its magnified copy
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
@@ -189,7 +190,7 @@ void main(){
     if (!animate) { p.getBoundingClientRect(); p.classList.remove('noanim'); }
   }
   function relayout(s) {
-    s.tc = null;
+    s.tc = null; s._b = null; s.gc = null;
     s.lw = s.seg.clientWidth; s.lh = s.seg.clientHeight;
     s.maxW = Math.max(...geom(s).map(g => g.w));
     placePill(s, selected(s), false);
@@ -199,9 +200,10 @@ void main(){
   // ---------- the lens: springs ----------
   const spring = (cur, vel, target, dt, k, c) => { const a = k * (target - cur) - c * vel; vel += a * dt; return [cur + vel * dt, vel]; };
   function startLens(s) {
-    const r = geom(s)[selected(s)];
+    s.gc = null; s.active = false; const r = geom(s)[selected(s)];
+    for (let i = 0; i < s.btns.length; i++) makeTexture(s, i);   // all highlight variants are painted/uploaded once, up front
     s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: GROW, tm: MAG, st: 0, vst: 0, tst: 0 };
-    s.active = true; s.hot = selected(s); s.seg.classList.add('dragging'); setHot(s, s.hot, true);
+    s.active = true; s.hot = selected(s); s.seg.classList.add('dragging', 'pressing'); setHot(s, s.hot, true);
     makeTexture(s);                                                  // labels as they look right now
     s.pill.classList.add('hidden'); s.canvas.classList.add('on');
     draw(s); loop(s);
@@ -213,7 +215,7 @@ void main(){
   }
   function trackHot(s, cx) {
     const k = s.nearest(cx); if (k === s.hot) return; setHot(s, k);
-    if (s.dock && s.drag && s.drag.started) {   // dock: the page switches as soon as the lens has rested on a button for a moment, no need to lift the finger
+    if (s.drag && s.drag.started) {   // dock: the page switches as soon as the lens has rested on a button for a moment, no need to lift the finger
       clearTimeout(s.liveT);
       s.liveT = setTimeout(() => { if (s.active && s.hot === k && k !== selected(s)) { s.liveK = k; const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; } }, 90);
     }
@@ -239,7 +241,7 @@ void main(){
   }
   function finishLens(s) {                                           // lens has settled into its option: swap back to the resting pill
     s.canvas.classList.remove('on'); s.active = false; s.lens = null;
-    if (s.dock) s.btns.forEach(b => b.classList.remove('lens-hide'));
+    s.gc = null; s.seg.classList.remove('pressing'); s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); });
     const pk = s.pendingK; s.pendingK = null;                        // the (heavy) view switch runs only now, after the lens has landed, so it can't stutter the animation
     if (pk == null) { s.seg.classList.remove('dragging'); setHot(s, -1, true); }
     placePill(s, pk == null ? selected(s) : pk, false); s.pill.classList.remove('hidden');
@@ -298,7 +300,7 @@ void main(){
       if (!s.lens) placePill(s, selected(s), true);
     };
     seg.addEventListener('pointerup', end); seg.addEventListener('pointercancel', end);
-    if (s.dock) setInterval(() => { if (!s.active && !s.drag) seg.querySelectorAll('.lens-hide').forEach(b => b.classList.remove('lens-hide')); }, 400);   // safety net: a hidden icon can never stay hidden
+    setInterval(() => { if (!s.active && !s.drag) seg.querySelectorAll('.lens-hide').forEach(b => { b._lh = false; b.classList.remove('lens-hide'); }); }, 400);   // safety net: a hidden icon can never stay hidden
     seg.addEventListener('click', e => { if (s.suppressClick) { e.stopPropagation(); e.preventDefault(); } }, true);
   }
 
@@ -312,7 +314,7 @@ void main(){
       const s = build(dk, true);
       if (s) { const root = getComputedStyle(document.documentElement); for (const col of [root.getPropertyValue('--seg-fg').trim() || '#fff', root.getPropertyValue('--seg-blue').trim() || '#0a84ff']) s.btns.forEach(b => b.querySelector('svg') && iconImg(s, b, col));   // decode the icons ahead of time so the lens never shows an empty frame
       }
-      if (s) { let t = 0; new MutationObserver(() => { if (s.active || t) return; t = setTimeout(() => { t = 0; if (!s.active) { s.btns.forEach(b => b.classList.remove('lens-hide')); placePill(s, selected(s), true); makeTexture(s); } }, 0); }).observe(dk, { subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'style'] }); }
+      if (s) { let t = 0; new MutationObserver(() => { if (s.active || t) return; t = setTimeout(() => { t = 0; if (!s.active) { s._b = null; s.gc = null; s.tc = null; s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); }); placePill(s, selected(s), true); makeTexture(s); } }, 0); }).observe(dk, { subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'style'] }); }
     }
   };
   // ---------- drop-down menus (replace the native <select> list, which iOS draws far from the button) ----------

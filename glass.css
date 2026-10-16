@@ -614,3 +614,18 @@ html.ios:not(.android) body #dock,html.android body #dock{background:rgba(18,19,
 html.ios body #dock::before{display:none!important}
 #dock .seg-pill{background:rgba(0,0,0,.34)!important;box-shadow:inset 0 1px 4px rgba(0,0,0,.35)!important}
 html body #dock button.lens-hide>svg,html body #dock button.lens-hide>.dl{opacity:0!important;transition:none!important}
+
+/* the view switch (長條) now matches the dock: see-through dark bar, smoky capsule, clear glass lens */
+html.ios body .seg{background:rgba(18,19,24,.30)!important;-webkit-backdrop-filter:blur(9px) saturate(165%)!important;backdrop-filter:blur(9px) saturate(165%)!important;box-shadow:inset 0 .5px 0 rgba(255,255,255,.34),inset 0 -.5px 0 rgba(255,255,255,.16),0 8px 22px rgba(0,0,0,.28)!important;border-color:transparent!important}
+html.ios body .seg::before{display:none!important}
+.seg .seg-pill{background:rgba(0,0,0,.34)!important;box-shadow:inset 0 1px 4px rgba(0,0,0,.35)!important}
+html.ios .seg button:not(#_):not(#__).lens-hide{color:transparent!important;transition:none!important}
+/* lighter dock cost while the lens moves: no saturate pass on the bar */
+html.ios body #dock{-webkit-backdrop-filter:blur(9px)!important;backdrop-filter:blur(9px)!important}
+html.ios:not(.android) body #dock,html.android body #dock{-webkit-backdrop-filter:blur(9px)!important;backdrop-filter:blur(9px)!important;box-shadow:inset 0 .5px 0 rgba(255,255,255,.34),inset 0 -.5px 0 rgba(255,255,255,.16),0 6px 16px rgba(0,0,0,.3)!important}
+
+/* pressed: the whole bar swells a little and turns whitish-grey, like the App Store tab bar */
+html.ios body #dock,html.ios body .seg{transition:transform .28s cubic-bezier(.2,.9,.3,1.25),background-color .22s,box-shadow .22s}
+html.ios body #dock.pressing{transform:translateX(-50%) scale(1.06)!important;background:rgba(150,152,160,.30)!important}
+html.ios:not(.android) body #dock.pressing,html.android body #dock.pressing{background:rgba(150,152,160,.30)!important}
+html.ios body .seg.pressing{transform:scale(1.04)!important;background:rgba(150,152,160,.30)!important}
