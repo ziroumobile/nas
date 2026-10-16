@@ -61,7 +61,7 @@ void main(){
     body=mix(body*vec3(.04,.52,1.),body*vec3(.35,.8,1.),.35*clamp(s*1.6,0.,1.))+body*vec3(.10,0.,.18)*s;   // inside the lens every label turns blue; near the bevel the colour split pulls it towards cyan / violet
     float ca=max(max(s0.a,s1.a),max(max(s2.a,s3.a),s4.a));
     float topbot=abs(g.y);
-    float darkA=pow(s,2.2)*(.10+.90*topbot)*.34*u_lift;                          // soft dark crescents just inside the top and bottom edge
+    float darkA=0.;   // no painted dark crescents: the dark at the top / bottom comes only from the notch cut out of the bar
     float outline=(1.-smoothstep(0.,1.2,-d))*.34*u_lift;                         // thin dark outline
     float edgeL=(1.-smoothstep(0.,1.2,-d))*(.5+.5*lightDir0)*u_lift*.10;          // hairline of light
     float dep=max(-d,0.);
