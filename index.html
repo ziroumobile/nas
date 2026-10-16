@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v5.16">
+<meta name="app-version" content="v5.17">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261017K">
+<link rel="stylesheet" href="glass.css?v=20261017L">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -133,6 +133,9 @@ body.selecting #list{-webkit-user-select:none;user-select:none;-webkit-touch-cal
 html body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom) + 84px);z-index:62;width:60px;height:60px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;
   background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(24px) saturate(190%)!important;backdrop-filter:blur(24px) saturate(190%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 10px 28px rgba(0,0,0,.4)!important;color:#fff!important;border:0!important}
 html body button#upfab[hidden]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important} /* must outweigh the display:flex rule above, otherwise the button never hides */
+#upfab .fplus{width:28px;height:28px;position:relative}
+#upfab .fring,#upfab .fic,#upfab #fabt{display:none}
+body.uploading #upfab .fring{display:block}body.uploading #upfab .fic{display:block}body.uploading #upfab #fabt{display:block}body.uploading #upfab .fplus{display:none}
 #upfab .fring{position:absolute;inset:0;width:100%;height:100%}#upfab .fic{width:30px;height:21px;position:relative;margin-top:-7px}
 #upfab #fabt{position:absolute;left:0;right:0;bottom:13px;text-align:center;font-size:8px;font-weight:800;line-height:1;letter-spacing:-.2px;white-space:nowrap;color:#fff;font-variant-numeric:tabular-nums}
 #upfab #fabbad{position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#ff453a;box-shadow:0 0 0 2px rgba(30,32,38,.9)}#upfab #fabbad[hidden]{display:none}
@@ -330,7 +333,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 <div id="app" hidden>
   <header><h1>📁 我的 NAS</h1><div class="hdrbtns"><button class="hb" id="dflt" type="button" aria-label="拖動排序" title="拖動排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button class="hb" id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button></div></header>
   <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋資料夾或檔名" autocomplete="off" enterkeyhint="search"></span>
-  <nav id="dock"><button id="dhome" class="on" type="button" aria-label="首頁" title="首頁"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.2L12 4l8 7.2V19.5a.5.5 0 0 1-.5.5H15v-5.2H9V20H4.5a.5.5 0 0 1-.5-.5z"/></svg></button><button id="dshare" type="button" aria-label="已分享連結" title="已分享連結" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button><button id="dup" type="button" aria-label="上傳" title="上傳"><svg class="uring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="dupArc" cx="22" cy="22" r="19" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4" transform="rotate(-90 22 22)"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
+  <nav id="dock"><button id="dhome" class="on" type="button" aria-label="首頁" title="首頁"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.2L12 4l8 7.2V19.5a.5.5 0 0 1-.5.5H15v-5.2H9V20H4.5a.5.5 0 0 1-.5-.5z"/></svg></button><button id="dshare" type="button" aria-label="已分享連結" title="已分享連結" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button><button id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></nav>
   <div id="setpanel" hidden><div id="setpage"><div class="sethead"><button id="setclose" class="setdone" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div><h2 class="settitle">設定</h2><div class="sgrp"><div class="sacct"><span class="sav" id="sav">👤</span><div class="sat"><b id="who"></b><small id="whorole"></small></div></div></div><div class="sgrp"><button class="srw" id="setdev" type="button"><span class="sic" style="background:#636366">📱</span><span class="slb">這台裝置的名稱</span><span class="sv" id="setdevv"></span><span class="sch">›</span></button><button class="srw" id="biobtn" type="button" hidden><span class="sic" style="background:#30d158">🔐</span><span class="slb">生物辨識</span><span class="sv" id="biobtnv"></span><span class="sch">›</span></button><button class="srw" id="devices" hidden><span class="sic" style="background:#34c759">💻</span><span class="slb">其他已登入的裝置</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="storerow" type="button"><span class="sic" style="background:#8e8e93">💾</span><span class="slb">儲存空間</span><span class="sv" id="storerowv"></span><span class="sch">›</span></button><button class="srw" id="lockset" type="button" hidden><span class="sic" style="background:#5e5ce6">🔒</span><span class="slb">鎖定時間</span><span class="sv" id="locksetv"></span><span class="sch">›</span></button><button class="srw" id="vqset" type="button"><span class="sic" style="background:#ff375f">🎞</span><span class="slb">預覽畫質</span><span class="sv" id="vqsetv"></span><span class="sch">›</span></button></div>
   <div class="sgrp"><button class="srw" id="shares" hidden><span class="sic" style="background:#0a84ff">🔗</span><span class="slb">已分享連結</span><span class="sch">›</span></button><button class="srw" id="actlog" hidden><span class="sic" style="background:#ff9f0a">🕘</span><span class="slb">活動紀錄</span><span class="sch">›</span></button><button class="srw" id="trash" hidden><span class="sic" style="background:#8e8e93">🗑</span><span class="slb">回收區</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="setpw" hidden><span class="sic" style="background:#8e8e93">🔑</span><span class="slb">編輯密碼</span><span class="sch">›</span></button></div><div class="sgrp"><div class="sinfo"><span class="sic" style="background:#636366">🏷</span><span class="slb">版本</span><span class="sv" id="appver"></span></div><button class="srw" id="reloadapp" type="button"><span class="sic" style="background:#0a84ff">🔄</span><span class="slb">重新載入最新版本</span><span class="sch">›</span></button></div>
   <div class="sgrp"><button class="srw sred" id="out" type="button"><span class="slb">登出</span></button></div></div></div>
@@ -355,7 +358,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
   <div id="list"></div>
   <div id="ups" style="margin-top:12px"></div>
 </div>
-<button id="upfab" type="button" hidden aria-label="上傳進度"><svg class="fring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="fabArc" cx="28" cy="28" r="25" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="157.1" stroke-dashoffset="157.1" transform="rotate(-90 28 28)"/></svg><svg class="fic" viewBox="0 0 64 44"><defs><linearGradient id="fcg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#a5e0ff"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs><path d="M17 40a12 12 0 0 1-1.5-23.9A16 16 0 0 1 46 14.5 13.5 13.5 0 0 1 48 40z" fill="url(#fcg)"/><circle cx="23" cy="25" r="11" fill="#d6f1ff" opacity=".5"/></svg><span id="fabt">--min--sec</span><i id="fabbad" hidden></i></button>
+<button id="upfab" type="button" aria-label="上傳"><svg class="fring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="fabArc" cx="28" cy="28" r="25" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="157.1" stroke-dashoffset="157.1" transform="rotate(-90 28 28)"/></svg><svg class="fplus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg><svg class="fic" viewBox="0 0 64 44"><defs><linearGradient id="fcg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#a5e0ff"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs><path d="M17 40a12 12 0 0 1-1.5-23.9A16 16 0 0 1 46 14.5 13.5 13.5 0 0 1 48 40z" fill="url(#fcg)"/><circle cx="23" cy="25" r="11" fill="#d6f1ff" opacity=".5"/></svg><span id="fabt">--min--sec</span><i id="fabbad" hidden></i></button>
 <div id="uppage" hidden><button id="upback" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>上傳進度</h2><p id="upsum2" class="sub"></p><div id="upslot"></div></div>
 <div id="spage" hidden><div class="sphead"><button id="spback" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><input id="spq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></div><div id="spinfo"></div><div id="spres"></div></div>
 <div id="storage" hidden><div class="sthead"><button id="stback" class="stbtn" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>儲存空間</h2></div><div id="stbody"></div></div>
@@ -382,7 +385,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261017K"></script>
+<script src="glass.js?v=20261017L"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -761,15 +764,15 @@ function setSel(k,on){on?selected.add(k):selected.delete(k);
   inp.onblur=()=>setTimeout(()=>{if(box.classList.contains('open'))closeS()},120);   // keyboard dismissed -> dock again
   inp.onkeydown=e=>{if(e.key==='Escape'||e.key==='Enter')closeS()};
   const vv=window.visualViewport;if(vv){const f=()=>document.documentElement.style.setProperty('--kb',Math.max(0,innerHeight-vv.height-vv.offsetTop)+'px');vv.addEventListener('resize',f);vv.addEventListener('scroll',f);f()}}
-{let pm=null;const closePm=()=>{if(pm){const m=pm;pm=null;m.classList.add('out');setTimeout(()=>m.remove(),170)}};
-  $('#dup').onclick=e=>{e.stopPropagation();if(pm){closePm();return}
-    const m=document.createElement('div');m.className='gmenu';m.style.visibility='hidden';pm=m;
-    for(const[t,f]of[['⬆ 上傳檔案',()=>$('#f').click()],['📂 上傳資料夾',()=>$('#fdir').click()],['📁 新增資料夾',()=>$('#newf').click()]]){const d=document.createElement('div');d.textContent=t;d.onclick=ev=>{ev.stopPropagation();closePm();f()};m.appendChild(d)}
-    $('#dock').appendChild(m);   // lives inside the (fixed) dock, so it can never change the page's height or scroll position
-    m.className='gmenu dockmenu';const du=$('#dup').getBoundingClientRect(),dk=$('#dock').getBoundingClientRect(),w=m.offsetWidth; // layout width (the grow-in animation shrinks getBoundingClientRect)
-    let left=du.left+du.width/2-w/2;left=Math.max(8,Math.min(left,innerWidth-8-w)); // viewport coordinates, kept on screen
-    m.style.left=(left-dk.left)+'px';m.style.transformOrigin=Math.round(du.left+du.width/2-left)+'px 100%';m.style.visibility='visible'};
-  document.addEventListener('pointerdown',e=>{if(pm&&!e.target.closest('.gmenu')&&!e.target.closest('#dup'))closePm()},true)}
+let addPm=null;const closeAddMenu=()=>{if(addPm){const m=addPm;addPm=null;m.classList.add('out');setTimeout(()=>m.remove(),170)}};
+function addMenu(e){ // upload files / upload a folder / new folder
+  e&&e.stopPropagation();if(addPm){closeAddMenu();return}
+  const m=document.createElement('div');m.className='gmenu';addPm=m;
+  for(const[t,f]of[['⬆ 上傳檔案',()=>$('#f').click()],['📂 上傳資料夾',()=>$('#fdir').click()],['📁 新增資料夾',()=>$('#newf').click()]]){const d=document.createElement('div');d.textContent=t;d.onclick=ev=>{ev.stopPropagation();closeAddMenu();f()};m.appendChild(d)}
+  document.body.appendChild(m);
+  m.style.left='auto';m.style.right='16px';m.style.top='auto';m.style.bottom='calc(env(safe-area-inset-bottom) + 84px + 60px + 10px)';m.style.transformOrigin='100% 100%';
+}
+document.addEventListener('pointerdown',e=>{if(addPm&&!e.target.closest('.gmenu')&&!e.target.closest('#upfab'))closeAddMenu()},true);
 $('#dock').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.id==='dshare'||b.id==='sbtn')return;if(document.body.classList.contains('dockover')){if(!$('#modal').hidden&&$('#modal').classList.contains('fullpage'))closeModal();closeSearchPage(true,true)}},true);
 // ---- search as its own full-screen page: a field on top, matching files below (tap one to preview; the list swipes in the preview) ----
 let spTimer=null;
@@ -1331,7 +1334,8 @@ function updateUploadUI(){
   const cs=$('#ups').children.length,fab=$('#upfab');
   document.body.classList.toggle('uploading',cs>0);
   upsum.hidden=true;
-  if(!cs){fab.hidden=true;eta.t=0;releaseAwake();if(!$('#uppage').hidden)$('#upsum2').textContent='全部上傳完成 ✓';return}
+  fab.hidden=false;
+  if(!cs){eta.t=0;releaseAwake();if(!$('#uppage').hidden)$('#upsum2').textContent='全部上傳完成 ✓';return}
   const f=[...$('#ups').querySelectorAll('.rt')].filter(b=>!b.hidden).length;
   let got=batch.done;for(const j of allJobs)got+=j.loaded||0;
   const pct=batch.bytes?Math.min(100,Math.round(got/batch.bytes*100)):0;
@@ -1340,7 +1344,7 @@ function updateUploadUI(){
   else if(now-eta.t>=1500){const inst=(got-eta.got)/((now-eta.t)/1000);eta.spd=eta.spd?eta.spd*.7+inst*.3:inst;eta.t=now;eta.got=got} // smoothed bytes per second
   const left=eta.spd>1?(batch.bytes-got)/eta.spd:NaN,p2=n=>String(n).padStart(2,'0');
   $('#fabt').textContent=!Number.isFinite(left)?'--min--sec':left>=3600?p2(Math.min(99,Math.floor(left/3600)))+'h'+p2(Math.ceil(left%3600/60)%60)+'min':p2(Math.floor(Math.ceil(left)/60))+'min'+p2(Math.ceil(left)%60)+'sec'; // under an hour: 00min00sec, otherwise 00h00min
-  fab.hidden=false;$('#fabArc').style.strokeDashoffset=(157.1*(1-pct/100)).toFixed(1);$('#fabbad').hidden=!f;fab.title='上傳中 '+pct+'%';
+  $('#fabArc').style.strokeDashoffset=(157.1*(1-pct/100)).toFixed(1);$('#fabbad').hidden=!f;fab.title='上傳中 '+pct+'%';fab.setAttribute('aria-label','上傳進度');
   const mbps=eta.spd>0?(eta.spd*8/1e6).toFixed(eta.spd*8/1e6>=100?0:1):'--'; // bytes per second -> megabits per second
   $('#upsum2').textContent='上傳中 '+pct+'%（'+batch.doneFiles+'/'+batch.files+'）'+(f?'・'+f+' 個失敗，可按該檔的「重試」':'')+'\n速度 '+mbps+' Mbps　剩餘 '+$('#fabt').textContent;
   if($('#dupArc'))$('#dupArc').style.strokeDashoffset=(119.4*(1-pct/100)).toFixed(1);
@@ -1350,7 +1354,7 @@ function closeUps(fromPop){
   if($('#uppage').hidden)return;$('#list').after($('#ups'));$('#uppage').hidden=true;document.body.style.overflow='';
   if(!fromPop&&history.state&&history.state.ups)history.back();
 }
-$('#upfab').onclick=openUps;$('#upback').onclick=()=>closeUps();addEventListener('popstate',()=>closeUps(true));
+$('#upfab').onclick=e=>{if(document.body.classList.contains('uploading'))return openUps();addMenu(e)};$('#upback').onclick=()=>closeUps();addEventListener('popstate',()=>closeUps(true));
 setInterval(updateUploadUI,500);
 const queue=[];let running=0;const MAX_PAR=10,MAX_TRY=3;
 const allJobs=new Set(),batch={bytes:0,done:0,files:0,doneFiles:0}; // everything still to upload / the totals of the current batch (drives the progress ring)
