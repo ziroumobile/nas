@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v6.48">
+<meta name="app-version" content="v6.49">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261020S">
+<link rel="stylesheet" href="glass.css?v=20261020T">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -420,7 +420,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261020S"></script>
+<script src="glass.js?v=20261020T"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1414,7 +1414,7 @@ function updateUploadUI(){
   else if(now-eta.t>=1500){const inst=(got-eta.got)/((now-eta.t)/1000);eta.spd=eta.spd?eta.spd*.7+inst*.3:inst;eta.t=now;eta.got=got} // smoothed bytes per second
   const left=eta.spd>1?(batch.bytes-got)/eta.spd:NaN,p2=n=>String(n).padStart(2,'0');
   const sec=Number.isFinite(left)?Math.ceil(left):0,dd=Math.floor(sec/86400),hh=Math.floor(sec%86400/3600),mm=Math.floor(sec%3600/60),ss=sec%60;
-  $('#fabt').textContent=dd?dd+'d '+hh+'h':hh?hh+'h '+mm+'m':mm?mm+'m '+ss+'s':ss+'s'; // d = days, h = hours, m = minutes, s = seconds (kept short so it fits inside the circle)
+  const z=n=>String(n).padStart(2,'0');$('#fabt').textContent=dd?dd+'d'+z(hh)+'h':hh?hh+'h'+z(mm)+'m':mm?mm+'m'+z(ss)+'s':ss+'s'; // d = days, h = hours, m = minutes, s = seconds (kept short so it fits inside the circle)
   $('#fabArc').style.strokeDashoffset=(157.1*(1-pct/100)).toFixed(1);$('#fabbad').hidden=!f;fab.title='上傳中 '+pct+'%';fab.setAttribute('aria-label','上傳進度');
   const mbps=eta.spd>0?(eta.spd*8/1e6).toFixed(eta.spd*8/1e6>=100?0:1):'--'; // bytes per second -> megabits per second
   $('#upsum2').textContent='上傳中 '+pct+'%（'+batch.doneFiles+'/'+batch.files+'）'+(f?'・'+f+' 個失敗，可按該檔的「重試」':'')+'\n速度 '+mbps+' Mbps　剩餘 '+$('#fabt').textContent;
