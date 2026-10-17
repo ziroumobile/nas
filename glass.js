@@ -283,7 +283,7 @@ void main(){
   function step(s, dt) {
     const L = s.lens; let moving = false;
     L.tst = (s.drag && s.drag.started) ? Math.min(STMAX, Math.abs(s.vel || 0) * 0.018) : 0; s.vel = (s.vel || 0) * Math.pow(0.03, dt);
-    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 760, 27], ['w', 'vw', 'tw', 760, 27], ['grow', 'vg', 'tg', 460, 15], ['mag', 'vm', 'tm', 420, 13], ['bs', 'vbs', 'tbs', 420, 13], ['st', 'vst', 'tst', 700, 36]]) {
+    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 760, 30.8], ['w', 'vw', 'tw', 760, 30.8], ['grow', 'vg', 'tg', 460, 18.7], ['mag', 'vm', 'tm', 420, 16.7], ['bs', 'vbs', 'tbs', 420, 16.7], ['st', 'vst', 'tst', 700, 36]]) {
       if (s.drag && s.drag.started && (k === 'cx' || k === 'w')) { L[k] = L[t]; L[v] = 0; continue; }   // follows the finger 1:1 while dragging
       [L[k], L[v]] = spring(L[k], L[v], L[t], dt, kk, cc);
       if (Math.abs(L[t] - L[k]) > (k === 'mag' || k === 'bs' ? 0.002 : 0.25) || Math.abs(L[v]) > (k === 'mag' || k === 'bs' ? 0.02 : 4)) moving = true;
@@ -360,6 +360,7 @@ void main(){
       if (s.gl && s.lens) { s.lens.tx = g.l + g.w / 2; s.lens.tw = g.w; s.lens.tg = 0; s.lens.tm = 1; s.lens.tbs = 1; loop(s); }   // spring into the slot, then finishLens
       else { s.active = false; s.pill.classList.remove('noanim'); seg.classList.remove('dragging'); setHot(s, -1, true); }
       clearTimeout(s.liveT);
+      s.seg.classList.remove('pressing');   // the lighter bar colour fades out right away (it used to wait for the springs to settle)
       if (s.dock || true) { placePill(s, k, false); s.pill.classList.remove('hidden'); }   // the dark capsule fades back in at the chosen item the moment the finger lifts, not after the lens has settled
       if (s.hooks && s.lens) { s.hookOff = true; s.hooks.end(k, selected(s)); s.pendingK = k; s.noClick = true; }   // the pager slides to the chosen page and opens it itself
       else if ((changed || s.dock) && s.liveK !== k) { if (s.lens) { s.pendingK = k; s.earlyK = k; setTimeout(() => { if (s.earlyK !== k) return; s.earlyK = -1; const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; }, 0); }   // the page starts switching the moment the finger lifts (not after the lens has settled)
