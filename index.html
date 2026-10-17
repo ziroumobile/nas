@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v7.3">
+<meta name="app-version" content="v7.4">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261020X">
+<link rel="stylesheet" href="glass.css?v=20261020Y">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -211,6 +211,7 @@ body.dockover #modal.fullpage #mbox{padding-bottom:calc(env(safe-area-inset-bott
 html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:relative;width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;
   background:rgba(255,255,255,.012)!important;-webkit-backdrop-filter:blur(1.5px) saturate(160%)!important;backdrop-filter:blur(1.5px) saturate(160%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.07)!important;color:#fff!important;border:0!important}
 html body #app>header button.hb.act:not(#nx1):not(#nx2){color:#0a84ff!important;box-shadow:inset 0 0 0 1.5px rgba(10,132,255,.85)!important}
+html body #app>header button.hb#dset:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
 #app>header button.hb svg{width:24px;height:24px}
 html.ios #app>header{height:58px!important}
 #disk{cursor:pointer;-webkit-tap-highlight-color:transparent}#disk:active{background:rgba(120,120,128,.18)}
@@ -426,7 +427,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261020X"></script>
+<script src="glass.js?v=20261020Y"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -434,6 +435,7 @@ const thumbSrc=t=>API+t+(document.documentElement.classList.contains('ios')?'&re
 // macOS (Safari "Add to Dock"): a full-bleed icon gets a white plate behind it, so give Macs a squircle icon with its own transparent margin (iPhone keeps the full-bleed one)
 if(/Macintosh/.test(navigator.userAgent)&&!(navigator.maxTouchPoints>1)){const l=document.querySelector('link[rel=apple-touch-icon]');if(l)l.href='icons/icon-mac-1024.png'}
 const sb=supabase.createClient(NAS_CONFIG.supabaseUrl,NAS_CONFIG.supabaseAnonKey);
+const fmtDT=t=>{const d=new Date(t),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+' '+p(d.getHours())+':'+p(d.getMinutes())};   // 24-hour clock, no seconds, everywhere
 const fmt=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':n<1073741824?(n/1048576).toFixed(1)+' MB':(n/1073741824).toFixed(2)+' GB';
 // totals: GB from 1 GB up, otherwise MB
 const fmtTotal=n=>n>=1073741824?(n/1073741824).toFixed(2)+' GB':n>0&&n<104858?'<0.1 MB':(n/1048576).toFixed(1)+' MB';
@@ -704,7 +706,7 @@ function updateSelUI(){
 function fileItem(f,x){
   const u=API+x.url,k=keyOf(f.name,x.name),sel=selected.has(k)?' sel':'';
   const del=me.admin?`<button class="ghost" data-sharefile="${esc(k)}" style="padding:4px 10px">分享</button><button class="del" data-f="${esc(f.name)}" data-n="${esc(x.name)}">刪除</button>`:'';
-  const meta=`${fmt(x.size)} · 更新 ${new Date(x.mtime).toLocaleDateString()} ${new Date(x.mtime).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`;
+  const meta=`${fmt(x.size)} · 更新 ${fmtDT(x.mtime)}`;
   if(view!=='list')return `<div class="cell${sel}" data-k="${esc(k)}" title="${esc(x.name)}"><span class="chk"></span>${media(x,k)}<div class="cn">${esc(x.name)}</div></div>`;
   return `<div class="row${sel}" data-k="${esc(k)}"><span class="chk"></span>${media(x,k)}
     <div class="info"><a href="${u}" target="_blank" rel="noopener" data-open="${esc(k)}">${esc(x.name)}</a><small>${meta} · ${esc(x.owner)}</small></div>
@@ -1123,7 +1125,7 @@ async function sharesManager(){ // every share: link, password (after entering t
   const load=async()=>{const r=await api('/api/shares');if(!r.ok)throw 0;list=await r.json();window.__sharesCache=list;setShareBadge(list.length)};
   if(cached)load().then(()=>{if(document.querySelector('#dock button.on')?.id==='dshare'&&!$('#modal').hidden&&typeof draw==='function')draw()}).catch(()=>{});
   else try{await load()}catch{showPage('<h3>🔗 已分享連結</h3><p class="merr">無法載入</p><div class="mbtns"><button class="ghost" id="sx">關閉</button></div>');$('#sx').onclick=closeModal;return}
-  const when=t=>new Date(t).toLocaleString(),sd=t=>{const d=new Date(t),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+' '+p(d.getHours())+':'+p(d.getMinutes())};   // date for the cards
+  const when=t=>fmtDT(t),sd=t=>{const d=new Date(t),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+' '+p(d.getHours())+':'+p(d.getMinutes())};   // date for the cards
   const left=t=>{const ms=t-Date.now();if(ms<=0)return'已到期';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return d?`剩 ${d} 天 ${h} 小時`:h?`剩 ${h} 小時 ${m} 分`:`剩 ${m} 分鐘`};
   const keysOf=s=>s.type==='folder'?(folders.find(f=>f.name===s.folder)?.files.map(x=>keyOf(s.folder,x.name))||[]):(s.items||[]).map(i=>keyOf(i.folder,i.name)).filter(k=>fileByKey(k));
   const keyMap={}; // share id -> the files it shows, so a thumbnail opens the preview with prev/next inside that share
@@ -1181,7 +1183,7 @@ function uaShort(u){u=u||'';const os=/iPhone/.test(u)?'iPhone':/iPad/.test(u)?'i
 async function activityWindow(){ // admin: which device did what, when (the log is written before anything is deleted)
   showPage('<h3>🕘 活動紀錄</h3><p class="sub">載入中…</p>');
   let entries=[],devs=[],more=false,fa='',fd='';
-  const when=t=>new Date(t).toLocaleString('zh-TW',{hour12:false});
+  const when=t=>fmtDT(t);
   const load=async(append)=>{
     const qs=new URLSearchParams({limit:'100'});if(fa)qs.set('a',fa);if(fd)qs.set('dev',fd);if(append&&entries.length)qs.set('before',entries[entries.length-1].t);
     const r=await api('/api/activity?'+qs);if(!r.ok)throw new Error((await r.json().catch(()=>({}))).error||'無法載入');
@@ -1206,7 +1208,7 @@ async function activityWindow(){ // admin: which device did what, when (the log 
 $('#actlog').onclick=activityWindow;
 async function devicesWindow(){ // the other devices signed in to this account; pick one to sign out (needs a biometric approval)
   showPage('<h3>📱 其他已登入的裝置</h3><p class="sub">載入中…</p>');
-  const when=t=>new Date(t).toLocaleString('zh-TW',{hour12:false});
+  const when=t=>fmtDT(t);
   let j;try{const r=await api('/api/sessions');if(!r.ok)throw 0;j=await r.json()}catch{showPage('<h3>📱 其他已登入的裝置</h3><p class="merr">無法載入</p><div class="mbtns"><button class="ghost" id="dvx">關閉</button></div>');$('#dvx').onclick=closeModal;return}
   const groups=new Map(); // the same phone can hold several logins (an old one, the browser, the installed app): show it once
   for(const x of j.sessions.filter(x=>x.id!==j.current)){const key=(x.dev||'')+'|'+uaShort(x.ua),g=groups.get(key);
@@ -1222,7 +1224,7 @@ async function devicesWindow(){ // the other devices signed in to this account; 
 }
 async function trashWindow(){ // everything that was deleted but is still kept on the NAS: put it back, or empty it for good
   showPage('<h3>🗑 回收區</h3><p class="sub">載入中…</p>');
-  const when=t=>new Date(t).toLocaleString('zh-TW',{hour12:false});
+  const when=t=>fmtDT(t);
   let j;try{const r=await api('/api/trash');if(!r.ok)throw 0;j=await r.json()}catch{showPage('<h3>🗑 回收區</h3><p class="merr">無法載入</p>');return}
   showPage('<div class="mhead"><h3>🗑 回收區</h3></div><p class="sub">刪除的檔案會先放在這裡，使用者看起來已經刪除，但其實還在主機上。這裡可以還原。'+(j.items.length?'共 '+j.items.length+' 個項目，'+fmtTotal(j.size)+'。':'')+'</p>'+
     (j.items.length?j.items.map(x=>'<div class="srow"><b>'+(x.kind==='folder'?'📁 資料夾「'+esc(x.path)+'」':'📄 '+esc(x.path))+'</b><small>'+(x.kind==='folder'?x.count+' 個檔案 · ':'')+fmtTotal(x.size)+' · 刪除於 '+when(x.t)+'<br>'+esc(x.user)+(x.dev?' · '+esc(x.dev):'')+'</small><div class="mbtns" style="margin-top:6px"><button data-restore="'+esc(x.id)+'">還原</button></div></div>').join('')
@@ -1321,8 +1323,8 @@ function renderInfo(){
   $('#viewer').style.setProperty('--vbar',document.querySelector('.vtop').getBoundingClientRect().bottom+6+'px'); // the toolbar can be one or two rows tall (and float with margins on iOS): keep the panel just below it
   const{k,x}=vlist[vi],{folder}=splitKey(k),ext=extOf(x.name),label=x.kind in TYPES?TYPES[x.kind]:ext==='mp3'||ext==='wav'?'音訊':ext==='pdf'?'PDF 文件':ext==='txt'?'文字檔':'檔案';
   const rows=[['名稱',x.name],['資料夾',folder],['類型',label+(ext?'（'+ext.toUpperCase()+'）':'')],['大小',fmt(x.size)],
-    ['更新日期',new Date(x.mtime).toLocaleString()]];
-  if(x.uploaded)rows.push(['上傳時間',new Date(x.uploaded).toLocaleString()]);
+    ['更新日期',fmtDT(x.mtime)]];
+  if(x.uploaded)rows.push(['上傳時間',fmtDT(x.uploaded)]);
   if(x.owner&&x.owner!=='?')rows.push(['上傳者',x.owner]);
   if(vmeta.w&&vmeta.h)rows.push(['解析度',`${vmeta.w} × ${vmeta.h}（${(vmeta.w*vmeta.h/1e6).toFixed(1)} MP）`]);
   if(vmeta.dur)rows.push(['長度',fmtDur(vmeta.dur)]);
@@ -1569,10 +1571,10 @@ let clipItems=[],clipSig='';
 const clipAgo=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?'剛剛':m<60?m+' 分鐘前':m<1440?Math.round(m/60)+' 小時前':Math.round(m/1440)+' 天前'};
 const warmed=new Set();
 function setShareBadge(n){const b=$('#sharen');if(b)b.textContent=n?String(n):''}
-function warmShareThumbs(list){try{for(const sh of list||[]){const keys=sh.type==='folder'?(folders.find(f=>f.name===sh.folder)?.files.map(x=>keyOf(sh.folder,x.name))||[]):(sh.items||[]).map(i=>keyOf(i.folder,i.name));for(const k of keys.slice(0,10)){const x=fileByKey(k);if(x&&x.thumb){const u=thumbSrc(x.thumb);if(!warmed.has(u)){warmed.add(u);new Image().src=u}}}}}catch{}}
+function warmShareThumbs(list){try{for(const sh of list||[]){const keys=sh.type==='folder'?(folders.find(f=>f.name===sh.folder)?.files.map(x=>keyOf(sh.folder,x.name))||[]):(sh.items||[]).map(i=>keyOf(i.folder,i.name));for(const k of keys.slice(0,10)){const x=fileByKey(k);if(x&&x.thumb){const u=thumbSrc(x.thumb);if(!warmed.has(u)){warmed.add(u);{const im=new Image();im.src=u;if(im.decode)im.decode().catch(()=>{})}}}}}}catch{}}
 async function clipRefresh(){
   try{const r=await api('/api/clip');if(!r.ok)return;const l=await r.json();const sig=JSON.stringify(l.map(c=>c.id));
-    clipItems=l;$('#clipn').textContent=l.length?String(l.length):'';for(const c of l.slice(0,10))if(c.type==='image'&&!warmed.has(c.url)){warmed.add(c.url);new Image().src=API+c.url}   // preload so the clipboard page shows its pictures at once
+    clipItems=l;$('#clipn').textContent=l.length?String(l.length):'';for(const c of l.slice(0,10))if(c.type==='image'&&!warmed.has(c.url)){warmed.add(c.url);{const im=new Image();im.src=API+c.url;if(im.decode)im.decode().catch(()=>{})}}   // preload so the clipboard page shows its pictures at once
     
     if(sig!==clipSig){clipSig=sig;if($('#cliplist'))clipRender()}}catch{}
 }
