@@ -373,6 +373,7 @@ void main(){
   }
 
   // called by the page whenever the selected option changed (a tap, or any other code)
+  window.glassThemeChanged = () => switches.forEach(s => { s.tc = null; s.seg.querySelectorAll('button').forEach(b => { b._ic = null; }); if (!s.active) { placePill(s, selected(s), false); makeTexture(s); } });   // label colours come from --seg-fg: repaint
   window.glassSegSync = () => switches.forEach(s => { if (s.active) return; placePill(s, selected(s), true); makeTexture(s); });
 
   const init = () => {
