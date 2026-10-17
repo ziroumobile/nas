@@ -283,7 +283,7 @@ void main(){
   function step(s, dt) {
     const L = s.lens; let moving = false;
     L.tst = (s.drag && s.drag.started) ? Math.min(STMAX, Math.abs(s.vel || 0) * 0.018) : 0; s.vel = (s.vel || 0) * Math.pow(0.03, dt);
-    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 760, 30.8], ['w', 'vw', 'tw', 760, 30.8], ['grow', 'vg', 'tg', 460, 18.7], ['mag', 'vm', 'tm', 420, 16.7], ['bs', 'vbs', 'tbs', 420, 16.7], ['st', 'vst', 'tst', 700, 36]]) {
+    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 760, 36.8], ['w', 'vw', 'tw', 760, 36.8], ['grow', 'vg', 'tg', 460, 24.7], ['mag', 'vm', 'tm', 420, 22.7], ['bs', 'vbs', 'tbs', 420, 22.7], ['st', 'vst', 'tst', 700, 36]]) {
       if (s.drag && s.drag.started && (k === 'cx' || k === 'w')) { L[k] = L[t]; L[v] = 0; continue; }   // follows the finger 1:1 while dragging
       [L[k], L[v]] = spring(L[k], L[v], L[t], dt, kk, cc);
       if (Math.abs(L[t] - L[k]) > (k === 'mag' || k === 'bs' ? 0.002 : 0.25) || Math.abs(L[v]) > (k === 'mag' || k === 'bs' ? 0.02 : 4)) moving = true;
