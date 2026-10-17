@@ -5,16 +5,16 @@ html[data-theme="light"] button,html[data-theme="light"] .btn{color:#000000}
 html[data-theme="light"] button.on{color:#000000}
 html[data-theme="light"] .grip{background:linear-gradient(#2e2a24,#2e2a24) center 15px/22px 3px no-repeat,linear-gradient(#2e2a24,#2e2a24) center 22px/22px 3px no-repeat,linear-gradient(#2e2a24,#2e2a24) center 29px/22px 3px no-repeat}
 html[data-theme="light"] .grip:active,html[data-theme="light"] details.fold.dragging .grip{background-color:rgba(128,128,128,0.18)}
-html[data-theme="light"] details.fold.dragging{box-shadow:0 18px 40px rgba(NaN,0,0,0.152)}
-html[data-theme="light"] .srch input{border:1px solid rgba(0,0,0,0.14);background:rgba(225,223,217,0.72);box-shadow:0 10px 30px rgba(NaN,0,0,0.171)}
-html[data-theme="light"] #dock{background:rgba(0,0,0,0.06);box-shadow:inset 0 1px 0 rgba(0,0,0,0.07),inset 0 -1px 0 rgba(0,0,0,0.04),inset 0 1px 1.5px rgba(0,0,0,0.2),0 12px 34px rgba(NaN,0,0,0.190)}
+html[data-theme="light"] details.fold.dragging{box-shadow:0 18px 40px rgba(0,0,0,0.152)}
+html[data-theme="light"] .srch input{border:1px solid rgba(0,0,0,0.14);background:rgba(225,223,217,0.72);box-shadow:0 10px 30px rgba(0,0,0,0.171)}
+html[data-theme="light"] #dock{background:rgba(0,0,0,0.06);box-shadow:inset 0 1px 0 rgba(0,0,0,0.07),inset 0 -1px 0 rgba(0,0,0,0.04),inset 0 1px 1.5px rgba(0,0,0,0.2),0 12px 34px rgba(0,0,0,0.190)}
 html[data-theme="light"] #dock button:active,html[data-theme="light"] #dock button.act{background:rgba(255,255,255,0.35)}
 html[data-theme="light"] .cell .cn{background:linear-gradient(transparent,rgba(255,255,255,0.7));color:#000000}
 html[data-theme="light"] .play{color:#000000}
 html[data-theme="light"] .chk{color:#000000}
-html[data-theme="light"] #selbar{box-shadow:0 -2px 10px rgba(NaN,0,0,0.057)}
+html[data-theme="light"] #selbar{box-shadow:0 -2px 10px rgba(0,0,0,0.057)}
 html[data-theme="light"].ios #toolsticky{background:#f2f2f7}
-html[data-theme="light"] body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(201,199,193,0.72)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(NaN,0,0,0.152)!important;color:#000000!important}
+html[data-theme="light"] body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(201,199,193,0.72)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(0,0,0,0.152)!important;color:#000000!important}
 html[data-theme="light"] #upfab #fabt{color:#000000}
 html[data-theme="light"] #upfab #fabbad{box-shadow:0 0 0 2px rgba(225,223,217,0.9)}
 html[data-theme="light"] #uppage{background:#f2f2f7;color:#000000}
@@ -29,8 +29,8 @@ html[data-theme="light"] .shr>span:first-child{color:#71716c}
 html[data-theme="light"] .shv small{color:#71716c}
 html[data-theme="light"] .pghead{background:#ffffff}
 html[data-theme="light"] .pghead p{color:#71716c}
-html[data-theme="light"] #login{background:#ffffff;box-shadow:0 24px 70px rgba(NaN,0,0,0.209)}
-html[data-theme="light"] #applock .lockcard{background:#ffffff;box-shadow:0 24px 70px rgba(NaN,0,0,0.209)}
+html[data-theme="light"] #login{background:#ffffff;box-shadow:0 24px 70px rgba(0,0,0,0.209)}
+html[data-theme="light"] #applock .lockcard{background:#ffffff;box-shadow:0 24px 70px rgba(0,0,0,0.209)}
 html[data-theme="light"] #applock input{border:1px solid #c5c5c3;color:#000000}
 html[data-theme="light"] body #applock button#lockbio:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:#000000!important;color:#ffffff!important}
 html[data-theme="light"] #login input{border:1px solid #c5c5c3}
@@ -91,39 +91,39 @@ html[data-theme="light"] button.on{color:#000000}
 html[data-theme="light"] .cell .cn{background:linear-gradient(transparent,rgba(255,255,255,0.7));color:#000000}
 html[data-theme="light"] .play{color:#000000}
 html[data-theme="light"] .chk{color:#000000}
-html[data-theme="light"] #selbar{box-shadow:0 -2px 10px rgba(NaN,0,0,0.057)}
+html[data-theme="light"] #selbar{box-shadow:0 -2px 10px rgba(0,0,0,0.057)}
 html[data-theme="light"] .vmsg{color:#2e2a24}
 html[data-theme="light"] #appback{background:rgba(223,221,215,0.92);box-shadow:inset 0 0 0 1px rgba(0,0,0,0.12);color:#000000}
 html[data-theme="light"] #appback:active{background:rgba(20,20,10,0.3);box-shadow:inset 0 0 9px rgba(0,0,0,0.3)}
-html[data-theme="light"] body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(201,199,193,0.72)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(NaN,0,0,0.152)!important;color:#000000!important}
+html[data-theme="light"] body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(201,199,193,0.72)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(0,0,0,0.152)!important;color:#000000!important}
 html[data-theme="light"] body #appback,html[data-theme="light"] body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(223,221,215,0.92)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.12),inset 0 -1px 0 rgba(0,0,0,0.06)!important}
 html[data-theme="light"].ios{--g-fill:rgba(0,0,0,0.055);--g-fill-press:rgba(0,0,0,0.14);--g-inner:rgba(0,0,0,0.05);--g-hi:rgba(0,0,0,0.06);--g-lo:rgba(0,0,0,0.05);--g-sheen:radial-gradient(120% 90% at 18% 0%,rgba(0,0,0,0.05),rgba(0,0,0,0) 58%);--g-shadow:0 8px 22px rgba(255,255,255,0.38),0 1px 3px rgba(255,255,255,0.3)}
 html[data-theme="light"].ios{--seg-fg:#000000}
 @media all{html[data-theme="light"].ios{--bg:#f2f2f7;background:#f2f2f7}
 html[data-theme="light"].ios body{background:#f2f2f7}}
 html[data-theme="light"].ios button.danger{color:#000000!important}
-html[data-theme="light"].ios .seg-pill{background:rgba(255,255,255,0.24);box-shadow:inset 0 1px 0 rgba(0,0,0,0.05),inset 0 -1px 0 rgba(0,0,0,0.03),inset 0 1px 4px rgba(NaN,0,0,0.084)}
-html[data-theme="light"] .gmenu{background:rgba(215,215,211,0.72);box-shadow:inset 0 1px 0 rgba(0,0,0,0.12),inset 0 -1px 0 rgba(0,0,0,0.06),0 14px 40px rgba(NaN,0,0,0.190)}
+html[data-theme="light"].ios .seg-pill{background:rgba(255,255,255,0.24);box-shadow:inset 0 1px 0 rgba(0,0,0,0.05),inset 0 -1px 0 rgba(0,0,0,0.03),inset 0 1px 4px rgba(0,0,0,0.084)}
+html[data-theme="light"] .gmenu{background:rgba(215,215,211,0.72);box-shadow:inset 0 1px 0 rgba(0,0,0,0.12),inset 0 -1px 0 rgba(0,0,0,0.06),0 14px 40px rgba(0,0,0,0.190)}
 html[data-theme="light"] .gmenu div{color:#000000}
 html[data-theme="light"] .gmenu div:active{background:rgba(135,135,127,0.45)}
 html[data-theme="light"].ios .gpress{background-color:rgba(135,135,127,0.5)!important}
-html[data-theme="light"].ios #selbar{background:rgba(221,221,217,0.55);box-shadow:inset 0 1px 0 rgba(0,0,0,0.14),inset 0 -1px 0 rgba(0,0,0,0.07),inset 0 1px 1.5px rgba(0,0,0,0.18),0 14px 40px rgba(NaN,0,0,0.209)}
+html[data-theme="light"].ios #selbar{background:rgba(221,221,217,0.55);box-shadow:inset 0 1px 0 rgba(0,0,0,0.14),inset 0 -1px 0 rgba(0,0,0,0.07),inset 0 1px 1.5px rgba(0,0,0,0.18),0 14px 40px rgba(0,0,0,0.209)}
 html[data-theme="light"].ios #selbar>span,html[data-theme="light"].ios #selbar>b,html[data-theme="light"].ios #selbar #selcount{color:#000000}
 html[data-theme="light"].ios #selbar button{color:#000000!important}
 html[data-theme="light"].ios #selbar button.danger{color:#000000!important}
 html[data-theme="light"].ios #selbar button:active{background:rgba(135,135,127,0.5)!important}
 html[data-theme="light"].ios #dock button{color:#000000!important}
 html[data-theme="light"].ios #dock button:active,html[data-theme="light"].ios #dock button.act,html[data-theme="light"].ios #dock button.gpress{background:rgba(255,255,255,0.35)!important}
-html[data-theme="light"]:not(.ios) .bar :is(button.ghost,select){background:rgba(0,0,0,0.06);box-shadow:inset 0 1px 0 rgba(0,0,0,0.07),inset 0 -1px 0 rgba(0,0,0,0.04),inset 0 1px 1.5px rgba(0,0,0,0.08),0 6px 18px rgba(NaN,0,0,0.133)}
+html[data-theme="light"]:not(.ios) .bar :is(button.ghost,select){background:rgba(0,0,0,0.06);box-shadow:inset 0 1px 0 rgba(0,0,0,0.07),inset 0 -1px 0 rgba(0,0,0,0.04),inset 0 1px 1.5px rgba(0,0,0,0.08),0 6px 18px rgba(0,0,0,0.133)}
 html[data-theme="light"]:not(.ios) .bar :is(button.ghost,select):hover{background:rgba(0,0,0,0.1)}
 html[data-theme="light"]:not(.ios) .bar :is(button.ghost,select):active{background:rgba(255,255,255,0.35)}
-html[data-theme="light"]:not(.ios) .seg{background:rgba(0,0,0,0.06);box-shadow:inset 0 1px 0 rgba(0,0,0,0.07),inset 0 -1px 0 rgba(0,0,0,0.04),inset 0 1px 1.5px rgba(0,0,0,0.08),0 6px 18px rgba(NaN,0,0,0.133)}
+html[data-theme="light"]:not(.ios) .seg{background:rgba(0,0,0,0.06);box-shadow:inset 0 1px 0 rgba(0,0,0,0.07),inset 0 -1px 0 rgba(0,0,0,0.04),inset 0 1px 1.5px rgba(0,0,0,0.08),0 6px 18px rgba(0,0,0,0.133)}
 html[data-theme="light"]:not(.ios) .seg button.ghost.on{background:rgba(255,255,255,0.35)}
 html[data-theme="light"]:not(.ios) .seg button.ghost:hover:not(.on){background:rgba(0,0,0,0.08)}
 html[data-theme="light"].ios #setpanel button{color:#000000!important}
 html[data-theme="light"]:not(.ios) :is(.bar,#setpanel,#modal) select{background-color:rgba(0,0,0,0.06)}
 html[data-theme="light"].ios{--g-inner:rgba(0,0,0,0);--g-hi:rgba(0,0,0,0);--g-lo:rgba(0,0,0,0)}
-html[data-theme="light"].ios #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.09),inset 0 -1px 0 rgba(0,0,0,0.04),0 12px 34px rgba(NaN,0,0,0.190)}
+html[data-theme="light"].ios #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.09),inset 0 -1px 0 rgba(0,0,0,0.04),0 12px 34px rgba(0,0,0,0.190)}
 html[data-theme="light"] #setpanel #setbody button,html[data-theme="light"] #setpanel .mbtns button{background:rgba(0,0,0,0.07)!important;border:1px solid rgba(0,0,0,0.1)!important}
 html[data-theme="light"].ios body::before{background:#f2f2f7}
 html[data-theme="light"].ios .seltop button,html[data-theme="light"].ios .seltop button:disabled{background:rgba(211,211,207,0.96)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.09),inset 0 -1px 0 rgba(0,0,0,0.04)!important}
@@ -135,14 +135,14 @@ html[data-theme="light"].ios #topband{background:rgba(255,255,255,0.4)}
 html[data-theme="light"].ios #app>header{background:#f2f2f7}
 html[data-theme="light"].ios #topband{background:#f2f2f7!important}
 html[data-theme="light"].ios body.selecting::before{background:#f2f2f7}
-html[data-theme="light"] #dock{background:rgba(0,0,0,0.012)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.09),inset 0 -1px 0 rgba(0,0,0,0.04),0 10px 28px rgba(NaN,0,0,0.133)!important}
+html[data-theme="light"] #dock{background:rgba(0,0,0,0.012)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.09),inset 0 -1px 0 rgba(0,0,0,0.04),0 10px 28px rgba(0,0,0,0.133)!important}
 html[data-theme="light"] #setpanel #setbody button:active,html[data-theme="light"] #setpanel .mbtns button:active,html[data-theme="light"] #setpanel #setbody button.gpress,html[data-theme="light"] #setpanel .mbtns button.gpress{background:rgba(135,135,127,0.5)!important}
 html[data-theme="light"] .gmenu.dockmenu{background:rgba(219,219,215,0.94)}
 html[data-theme="light"].ios #modal button:not(.ghost):not(.del):not(.danger){color:#000000!important}
 html[data-theme="light"].ios #modal button.ghost{color:#000000!important}
 html[data-theme="light"].ios #modal button:active{background:rgba(135,135,127,0.5)!important}
 html[data-theme="light"] #modal #smk,html[data-theme="light"].ios #modal #smk,html[data-theme="light"]:not(.ios) #modal #smk{box-shadow:inset 0 1px 1.5px rgba(0,0,0,0.3),0 8px 20px rgba(10,132,255,.28)!important}
-html[data-theme="light"] #savepill{background:rgba(215,215,211,0.96);color:#000000;box-shadow:inset 0 1px 0 rgba(0,0,0,0.1),inset 0 -1px 0 rgba(0,0,0,0.05),0 12px 30px rgba(NaN,0,0,0.190)}
+html[data-theme="light"] #savepill{background:rgba(215,215,211,0.96);color:#000000;box-shadow:inset 0 1px 0 rgba(0,0,0,0.1),inset 0 -1px 0 rgba(0,0,0,0.05),0 12px 30px rgba(0,0,0,0.190)}
 html[data-theme="light"] #savepill button.ghost{background:rgba(135,135,127,0.3)}
 html[data-theme="light"].android{--g-shadow:0 4px 10px rgba(255,255,255,0.35)}
 html[data-theme="light"] .grip{background-image:linear-gradient(#000000,#000000),linear-gradient(#000000,#000000),linear-gradient(#000000,#000000)!important}
@@ -160,13 +160,13 @@ html[data-theme="light"] #modal a.vlk:active{background:rgba(135,135,127,0.5)!im
 html[data-theme="light"] #applock #lockgo{background:rgba(0,0,0,0.04)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.09),inset 0 -1px 0 rgba(0,0,0,0.04)!important}
 html[data-theme="light"] #applock #lockgo:active{background:rgba(135,135,127,0.5)!important}
 html[data-theme="light"] #upsum{background:rgba(0,0,0,0.05)}
-html[data-theme="light"].ios .selbot button,html[data-theme="light"].android .selbot button{background:rgba(227,225,219,0.55)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.14),inset 0 -1px 0 rgba(0,0,0,0.07),0 10px 28px rgba(NaN,0,0,0.152)!important}
-html[data-theme="light"].ios body .selbot button,html[data-theme="light"].android body .selbot button{background:rgba(231,229,225,0.9)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(NaN,0,0,0.171)!important}
+html[data-theme="light"].ios .selbot button,html[data-theme="light"].android .selbot button{background:rgba(227,225,219,0.55)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.14),inset 0 -1px 0 rgba(0,0,0,0.07),0 10px 28px rgba(0,0,0,0.152)!important}
+html[data-theme="light"].ios body .selbot button,html[data-theme="light"].android body .selbot button{background:rgba(231,229,225,0.9)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(0,0,0,0.171)!important}
 html[data-theme="light"] #modal .srow button.del,html[data-theme="light"] #login button,html[data-theme="light"] #applock button{background:rgba(0,0,0,0.04)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.09),inset 0 -1px 0 rgba(0,0,0,0.04)!important}
 html[data-theme="light"] #modal .srow button.del:active,html[data-theme="light"] #login button:active,html[data-theme="light"] #applock button:active{background:rgba(135,135,127,0.5)!important}
-html[data-theme="light"].ios:not(.android) body #dock{background:rgba(201,199,193,0.64)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.17),inset 0 -1px 0 rgba(0,0,0,0.09),inset 0 1px 1.5px rgba(0,0,0,0.2),0 10px 30px rgba(NaN,0,0,0.152)!important}
+html[data-theme="light"].ios:not(.android) body #dock{background:rgba(201,199,193,0.64)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.17),inset 0 -1px 0 rgba(0,0,0,0.09),inset 0 1px 1.5px rgba(0,0,0,0.2),0 10px 30px rgba(0,0,0,0.152)!important}
 html[data-theme="light"].ios:not(.android) body .srch input{background:rgba(201,199,193,0.72)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.17),inset 0 -1px 0 rgba(0,0,0,0.09)!important}
-html[data-theme="light"].android body #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.14),inset 0 -1px 0 rgba(0,0,0,0.07),0 8px 24px rgba(NaN,0,0,0.152)!important}
+html[data-theme="light"].android body #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.14),inset 0 -1px 0 rgba(0,0,0,0.07),0 8px 24px rgba(0,0,0,0.152)!important}
 html[data-theme="light"] body #dock button:is(:active,.gpress){background:rgba(20,20,10,0.22)!important}
 html[data-theme="light"].ios body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(223,221,215,0.92)!important;color:#000000!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.12),inset 0 -1px 0 rgba(0,0,0,0.06)!important}
 html[data-theme="light"] #dock #dockpill{background:rgba(255,255,255,0.42);box-shadow:inset 0 1px 0 rgba(0,0,0,0.14),inset 0 -1px 0 rgba(0,0,0,0.07),inset 0 1px 6px rgba(0,0,0,0.08)}
@@ -174,37 +174,37 @@ html[data-theme="light"] #dock #dockpill.on{background:rgba(255,255,255,0.42)}
 html[data-theme="light"]:not(.android) body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.seg button){box-shadow:inset 0 1px 0 rgba(0,0,0,0.08),inset 0 -1px 0 rgba(0,0,0,0.04)!important}
 html[data-theme="light"]:not(.android) body #dock button:is(:active,.gpress){background:rgba(20,20,10,0.22)!important}
 html[data-theme="light"]:not(.android) #dock #dockpill.rest{background:rgba(0,0,0,0.13);box-shadow:inset 0 1px 0 rgba(0,0,0,0.22),inset 0 -1px 0 rgba(0,0,0,0.11),inset 0 1px 7px rgba(0,0,0,0.18)}
-html[data-theme="light"]:not(.android) #dock #dockpill.on{background:rgba(0,0,0,0.1);box-shadow:inset 0 1px 0 rgba(0,0,0,0.3),inset 0 -1px 0 rgba(0,0,0,0.15),inset 0 1px 9px rgba(0,0,0,0.22),0 6px 18px rgba(NaN,0,0,0.095)}
-html[data-theme="light"].ios body .selbot #selcount{color:#000000;background:rgba(217,217,215,0.96);box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(NaN,0,0,0.171)}
-html[data-theme="light"].ios:not(.android) body #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),inset 0 1px 2px rgba(0,0,0,0.12),0 8px 24px rgba(NaN,0,0,0.133)!important}
+html[data-theme="light"]:not(.android) #dock #dockpill.on{background:rgba(0,0,0,0.1);box-shadow:inset 0 1px 0 rgba(0,0,0,0.3),inset 0 -1px 0 rgba(0,0,0,0.15),inset 0 1px 9px rgba(0,0,0,0.22),0 6px 18px rgba(0,0,0,0.095)}
+html[data-theme="light"].ios body .selbot #selcount{color:#000000;background:rgba(217,217,215,0.96);box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(0,0,0,0.171)}
+html[data-theme="light"].ios:not(.android) body #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),inset 0 1px 2px rgba(0,0,0,0.12),0 8px 24px rgba(0,0,0,0.133)!important}
 html[data-theme="light"].ios body .seltop button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#000000!important}
 html[data-theme="light"].ios body .selbot #selcount{background:rgba(0,0,0,0.07)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.22),inset 0 -1px 0 rgba(0,0,0,0.11),inset 0 1px 6px rgba(0,0,0,0.12)!important}
-html[data-theme="light"].ios:not(.android) body #dock,html[data-theme="light"].android body #dock,html[data-theme="light"].ios body #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.2),inset 0 -1px 0 rgba(0,0,0,0.1),inset 0 1px 2px rgba(0,0,0,0.12),0 6px 18px rgba(NaN,0,0,0.068)!important}
+html[data-theme="light"].ios:not(.android) body #dock,html[data-theme="light"].android body #dock,html[data-theme="light"].ios body #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.2),inset 0 -1px 0 rgba(0,0,0,0.1),inset 0 1px 2px rgba(0,0,0,0.12),0 6px 18px rgba(0,0,0,0.068)!important}
 html[data-theme="light"]:not(.android) #dock #dockpill.rest,html[data-theme="light"]:not(.android) #dock #dockpill.on{background:rgba(0,0,0,0.07)}
-html[data-theme="light"].ios body .selbot #selcount{box-shadow:inset 0 1px 0 rgba(0,0,0,0.28),inset 0 -1px 0 rgba(0,0,0,0.14),inset 0 1px 3px rgba(0,0,0,0.14)!important;text-shadow:0 0 3px rgba(NaN,0,0,0.266)}
+html[data-theme="light"].ios body .selbot #selcount{box-shadow:inset 0 1px 0 rgba(0,0,0,0.28),inset 0 -1px 0 rgba(0,0,0,0.14),inset 0 1px 3px rgba(0,0,0,0.14)!important;text-shadow:0 0 3px rgba(0,0,0,0.266)}
 html[data-theme="light"].ios body #dock.dragging button.on:not(.glass-hot):not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:var(--seg-fg,#000000)!important}
-html[data-theme="light"].ios body #dock.lens-bar,html[data-theme="light"].ios body #dock{background:rgba(237,236,231,0.3)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 10px 28px rgba(NaN,0,0,0.133)!important}
-html[data-theme="light"].ios:not(.android) body #dock,html[data-theme="light"].android body #dock{background:rgba(237,236,231,0.3)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 10px 28px rgba(NaN,0,0,0.133)!important}
-html[data-theme="light"] #dock .seg-pill{background:rgba(255,255,255,0.34)!important;box-shadow:inset 0 1px 4px rgba(NaN,0,0,0.133)!important}
-html[data-theme="light"].ios body .seg{background:rgba(237,236,231,0.3)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 8px 22px rgba(NaN,0,0,0.106)!important}
-html[data-theme="light"] .seg .seg-pill{background:rgba(255,255,255,0.34)!important;box-shadow:inset 0 1px 4px rgba(NaN,0,0,0.133)!important}
-html[data-theme="light"].ios:not(.android) body #dock,html[data-theme="light"].android body #dock{box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 6px 16px rgba(NaN,0,0,0.114)!important}
+html[data-theme="light"].ios body #dock.lens-bar,html[data-theme="light"].ios body #dock{background:rgba(237,236,231,0.3)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 10px 28px rgba(0,0,0,0.133)!important}
+html[data-theme="light"].ios:not(.android) body #dock,html[data-theme="light"].android body #dock{background:rgba(237,236,231,0.3)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 10px 28px rgba(0,0,0,0.133)!important}
+html[data-theme="light"] #dock .seg-pill{background:rgba(255,255,255,0.34)!important;box-shadow:inset 0 1px 4px rgba(0,0,0,0.133)!important}
+html[data-theme="light"].ios body .seg{background:rgba(237,236,231,0.3)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 8px 22px rgba(0,0,0,0.106)!important}
+html[data-theme="light"] .seg .seg-pill{background:rgba(255,255,255,0.34)!important;box-shadow:inset 0 1px 4px rgba(0,0,0,0.133)!important}
+html[data-theme="light"].ios:not(.android) body #dock,html[data-theme="light"].android body #dock{box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 6px 16px rgba(0,0,0,0.114)!important}
 html[data-theme="light"].ios body #dock.pressing{background:rgba(105,103,95,0.15)!important}
 html[data-theme="light"].ios:not(.android) body #dock.pressing,html[data-theme="light"].android body #dock.pressing{background:rgba(105,103,95,0.15)!important}
 html[data-theme="light"].ios body .seg.pressing{background:rgba(105,103,95,0.15)!important}
-html[data-theme="light"] body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(201,199,193,0.72)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(NaN,0,0,0.152)!important;color:#000000!important}
+html[data-theme="light"] body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(201,199,193,0.72)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(0,0,0,0.152)!important;color:#000000!important}
 html[data-theme="light"] body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){background:rgba(20,20,10,0.3)!important;box-shadow:inset 0 0 9px rgba(0,0,0,0.3)!important}
-html[data-theme="light"].ios body #dock::before,html[data-theme="light"].ios:not(.android) body #dock::before,html[data-theme="light"].android body #dock::before,html[data-theme="light"].ios body .seg::before{background:rgba(237,236,231,0.3);box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 6px 16px rgba(NaN,0,0,0.114)}
+html[data-theme="light"].ios body #dock::before,html[data-theme="light"].ios:not(.android) body #dock::before,html[data-theme="light"].android body #dock::before,html[data-theme="light"].ios body .seg::before{background:rgba(237,236,231,0.3);box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 6px 16px rgba(0,0,0,0.114)}
 html[data-theme="light"].ios body #dock.pressing::before,html[data-theme="light"].ios body .seg.pressing::before{background:rgba(105,103,95,0.15)}
-html[data-theme="light"]:not(.ios) .seg-pill{background:rgba(255,255,255,0.24);box-shadow:inset 0 1px 0 rgba(0,0,0,0.05),inset 0 -1px 0 rgba(0,0,0,0.03),inset 0 1px 4px rgba(NaN,0,0,0.084)}
-html[data-theme="light"]:not(.ios) #selbar{background:rgba(221,221,217,0.55);box-shadow:inset 0 1px 0 rgba(0,0,0,0.14),inset 0 -1px 0 rgba(0,0,0,0.07),inset 0 1px 1.5px rgba(0,0,0,0.18),0 14px 40px rgba(NaN,0,0,0.209)}
+html[data-theme="light"]:not(.ios) .seg-pill{background:rgba(255,255,255,0.24);box-shadow:inset 0 1px 0 rgba(0,0,0,0.05),inset 0 -1px 0 rgba(0,0,0,0.03),inset 0 1px 4px rgba(0,0,0,0.084)}
+html[data-theme="light"]:not(.ios) #selbar{background:rgba(221,221,217,0.55);box-shadow:inset 0 1px 0 rgba(0,0,0,0.14),inset 0 -1px 0 rgba(0,0,0,0.07),inset 0 1px 1.5px rgba(0,0,0,0.18),0 14px 40px rgba(0,0,0,0.209)}
 html[data-theme="light"]:not(.ios) #selbar>span,html[data-theme="light"]:not(.ios) #selbar>b,html[data-theme="light"]:not(.ios) #selbar #selcount{color:#000000}
 html[data-theme="light"]:not(.ios) #selbar button{color:#000000!important}
 html[data-theme="light"]:not(.ios) #selbar button.danger{color:#000000!important}
 html[data-theme="light"]:not(.ios) #selbar button:active{background:rgba(135,135,127,0.5)!important}
 html[data-theme="light"]:not(.ios) #dock button{color:#000000!important}
 html[data-theme="light"]:not(.ios) #dock button:active,html[data-theme="light"]:not(.ios) #dock button.act,html[data-theme="light"]:not(.ios) #dock button.gpress{background:rgba(255,255,255,0.35)!important}
-html[data-theme="light"]:not(.ios) #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.09),inset 0 -1px 0 rgba(0,0,0,0.04),0 12px 34px rgba(NaN,0,0,0.190)}
+html[data-theme="light"]:not(.ios) #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.09),inset 0 -1px 0 rgba(0,0,0,0.04),0 12px 34px rgba(0,0,0,0.190)}
 html[data-theme="light"]:not(.ios) .seltop button,html[data-theme="light"]:not(.ios) .seltop button:disabled{background:rgba(211,211,207,0.96)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.09),inset 0 -1px 0 rgba(0,0,0,0.04)!important}
 html[data-theme="light"]:not(.ios) .seltop button:disabled{color:rgba(0,0,0,0.4)!important}
 html[data-theme="light"]:not(.ios) #topsent{background:rgba(255,255,255,0.02)}
@@ -212,25 +212,25 @@ html[data-theme="light"]:not(.ios) .seltop::before{background:rgba(255,255,255,0
 html[data-theme="light"]:not(.ios) #topband{background:rgba(255,255,255,0.4)}
 html[data-theme="light"]:not(.ios) #topband{background:#f2f2f7!important}
 html[data-theme="light"]:not(.ios) body.selecting::before{background:#f2f2f7}
-html[data-theme="light"]:not(.ios) .selbot button,html[data-theme="light"].android .selbot button{background:rgba(227,225,219,0.55)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.14),inset 0 -1px 0 rgba(0,0,0,0.07),0 10px 28px rgba(NaN,0,0,0.152)!important}
-html[data-theme="light"]:not(.ios) body .selbot button,html[data-theme="light"].android body .selbot button{background:rgba(231,229,225,0.9)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(NaN,0,0,0.171)!important}
-html[data-theme="light"]:not(.ios):not(.android) body #dock{background:rgba(201,199,193,0.64)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.17),inset 0 -1px 0 rgba(0,0,0,0.09),inset 0 1px 1.5px rgba(0,0,0,0.2),0 10px 30px rgba(NaN,0,0,0.152)!important}
+html[data-theme="light"]:not(.ios) .selbot button,html[data-theme="light"].android .selbot button{background:rgba(227,225,219,0.55)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.14),inset 0 -1px 0 rgba(0,0,0,0.07),0 10px 28px rgba(0,0,0,0.152)!important}
+html[data-theme="light"]:not(.ios) body .selbot button,html[data-theme="light"].android body .selbot button{background:rgba(231,229,225,0.9)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(0,0,0,0.171)!important}
+html[data-theme="light"]:not(.ios):not(.android) body #dock{background:rgba(201,199,193,0.64)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.17),inset 0 -1px 0 rgba(0,0,0,0.09),inset 0 1px 1.5px rgba(0,0,0,0.2),0 10px 30px rgba(0,0,0,0.152)!important}
 html[data-theme="light"]:not(.ios) body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(223,221,215,0.92)!important;color:#000000!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.12),inset 0 -1px 0 rgba(0,0,0,0.06)!important}
-html[data-theme="light"]:not(.ios) body .selbot #selcount{color:#000000;background:rgba(217,217,215,0.96);box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(NaN,0,0,0.171)}
-html[data-theme="light"]:not(.ios):not(.android) body #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),inset 0 1px 2px rgba(0,0,0,0.12),0 8px 24px rgba(NaN,0,0,0.133)!important}
+html[data-theme="light"]:not(.ios) body .selbot #selcount{color:#000000;background:rgba(217,217,215,0.96);box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),0 10px 28px rgba(0,0,0,0.171)}
+html[data-theme="light"]:not(.ios):not(.android) body #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.16),inset 0 -1px 0 rgba(0,0,0,0.08),inset 0 1px 2px rgba(0,0,0,0.12),0 8px 24px rgba(0,0,0,0.133)!important}
 html[data-theme="light"]:not(.ios) body .seltop button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#000000!important}
 html[data-theme="light"]:not(.ios) body .selbot #selcount{background:rgba(0,0,0,0.07)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.22),inset 0 -1px 0 rgba(0,0,0,0.11),inset 0 1px 6px rgba(0,0,0,0.12)!important}
-html[data-theme="light"]:not(.ios):not(.android) body #dock,html[data-theme="light"].android body #dock,html[data-theme="light"]:not(.ios) body #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.2),inset 0 -1px 0 rgba(0,0,0,0.1),inset 0 1px 2px rgba(0,0,0,0.12),0 6px 18px rgba(NaN,0,0,0.068)!important}
-html[data-theme="light"]:not(.ios) body .selbot #selcount{box-shadow:inset 0 1px 0 rgba(0,0,0,0.28),inset 0 -1px 0 rgba(0,0,0,0.14),inset 0 1px 3px rgba(0,0,0,0.14)!important;text-shadow:0 0 3px rgba(NaN,0,0,0.266)}
+html[data-theme="light"]:not(.ios):not(.android) body #dock,html[data-theme="light"].android body #dock,html[data-theme="light"]:not(.ios) body #dock{box-shadow:inset 0 1px 0 rgba(0,0,0,0.2),inset 0 -1px 0 rgba(0,0,0,0.1),inset 0 1px 2px rgba(0,0,0,0.12),0 6px 18px rgba(0,0,0,0.068)!important}
+html[data-theme="light"]:not(.ios) body .selbot #selcount{box-shadow:inset 0 1px 0 rgba(0,0,0,0.28),inset 0 -1px 0 rgba(0,0,0,0.14),inset 0 1px 3px rgba(0,0,0,0.14)!important;text-shadow:0 0 3px rgba(0,0,0,0.266)}
 html[data-theme="light"]:not(.ios) body #dock.dragging button.on:not(.glass-hot):not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:var(--seg-fg,#000000)!important}
-html[data-theme="light"]:not(.ios) body #dock.lens-bar,html[data-theme="light"]:not(.ios) body #dock{background:rgba(237,236,231,0.3)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 10px 28px rgba(NaN,0,0,0.133)!important}
-html[data-theme="light"]:not(.ios):not(.android) body #dock,html[data-theme="light"].android body #dock{background:rgba(237,236,231,0.3)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 10px 28px rgba(NaN,0,0,0.133)!important}
-html[data-theme="light"]:not(.ios) body .seg{background:rgba(237,236,231,0.3)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 8px 22px rgba(NaN,0,0,0.106)!important}
-html[data-theme="light"]:not(.ios):not(.android) body #dock,html[data-theme="light"].android body #dock{box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 6px 16px rgba(NaN,0,0,0.114)!important}
+html[data-theme="light"]:not(.ios) body #dock.lens-bar,html[data-theme="light"]:not(.ios) body #dock{background:rgba(237,236,231,0.3)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 10px 28px rgba(0,0,0,0.133)!important}
+html[data-theme="light"]:not(.ios):not(.android) body #dock,html[data-theme="light"].android body #dock{background:rgba(237,236,231,0.3)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 10px 28px rgba(0,0,0,0.133)!important}
+html[data-theme="light"]:not(.ios) body .seg{background:rgba(237,236,231,0.3)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 8px 22px rgba(0,0,0,0.106)!important}
+html[data-theme="light"]:not(.ios):not(.android) body #dock,html[data-theme="light"].android body #dock{box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 6px 16px rgba(0,0,0,0.114)!important}
 html[data-theme="light"]:not(.ios) body #dock.pressing{background:rgba(105,103,95,0.15)!important}
 html[data-theme="light"]:not(.ios):not(.android) body #dock.pressing,html[data-theme="light"].android body #dock.pressing{background:rgba(105,103,95,0.15)!important}
 html[data-theme="light"]:not(.ios) body .seg.pressing{background:rgba(105,103,95,0.15)!important}
-html[data-theme="light"]:not(.ios) body #dock::before,html[data-theme="light"]:not(.ios):not(.android) body #dock::before,html[data-theme="light"].android body #dock::before,html[data-theme="light"]:not(.ios) body .seg::before{background:rgba(237,236,231,0.3);box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 6px 16px rgba(NaN,0,0,0.114)}
+html[data-theme="light"]:not(.ios) body #dock::before,html[data-theme="light"]:not(.ios):not(.android) body #dock::before,html[data-theme="light"].android body #dock::before,html[data-theme="light"]:not(.ios) body .seg::before{background:rgba(237,236,231,0.3);box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 6px 16px rgba(0,0,0,0.114)}
 html[data-theme="light"]:not(.ios) body #dock.pressing::before,html[data-theme="light"]:not(.ios) body .seg.pressing::before{background:rgba(105,103,95,0.15)}
 
 /* ---- hand-made part ---- */
@@ -278,4 +278,8 @@ html[data-theme="light"] body .grip{background:linear-gradient(#aeaeb2,#aeaeb2) 
 html[data-theme="light"] body .grip:active,html[data-theme="light"] body details.fold.dragging .grip{background-color:rgba(0,0,0,.06)!important}
 
 /* the share page top buttons sit on a flat strip: a blur there only smears the glyph */
-html[data-theme="light"] body #appback:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body .hdrbtns button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important}
+html[data-theme="light"] body #appback:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #app>header .hdrbtns button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important}
+
+/* text buttons on white cards (copy / download / delete, revoke / open link, folder tools): a visible pill with a hairline rim, so their edges show */
+html[data-theme="light"] body .clipbtns button:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #modal .srow button.del:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #modal .srow a.btn.vlk:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(0,0,0,.045)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)!important;border-radius:999px!important}
+html[data-theme="light"] body details.fold .ftools button:not(#nx1):not(#nx2):not(#nx3):not(#nx4){box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)!important}
