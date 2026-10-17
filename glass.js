@@ -7,7 +7,7 @@
 (function () {
   // (runs on every platform; the iOS-only touches are guarded where they differ)
   const DPR = Math.min(window.devicePixelRatio || 1, 2);   // (2 is plenty for a lens this small and keeps the per-frame cost down)
-  const GROW = 22, MAG = 1.18, SPAD = 24, TPAD = 28, BEZEL = 15, STMAX = 30;     // lens grows while held; shadow padding; texture padding; width of the curved edge (css px)
+  const GROW = 22, MAG = 1.26, SPAD = 24, TPAD = 28, BEZEL = 15, STMAX = 30;     // lens grows while held; shadow padding; texture padding; width of the curved edge (css px)
   const raf = fn => (document.hidden ? setTimeout(() => fn(performance.now()), 16) : requestAnimationFrame(fn));
 
   const VS = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
@@ -47,7 +47,7 @@ void main(){
     if(u_n>1.5&&abs(segPos.x-u_ax.y)<bd){ax=u_ax.y;bd=abs(segPos.x-u_ax.y);}
     if(u_n>2.5&&abs(segPos.x-u_ax.z)<bd){ax=u_ax.z;bd=abs(segPos.x-u_ax.z);}
     if(u_n>3.5&&abs(segPos.x-u_ax.w)<bd){ax=u_ax.w;}
-    mp=segPos;   // no zoom inside the lens (the press already swells the bar): only the curved edge bends what is under it
+    vec2 an=vec2(ax,u_cy);mp=an+(segPos-an)/u_mag;   // every label grows in place (about its own centre)
   }
   vec2 refr=-g*slope*u_bezel*.50*u_lift;                                    // refraction: content from outside the edge is pulled inwards
   vec3 col;col.r=tex(mp+refr).r;col.g=tex(mp+refr*1.05).g;col.b=tex(mp+refr*1.10).b;   // slight dispersion
@@ -193,8 +193,9 @@ void main(){
   // draw the lens for the current state (cx = centre x, w = width, grow = extra size while held, mag, lift = strength 0..1)
   function draw(s) {
     const g = s.gl, L = s.lens; if (!g || !L) return;
-    const r = geom(s)[selected(s)], H = r.h + gr(s), t = r.t - gr(s) / 2, segW = s.seg.clientWidth, segH = s.seg.clientHeight;
-    const ox = -SPAD, oy = Math.min(t, 0) - SPAD, cssW = Math.ceil(segW + 2 * SPAD), cssH = Math.ceil(Math.max(t + H, segH) - Math.min(t, 0) + 2 * SPAD);   // fixed canvas over the whole bar
+    const r = geom(s)[selected(s)], hg = Math.max(0, L.grow), H = r.h + hg, t = r.t - hg / 2, segW = s.seg.clientWidth, segH = s.seg.clientHeight;   // the lens height follows the spring too: it swells (and wobbles) instead of appearing at full size
+    const tmax = r.t - gr(s) * 0.8, Hmax = r.h + gr(s) * 1.6;
+    const ox = -SPAD, oy = Math.min(tmax, 0) - SPAD, cssW = Math.ceil(segW + 2 * SPAD), cssH = Math.ceil(Math.max(tmax + Hmax, segH) - Math.min(tmax, 0) + 2 * SPAD);   // fixed canvas over the whole bar
     const cv = s.canvas;
     if (cv.width !== Math.round(cssW * DPR) || cv.height !== Math.round(cssH * DPR)) { cv.width = Math.round(cssW * DPR); cv.height = Math.round(cssH * DPR); cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px'; }
     const st = Math.max(0, L.st || 0), lw = s.dock ? L.w + L.grow + st : Math.min(L.w + L.grow, Math.max(H * 1.45, (s.labW || 0) * MAG + 2 * BEZEL * Math.min(1, H / 80) + 6)) + st;
@@ -258,7 +259,7 @@ void main(){
   const spring = (cur, vel, target, dt, k, c) => { const a = k * (target - cur) - c * vel; vel += a * dt; return [cur + vel * dt, vel]; };
   function startLens(s) {
     s.gc = null; s.active = false; const r = geom(s)[selected(s)];
-    s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: gr(s), tm: MAG, st: 0, vst: 0, tst: 0 };
+    s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, bs: 1, vbs: 0, tbs: s.dock ? 1.07 : 1.05, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: gr(s), tm: MAG, st: 0, vst: 0, tst: 0 };
     s.hookOff = false; s.active = true; s.hot = selected(s); s.seg.classList.add('dragging', 'pressing', 'lensing'); setHot(s, s.hot, true);
     makeTexture(s);                                                  // labels as they look right now
     s.pill.classList.add('hidden'); s.canvas.classList.add('on');
@@ -276,10 +277,10 @@ void main(){
   function step(s, dt) {
     const L = s.lens; let moving = false;
     L.tst = (s.drag && s.drag.started) ? Math.min(STMAX, Math.abs(s.vel || 0) * 0.018) : 0; s.vel = (s.vel || 0) * Math.pow(0.03, dt);
-    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 1000, 42], ['w', 'vw', 'tw', 1000, 46], ['grow', 'vg', 'tg', 900, 48], ['mag', 'vm', 'tm', 900, 48], ['st', 'vst', 'tst', 700, 36]]) {
+    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 760, 27], ['w', 'vw', 'tw', 760, 27], ['grow', 'vg', 'tg', 460, 15], ['mag', 'vm', 'tm', 420, 13], ['bs', 'vbs', 'tbs', 420, 13], ['st', 'vst', 'tst', 700, 36]]) {
       if (s.drag && s.drag.started && (k === 'cx' || k === 'w')) { L[k] = L[t]; L[v] = 0; continue; }   // follows the finger 1:1 while dragging
       [L[k], L[v]] = spring(L[k], L[v], L[t], dt, kk, cc);
-      if (Math.abs(L[t] - L[k]) > (k === 'mag' ? 0.002 : 0.25) || Math.abs(L[v]) > (k === 'mag' ? 0.02 : 4)) moving = true;
+      if (Math.abs(L[t] - L[k]) > (k === 'mag' || k === 'bs' ? 0.002 : 0.25) || Math.abs(L[v]) > (k === 'mag' || k === 'bs' ? 0.02 : 4)) moving = true;
     }
     L.grow = Math.max(0, L.grow); return moving;
   }
@@ -288,6 +289,7 @@ void main(){
     const frame = now => {
       const dt = Math.min(0.034, Math.max(0.001, (now - last) / 1000)); last = now;
       const moving = step(s, dt); trackHot(s, s.lens.cx); draw(s);
+      if (s.lens) s.seg.style.transform = (s.dock ? 'translateX(-50%) ' : '') + 'scale(' + s.lens.bs.toFixed(4) + ')';   // the bar itself swells / wobbles with the spring
       if (s.hooks && !s.hookOff && s.lens) s.hooks.move(posOf(s, s.lens.cx), selected(s));   // page pager follows the lens
       if (moving || s.drag || s.hold) raf(frame); else { s.running = false; finishLens(s); }
     };
@@ -295,7 +297,7 @@ void main(){
   }
   function finishLens(s) {                                           // lens has settled into its option: swap back to the resting pill
     s.canvas.classList.remove('on'); s.active = false; s.lens = null;
-    s.gc = null; s.seg.style.removeProperty('--lensclip'); s.seg.classList.remove('pressing', 'lensing'); s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); });
+    s.seg.style.transform = ''; s.gc = null; s.seg.style.removeProperty('--lensclip'); s.seg.classList.remove('pressing', 'lensing'); s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); });
     const pk = s.pendingK; s.pendingK = null;                        // the (heavy) view switch runs only now, after the lens has landed, so it can't stutter the animation
     if (pk == null) { s.seg.classList.remove('dragging'); setHot(s, -1, true); }
     if (pk != null) s.btns.forEach((b, i) => b.classList.toggle('on', i === pk));   // move the marker + blue label to the chosen option right now, so nothing of the old one flashes while the page loads
@@ -348,7 +350,7 @@ void main(){
     };
     const release = k => {
       const changed = k !== selected(s), g = geom(s)[k];
-      if (s.gl && s.lens) { s.lens.tx = g.l + g.w / 2; s.lens.tw = g.w; s.lens.tg = 0; s.lens.tm = 1; loop(s); }   // spring into the slot, then finishLens
+      if (s.gl && s.lens) { s.lens.tx = g.l + g.w / 2; s.lens.tw = g.w; s.lens.tg = 0; s.lens.tm = 1; s.lens.tbs = 1; loop(s); }   // spring into the slot, then finishLens
       else { s.active = false; s.pill.classList.remove('noanim'); seg.classList.remove('dragging'); setHot(s, -1, true); }
       clearTimeout(s.liveT);
       if (s.hooks && s.lens) { s.hookOff = true; s.hooks.end(k, selected(s)); s.pendingK = k; s.noClick = true; }   // the pager slides to the chosen page and opens it itself
