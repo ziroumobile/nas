@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v6.49">
+<meta name="app-version" content="v6.50">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261020T">
+<link rel="stylesheet" href="glass.css?v=20261020U">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -152,6 +152,12 @@ html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position
 body.selecting #app>header .hdrbtns{visibility:hidden}
 #spage{position:fixed;inset:0;z-index:96;background:#000;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 76px) 16px calc(env(safe-area-inset-bottom) + 110px)}
 #spage[hidden]{display:none}
+.shh{display:flex;gap:12px;align-items:center;margin:0 0 12px}
+.shic{flex:none;width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center}.shic svg{width:24px;height:24px}
+.sht{min-width:0}.sht b{display:block;font-size:18px;word-break:break-all;line-height:1.25}.sht small{display:block!important;color:#8e8e93;margin:2px 0 0!important;font-size:13px}
+.shl{background:rgba(255,255,255,.045);border-radius:14px;margin:12px 0 12px;overflow:hidden}
+.shr{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:11px 14px;border-top:1px solid rgba(255,255,255,.06);font-size:15px}.shr:first-child{border-top:0}
+.shr>span:first-child{flex:none;color:#8e8e93}.shv{text-align:right;min-width:0;flex:1;word-break:break-all}.shv small{display:block;color:#8e8e93;font-size:12px;margin-top:2px}
 
 #storerowv,#locksetv,#vqsetv{display:none!important}
 .pghead{background:#1c1c1e;border-radius:26px;padding:20px 20px 22px;margin:0 0 18px}
@@ -355,7 +361,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 #setpage .sch{color:#636366;font-size:24px;line-height:1;margin-left:2px}
 #setpage .sred .slb{flex:none}#offscreen{z-index:500;background:#000}#applock{z-index:500;background:#000}#setbody{display:flex;flex-direction:column;align-items:stretch;gap:8px}#setbody button{text-align:left}
 #gear{background:none;border:0;font-size:22px;line-height:1;padding:4px 8px;border-radius:8px;color:var(--fg)}#gear:hover{background:var(--card)}
-@media(max-width:699px){.bar button,.bar select{padding:6px 12px;font-size:14px}}
+@media(max-width:699px){.bar button,:is(.bar,.uptarget) select{padding:6px 12px;font-size:14px}}
 </style></head><body><div class="wrap">
 <div id="login" class="card" hidden>
   <div class="lgic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="6.4" rx="2"/><rect x="3.5" y="13.6" width="17" height="6.4" rx="2"/><path d="M7.4 7.2h.01M7.4 16.8h.01M11 7.2h5.6M11 16.8h5.6"/></svg></div>
@@ -420,7 +426,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261020T"></script>
+<script src="glass.js?v=20261020U"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -528,8 +534,8 @@ async function initTarget(){
   const last=ls.get('nas_lastfolder'),top=document.querySelector('#list details.fold')?.dataset.f;
   target=folders.some(f=>f.name===last)?last:(top||folders[0].name);drawTarget();
 }
-document.addEventListener('change',e=>{if(e.target.matches('.bar select'))fitSel(e.target)});
-addEventListener('load',()=>document.querySelectorAll('.bar select').forEach(fitSel));
+document.addEventListener('change',e=>{if(e.target.matches('.bar select,.uptarget select'))fitSel(e.target)});
+addEventListener('load',()=>document.querySelectorAll('.bar select,.uptarget select').forEach(fitSel));
 // view mode and sorting, remembered per browser ('grid' was the removed large-icon view -> medium)
 const savedView=ls.get('nas_view');
 let view=['list','nine','small'].includes(savedView)?savedView:'nine',sortBy=['name','date','size'].includes(ls.get('nas_sort'))?ls.get('nas_sort'):'date',asc=ls.get('nas_asc')==='1',lastSig='';
@@ -1117,7 +1123,7 @@ async function sharesManager(){ // every share: link, password (after entering t
   const load=async()=>{const r=await api('/api/shares');if(!r.ok)throw 0;list=await r.json();window.__sharesCache=list};
   if(cached)load().then(()=>{if(document.querySelector('#dock button.on')?.id==='dshare'&&!$('#modal').hidden&&typeof draw==='function')draw()}).catch(()=>{});
   else try{await load()}catch{showPage('<h3>🔗 已分享連結</h3><p class="merr">無法載入</p><div class="mbtns"><button class="ghost" id="sx">關閉</button></div>');$('#sx').onclick=closeModal;return}
-  const when=t=>new Date(t).toLocaleString();
+  const when=t=>new Date(t).toLocaleString(),sd=t=>{const d=new Date(t),p=n=>String(n).padStart(2,'0');return (d.getMonth()+1)+'/'+d.getDate()+' '+p(d.getHours())+':'+p(d.getMinutes())};   // short date for the cards
   const left=t=>{const ms=t-Date.now();if(ms<=0)return'已到期';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return d?`剩 ${d} 天 ${h} 小時`:h?`剩 ${h} 小時 ${m} 分`:`剩 ${m} 分鐘`};
   const keysOf=s=>s.type==='folder'?(folders.find(f=>f.name===s.folder)?.files.map(x=>keyOf(s.folder,x.name))||[]):(s.items||[]).map(i=>keyOf(i.folder,i.name)).filter(k=>fileByKey(k));
   const keyMap={}; // share id -> the files it shows, so a thumbnail opens the preview with prev/next inside that share
@@ -1129,16 +1135,19 @@ async function sharesManager(){ // every share: link, password (after entering t
       const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-kind="${x.kind}" src="${thumbSrc(x.thumb)}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
       return `<a class="sc" href="#" data-pv="${esc(k)}" data-sid="${esc(s.id)}" title="${esc(x.name)}">${inner}${keys.length>MAX&&ki===MAX-1?'<span class="more">+'+(keys.length-MAX+1)+'</span>':x.kind==='video'?'<span class="play">▶</span>':''}</a>`}).join('')}</div>`;
   };
-  const pwCell=s=>!s.hasPassword?'<span style="color:#b45309">（沒有設密碼：任何人有連結就能開啟）</span>':!s.pwStored?'<span style="color:var(--mut)">（未儲存）</span>':revealed?(revealed[s.id]==null?'<span style="color:var(--mut)">（無法解密）</span>':`<code style="user-select:all;font-size:15px">${esc(revealed[s.id])}</code> <button class="ghost" data-copypw="${esc(s.id)}" style="padding:2px 8px">複製密碼</button>`):'<code>••••••••</code>';
+  const pwCell=s=>!s.hasPassword?'<span style="color:#ff9f0a">未設密碼（有連結就能開啟）</span>':!s.pwStored?'<span style="color:var(--mut)">（未儲存）</span>':revealed?(revealed[s.id]==null?'<span style="color:var(--mut)">（無法解密）</span>':`<code style="user-select:all;font-size:15px">${esc(revealed[s.id])}</code> <button class="ghost" data-copypw="${esc(s.id)}" style="padding:2px 8px">複製密碼</button>`):'<code>••••••••</code>';
   const draw=()=>{
     showPage(`<div class="mhead"><button class="ghost" id="sx">關閉</button></div><div class="pghead"><span class="pgic" style="background:#0a84ff"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.2 4.2 0 0 0 5.9 0l3-3a4.2 4.2 0 0 0-5.9-5.9l-1 1"/><path d="M14 10a4.2 4.2 0 0 0-5.9 0l-3 3a4.2 4.2 0 0 0 5.9 5.9l1-1"/></svg></span><b>已分享連結（${list.length}）</b><p>對方開啟連結後可檢視與下載。撤銷後連結立刻失效，對方已經打開的下載連結也一併失效。</p></div>
       ${list.some(s=>s.hasPassword)?`<div class="mbtns" style="margin:0 0 6px">${revealed?'<button class="ghost" data-hide="1">🙈 隱藏密碼</button>':'<button data-reveal="1">🔑 顯示密碼</button>'}</div>`:''}`+
-      (list.length?list.map(s=>`<div class="srow"><b>${s.type==='folder'?'📁 資料夾「'+esc(s.folder)+'」· '+s.count+' 個檔案（即時）':'📄 '+s.count+' 個檔案'}</b>
+      (list.length?list.map(s=>`<div class="srow shc">
+        <div class="shh"><span class="shic" style="background:${s.type==='folder'?'#ff9f0a':'#0a84ff'}">${s.type==='folder'?'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5a2 2 0 0 1 2-2h3.6l2 2h7.4a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h6.5L18 8v11.5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-15a1 1 0 0 1 1-1z"/><path d="M13 3.7V8.5h4.8"/></svg>'}</span><div class="sht"><b>${s.type==='folder'?esc(s.folder):(s.count===1&&s.items&&s.items[0]?esc(s.items[0].name):s.count+' 個檔案')}</b><small>${s.type==='folder'?'資料夾 · '+s.count+' 個檔案（即時）':(s.count===1?'1 個檔案':'多個檔案')} · 建立 ${sd(s.created)}</small></div></div>
         ${thumbs(s)}
-        <small>建立 ${when(s.created)} · 已開啟 ${s.opens} 次${s.lastOpen?'（最近 '+when(s.lastOpen)+'）':''}</small>
-        <div style="display:flex;gap:6px;margin:4px 0"><input type="text" readonly value="${esc(shareUrl(s.id))}" onfocus="this.select()" style="flex:1;min-width:0;padding:6px 8px;font-size:12px;margin:0"><button class="ghost" data-copy="${esc(s.id)}" style="padding:4px 10px;white-space:nowrap">複製連結</button></div>
-        <div style="margin:4px 0">密碼：${pwCell(s)}</div>
-        <div style="margin:4px 0">有效期限：${s.expires?when(s.expires)+'（'+left(s.expires)+'）':'永久有效'}</div>
+        <div class="shl">
+          <div class="shr"><span>連結</span><span class="shv"><button class="ghost" data-copy="${esc(s.id)}" style="padding:4px 12px;white-space:nowrap">複製連結</button></span></div>
+          <div class="shr"><span>密碼</span><span class="shv">${pwCell(s)}</span></div>
+          <div class="shr"><span>有效期限</span><span class="shv">${s.expires?(s.expires<=Date.now()?'<span style="color:#ff453a">已到期</span>':left(s.expires))+'<small>至 '+sd(s.expires)+'</small>':'永久有效'}</span></div>
+          <div class="shr"><span>已開啟</span><span class="shv">${s.opens} 次${s.lastOpen?'<small>最近 '+sd(s.lastOpen)+'</small>':''}</span></div>
+        </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin-top:4px"><button class="del" data-revoke="${esc(s.id)}">撤銷這個分享</button><a class="btn vlk" href="${esc(shareUrl(s.id))}" >開啟連結</a></div></div>`).join(''):'<p class="sub">目前沒有任何分享。</p>')+
       '');
     $('#sx').onclick=closeModal;

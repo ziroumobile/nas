@@ -36,7 +36,7 @@ html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(
   position:relative;border-radius:999px;transition:transform .32s cubic-bezier(.2,.9,.3,1.35),background-color .2s,box-shadow .2s;
 }
 html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button,a.btn):not(.seg button):active{transform:none;background-color:rgba(120,120,128,.5)!important}   /* touched: greys for a moment, like the iOS menu button */
-html.ios button.ghost:not(.del):not(.danger),html.ios a.btn.ghost,html.ios .bar select{color:var(--seg-fg)!important}
+html.ios button.ghost:not(.del):not(.danger),html.ios a.btn.ghost,html.ios :is(.bar,.uptarget) select{color:var(--seg-fg)!important}
 html.ios button.del,html.ios button.danger{color:#ff453a!important}
 html.ios button.danger{color:#fff!important}   /* only the view switch uses blue; other buttons stay white */
 /* clear glass: outlined (ghost) and delete buttons */
@@ -63,7 +63,7 @@ html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) butt
   background:linear-gradient(180deg,rgba(255,69,58,.8),rgba(255,69,58,.55));color:#fff;border:1px solid transparent;
   box-shadow:inset 0 0 14px rgba(255,255,255,.16),inset 0 1px 1.5px rgba(255,255,255,.5),0 8px 20px rgba(255,69,58,.3)}
 /* drop-down menus in the toolbar */
-html.ios .bar select{border-radius:999px;background:var(--g-fill);border:1px solid var(--g-lo);-webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);
+html.ios :is(.bar,.uptarget) select{border-radius:999px;background:var(--g-fill);border:1px solid var(--g-lo);-webkit-backdrop-filter:var(--g-glass-blur);backdrop-filter:var(--g-glass-blur);
   box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),var(--g-shadow)}
 /* preview arrows float over the photo: round clear-glass buttons */
 html.ios .vnav{border-radius:50%;width:50px;height:50px;background:rgba(255,255,255,.06);border:1px solid transparent;
@@ -101,18 +101,18 @@ html.ios .seg-gl.on{display:block}
 
 /* fallbacks: no backdrop-filter support, or the user asked for less transparency -> solid */
 @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-  html.ios .seg,html.ios .bar select,html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button.ghost,button.del){background:var(--card)}
+  html.ios .seg,html.ios :is(.bar,.uptarget) select,html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button.ghost,button.del){background:var(--card)}
   html.ios .vnav{background:rgba(31,41,55,.92)}
 }
 @media(prefers-reduced-transparency:reduce){
   html.ios *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-  html.ios .seg,html.ios .bar select,html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button.ghost,button.del){background:var(--card)}
+  html.ios .seg,html.ios :is(.bar,.uptarget) select,html.ios :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button.ghost,button.del){background:var(--card)}
   html.ios .vnav{background:rgba(31,41,55,.95)}
 }
 
 /* iPhone system font (SF Pro + PingFang for Chinese) */
 html.ios body,html.ios button,html.ios select,html.ios input,html.ios .btn{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Helvetica Neue",sans-serif}
-html.ios .bar select{-webkit-appearance:none;appearance:none;padding-right:14px}
+html.ios :is(.bar,.uptarget) select{-webkit-appearance:none;appearance:none;padding-right:14px}
 
 /* drop-down menu: opens just under its button and grows out of it, like the iOS context menu */
 .gmenu{position:fixed;z-index:2000;min-width:150px;padding:6px;border-radius:22px;background:rgba(40,40,44,.72);
@@ -169,7 +169,7 @@ html:not(.ios) .bar :is(button.ghost,select){border-radius:999px;border:0;color:
   box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 -1px 0 rgba(255,255,255,.04),inset 0 1px 1.5px rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.35);transition:background .15s}
 html:not(.ios) .bar :is(button.ghost,select):hover{background:rgba(255,255,255,.1)}
 html:not(.ios) .bar :is(button.ghost,select):active{background:rgba(0,0,0,.35)}
-html:not(.ios) .bar select{padding:8px 16px}
+html:not(.ios) :is(.bar,.uptarget) select{padding:8px 16px}
 html:not(.ios) .seg{padding:3px;border-radius:999px;background:rgba(255,255,255,.06);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 -1px 0 rgba(255,255,255,.04),inset 0 1px 1.5px rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.35)}
 html:not(.ios) .seg button.ghost{background:transparent;box-shadow:none;border:0;border-radius:999px!important;padding:6px 16px;-webkit-backdrop-filter:none;backdrop-filter:none}
@@ -207,7 +207,7 @@ html.ios #setpanel #out{color:#ff453a!important}
 html:not(.ios) :is(.bar,#setpanel,#modal) select{-webkit-appearance:none;appearance:none;padding:8px 32px 8px 16px;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 12px center;background-color:rgba(255,255,255,.06)}
-html.ios .bar select{border:1px solid transparent;padding:6px 14px;background:linear-gradient(var(--g-fill),var(--g-fill)) padding-box,var(--g-rim) border-box;
+html.ios :is(.bar,.uptarget) select{border:1px solid transparent;padding:6px 14px;background:linear-gradient(var(--g-fill),var(--g-fill)) padding-box,var(--g-rim) border-box;
   box-shadow:inset 0 0 14px var(--g-inner),inset 0 1px 1.5px var(--g-hi),inset 0 -1px 1.5px var(--g-lo),var(--g-shadow)}
 
 /* iOS dock: five equal fifths, wide enough to feel like a tab bar */
@@ -702,7 +702,7 @@ html:not(.ios) .seg-pill.noanim{transition:none}
 html:not(.ios) .seg-pill.hidden{opacity:0}
 html:not(.ios) .seg-gl{position:absolute;left:0;top:0;z-index:4;pointer-events:none;display:none}
 html:not(.ios) .seg-gl.on{display:block}
-@media(prefers-reduced-transparency:reduce){html:not(.ios) .seg,html:not(.ios) .bar select,html:not(.ios) :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button.ghost,button.del){background:var(--card)}}
+@media(prefers-reduced-transparency:reduce){html:not(.ios) .seg,html:not(.ios) :is(.bar,.uptarget) select,html:not(.ios) :is(#app>header,.bar,#selbar,.vbtns,.mbtns,#modal,#setpanel,#gate) :is(button.ghost,button.del){background:var(--card)}}
 html:not(.ios) #selbar{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));padding:10px 12px;gap:8px 6px;border:0;border-radius:30px;
   background:rgba(34,34,38,.55);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.07),inset 0 1px 1.5px rgba(255,255,255,.18),0 14px 40px rgba(0,0,0,.55)}
