@@ -360,6 +360,7 @@ void main(){
       if (s.gl && s.lens) { s.lens.tx = g.l + g.w / 2; s.lens.tw = g.w; s.lens.tg = 0; s.lens.tm = 1; s.lens.tbs = 1; loop(s); }   // spring into the slot, then finishLens
       else { s.active = false; s.pill.classList.remove('noanim'); seg.classList.remove('dragging'); setHot(s, -1, true); }
       clearTimeout(s.liveT);
+      if (s.dock || true) { placePill(s, k, false); s.pill.classList.remove('hidden'); }   // the dark capsule fades back in at the chosen item the moment the finger lifts, not after the lens has settled
       if (s.hooks && s.lens) { s.hookOff = true; s.hooks.end(k, selected(s)); s.pendingK = k; s.noClick = true; }   // the pager slides to the chosen page and opens it itself
       else if ((changed || s.dock) && s.liveK !== k) { if (s.lens) { s.pendingK = k; s.earlyK = k; setTimeout(() => { if (s.earlyK !== k) return; s.earlyK = -1; const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; }, 0); }   // the page starts switching the moment the finger lifts (not after the lens has settled)
         else { const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; } }                                // choose through the normal handler

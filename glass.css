@@ -847,3 +847,6 @@ html:not(.ios) body .seltop,html:not(.ios) body .selbot{left:max(12px,calc((100v
 /* select mode: the page keeps the home page's geometry (top padding, rows) and the blur band stops above the rows */
 html.ios body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 40px)!important}
 html.ios body #topband{height:calc(env(safe-area-inset-top) + 50px)!important}
+
+/* the capsule fades back quickly */
+html body .seg-pill{transition:transform .4s cubic-bezier(.2,.9,.3,1.25),width .4s cubic-bezier(.2,.9,.3,1.25),opacity .12s!important}
