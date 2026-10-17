@@ -13,7 +13,7 @@
   const VS = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
   const FS = `precision highp float;
 uniform vec2 u_cssRes;uniform float u_dpr;uniform vec4 u_rect;uniform vec2 u_org;uniform vec2 u_texSize;uniform float u_pad;
-uniform sampler2D u_tex;uniform float u_mag;uniform float u_bezel;uniform float u_lift;uniform vec3 u_tint;uniform float u_dark;uniform float u_clear;uniform vec4 u_ax;uniform float u_n;uniform float u_cy;uniform float u_iy;uniform float u_ly;
+uniform sampler2D u_tex;uniform float u_mag;uniform float u_bezel;uniform float u_lift;uniform vec3 u_tint;uniform float u_dark;uniform float u_clear;uniform vec4 u_ax;uniform float u_n;uniform float u_cy;uniform float u_iy;uniform float u_ly;uniform float u_sh;
 float sdRR(vec2 p,vec2 hs,float r){vec2 q=abs(p)-hs+r;return length(max(q,0.))+min(max(q.x,q.y),0.)-r;}
 vec3 bgSim(vec2 p){   // stand-in for what is behind the bar: the bar itself (dark, with light top/bottom edges) over a lighter page
   float H=u_texSize.y-2.*u_pad;
@@ -33,7 +33,7 @@ void main(){
   vec2 p=px-c;float d=sdRR(p,hs,r);                                         // signed distance to the lens shape (<0 inside)
   float aa=1./u_dpr;
   float inside=1.-smoothstep(-aa,aa,d);
-  float shadow=exp(-max(d,0.)/8.)*.30*u_lift*(1.-inside);                   // soft drop shadow outside the lens
+  float shadow=exp(-max(d,0.)/8.)*u_sh*u_lift*(1.-inside);                   // soft drop shadow outside the lens
   vec4 b4=tex4(u_org+px);vec4 basePre=vec4(b4.rgb*b4.a,b4.a);                // the bar's own labels, drawn here while the lens is up (the DOM ones are hidden)
   if(d>SPADCUT){gl_FragColor=basePre;return;}
   vec2 e=vec2(.75,0.);
@@ -58,7 +58,7 @@ void main(){
     vec4 s0=tex4(mp+refr*.85),s1=tex4(mp+refr*1.05),s2=tex4(mp+refr*1.25),s3=tex4(mp+refr*1.45),s4=tex4(mp+refr*1.65);
     vec3 w0=vec3(1.,.1,.1),w1=vec3(.9,.8,.1),w2=vec3(.2,1.,.3),w3=vec3(.1,.8,1.),w4=vec3(.5,.2,1.);
     vec3 wsum=w0+w1+w2+w3+w4;
-    vec3 body=(s0.rgb*s0.a*w0+s1.rgb*s1.a*w1+s2.rgb*s2.a*w2+s3.rgb*s3.a*w3+s4.rgb*s4.a*w4)/wsum;
+    vec3 body=(s0.a*w0+s1.a*w1+s2.a*w2+s3.a*w3+s4.a*w4)/wsum;   // alpha only: the labels inside the lens are always blue, whatever colour the bar's own labels have (white in dark mode, dark in light mode)
     body=mix(body*vec3(.04,.52,1.),body*vec3(.35,.8,1.),.35*clamp(s*1.6,0.,1.))+body*vec3(.10,0.,.18)*s;   // inside the lens every label turns blue; near the bevel the colour split pulls it towards cyan / violet
     float ca=max(max(s0.a,s1.a),max(max(s2.a,s3.a),s4.a));
     float topbot=abs(g.y);
@@ -131,7 +131,7 @@ void main(){
     gl.useProgram(pr);
     const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    const u = {}; for (const n of ['u_cssRes', 'u_dpr', 'u_rect', 'u_org', 'u_texSize', 'u_pad', 'u_tex', 'u_mag', 'u_bezel', 'u_lift', 'u_tint', 'u_dark', 'u_clear', 'u_ax', 'u_n', 'u_cy', 'u_iy', 'u_ly']) u[n] = gl.getUniformLocation(pr, n);
+    const u = {}; for (const n of ['u_cssRes', 'u_dpr', 'u_rect', 'u_org', 'u_texSize', 'u_pad', 'u_tex', 'u_mag', 'u_bezel', 'u_lift', 'u_tint', 'u_dark', 'u_clear', 'u_ax', 'u_n', 'u_cy', 'u_iy', 'u_ly', 'u_sh']) u[n] = gl.getUniformLocation(pr, n);
     const tex = gl.createTexture();
     s.canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); s.gl = null; });
     return { gl, u, tex };
@@ -214,7 +214,7 @@ void main(){
     gl.uniform1f(u.u_mag, L.mag); gl.uniform1f(u.u_bezel, s.dock ? BEZEL : BEZEL * Math.min(1, H / 80)); gl.uniform1f(u.u_lift, Math.min(1, L.grow / gr(s)));   // (a thinner bar gets a proportionally thinner curved edge; the dock keeps its own)
     gl.uniform3f(u.u_tint, 1, 1, 1);
     { const gm = geom(s), c = gm.slice(0, 4).map(q => q.l + q.w / 2); while (c.length < 4) c.push(-9999); gl.uniform4f(u.u_ax, c[0], c[1], c[2], c[3]); gl.uniform1f(u.u_n, Math.min(4, gm.length)); gl.uniform1f(u.u_cy, gm[0].t + gm[0].h / 2); gl.uniform1f(u.u_iy, s.anchY ? s.anchY.i : gm[0].t + gm[0].h / 2); gl.uniform1f(u.u_ly, s.anchY ? s.anchY.l : gm[0].t + gm[0].h / 2); }
-    gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1);
+    gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1); gl.uniform1f(u.u_sh, document.documentElement.getAttribute('data-theme') === 'light' ? 0.09 : 0.30);   // the lens's drop shadow is much fainter on a light page
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     dent(s, L, segW, segH);
