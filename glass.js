@@ -329,7 +329,7 @@ void main(){
       if (!s.gl) return;
       s.drag.started = true;   // the lens swells the moment it is touched, no drag needed
       if (!s.active) startLens(s);
-      else if (s.lens) { const L = s.lens; L.tbs = s.dock ? 1.07 : 1.05; L.tg = gr(s); L.tm = MAG; L.vbs += 1.3; L.vm += 4.5; L.vg += 70; s.hookOff = false; s.seg.classList.add('pressing', 'lensing'); }   // a quick second tap bounces just like the first
+      else if (s.lens) { const L = s.lens; L.tbs = s.dock ? 1.07 : 1.05; L.tg = gr(s); L.tm = MAG; L.vbs += 1.3; L.vm += 4.5; L.vg += 70; s.hookOff = false; s.pill.classList.add('hidden'); s.seg.classList.add('pressing', 'lensing'); }   // a quick second tap bounces just like the first (and hides the capsule again)
       const t = target(e); s.lens.tx = t.cx; s.lens.tw = t.w; s.lens.tg = gr(s); s.lens.tm = MAG; if (!s.running) loop(s);
     });
     seg.addEventListener('pointermove', e => {
