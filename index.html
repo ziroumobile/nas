@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v7.2">
+<meta name="app-version" content="v7.3">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261020W">
+<link rel="stylesheet" href="glass.css?v=20261020X">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -150,8 +150,10 @@ html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position
 body.selecting #app>header .hdrbtns{visibility:hidden}
 #spage{position:fixed;inset:0;z-index:96;background:#000;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 76px) 16px calc(env(safe-area-inset-bottom) + 110px)}
 #spage[hidden]{display:none}
-.shh{display:flex;gap:12px;align-items:center;margin:0 0 12px}
-.shic{flex:none;width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}.shic>img{position:absolute;inset:0}.shic svg{width:24px;height:24px}
+.shh{display:flex;gap:12px;align-items:center;margin:0 0 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sharr{flex:none;width:12px;color:#8e8e93;font-size:12px;transition:transform .18s}.shc.col .sharr{transform:rotate(-90deg)}
+.shc.col>:not(.shh){display:none!important}.shc.col .shh{margin-bottom:0}
+.shic{flex:none;width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center}.shic svg{width:24px;height:24px}
 .sht{min-width:0}.sht b{display:block;font-size:18px;word-break:break-all;line-height:1.25}.sht small{display:block!important;color:#8e8e93;margin:2px 0 0!important;font-size:13px}
 .shl{background:rgba(255,255,255,.045);border-radius:14px;margin:12px 0 12px;overflow:hidden}
 .shr{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:11px 14px;border-top:1px solid rgba(255,255,255,.06);font-size:15px}.shr:first-child{border-top:0}
@@ -424,7 +426,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261020W"></script>
+<script src="glass.js?v=20261020X"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1137,8 +1139,8 @@ async function sharesManager(){ // every share: link, password (after entering t
   const draw=()=>{
     showPage(`<div class="mhead"><button class="ghost" id="sx">關閉</button></div><div class="pghead"><span class="pgic" style="background:#0a84ff"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.2 4.2 0 0 0 5.9 0l3-3a4.2 4.2 0 0 0-5.9-5.9l-1 1"/><path d="M14 10a4.2 4.2 0 0 0-5.9 0l-3 3a4.2 4.2 0 0 0 5.9 5.9l1-1"/></svg></span><b>已分享連結</b><p>對方開啟連結後可檢視與下載。撤銷後連結立刻失效，對方已經打開的下載連結也一併失效。</p></div>
       ${list.some(s=>s.hasPassword)?`<div class="mbtns" style="margin:0 0 6px">${revealed?'<button class="ghost" data-hide="1">🙈 隱藏密碼</button>':'<button data-reveal="1">🔑 顯示密碼</button>'}</div>`:''}`+
-      (list.length?list.map(s=>`<div class="srow shc">
-        <div class="shh"><span class="shic" style="background:${s.type==='folder'?'#ff9f0a':'#0a84ff'}">${(()=>{const f0=s.type!=='folder'&&fileByKey((keysOf(s)||[])[0]);return f0&&f0.thumb?'<img src="'+thumbSrc(f0.thumb)+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:11px" onerror="this.remove()">':''})()}${s.type==='folder'?'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5a2 2 0 0 1 2-2h3.6l2 2h7.4a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h6.5L18 8v11.5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-15a1 1 0 0 1 1-1z"/><path d="M13 3.7V8.5h4.8"/></svg>'}</span><div class="sht"><b>${s.type==='folder'?esc(s.folder):(s.count===1&&s.items&&s.items[0]?esc(s.items[0].name):s.count+' 個檔案')}</b><small>${s.type==='folder'?'資料夾 · '+s.count+' 個檔案（即時）':(s.count===1?'1 個檔案':'多個檔案')} · 建立 ${sd(s.created)}</small></div></div>
+      (list.length?list.map(s=>`<div class="srow shc${(window.__shFold||(window.__shFold=new Set())).has(s.id)?' col':''}">
+        <div class="shh" data-tog="${esc(s.id)}"><span class="sharr">▾</span><span class="shic" style="background:${s.type==='folder'?'#ff9f0a':'#0a84ff'}">${s.type==='folder'?'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5a2 2 0 0 1 2-2h3.6l2 2h7.4a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h6.5L18 8v11.5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-15a1 1 0 0 1 1-1z"/><path d="M13 3.7V8.5h4.8"/></svg>'}</span><div class="sht"><b>${s.type==='folder'?esc(s.folder):(s.count===1&&s.items&&s.items[0]?esc(s.items[0].name):s.count+' 個檔案')}</b><small>${s.type==='folder'?'資料夾 · '+s.count+' 個檔案（即時）':(s.count===1?'1 個檔案':'多個檔案')} · 建立 ${sd(s.created)}</small></div></div>
         ${thumbs(s)}
         <div class="shl">
           <div class="shr"><span>連結</span><span class="shv"><button class="ghost" data-copy="${esc(s.id)}" style="padding:4px 12px;white-space:nowrap">複製連結</button></span></div>
@@ -1150,6 +1152,8 @@ async function sharesManager(){ // every share: link, password (after entering t
       '');
     $('#sx').onclick=closeModal;
     $('#mbox').onclick=async e=>{
+      const tg=e.target.closest('[data-tog]');
+      if(tg&&!e.target.closest('button,a,input')){const id=tg.dataset.tog,card=tg.closest('.shc'),F=window.__shFold;if(F.has(id)){F.delete(id);card.classList.remove('col')}else{F.add(id);card.classList.add('col')}return}
       const pv=e.target.closest('a[data-pv]');
       if(pv){e.preventDefault();return openViewer(pv.dataset.pv,keyMap[pv.dataset.sid])} // preview opens on top of this dialog
       const b=e.target.closest('button');if(!b)return;
