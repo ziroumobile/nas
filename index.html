@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v6.47">
+<meta name="app-version" content="v6.48">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261020R">
+<link rel="stylesheet" href="glass.css?v=20261020S">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -201,6 +201,7 @@ html.android body #modal.fullpage #mbox:not(#nx1){background:#000!important}
 body.dockover #modal.fullpage #mbox{padding-bottom:calc(env(safe-area-inset-bottom) + 100px)}
 #disk{padding:0!important;margin:-2px 4px 10px!important;background:none!important;border:0!important;border-radius:0!important;color:var(--mut);font-size:13px}#disk:active{background:none}
 .hdrbtns{display:flex;gap:10px;align-items:center;flex:none}
+.uptarget{display:flex;align-items:center;gap:8px;min-width:0;font-size:inherit;white-space:nowrap}.uptarget select{max-width:46vw}
 html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:relative;width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;
   background:rgba(255,255,255,.012)!important;-webkit-backdrop-filter:blur(1.5px) saturate(160%)!important;backdrop-filter:blur(1.5px) saturate(160%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.07)!important;color:#fff!important;border:0!important}
 html body #app>header button.hb.act:not(#nx1):not(#nx2){color:#0a84ff!important;box-shadow:inset 0 0 0 1.5px rgba(10,132,255,.85)!important}
@@ -419,7 +420,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261020R"></script>
+<script src="glass.js?v=20261020S"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -775,10 +776,12 @@ if(document.documentElement.classList.contains('ios')||matchMedia('(max-width:69
   $('#dev').parentElement.style.display='none';$('#rename').style.display='none';
   const up=$('#target').parentElement,w=document.createElement('span');w.append('上傳到：',$('#target'));up.remove();
   const sb=$('.seg').parentElement,segBar=mk();segBar.classList.add('segrow');segBar.append('顯示方式：',$('.seg'));sb.before(segBar);
-  const last=mk();last.append(w,$('#selmode'));segBar.before(last);   // order: upload target / view switch / sort
+  { // the title (📁 我的 NAS) is gone: the upload target takes its place in the header row, left of the round buttons
+    const hd=document.querySelector('#app>header'),h1=hd&&hd.querySelector('h1');w.className='uptarget';w.append($('#selmode'));if(h1)h1.replaceWith(w);else if(hd)hd.prepend(w);
+  }   // order below the header: view switch / sort
   { // the three rows (upload target / view switch / sort) are always fixed right under the title, like the title itself - a scroll-driven switch jittered on Android.
     // An empty spacer keeps their place in the page, so the list starts exactly below them.
-    const ts=document.createElement('div'),ph=document.createElement('div');ts.id='toolsticky';ph.id='toolph';last.before(ph);ph.after(ts);ts.append(last,segBar,sb);
+    const ts=document.createElement('div'),ph=document.createElement('div');ts.id='toolsticky';ph.id='toolph';segBar.before(ph);ph.after(ts);ts.append(segBar,sb);
     const fit=()=>{
       const hdr=document.querySelector('#app>header');if(!hdr||$('#app').hidden||document.body.classList.contains('selecting'))return;
       ph.style.height='0px';const N=ph.offsetTop,top=hdr.getBoundingClientRect().bottom;   // N: where the rows would naturally start; top: just under the fixed title
