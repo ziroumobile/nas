@@ -15,6 +15,7 @@ html[data-theme="light"] body::before{background:#f2f2f7}
 html[data-theme="light"] body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
 html[data-theme="light"] body #appback,
 html[data-theme="light"] body #modal.fullpage button#pgback:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
+html[data-theme="light"] body #setpage button.setdone:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
 html[data-theme="light"] body #storage button.stbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
 html[data-theme="light"] body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
 html[data-theme="light"] body #spage button#spback:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
@@ -37,7 +38,7 @@ html[data-theme="light"] body details.fold .ftools button:not(#nx1):not(#nx2){ba
 html[data-theme="light"] body #spage #spq{background:rgba(255,255,255,.9)!important;color:#000!important;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.1)!important}
 
 /* back arrow of the select mode, the count pill and the drag handles */
-html[data-theme="light"] body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.84)!important;-webkit-backdrop-filter:blur(16px) saturate(170%)!important;backdrop-filter:blur(16px) saturate(170%)!important;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.13),0 3px 10px rgba(0,0,0,.08)!important;color:#007aff!important}
-html[data-theme="light"] body .selbot #selcount:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.84)!important;-webkit-backdrop-filter:blur(16px) saturate(170%)!important;backdrop-filter:blur(16px) saturate(170%)!important;color:#000!important;text-shadow:none!important;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.13),0 3px 10px rgba(0,0,0,.08)!important}
+html[data-theme="light"].ios body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.84)!important;-webkit-backdrop-filter:blur(16px) saturate(170%)!important;backdrop-filter:blur(16px) saturate(170%)!important;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.13),0 3px 10px rgba(0,0,0,.08)!important;color:#007aff!important}
+html[data-theme="light"].ios body .selbot #selcount:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body .selbot #selcount:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.84)!important;-webkit-backdrop-filter:blur(16px) saturate(170%)!important;backdrop-filter:blur(16px) saturate(170%)!important;color:#000!important;text-shadow:none!important;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.13),0 3px 10px rgba(0,0,0,.08)!important}
 html[data-theme="light"] body .grip{background:linear-gradient(#aeaeb2,#aeaeb2) center 15px/22px 3px no-repeat,linear-gradient(#aeaeb2,#aeaeb2) center 22px/22px 3px no-repeat,linear-gradient(#aeaeb2,#aeaeb2) center 29px/22px 3px no-repeat!important;background-color:transparent!important;opacity:1!important}
 html[data-theme="light"] body .grip:active,html[data-theme="light"] body details.fold.dragging .grip{background-color:rgba(0,0,0,.06)!important}

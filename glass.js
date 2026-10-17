@@ -63,7 +63,7 @@ void main(){
     float ca=max(max(s0.a,s1.a),max(max(s2.a,s3.a),s4.a));
     float topbot=abs(g.y);
     float darkA=0.;   // no painted dark crescents: the dark at the top / bottom comes only from the notch cut out of the bar
-    float outline=(1.-smoothstep(0.,1.2,-d))*.34*u_lift;                         // thin dark outline
+    float outline=(1.-smoothstep(0.,1.2,-d))*.34*u_lift*step(.2,u_sh);   // thin dark outline (dark mode only: on a light page it would read as a black fringe, the refraction there is coloured only)
     float edgeL=(1.-smoothstep(0.,1.2,-d))*(.5+.5*lightDir0)*u_lift*.10;          // hairline of light
     float dep=max(-d,0.);
     vec3 rb=.5+.5*cos(6.2831*(vec3(0.,.33,.67)+dep*.08+.22*sin(p.x*.085)));
