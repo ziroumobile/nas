@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v7.4">
+<meta name="app-version" content="v7.5">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261020Y">
+<link rel="stylesheet" href="glass.css?v=20261020Z">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -427,7 +427,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261020Y"></script>
+<script src="glass.js?v=20261020Z"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1123,7 +1123,7 @@ async function sharesManager(){ // every share: link, password (after entering t
   if(!cached)showPage('<h3>🔗 已分享連結</h3><p class="sub">載入中…</p>');
   let list=cached||[],revealed=null; // revealed passwords live only in this dialog and are dropped when it closes
   const load=async()=>{const r=await api('/api/shares');if(!r.ok)throw 0;list=await r.json();window.__sharesCache=list;setShareBadge(list.length)};
-  if(cached)load().then(()=>{if(document.querySelector('#dock button.on')?.id==='dshare'&&!$('#modal').hidden&&typeof draw==='function')draw()}).catch(()=>{});
+  if(cached){const before=JSON.stringify(cached);load().then(()=>{if(JSON.stringify(list)===before)return;if(document.querySelector('#dock button.on')?.id==='dshare'&&!$('#modal').hidden&&typeof draw==='function')draw()}).catch(()=>{})}
   else try{await load()}catch{showPage('<h3>🔗 已分享連結</h3><p class="merr">無法載入</p><div class="mbtns"><button class="ghost" id="sx">關閉</button></div>');$('#sx').onclick=closeModal;return}
   const when=t=>fmtDT(t),sd=t=>{const d=new Date(t),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+' '+p(d.getHours())+':'+p(d.getMinutes())};   // date for the cards
   const left=t=>{const ms=t-Date.now();if(ms<=0)return'已到期';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return d?`剩 ${d} 天 ${h} 小時`:h?`剩 ${h} 小時 ${m} 分`:`剩 ${m} 分鐘`};
@@ -1595,12 +1595,16 @@ function clipRender(){
     b.append(bt);d.append(b);box.append(d);
   }
 }
+const toPng=blob=>new Promise((ok,no)=>{const u=URL.createObjectURL(blob),im=new Image();im.onload=()=>{const cv=document.createElement('canvas');cv.width=im.naturalWidth;cv.height=im.naturalHeight;cv.getContext('2d').drawImage(im,0,0);URL.revokeObjectURL(u);cv.toBlob(b=>b?ok(b):no(),'image/png')};im.onerror=()=>{URL.revokeObjectURL(u);no()};im.src=u});
+function legacyCopy(txt){const ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:0;left:0;opacity:0;font-size:16px';document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,ta.value.length);let ok=false;try{ok=document.execCommand('copy')}catch{}ta.remove();return ok}
 async function clipCopy(c,btn){
   const old=btn.textContent;
   try{
-    if(c.type==='text')await navigator.clipboard.writeText(c.text);
-    else{const blob=await (await fetch(API+c.url)).blob();const png=blob.type==='image/png'?blob:await new Promise((ok,no)=>{const u=URL.createObjectURL(blob),im=new Image();im.onload=()=>{const cv=document.createElement('canvas');cv.width=im.naturalWidth;cv.height=im.naturalHeight;cv.getContext('2d').drawImage(im,0,0);URL.revokeObjectURL(u);cv.toBlob(b=>b?ok(b):no(),'image/png')};im.onerror=()=>{URL.revokeObjectURL(u);no()};im.src=u});
-      await navigator.clipboard.write([new ClipboardItem({'image/png':png})])}
+    if(c.type==='text'){let ok=false;try{await navigator.clipboard.writeText(c.text);ok=true}catch{ok=legacyCopy(c.text)}if(!ok)throw 0}
+    else{
+      const item=new ClipboardItem({'image/png':(async()=>{const blob=await (await fetch(API+c.url)).blob();return blob.type==='image/png'?blob:await toPng(blob)})()});   // a promise, so the clipboard is claimed inside the tap
+      await navigator.clipboard.write([item]);
+    }
     btn.textContent='已複製 ✓';
   }catch{btn.textContent='複製失敗'}
   setTimeout(()=>btn.textContent=old,1500);
