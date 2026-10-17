@@ -52,3 +52,9 @@ html[data-theme="light"] body details.fold .ftools button:not(#nx1):not(#nx2):no
 
 /* while the dock / switch is held the white selected capsule is hidden; it comes back when the finger lifts */
 html[data-theme="light"] #dock.pressing .seg-pill,html[data-theme="light"] .seg.pressing .seg-pill{opacity:0!important;transition:none!important}
+
+/* light: the pressed round button keeps its hairline ring */
+html[data-theme="light"] body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,.seltop button,.selbot button,button#upfab,#viewer .vc):not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){background:rgba(238,238,243,.96)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)!important}
+/* while the dock / switch is held nothing white may sit inside the lens: no pressed-button fill, no capsule */
+html[data-theme="light"] body #dock.pressing button:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.zz1):not(.zz2):not(.zz3):not(.zz4):not(.zz5),html[data-theme="light"] body .seg.pressing button:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.zz1):not(.zz2):not(.zz3):not(.zz4):not(.zz5),html[data-theme="light"] body #dock.pressing button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(.zz1):not(.zz2):not(.zz3):not(.zz4):not(.zz5):not(.seg button){background:transparent!important;box-shadow:none!important}
+html[data-theme="light"] body #dock button:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress),html[data-theme="light"] body .seg button:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){background:transparent!important;box-shadow:none!important}
