@@ -262,7 +262,7 @@ void main(){
     s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, bs: 1, vbs: 0, tbs: s.dock ? 1.07 : 1.05, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: gr(s), tm: MAG, st: 0, vst: 0, tst: 0 };
     s.hookOff = false; s.active = true; s.hot = selected(s); s.seg.classList.add('dragging', 'pressing', 'lensing'); setHot(s, s.hot, true);
     makeTexture(s);                                                  // labels as they look right now
-    s.pill.classList.add('hidden'); s.canvas.classList.add('on');
+    s.canvas.classList.add('on');   // (the dark capsule stays visible until the lens moves away from it - see the frame loop)
     draw(s); loop(s);
   }
   // the option the lens is over turns blue (the others stay white); the lens's own copy of the labels is repainted to match
@@ -289,6 +289,7 @@ void main(){
     const frame = now => {
       const dt = Math.min(0.034, Math.max(0.001, (now - last) / 1000)); last = now;
       const moving = step(s, dt); trackHot(s, s.lens.cx); draw(s);
+      if (s.lens) { const c0 = geom(s)[selected(s)], away = Math.abs(s.lens.cx - (c0.l + c0.w / 2)) > 8; if (away !== !!s.pillAway) { s.pillAway = away; s.pill.classList.toggle('hidden', away); } }
       if (s.lens) s.seg.style.transform = (s.dock ? 'translateX(-50%) ' : '') + 'scale(' + s.lens.bs.toFixed(4) + ')';   // the bar itself swells / wobbles with the spring
       if (s.hooks && !s.hookOff && s.lens) s.hooks.move(posOf(s, s.lens.cx), selected(s));   // page pager follows the lens
       if (moving || s.drag || s.hold) raf(frame); else { s.running = false; finishLens(s); }
@@ -297,7 +298,7 @@ void main(){
   }
   function finishLens(s) {                                           // lens has settled into its option: swap back to the resting pill
     s.canvas.classList.remove('on'); s.active = false; s.lens = null;
-    s.seg.style.transform = ''; s.gc = null; s.seg.style.removeProperty('--lensclip'); s.seg.classList.remove('pressing', 'lensing'); s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); });
+    s.pillAway = false; s.seg.style.transform = ''; s.gc = null; s.seg.style.removeProperty('--lensclip'); s.seg.classList.remove('pressing', 'lensing'); s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); });
     const pk = s.pendingK; s.pendingK = null;                        // the (heavy) view switch runs only now, after the lens has landed, so it can't stutter the animation
     if (pk == null) { s.seg.classList.remove('dragging'); setHot(s, -1, true); }
     if (pk != null) s.btns.forEach((b, i) => b.classList.toggle('on', i === pk));   // move the marker + blue label to the chosen option right now, so nothing of the old one flashes while the page loads
@@ -323,6 +324,7 @@ void main(){
       if (!s.gl) return;
       s.drag.started = true;   // the lens swells the moment it is touched, no drag needed
       if (!s.active) startLens(s);
+      else if (s.lens) { const L = s.lens; L.tbs = s.dock ? 1.07 : 1.05; L.tg = gr(s); L.tm = MAG; L.vbs += 1.3; L.vm += 4.5; L.vg += 70; s.hookOff = false; s.seg.classList.add('pressing', 'lensing'); }   // a quick second tap bounces just like the first
       const t = target(e); s.lens.tx = t.cx; s.lens.tw = t.w; s.lens.tg = gr(s); s.lens.tm = MAG; if (!s.running) loop(s);
     });
     seg.addEventListener('pointermove', e => {
