@@ -856,3 +856,8 @@ html body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setp
 html body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,.seltop button,.selbot button,button#upfab,#viewer .vc):not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){transform:scale(1.13)!important;transition:background-color .1s ease,box-shadow .1s ease,transform .32s cubic-bezier(.3,1.7,.5,1)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(255,255,255,.08),inset 0 0 0 1px rgba(255,255,255,.12),inset 0 0 9px rgba(255,255,255,.25)!important}
 /* the three clipboard buttons get a ring around their edge */
 html body :is(#clippaste,#clipsend,#clippic):not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpress){box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)!important;border-radius:999px!important}
+
+/* the home header row sits 8px lower and its cover lies UNDER it, so a swollen (pressed) round button never reaches into the status-bar zone */
+html.ios body::before{z-index:58!important}
+html.ios body #app>header{height:66px!important;padding-top:14px!important;padding-bottom:6px!important}
+html.ios body:has(#dock):not(.selecting) .wrap{padding-top:calc(env(safe-area-inset-top) + 48px)!important}
