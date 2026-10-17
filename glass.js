@@ -92,6 +92,7 @@ void main(){
   const switches = [];
   const gr = s => s.dock ? GROW : (s.grow || GROW);
   const geom = s => (s.active && s.gc) ? s.gc : (s.gc = s.btns.map(b => ({ l: b.offsetLeft, w: b.offsetWidth, t: b.offsetTop, h: b.offsetHeight })));   // cached while the lens is moving: no layout reads per frame
+  const posOf = (s, cx) => { const c = geom(s).map(q => q.l + q.w / 2); if (cx <= c[0]) return 0; for (let i = 0; i < c.length - 1; i++) if (cx <= c[i + 1]) return i + (cx - c[i]) / ((c[i + 1] - c[i]) || 1); return c.length - 1; };
   const selected = s => Math.max(0, s.btns.findIndex(b => b.classList.contains('on')));
   const rrect = (x, X, Y, W, H, R) => { x.beginPath(); x.moveTo(X + R, Y); x.arcTo(X + W, Y, X + W, Y + H, R); x.arcTo(X + W, Y + H, X, Y + H, R); x.arcTo(X, Y + H, X, Y, R); x.arcTo(X, Y, X + W, Y, R); x.closePath(); };
   const rgb = css => { const m = css.match(/[\d.]+/g) || [0, 0, 0]; return [m[0] / 255, m[1] / 255, m[2] / 255]; };
@@ -258,7 +259,7 @@ void main(){
   function startLens(s) {
     s.gc = null; s.active = false; const r = geom(s)[selected(s)];
     s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: gr(s), tm: MAG, st: 0, vst: 0, tst: 0 };
-    s.active = true; s.hot = selected(s); s.seg.classList.add('dragging', 'pressing', 'lensing'); setHot(s, s.hot, true);
+    s.hookOff = false; s.active = true; s.hot = selected(s); s.seg.classList.add('dragging', 'pressing', 'lensing'); setHot(s, s.hot, true);
     makeTexture(s);                                                  // labels as they look right now
     s.pill.classList.add('hidden'); s.canvas.classList.add('on');
     draw(s); loop(s);
@@ -287,6 +288,7 @@ void main(){
     const frame = now => {
       const dt = Math.min(0.034, Math.max(0.001, (now - last) / 1000)); last = now;
       const moving = step(s, dt); trackHot(s, s.lens.cx); draw(s);
+      if (s.hooks && !s.hookOff && s.lens) s.hooks.move(posOf(s, s.lens.cx), selected(s));   // page pager follows the lens
       if (moving || s.drag || s.hold) raf(frame); else { s.running = false; finishLens(s); }
     };
     raf(frame);
@@ -299,7 +301,7 @@ void main(){
     if (pk != null) s.btns.forEach((b, i) => b.classList.toggle('on', i === pk));   // move the marker + blue label to the chosen option right now, so nothing of the old one flashes while the page loads
     placePill(s, pk == null ? selected(s) : pk, false); s.pill.classList.remove('hidden');
     if (pk == null) makeTexture(s);
-    else { s.seg.classList.remove('dragging'); setHot(s, -1, true); if (s.earlyK === -1) { s.earlyK = null; return; } if (s.earlyK === pk) return; setTimeout(() => { const sc = s.suppressClick; s.suppressClick = false; s.btns[pk].click(); s.suppressClick = sc; }, 90); }
+    else { s.seg.classList.remove('dragging'); setHot(s, -1, true); if (s.noClick) { s.noClick = false; return; } if (s.earlyK === -1) { s.earlyK = null; return; } if (s.earlyK === pk) return; setTimeout(() => { const sc = s.suppressClick; s.suppressClick = false; s.btns[pk].click(); s.suppressClick = sc; }, 90); }
   }
 
   // ---------- interaction ----------
@@ -349,7 +351,8 @@ void main(){
       if (s.gl && s.lens) { s.lens.tx = g.l + g.w / 2; s.lens.tw = g.w; s.lens.tg = 0; s.lens.tm = 1; loop(s); }   // spring into the slot, then finishLens
       else { s.active = false; s.pill.classList.remove('noanim'); seg.classList.remove('dragging'); setHot(s, -1, true); }
       clearTimeout(s.liveT);
-      if ((changed || s.dock) && s.liveK !== k) { if (s.lens) { s.pendingK = k; s.earlyK = k; setTimeout(() => { if (s.earlyK !== k) return; s.earlyK = -1; const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; }, 40); }   // the page starts switching right after the finger lifts (not after the lens has settled)
+      if (s.hooks && s.lens) { s.hookOff = true; s.hooks.end(k, selected(s)); s.pendingK = k; s.noClick = true; }   // the pager slides to the chosen page and opens it itself
+      else if ((changed || s.dock) && s.liveK !== k) { if (s.lens) { s.pendingK = k; s.earlyK = k; setTimeout(() => { if (s.earlyK !== k) return; s.earlyK = -1; const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; }, 40); }   // the page starts switching right after the finger lifts (not after the lens has settled)
         else { const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; } }                                // choose through the normal handler
       if (!s.lens) placePill(s, selected(s), true);
     };
@@ -365,7 +368,7 @@ void main(){
     document.querySelectorAll('.seg').forEach(x => build(x));
     const dk = document.getElementById('dock');
     if (dk) {
-      const s = build(dk, true);
+      const s = build(dk, true); window.glassDockEngine = s;
       if (s) { const root = getComputedStyle(document.documentElement); for (const col of [root.getPropertyValue('--seg-fg').trim() || '#fff', root.getPropertyValue('--seg-blue').trim() || '#0a84ff']) s.btns.forEach(b => b.querySelector('svg') && iconImg(s, b, col));   // decode the icons ahead of time so the lens never shows an empty frame
       }
       if (s) { let t = 0; new MutationObserver(() => { if (s.active || t) return; t = setTimeout(() => { t = 0; if (!s.active) { s._b = null; s.gc = null; s.tc = null; s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); }); placePill(s, selected(s), true); makeTexture(s); } }, 0); }).observe(dk, { subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'style'] }); }
