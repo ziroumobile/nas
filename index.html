@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v6.46">
+<meta name="app-version" content="v6.47">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261020Q">
+<link rel="stylesheet" href="glass.css?v=20261020R">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -162,6 +162,18 @@ body.selecting #app>header .hdrbtns{visibility:hidden}
 #login{max-width:420px;margin:9vh auto 0;padding:34px 26px 28px;border-radius:30px;background:#1c1c1e;border:0;box-shadow:0 24px 70px rgba(0,0,0,.55);text-align:center}
 #login .lgic{width:84px;height:84px;border-radius:22px;margin:0 auto 14px;background:linear-gradient(160deg,#5ac8fa,#0a84ff);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(10,132,255,.35)}
 #login .lgic svg{width:46px;height:46px}
+#applock .lockcard{width:100%;max-width:420px;padding:34px 26px 28px;border-radius:30px;background:#1c1c1e;border:0;box-shadow:0 24px 70px rgba(0,0,0,.55);text-align:center}
+#applock .lgic{width:84px;height:84px;border-radius:22px;margin:0 auto 14px;background:linear-gradient(160deg,#5ac8fa,#0a84ff);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(10,132,255,.35)}
+#applock .lgic svg{width:46px;height:46px}
+#applock h3{font-size:28px;margin:0 0 6px;text-align:center}#applock .sub{margin:0 0 18px;text-align:center}
+#applock input{height:52px;border-radius:14px;border:1px solid #3a3a3c;background:transparent;padding:0 16px;font-size:17px;margin:0 0 10px;width:100%;box-sizing:border-box;text-align:left;color:#fff}
+#applock .merr{min-height:1.2em;margin:0 0 6px}
+html body #applock button:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:flex!important;align-items:center;justify-content:center;gap:8px;width:100%;height:50px;border-radius:14px!important;font-size:17px;font-weight:600;margin:0 0 10px;border:0!important;box-shadow:none!important}
+html body #applock button#lockgo:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:#0a84ff!important;color:#fff!important}
+html body #applock button#lockbio:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:#fff!important;color:#000!important}
+html body #applock button#lockbio[hidden]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important}
+html body #applock button#lockbio svg{width:22px;height:22px}
+html body #applock button.lklink:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:none!important;color:#0a84ff!important;height:36px;font-size:15px;font-weight:500;margin:2px 0 0}
 #login h1{font-size:28px;margin:0 0 18px;text-align:center}
 #login input{height:52px;border-radius:14px;border:1px solid #3a3a3c;background:transparent;padding:0 16px;font-size:17px;margin:0 0 12px;width:100%;box-sizing:border-box;text-align:left}
 html body #login button#go:not(#nx1):not(#nx2):not(#nx3):not(#nx4){height:50px;border-radius:14px!important;background:#0a84ff!important;color:#fff!important;font-size:17px;font-weight:600;margin-top:4px}
@@ -392,9 +404,9 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <div id="offscreen" hidden><div class="mbox card"><h3 style="margin:0 0 6px">⚠️ 連不到主機電腦</h3><p class="sub" id="offmsg" style="margin:0 0 10px">主機可能關機，或通道還沒啟動。</p><p class="sub" id="offretry" style="margin:0 0 10px"></p>
     <div class="mbtns" style="justify-content:space-between"><button class="ghost" id="offout">登出帳號</button><button class="ghost" id="offgo">重試</button></div></div></div>
-<div id="applock" hidden><div class="mbox card"><h3 style="margin:0 0 6px">🔒 我的 NAS 已鎖定</h3><p class="sub" style="margin:0 0 10px">請輸入登入密碼來開啟</p>
+<div id="applock" hidden><div class="mbox card lockcard"><div class="lgic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.8" width="14" height="9.6" rx="2.6"/><path d="M8.2 10.8V8a3.8 3.8 0 0 1 7.6 0v2.8"/></svg></div><h3>我的 NAS 已鎖定</h3><p class="sub">請輸入登入密碼來開啟</p>
     <input id="lockpw" type="password" autocomplete="off" autocapitalize="off" placeholder="登入密碼"><p class="merr" id="lockerr"></p>
-    <div class="mbtns" style="justify-content:space-between"><button class="ghost" id="lockout">登出帳號</button><button class="ghost" id="lockbio" hidden>🔐 生物辨識</button><button class="ghost" id="lockgo">解鎖</button></div></div></div>
+    <button id="lockgo">解鎖</button><button id="lockbio" hidden>使用生物辨識</button><button id="lockout" class="lklink">登出帳號</button></div></div>
 <div id="modal" hidden><button id="pgback" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="mbox card" id="mbox"></div></div>
 <div id="selbar" hidden>
   <b id="selcount">已選 0 個</b>
@@ -407,7 +419,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261020Q"></script>
+<script src="glass.js?v=20261020R"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -466,7 +478,7 @@ async function init(){
   $('#app').hidden=false;
   $('#who').textContent=me.name;$('#whorole').textContent=me.admin?'管理員':'一般使用者';
   bioCheck();$('#dshare').hidden=!me.admin;
-  if(me.admin)setTimeout(()=>{const pre=()=>api('/api/shares').then(r=>r.ok?r.json():null).then(l=>{if(l)window.__sharesCache=l}).catch(()=>{});pre();clipRefresh();setInterval(()=>{if(!document.hidden)pre()},60000)},800); // warm the pages behind the dock so sliding onto them is instant
+  if(me.admin)setTimeout(()=>{const pre=()=>api('/api/shares').then(r=>r.ok?r.json():null).then(l=>{if(l){window.__sharesCache=l;warmShareThumbs(l)}}).catch(()=>{});pre();clipRefresh();setTimeout(()=>warmShareThumbs(window.__sharesCache),4000);setInterval(()=>{if(!document.hidden)pre()},60000)},800); // warm the pages behind the dock so sliding onto them is instant
  $('#lockset').hidden=!(me.admin&&me.hasEditPassword);$('#trash').hidden=!me.admin;$('#setpw').hidden=$('#actlog').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh().then(()=>setTimeout(prefetchThumbs,600));clipRefresh();
 }
 $('#go').onclick=async()=>{
@@ -553,7 +565,7 @@ $('#order').onclick=()=>{asc=!asc;setPref()};
 const ICON={image:'🖼',video:'🎬',file:'📄'};
 function thumbErr(img){const n=+img.dataset.try||0;if(n<4&&img.dataset.src0!==''){img.dataset.try=n+1;const u=img.dataset.src0||(img.dataset.src0=img.getAttribute('src'));setTimeout(()=>{if(img.isConnected)img.src=u+(u.includes('?')?'&':'?')+'r='+(n+1)},2500*(n+1));return} /* thumbnails may still be being made on the PC: retry a few times before giving up */ const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.kind==='video'?'🎬':'🖼';img.replaceWith(d)}
 function media(x,k){
-  const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-kind="${x.kind}" src="${thumbSrc(x.thumb)}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
+  const inner=x.thumb?`<img class="ico" loading="eager" decoding="async" data-kind="${x.kind}" src="${thumbSrc(x.thumb)}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
   return `<a class="thumbA" href="${API+x.url}" target="_blank" rel="noopener" data-open="${esc(k)}">${inner}${x.kind==='video'?'<span class="play">▶</span>':''}</a>`;
 }
 // selection: pick many files to download, or (admin only) delete
@@ -866,6 +878,7 @@ $('#dhome').onclick=goHome;
   const iphone=/iPhone/.test(ua),ipad=/iPad/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   // Face ID iPhones (X and later, 16e) have a 812pt+ tall screen; Touch ID iPhones (5s..8, SE) are 568 / 667 / 736pt. Face ID iPads are the Pro 11" / 12.9" / 13" sizes.
   const faceId=iphone?mx>=812:ipad?(mn===834&&mx===1194)||(mn===1024&&mx===1366)||(mn===1032&&mx===1376):false;
+  const lb=$('#lockbio');if(lb){const fid=faceId;lb.innerHTML=(fid?'<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5V7a3 3 0 0 1 3-3h1.5M15.5 4H17a3 3 0 0 1 3 3v1.5M20 15.5V17a3 3 0 0 1-3 3h-1.5M8.5 20H7a3 3 0 0 1-3-3v-1.5"/><path d="M9 9.5v1.4M15 9.5v1.4M12 9.5v3.6h-.9"/><path d="M9 15.5c.8.9 1.8 1.3 3 1.3s2.2-.4 3-1.3"/></svg>使用 Face ID':'<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.3 6.8A7.4 7.4 0 0 1 12 4a7.4 7.4 0 0 1 7.4 7.4v1.2"/><path d="M4.6 12.6V11.4c0-1.1.2-2.1.6-3"/><path d="M8 12.6v-1.2a4 4 0 0 1 8 0v1.2c0 2 .3 3.9 1 5.6"/><path d="M12 11.4v1.9c0 2.1.4 4.1 1.2 5.9"/><path d="M8 15.6c.1 1.3.4 2.6.9 3.8"/><path d="M15.7 18.6c-.5-1.7-.8-3.6-.8-5.6"/></svg>使用指紋')}
   const bio=$('#biobtn .sic');if(bio){
     if(faceId){bio.style.background='#30d158';bio.innerHTML=sv('<path d="M4 8.5V7a3 3 0 0 1 3-3h1.5M15.5 4H17a3 3 0 0 1 3 3v1.5M20 15.5V17a3 3 0 0 1-3 3h-1.5M8.5 20H7a3 3 0 0 1-3-3v-1.5"/><path d="M9 9.5v1.4M15 9.5v1.4M12 9.5v3.6h-.9"/><path d="M9 15.5c.8.9 1.8 1.3 3 1.3s2.2-.4 3-1.3"/>')}
     else{bio.style.background='#ff453a';bio.innerHTML=sv('<path d="M6.3 6.8A7.4 7.4 0 0 1 12 4a7.4 7.4 0 0 1 7.4 7.4v1.2"/><path d="M4.6 12.6V11.4c0-1.1.2-2.1.6-3"/><path d="M8 12.6v-1.2a4 4 0 0 1 8 0v1.2c0 2 .3 3.9 1 5.6"/><path d="M12 11.4v1.9c0 2.1.4 4.1 1.2 5.9"/><path d="M8 15.6c.1 1.3.4 2.6.9 3.8"/><path d="M15.7 18.6c-.5-1.7-.8-3.6-.8-5.6"/>')}
@@ -1397,7 +1410,8 @@ function updateUploadUI(){
   if(!eta.t||got<eta.got){eta.t=now;eta.got=got;eta.spd=0}                      // a new batch started
   else if(now-eta.t>=1500){const inst=(got-eta.got)/((now-eta.t)/1000);eta.spd=eta.spd?eta.spd*.7+inst*.3:inst;eta.t=now;eta.got=got} // smoothed bytes per second
   const left=eta.spd>1?(batch.bytes-got)/eta.spd:NaN,p2=n=>String(n).padStart(2,'0');
-  $('#fabt').textContent=!Number.isFinite(left)?'00hr00min':left>=3600?p2(Math.min(99,Math.floor(left/3600)))+'hr'+p2(Math.ceil(left%3600/60)%60)+'min':p2(Math.floor(Math.ceil(left)/60))+'min'+p2(Math.ceil(left)%60)+'sec'; // under an hour: 00min00sec, otherwise 00h00min
+  const sec=Number.isFinite(left)?Math.ceil(left):0,dd=Math.floor(sec/86400),hh=Math.floor(sec%86400/3600),mm=Math.floor(sec%3600/60),ss=sec%60;
+  $('#fabt').textContent=dd?dd+'d '+hh+'h':hh?hh+'h '+mm+'m':mm?mm+'m '+ss+'s':ss+'s'; // d = days, h = hours, m = minutes, s = seconds (kept short so it fits inside the circle)
   $('#fabArc').style.strokeDashoffset=(157.1*(1-pct/100)).toFixed(1);$('#fabbad').hidden=!f;fab.title='上傳中 '+pct+'%';fab.setAttribute('aria-label','上傳進度');
   const mbps=eta.spd>0?(eta.spd*8/1e6).toFixed(eta.spd*8/1e6>=100?0:1):'--'; // bytes per second -> megabits per second
   $('#upsum2').textContent='上傳中 '+pct+'%（'+batch.doneFiles+'/'+batch.files+'）'+(f?'・'+f+' 個失敗，可按該檔的「重試」':'')+'\n速度 '+mbps+' Mbps　剩餘 '+$('#fabt').textContent;
@@ -1539,9 +1553,12 @@ $('#drop').ondrop=e=>{e.preventDefault();$('#drop').classList.remove('over');dro
 // ---- clipboard: text / pictures you paste here show up on all your other devices (kept until deleted) ----
 let clipItems=[],clipSig='';
 const clipAgo=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?'剛剛':m<60?m+' 分鐘前':m<1440?Math.round(m/60)+' 小時前':Math.round(m/1440)+' 天前'};
+const warmed=new Set();
+function warmShareThumbs(list){try{for(const sh of list||[]){const keys=sh.type==='folder'?(folders.find(f=>f.name===sh.folder)?.files.map(x=>keyOf(sh.folder,x.name))||[]):(sh.items||[]).map(i=>keyOf(i.folder,i.name));for(const k of keys.slice(0,10)){const x=fileByKey(k);if(x&&x.thumb){const u=thumbSrc(x.thumb);if(!warmed.has(u)){warmed.add(u);new Image().src=u}}}}}catch{}}
 async function clipRefresh(){
   try{const r=await api('/api/clip');if(!r.ok)return;const l=await r.json();const sig=JSON.stringify(l.map(c=>c.id));
-    clipItems=l;$('#clipn').textContent=l.length?String(l.length):'';
+    clipItems=l;$('#clipn').textContent=l.length?String(l.length):'';for(const c of l.slice(0,10))if(c.type==='image'&&!warmed.has(c.url)){warmed.add(c.url);new Image().src=API+c.url}   // preload so the clipboard page shows its pictures at once
+    
     if(sig!==clipSig){clipSig=sig;if($('#cliplist'))clipRender()}}catch{}
 }
 function clipRender(){
@@ -1551,7 +1568,7 @@ function clipRender(){
     const d=document.createElement('div');d.className='clipitem';
     const b=document.createElement('div');b.className='clipbody';
     if(c.type==='text'){const t=document.createElement('div');t.className='cliptext';t.textContent=c.text;b.append(t)}
-    else{const im=document.createElement('img');im.className='clipimg';im.loading='lazy';im.src=API+c.url;b.append(im)}
+    else{const im=document.createElement('img');im.className='clipimg';im.loading='eager';im.decoding='async';im.src=API+c.url;b.append(im)}
     const m=document.createElement('div');m.className='clipmeta';m.textContent=clipAgo(c.time)+(c.type==='image'?' · '+fmt(c.size):' · '+c.text.length+' 字');b.append(m);
     const bt=document.createElement('div');bt.className='clipbtns mbtns';
     const mk=(label,fn,cls)=>{const x=document.createElement('button');x.className=cls||'ghost';x.textContent=label;x.onclick=()=>fn(x);bt.append(x)};
@@ -1708,9 +1725,9 @@ function askUnlock(){
   $('#lockpw').value='';$('#lockerr').textContent='';$('#lockgo').disabled=false;$('#applock').hidden=false;$('#lockbio').hidden=!bioId();$('#lockbio').disabled=true;if(bioId()&&me?.admin){bioActive=true;bioPrefetch()}setTimeout(()=>{if(!bioId())$('#lockpw').focus()},50);
   lockOpen=new Promise(res=>{
     let bioBusy=false;
-    const bio=()=>{if(bioBusy)return;bioBusy=true;$('#lockerr').textContent='';$('#lockbio').disabled=true;
+    const bio=()=>{if(bioBusy)return;bioBusy=true;window.__unlockAt=Date.now();$('#lockerr').textContent='';$('#lockbio').disabled=true;
       bioLocal().then(()=>{
-        sessionStorage.setItem('nas_unlocked','1');$('#applock').hidden=true;lockOpen=null;clearInterval(lt);res();
+        window.__unlockAt=Date.now();sessionStorage.setItem('nas_unlocked','1');$('#applock').hidden=true;lockOpen=null;clearInterval(lt);res();
         api('/api/unlock-bio',{method:'POST'}).catch(()=>{}); // just tells the server it happened (for the activity log)
       },e=>{const m=bioErr(e);if(m)$('#lockerr').textContent=m;$('#lockbio').disabled=false}).finally(()=>{bioBusy=false});};
     $('#lockbio').onclick=bio;
@@ -1743,7 +1760,9 @@ setInterval(()=>{if(!document.hidden)checkNewVersion()},600e3);
 setTimeout(checkNewVersion,4000);
 document.addEventListener('visibilitychange',()=>{
   if(!document.hidden){keepAwake();for(const j of allJobs)if(j.failed){j.failed=false;j.tries=0;j.d.querySelector('.rt').hidden=true;queue.push(j);pump()}} // resume uploads that stalled in the background
-  if(document.hidden){hiddenAt=Date.now();if(needLock()===false&&me?.admin&&me.hasEditPassword)document.body.classList.add('covered');return}
+  const justUnlocking=!$('#applock').hidden||Date.now()-(window.__unlockAt||0)<8000;   // the Face ID / fingerprint sheet makes the page hide and show again: that must not count as leaving the app
+  if(document.hidden){if(justUnlocking)return;hiddenAt=Date.now();if(needLock()===false&&me?.admin&&me.hasEditPassword)document.body.classList.add('covered');return}
+  if(justUnlocking){hiddenAt=0;document.body.classList.remove('covered');return}
   if(hiddenAt&&Date.now()-hiddenAt>lockMs()&&me?.admin&&me.hasEditPassword){sessionStorage.removeItem('nas_unlocked');askUnlock()}
   document.body.classList.remove('covered');hiddenAt=0;
 });

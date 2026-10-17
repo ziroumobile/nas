@@ -626,9 +626,9 @@ html.ios:not(.android) body #dock,html.android body #dock{-webkit-backdrop-filte
 
 /* pressed: the whole bar swells a little and turns whitish-grey, like the App Store tab bar */
 html.ios body #dock,html.ios body .seg{transition:transform .28s cubic-bezier(.2,.9,.3,1.25),background-color .22s,box-shadow .22s}
-html.ios body #dock.pressing{transform:translateX(-50%) scale(1.06)!important;background:rgba(150,152,160,.30)!important}
-html.ios:not(.android) body #dock.pressing,html.android body #dock.pressing{background:rgba(150,152,160,.30)!important}
-html.ios body .seg.pressing{transform:scale(1.04)!important;background:rgba(150,152,160,.30)!important}
+html.ios body #dock.pressing{transform:translateX(-50%) scale(1.06)!important;background:rgba(150,152,160,.15)!important}
+html.ios:not(.android) body #dock.pressing,html.android body #dock.pressing{background:rgba(150,152,160,.15)!important}
+html.ios body .seg.pressing{transform:scale(1.04)!important;background:rgba(150,152,160,.15)!important}
 
 /* header buttons use the "+" button's parameters */
 html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(54,56,62,.72)!important;-webkit-backdrop-filter:blur(24px) saturate(190%)!important;backdrop-filter:blur(24px) saturate(190%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(255,255,255,.08),0 10px 28px rgba(0,0,0,.4)!important;color:#fff!important;border:0!important;transition:background-color .14s ease,box-shadow .14s ease,transform .14s ease}
@@ -652,7 +652,7 @@ html.ios .seg.lensing button:not(#_):not(#__){color:transparent!important;transi
 html.ios body #dock,html.ios:not(.android) body #dock,html.android body #dock,html.ios body .seg{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;isolation:isolate}
 html.ios body #dock::before,html.ios:not(.android) body #dock::before,html.android body #dock::before,html.ios body .seg::before{display:block!important;content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none;padding:0!important;-webkit-mask:none!important;mask:none!important;background:rgba(18,19,24,.30);-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);box-shadow:inset 0 .5px 0 rgba(255,255,255,.34),inset 0 -.5px 0 rgba(255,255,255,.16),0 6px 16px rgba(0,0,0,.3);clip-path:var(--lensclip,none)}
 html.ios body #dock.pressing,html.ios:not(.android) body #dock.pressing,html.android body #dock.pressing,html.ios body .seg.pressing{background:transparent!important}
-html.ios body #dock.pressing::before,html.ios body .seg.pressing::before{background:rgba(150,152,160,.30)}
+html.ios body #dock.pressing::before,html.ios body .seg.pressing::before{background:rgba(150,152,160,.15)}
 
 html.ios body #dock,html.ios body .seg{transition:transform .12s ease-out,background-color .12s,box-shadow .12s}
 /* before sign-in (app hidden) neither the "+" nor anything of the dock may show */
@@ -820,14 +820,14 @@ html:not(.ios) .seg button:not(#_):not(#__).lens-hide{color:transparent!importan
 html:not(.ios) body #dock{-webkit-backdrop-filter:blur(9px)!important;backdrop-filter:blur(9px)!important}
 html:not(.ios):not(.android) body #dock,html.android body #dock{-webkit-backdrop-filter:blur(9px)!important;backdrop-filter:blur(9px)!important;box-shadow:inset 0 .5px 0 rgba(255,255,255,.34),inset 0 -.5px 0 rgba(255,255,255,.16),0 6px 16px rgba(0,0,0,.3)!important}
 html:not(.ios) body #dock,html:not(.ios) body .seg{transition:transform .28s cubic-bezier(.2,.9,.3,1.25),background-color .22s,box-shadow .22s}
-html:not(.ios) body #dock.pressing{transform:translateX(-50%) scale(1.06)!important;background:rgba(150,152,160,.30)!important}
-html:not(.ios):not(.android) body #dock.pressing,html.android body #dock.pressing{background:rgba(150,152,160,.30)!important}
-html:not(.ios) body .seg.pressing{transform:scale(1.04)!important;background:rgba(150,152,160,.30)!important}
+html:not(.ios) body #dock.pressing{transform:translateX(-50%) scale(1.06)!important;background:rgba(150,152,160,.15)!important}
+html:not(.ios):not(.android) body #dock.pressing,html.android body #dock.pressing{background:rgba(150,152,160,.15)!important}
+html:not(.ios) body .seg.pressing{transform:scale(1.04)!important;background:rgba(150,152,160,.15)!important}
 html:not(.ios) .seg.lensing button:not(#_):not(#__){color:transparent!important;transition:none!important}
 html:not(.ios) body #dock,html:not(.ios):not(.android) body #dock,html.android body #dock,html:not(.ios) body .seg{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;isolation:isolate}
 html:not(.ios) body #dock::before,html:not(.ios):not(.android) body #dock::before,html.android body #dock::before,html:not(.ios) body .seg::before{display:block!important;content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none;padding:0!important;-webkit-mask:none!important;mask:none!important;background:rgba(18,19,24,.30);-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);box-shadow:inset 0 .5px 0 rgba(255,255,255,.34),inset 0 -.5px 0 rgba(255,255,255,.16),0 6px 16px rgba(0,0,0,.3);clip-path:var(--lensclip,none)}
 html:not(.ios) body #dock.pressing,html:not(.ios):not(.android) body #dock.pressing,html.android body #dock.pressing,html:not(.ios) body .seg.pressing{background:transparent!important}
-html:not(.ios) body #dock.pressing::before,html:not(.ios) body .seg.pressing::before{background:rgba(150,152,160,.30)}
+html:not(.ios) body #dock.pressing::before,html:not(.ios) body .seg.pressing::before{background:rgba(150,152,160,.15)}
 html:not(.ios) body #dock,html:not(.ios) body .seg{transition:transform .12s ease-out,background-color .12s,box-shadow .12s}
 /* desktop keeps its wider dock */
 html:not(.ios) body #dock{width:min(92vw,620px)!important;gap:0}
