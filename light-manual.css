@@ -47,5 +47,8 @@ html[data-theme="light"] body .grip:active,html[data-theme="light"] body details
 html[data-theme="light"] body #appback:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #app>header .hdrbtns button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important}
 
 /* text buttons on white cards (copy / download / delete, revoke / open link, folder tools): a visible pill with a hairline rim, so their edges show */
-html[data-theme="light"] body .clipbtns button:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #modal .srow button.del:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #modal .srow a.btn.vlk:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(0,0,0,.045)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)!important;border-radius:999px!important}
+html[data-theme="light"] body .clipbtns button:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body :is(#clippaste,#clipsend,#clippic):not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpress),html[data-theme="light"] body #modal .srow button.del:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #modal .srow a.btn.vlk:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(0,0,0,.045)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)!important;border-radius:999px!important}
 html[data-theme="light"] body details.fold .ftools button:not(#nx1):not(#nx2):not(#nx3):not(#nx4){box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)!important}
+
+/* while the dock / switch is held the white selected capsule is hidden; it comes back when the finger lifts */
+html[data-theme="light"] #dock.pressing .seg-pill,html[data-theme="light"] .seg.pressing .seg-pill{opacity:0!important;transition:none!important}

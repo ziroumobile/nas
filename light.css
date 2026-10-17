@@ -232,6 +232,7 @@ html[data-theme="light"]:not(.ios):not(.android) body #dock.pressing,html[data-t
 html[data-theme="light"]:not(.ios) body .seg.pressing{background:rgba(105,103,95,0.15)!important}
 html[data-theme="light"]:not(.ios) body #dock::before,html[data-theme="light"]:not(.ios):not(.android) body #dock::before,html[data-theme="light"].android body #dock::before,html[data-theme="light"]:not(.ios) body .seg::before{background:rgba(237,236,231,0.3);box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 6px 16px rgba(0,0,0,0.114)}
 html[data-theme="light"]:not(.ios) body #dock.pressing::before,html[data-theme="light"]:not(.ios) body .seg.pressing::before{background:rgba(105,103,95,0.15)}
+html[data-theme="light"] body :is(#clippaste,#clipsend,#clippic):not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpress){box-shadow:inset 0 0 0 1px rgba(0,0,0,0.2)!important}
 
 /* ---- hand-made part ---- */
 html[data-theme="light"]{color-scheme:light;--bg:#f2f2f7;--card:#fff;--fg:#000;--mut:#6c6c70;--ac:#007aff;--bd:#e5e5ea;--seg-fg:#1c1c1e;--seg-blue:#007aff;background:#f2f2f7}
@@ -281,5 +282,8 @@ html[data-theme="light"] body .grip:active,html[data-theme="light"] body details
 html[data-theme="light"] body #appback:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #app>header .hdrbtns button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important}
 
 /* text buttons on white cards (copy / download / delete, revoke / open link, folder tools): a visible pill with a hairline rim, so their edges show */
-html[data-theme="light"] body .clipbtns button:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #modal .srow button.del:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #modal .srow a.btn.vlk:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(0,0,0,.045)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)!important;border-radius:999px!important}
+html[data-theme="light"] body .clipbtns button:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body :is(#clippaste,#clipsend,#clippic):not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpress),html[data-theme="light"] body #modal .srow button.del:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #modal .srow a.btn.vlk:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(0,0,0,.045)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)!important;border-radius:999px!important}
 html[data-theme="light"] body details.fold .ftools button:not(#nx1):not(#nx2):not(#nx3):not(#nx4){box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)!important}
+
+/* while the dock / switch is held the white selected capsule is hidden; it comes back when the finger lifts */
+html[data-theme="light"] #dock.pressing .seg-pill,html[data-theme="light"] .seg.pressing .seg-pill{opacity:0!important;transition:none!important}

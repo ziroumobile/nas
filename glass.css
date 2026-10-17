@@ -850,3 +850,9 @@ html.ios body #topband{height:calc(env(safe-area-inset-top) + 50px)!important}
 
 /* the capsule fades back quickly */
 html body .seg-pill{transition:transform .4s cubic-bezier(.2,.9,.3,1.25),width .4s cubic-bezier(.2,.9,.3,1.25),opacity .12s!important}
+
+/* round buttons: quick squash while the finger is down, then a springy overshoot back (dark and light) */
+html body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,.seltop button,.selbot button,button#upfab,#viewer .vc):not(#nx1):not(#nx2):not(#nx3):not(#nx4){transition:background-color .14s ease,box-shadow .14s ease,transform .6s cubic-bezier(.3,1.9,.45,1)!important}
+html body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,.seltop button,.selbot button,button#upfab,#viewer .vc):not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){transform:scale(.84)!important;transition:background-color .1s ease,box-shadow .1s ease,transform .14s cubic-bezier(.2,.8,.3,1)!important}
+/* the three clipboard buttons get a ring around their edge */
+html body :is(#clippaste,#clipsend,#clippic):not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpress){box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)!important;border-radius:999px!important}
