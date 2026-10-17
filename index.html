@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v6.43">
+<meta name="app-version" content="v6.44">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261020M">
+<link rel="stylesheet" href="glass.css?v=20261020N">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -405,7 +405,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261020M"></script>
+<script src="glass.js?v=20261020N"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -735,12 +735,12 @@ syncToolbar();fitSel($('#sort'));
 const NAVE='cubic-bezier(.32,.72,0,1)',NAVD=380;
 const navTop=()=>!$('#storage').hidden?$('#storage'):(!$('#modal').hidden?$('#modal'):null);
 function pushAnim(){const p=$('#setpanel'),top=navTop();if(!top||!p.animate){p.hidden=true;return}
-  top.style.zIndex='60';top.animate([{transform:'translateX(100%)'},{transform:'translateX(0)'}],{duration:NAVD,easing:NAVE});
+  top.style.zIndex='110';top.animate([{transform:'translateX(100%)',boxShadow:'-14px 0 30px rgba(0,0,0,.45)'},{transform:'translateX(0)',boxShadow:'-14px 0 30px rgba(0,0,0,.45)'}],{duration:NAVD,easing:NAVE});
   p.animate([{transform:'translateX(0)',filter:'brightness(1)'},{transform:'translateX(-30%)',filter:'brightness(.6)'}],{duration:NAVD,easing:NAVE,fill:'forwards'}).finished.then(()=>{p.hidden=true;p.getAnimations().forEach(a=>a.cancel());top.style.zIndex=''}).catch(()=>{p.hidden=true;top.style.zIndex=''})}
 function popAnim(done){const p=$('#setpanel'),top=navTop();if(!top||!p.animate){done();p.hidden=false;return}
-  p.hidden=false;p.style.zIndex='39';top.style.zIndex='60';
+  p.hidden=false;p.style.zIndex='100';top.style.zIndex='110';
   p.animate([{transform:'translateX(-30%)',filter:'brightness(.6)'},{transform:'translateX(0)',filter:'brightness(1)'}],{duration:NAVD,easing:NAVE});
-  top.animate([{transform:'translateX(0)'},{transform:'translateX(100%)'}],{duration:NAVD,easing:NAVE,fill:'forwards'}).finished.then(()=>{done();top.getAnimations().forEach(a=>a.cancel());top.style.zIndex='';p.style.zIndex=''}).catch(()=>{done();top.style.zIndex='';p.style.zIndex=''})}
+  top.animate([{transform:'translateX(0)',boxShadow:'-14px 0 30px rgba(0,0,0,.45)'},{transform:'translateX(100%)',boxShadow:'-14px 0 30px rgba(0,0,0,.45)'}],{duration:NAVD,easing:NAVE,fill:'forwards'}).finished.then(()=>{done();top.getAnimations().forEach(a=>a.cancel());top.style.zIndex='';p.style.zIndex=''}).catch(()=>{done();top.style.zIndex='';p.style.zIndex=''})}
 {const p=$('#setpanel'),close=()=>{p.hidden=true};
   window.__setBack=false;   // true while a page opened from the settings is showing: its back arrow returns to the settings, the settings' own back arrow goes home
   $('#dset').onclick=()=>{window.__setBack=false;p.hidden=!p.hidden};$('#setclose').onclick=()=>{window.__setBack=false;close()};
