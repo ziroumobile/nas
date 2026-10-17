@@ -3,13 +3,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark">
-<meta name="app-version" content="v6.41">
+<meta name="app-version" content="v6.42">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261020K">
+<link rel="stylesheet" href="glass.css?v=20261020L">
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
@@ -151,6 +151,18 @@ html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position
 body.selecting #app>header .hdrbtns{visibility:hidden}
 #spage{position:fixed;inset:0;z-index:96;background:#000;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 76px) 16px calc(env(safe-area-inset-bottom) + 110px)}
 #spage[hidden]{display:none}
+.pghead{background:#1c1c1e;border-radius:26px;padding:20px 20px 22px;margin:0 0 18px}
+.pgic{width:72px;height:72px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 0 14px}
+.pgic svg{width:40px;height:40px}
+.pghead b{display:block;font-size:30px;font-weight:800;margin:0 0 6px;line-height:1.15}
+.pghead p{margin:0;color:#8e8e93;font-size:17px;line-height:1.4}
+#login{max-width:420px;margin:9vh auto 0;padding:34px 26px 28px;border-radius:30px;background:#1c1c1e;border:0;box-shadow:0 24px 70px rgba(0,0,0,.55);text-align:center}
+#login .lgic{width:84px;height:84px;border-radius:22px;margin:0 auto 14px;background:linear-gradient(160deg,#5ac8fa,#0a84ff);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(10,132,255,.35)}
+#login .lgic svg{width:46px;height:46px}
+#login h1{font-size:28px;margin:0 0 18px;text-align:center}
+#login input{height:52px;border-radius:14px;border:1px solid #3a3a3c;background:transparent;padding:0 16px;font-size:17px;margin:0 0 12px;width:100%;box-sizing:border-box;text-align:left}
+html body #login button#go:not(#nx1):not(#nx2):not(#nx3):not(#nx4){height:50px;border-radius:14px!important;background:#0a84ff!important;color:#fff!important;font-size:17px;font-weight:600;margin-top:4px}
+html body #login button#go:not(#nx1):not(#nx2):not(#nx3):not(#nx4):active{background:#0a6fd6!important}
 #spage{overscroll-behavior:contain}#spage.empty{overflow:hidden}
 #spage .sphead{position:fixed;left:0;right:0;top:0;z-index:2;display:flex;gap:10px;align-items:center;padding:calc(env(safe-area-inset-top) + 10px) 14px 8px 16px;background:#000}
 html body #spage button#spback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){flex:none;width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important}
@@ -330,7 +342,8 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 @media(max-width:699px){.bar button,.bar select{padding:6px 12px;font-size:14px}}
 </style></head><body><div class="wrap">
 <div id="login" class="card" hidden>
-  <h1 style="margin-bottom:14px">登入 NAS</h1>
+  <div class="lgic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="6.4" rx="2"/><rect x="3.5" y="13.6" width="17" height="6.4" rx="2"/><path d="M7.4 7.2h.01M7.4 16.8h.01M11 7.2h5.6M11 16.8h5.6"/></svg></div>
+  <h1>登入 NAS</h1>
   <p id="err"></p>
   <input id="u" type="email" placeholder="Email" autocomplete="username">
   <input id="p" type="password" placeholder="密碼" autocomplete="current-password">
@@ -391,7 +404,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261020K"></script>
+<script src="glass.js?v=20261020L"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1089,7 +1102,7 @@ async function sharesManager(){ // every share: link, password (after entering t
   };
   const pwCell=s=>!s.hasPassword?'<span style="color:#b45309">（沒有設密碼：任何人有連結就能開啟）</span>':!s.pwStored?'<span style="color:var(--mut)">（未儲存）</span>':revealed?(revealed[s.id]==null?'<span style="color:var(--mut)">（無法解密）</span>':`<code style="user-select:all;font-size:15px">${esc(revealed[s.id])}</code> <button class="ghost" data-copypw="${esc(s.id)}" style="padding:2px 8px">複製密碼</button>`):'<code>••••••••</code>';
   const draw=()=>{
-    showPage(`<div class="mhead"><h3>🔗 已分享連結（${list.length}）</h3><button class="ghost" id="sx">關閉</button></div><p class="sub">對方開啟連結（有設密碼的要先輸入密碼）後可檢視與下載，唯讀。點縮圖可以直接預覽。撤銷後連結立刻失效，對方已經打開的下載連結也一併失效。密碼要輸入編輯密碼才會顯示。</p>
+    showPage(`<div class="mhead"><button class="ghost" id="sx">關閉</button></div><div class="pghead"><span class="pgic" style="background:#0a84ff"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.2 4.2 0 0 0 5.9 0l3-3a4.2 4.2 0 0 0-5.9-5.9l-1 1"/><path d="M14 10a4.2 4.2 0 0 0-5.9 0l-3 3a4.2 4.2 0 0 0 5.9 5.9l1-1"/></svg></span><b>已分享連結（${list.length}）</b><p>對方開啟連結（有設密碼的要先輸入密碼）後可檢視與下載，唯讀。點縮圖可以直接預覽。撤銷後連結立刻失效，對方已經打開的下載連結也一併失效。密碼要輸入編輯密碼才會顯示。</p></div>
       ${list.some(s=>s.hasPassword)?`<div class="mbtns" style="margin:0 0 6px">${revealed?'<button class="ghost" data-hide="1">🙈 隱藏密碼</button>':'<button data-reveal="1">🔑 顯示密碼</button>'}</div>`:''}`+
       (list.length?list.map(s=>`<div class="srow"><b>${s.type==='folder'?'📁 資料夾「'+esc(s.folder)+'」· '+s.count+' 個檔案（即時）':'📄 '+s.count+' 個檔案'}</b>
         ${thumbs(s)}
@@ -1559,8 +1572,8 @@ function clipOpen(){
   try{closeViewer(true)}catch{}try{closeSearchPage(true,true)}catch{}
   if($('#clipin')&&!$('#modal').hidden)return;   // already showing the clipboard
   document.body.classList.add('dockover');setDock('dclip');
-  showPage('<div class="mhead"><h3>📋 剪貼簿</h3></div>'+
-    '<textarea id="clipin" rows="2" placeholder="輸入或貼上文字、圖片…（永久保存直到你刪除，只有你的裝置看得到）" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--fg);font:inherit;resize:vertical;min-height:52px"></textarea>'+
+  showPage('<div class="pghead"><span class="pgic" style="background:#ff9f0a"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4.5" width="14" height="16.5" rx="2.5"/><path d="M9 4.5V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v.5M8.5 11h7M8.5 15h5"/></svg></span><b>剪貼簿</b><p>貼上或送出的文字、圖片會同步到你其他登入的裝置，永久保存直到你刪除，只有你自己看得到。</p></div>'+
+    '<textarea id="clipin" rows="2" placeholder="輸入或貼上文字、圖片…" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--fg);font:inherit;resize:vertical;min-height:52px"></textarea>'+
     '<div class="mbtns" style="margin:8px 0"><button class="ghost" id="clippaste">📋 貼上</button><button class="ghost" id="clipsend">送出文字</button><button class="ghost" id="clippic">🖼 選圖片</button></div>'+
     '<input id="clipfile" class="fpick" type="file" accept="image/*" multiple><div id="cliplist"></div>');
   $('#clipsend').onclick=async()=>{if(await clipSendText($('#clipin').value))$('#clipin').value=''};
