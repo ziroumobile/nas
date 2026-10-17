@@ -298,3 +298,10 @@ html[data-theme="light"] body #dock button:not(#nx1):not(#nx2):not(#nx3):not(#nx
 html[data-theme="light"] #dock,html[data-theme="light"] body #dock,html[data-theme="light"] .seg,html[data-theme="light"] body .seg,html[data-theme="light"].ios body #dock,html[data-theme="light"].ios body .seg{box-shadow:none!important}
 html[data-theme="light"].ios:not(.android) body #dock,html[data-theme="light"].android body #dock,html[data-theme="light"]:not(.ios):not(.android) body #dock,html[data-theme="light"].ios:not(.android) body #dock::before,html[data-theme="light"].android body #dock::before,html[data-theme="light"]:not(.ios):not(.android) body #dock::before,html[data-theme="light"]:not(.ios) body .seg::before,html[data-theme="light"].ios body .seg::before{box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important}
 html[data-theme="light"].ios:not(.android) body #dock,html[data-theme="light"].android body #dock,html[data-theme="light"]:not(.ios):not(.android) body #dock{box-shadow:none!important}
+
+/* file-row buttons (download / share / delete): visible pill with a hairline ring */
+html[data-theme="light"] body .rbtns :is(a.btn,button):not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpress){background:rgba(0,0,0,.045)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)!important;border-radius:999px!important}
+/* drop-down menus (sort etc.): an opaque white card instead of a see-through grey one */
+html[data-theme="light"] .gmenu,html[data-theme="light"] .gmenu.dockmenu{background:rgba(252,252,254,.98)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1),0 10px 28px rgba(0,0,0,.16)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html[data-theme="light"] .gmenu div{color:#000!important}
+html[data-theme="light"] .gmenu div:active{background:rgba(0,0,0,.07)!important}

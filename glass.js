@@ -295,7 +295,7 @@ void main(){
     const frame = now => {
       const dt = Math.min(0.034, Math.max(0.001, (now - last) / 1000)); last = now;
       const moving = step(s, dt); trackHot(s, s.lens.cx); draw(s);
-      if (s.lens) s.seg.style.transform = (s.dock ? 'translateX(-50%) ' : '') + 'scale(' + s.lens.bs.toFixed(4) + ')';   // the bar itself swells / wobbles with the spring
+      if (s.lens) s.seg.style.transform = (s.dock && !document.documentElement.classList.contains('android') ? 'translateX(-50%) ' : '') + 'scale(' + s.lens.bs.toFixed(4) + ')';   // the bar itself swells / wobbles with the spring
       if (s.hooks && !s.hookOff && s.lens) s.hooks.move(posOf(s, s.lens.cx), selected(s));   // page pager follows the lens
       if (moving || s.drag || s.hold) raf(frame); else { s.running = false; finishLens(s); }
     };

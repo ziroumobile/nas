@@ -861,3 +861,6 @@ html body :is(#clippaste,#clipsend,#clippic):not(#nx1):not(#nx2):not(#nx3):not(#
 html.ios body::before{z-index:58!important}
 html.ios body #app>header{height:66px!important;padding-top:14px!important;padding-bottom:6px!important}
 html.ios body:has(#dock):not(.selecting) .wrap{padding-top:calc(env(safe-area-inset-top) + 48px)!important}
+
+/* Android: the dock is centred with margins, not translateX(-50%) - a half-pixel translate made its labels and icons soft until it was touched */
+html.android body #dock{left:0!important;right:0!important;margin-left:auto!important;margin-right:auto!important;transform:none!important;will-change:auto!important}
