@@ -13,7 +13,7 @@
   const VS = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
   const FS = `precision highp float;
 uniform vec2 u_cssRes;uniform float u_dpr;uniform vec4 u_rect;uniform vec2 u_org;uniform vec2 u_texSize;uniform float u_pad;
-uniform sampler2D u_tex;uniform float u_mag;uniform float u_bezel;uniform float u_lift;uniform vec3 u_tint;uniform float u_dark;uniform float u_clear;uniform vec4 u_ax;uniform float u_n;uniform float u_cy;
+uniform sampler2D u_tex;uniform float u_mag;uniform float u_bezel;uniform float u_lift;uniform vec3 u_tint;uniform float u_dark;uniform float u_clear;uniform vec4 u_ax;uniform float u_n;uniform float u_cy;uniform float u_iy;uniform float u_ly;
 float sdRR(vec2 p,vec2 hs,float r){vec2 q=abs(p)-hs+r;return length(max(q,0.))+min(max(q.x,q.y),0.)-r;}
 vec3 bgSim(vec2 p){   // stand-in for what is behind the bar: the bar itself (dark, with light top/bottom edges) over a lighter page
   float H=u_texSize.y-2.*u_pad;
@@ -47,7 +47,8 @@ void main(){
     if(u_n>1.5&&abs(segPos.x-u_ax.y)<bd){ax=u_ax.y;bd=abs(segPos.x-u_ax.y);}
     if(u_n>2.5&&abs(segPos.x-u_ax.z)<bd){ax=u_ax.z;bd=abs(segPos.x-u_ax.z);}
     if(u_n>3.5&&abs(segPos.x-u_ax.w)<bd){ax=u_ax.w;}
-    vec2 an=vec2(ax,u_cy);mp=an+(segPos-an)/u_mag;   // every label grows in place (about its own centre)
+    float ay=segPos.y<(u_iy+u_ly)*.5?u_iy:u_ly;   // icon above the split line, label below it
+    vec2 an=vec2(ax,ay);mp=an+(segPos-an)/u_mag;   // icon and label each grow about their OWN centre: nothing moves, it only swells
   }
   vec2 refr=-g*slope*u_bezel*.50*u_lift;                                    // refraction: content from outside the edge is pulled inwards
   vec3 col;col.r=tex(mp+refr).r;col.g=tex(mp+refr*1.05).g;col.b=tex(mp+refr*1.10).b;   // slight dispersion
@@ -130,7 +131,7 @@ void main(){
     gl.useProgram(pr);
     const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    const u = {}; for (const n of ['u_cssRes', 'u_dpr', 'u_rect', 'u_org', 'u_texSize', 'u_pad', 'u_tex', 'u_mag', 'u_bezel', 'u_lift', 'u_tint', 'u_dark', 'u_clear', 'u_ax', 'u_n', 'u_cy']) u[n] = gl.getUniformLocation(pr, n);
+    const u = {}; for (const n of ['u_cssRes', 'u_dpr', 'u_rect', 'u_org', 'u_texSize', 'u_pad', 'u_tex', 'u_mag', 'u_bezel', 'u_lift', 'u_tint', 'u_dark', 'u_clear', 'u_ax', 'u_n', 'u_cy', 'u_iy', 'u_ly']) u[n] = gl.getUniformLocation(pr, n);
     const tex = gl.createTexture();
     s.canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); s.gl = null; });
     return { gl, u, tex };
@@ -170,9 +171,14 @@ void main(){
     s.btns.forEach((b, i) => {
       const ic = s.dock && b.querySelector('svg');
       if (ic) {
-        const col = white, im = iconImg(s, b, col), mx = T + b.offsetLeft + b.offsetWidth / 2, my = T + b.offsetTop + b.offsetHeight / 2, dl = b.querySelector('.dl');
-        if (im) x.drawImage(im, mx - 12, my - (dl ? 23 : 12), 24, 24);
-        if (dl) { x.font = '600 11px ' + getComputedStyle(dl).fontFamily; x.fillStyle = col; x.fillText(dl.textContent, mx, my + 16); }
+        const col = white, im = iconImg(s, b, col), dl = b.querySelector('.dl');
+        const cs0 = getComputedStyle(ic), iw = parseFloat(cs0.width) || 24, ih = parseFloat(cs0.height) || 24, gap = parseFloat(getComputedStyle(b).rowGap) || 0;   // (SVG elements have no offsetLeft / offsetWidth: use the computed size)
+        const dlR = dl ? (dl.offsetParent === b ? { x: b.offsetLeft + dl.offsetLeft, y: b.offsetTop + dl.offsetTop } : { x: dl.offsetLeft, y: dl.offsetTop }) : null;   // label position relative to the bar, whatever its offsetParent is
+        const ixr = (b.offsetWidth - iw) / 2, iyr = dl ? dlR.y - b.offsetTop - gap - ih : (b.offsetHeight - ih) / 2;   // the icon sits centred, right above the label
+        const ix = T + b.offsetLeft + ixr, iy = T + b.offsetTop + iyr;
+        if (im) x.drawImage(im, ix, iy, iw, ih);
+        if (dl) { const lcx = T + dlR.x + dl.offsetWidth / 2, lcy = T + dlR.y + dl.offsetHeight / 2; x.font = '600 11px ' + getComputedStyle(dl).fontFamily; x.fillStyle = col; x.fillText(dl.textContent, lcx, lcy + 0.5);
+          if (!s.anchY || i === 0) s.anchY = { i: b.offsetTop + iyr + ih / 2, l: dlR.y + dl.offsetHeight / 2 }; }
         return;
       }
       const cs = getComputedStyle(b);
@@ -207,7 +213,7 @@ void main(){
     gl.uniform2f(u.u_org, ox, oy); gl.uniform2f(u.u_texSize, s.texW, s.texH); gl.uniform1f(u.u_pad, TPAD);
     gl.uniform1f(u.u_mag, L.mag); gl.uniform1f(u.u_bezel, s.dock ? BEZEL : BEZEL * Math.min(1, H / 80)); gl.uniform1f(u.u_lift, Math.min(1, L.grow / gr(s)));   // (a thinner bar gets a proportionally thinner curved edge; the dock keeps its own)
     gl.uniform3f(u.u_tint, 1, 1, 1);
-    { const gm = geom(s), c = gm.slice(0, 4).map(q => q.l + q.w / 2); while (c.length < 4) c.push(-9999); gl.uniform4f(u.u_ax, c[0], c[1], c[2], c[3]); gl.uniform1f(u.u_n, Math.min(4, gm.length)); gl.uniform1f(u.u_cy, gm[0].t + gm[0].h / 2); }
+    { const gm = geom(s), c = gm.slice(0, 4).map(q => q.l + q.w / 2); while (c.length < 4) c.push(-9999); gl.uniform4f(u.u_ax, c[0], c[1], c[2], c[3]); gl.uniform1f(u.u_n, Math.min(4, gm.length)); gl.uniform1f(u.u_cy, gm[0].t + gm[0].h / 2); gl.uniform1f(u.u_iy, s.anchY ? s.anchY.i : gm[0].t + gm[0].h / 2); gl.uniform1f(u.u_ly, s.anchY ? s.anchY.l : gm[0].t + gm[0].h / 2); }
     gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
@@ -289,7 +295,7 @@ void main(){
     const frame = now => {
       const dt = Math.min(0.034, Math.max(0.001, (now - last) / 1000)); last = now;
       const moving = step(s, dt); trackHot(s, s.lens.cx); draw(s);
-      if (s.lens) { const c0 = geom(s)[selected(s)], away = Math.abs(s.lens.cx - (c0.l + c0.w / 2)) > 8; if (away !== !!s.pillAway) { s.pillAway = away; s.pill.classList.toggle('hidden', away); } }
+      if (s.lens) { const c0 = geom(s)[selected(s)], p = s.pill; p.classList.remove('hidden'); p.classList.add('noanim'); p.style.transform = `translate(${s.lens.cx - c0.w / 2}px,${c0.t}px)`; p.style.width = c0.w + 'px'; p.style.height = c0.h + 'px'; }   // the capsule is carried by the lens
       if (s.lens) s.seg.style.transform = (s.dock ? 'translateX(-50%) ' : '') + 'scale(' + s.lens.bs.toFixed(4) + ')';   // the bar itself swells / wobbles with the spring
       if (s.hooks && !s.hookOff && s.lens) s.hooks.move(posOf(s, s.lens.cx), selected(s));   // page pager follows the lens
       if (moving || s.drag || s.hold) raf(frame); else { s.running = false; finishLens(s); }
