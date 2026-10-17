@@ -233,6 +233,7 @@ html[data-theme="light"]:not(.ios) body .seg.pressing{background:rgba(105,103,95
 html[data-theme="light"]:not(.ios) body #dock::before,html[data-theme="light"]:not(.ios):not(.android) body #dock::before,html[data-theme="light"].android body #dock::before,html[data-theme="light"]:not(.ios) body .seg::before{background:rgba(237,236,231,0.3);box-shadow:inset 0 .5px 0 rgba(0,0,0,0.34),inset 0 -.5px 0 rgba(0,0,0,0.16),0 6px 16px rgba(0,0,0,0.114)}
 html[data-theme="light"]:not(.ios) body #dock.pressing::before,html[data-theme="light"]:not(.ios) body .seg.pressing::before{background:rgba(105,103,95,0.15)}
 html[data-theme="light"] body :is(#clippaste,#clipsend,#clippic):not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpress){box-shadow:inset 0 0 0 1px rgba(0,0,0,0.2)!important}
+html[data-theme="light"] body #order:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpress){box-shadow:inset 0 0 0 1px rgba(0,0,0,0.18)!important}
 
 /* ---- hand-made part ---- */
 html[data-theme="light"]{color-scheme:light;--bg:#f2f2f7;--card:#fff;--fg:#000;--mut:#6c6c70;--ac:#007aff;--bd:#e5e5ea;--seg-fg:#1c1c1e;--seg-blue:#007aff;background:#f2f2f7}
@@ -305,3 +306,8 @@ html[data-theme="light"] body .rbtns :is(a.btn,button):not(#nx1):not(#nx2):not(#
 html[data-theme="light"] .gmenu,html[data-theme="light"] .gmenu.dockmenu{background:rgba(252,252,254,.98)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1),0 10px 28px rgba(0,0,0,.16)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 html[data-theme="light"] .gmenu div{color:#000!important}
 html[data-theme="light"] .gmenu div:active{background:rgba(0,0,0,.07)!important}
+
+/* the dark-glass legibility glow around the dock icons turns into a black smudge on a light bar */
+html[data-theme="light"] #dock svg,html[data-theme="light"] body #dock svg,html[data-theme="light"].android #dock svg,html[data-theme="light"].ios:not(.android) #dock svg,html[data-theme="light"]:not(.ios):not(.android) #dock svg,html[data-theme="light"] body.selecting .selbot svg{filter:none!important}
+/* sort direction button gets its edge */
+html[data-theme="light"] body #order:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpress){background:rgba(0,0,0,.045)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)!important;border-radius:999px!important}
