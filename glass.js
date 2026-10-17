@@ -268,7 +268,7 @@ void main(){
     s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, bs: 1, vbs: 0, tbs: s.dock ? 1.07 : 1.05, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: gr(s), tm: MAG, st: 0, vst: 0, tst: 0 };
     s.hookOff = false; s.active = true; s.hot = selected(s); s.seg.classList.add('dragging', 'pressing', 'lensing'); setHot(s, s.hot, true);
     makeTexture(s);                                                  // labels as they look right now
-    s.canvas.classList.add('on');   // (the dark capsule stays visible until the lens moves away from it - see the frame loop)
+    s.pill.classList.add('hidden'); s.canvas.classList.add('on');   // the dark capsule disappears while the dock is touched and comes back (at the chosen item) after release
     draw(s); loop(s);
   }
   // the option the lens is over turns blue (the others stay white); the lens's own copy of the labels is repainted to match
@@ -295,7 +295,6 @@ void main(){
     const frame = now => {
       const dt = Math.min(0.034, Math.max(0.001, (now - last) / 1000)); last = now;
       const moving = step(s, dt); trackHot(s, s.lens.cx); draw(s);
-      if (s.lens) { const c0 = geom(s)[selected(s)], p = s.pill; p.classList.remove('hidden'); p.classList.add('noanim'); p.style.transform = `translate(${s.lens.cx - c0.w / 2}px,${c0.t}px)`; p.style.width = c0.w + 'px'; p.style.height = c0.h + 'px'; }   // the capsule is carried by the lens
       if (s.lens) s.seg.style.transform = (s.dock ? 'translateX(-50%) ' : '') + 'scale(' + s.lens.bs.toFixed(4) + ')';   // the bar itself swells / wobbles with the spring
       if (s.hooks && !s.hookOff && s.lens) s.hooks.move(posOf(s, s.lens.cx), selected(s));   // page pager follows the lens
       if (moving || s.drag || s.hold) raf(frame); else { s.running = false; finishLens(s); }
