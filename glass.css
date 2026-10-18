@@ -872,3 +872,11 @@ html body #order:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpres
 html:not(.ios) body .seltop{top:calc(env(safe-area-inset-top) + 8px)!important;left:max(14px,calc((100vw - 828px)/2 - 2px))!important;right:max(14px,calc((100vw - 828px)/2 - 2px))!important}
 /* iPad: always keep a solid black cover over the status-bar strip (nothing scrolls visibly under it) */
 html.ios body::before{height:max(env(safe-area-inset-top),24px)!important}
+
+/* full-screen pages (search, shared, clipboard, upload, storage, settings): the page behind must not scroll or rubber-band under them, otherwise the home content shows through at the top (iPad) */
+html:has(#spage:not([hidden])),html:has(#spage:not([hidden])) body,
+html:has(#modal.fullpage:not([hidden])),html:has(#modal.fullpage:not([hidden])) body,
+html:has(#uppage:not([hidden])),html:has(#uppage:not([hidden])) body,
+html:has(#storage:not([hidden])),html:has(#storage:not([hidden])) body,
+html:has(#setpanel:not([hidden])),html:has(#setpanel:not([hidden])) body{overflow:hidden!important;overscroll-behavior:none!important}
+html.ios #spage,html.ios #uppage,html.ios #storage,html.ios #setpanel{overscroll-behavior:contain}
