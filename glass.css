@@ -867,3 +867,8 @@ html.android body #dock{left:0!important;right:0!important;margin-left:auto!impo
 
 /* sort direction button: a ring like the sort-by picker next to it */
 html body #order:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpress){box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)!important;border-radius:999px!important}
+
+/* desktop / Mac: the select-mode back arrow sits exactly where every other page's back arrow sits (same column edge, same height) */
+html:not(.ios) body .seltop{top:calc(env(safe-area-inset-top) + 8px)!important;left:max(14px,calc((100vw - 828px)/2 - 2px))!important;right:max(14px,calc((100vw - 828px)/2 - 2px))!important}
+/* iPad: always keep a solid black cover over the status-bar strip (nothing scrolls visibly under it) */
+html.ios body::before{height:max(env(safe-area-inset-top),24px)!important}

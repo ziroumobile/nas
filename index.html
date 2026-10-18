@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v7.33">
+<meta name="app-version" content="v7.34">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261021ZD">
-<link rel="stylesheet" href="light.css?v=20261021ZD">
+<link rel="stylesheet" href="glass.css?v=20261021ZE">
+<link rel="stylesheet" href="light.css?v=20261021ZE">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -318,7 +318,7 @@ html body #viewer #vdlj.vc2:not([hidden]):not(#nx1):not(#nx2):not(#nx3){padding:
 .clipitem:first-child{border-top:0}
 .clipbody{flex:1;min-width:0}
 .cliptext{white-space:pre-wrap;word-break:break-word;max-height:7.5em;overflow:auto;font-size:14px}
-.clipimg{max-width:100%;max-height:180px;border-radius:10px;display:block;background:var(--bg)}
+.clipimg{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;max-width:100%;max-height:180px;border-radius:10px;display:block;background:var(--bg)}
 .clipmeta{color:var(--mut);font-size:12px;margin-top:4px}
 .clipbtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .clipbtns button{padding:5px 12px;font-size:13px}
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261021ZD"></script>
+<script src="glass.js?v=20261021ZE"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1583,6 +1583,15 @@ async function clipRefresh(){
     
     if(sig!==clipSig){clipSig=sig;if($('#cliplist'))clipRender()}}catch{}
 }
+// long press on a clipboard picture = the same full-size preview as long-pressing a file on the home page (a tap anywhere closes it)
+function clipPeek(im,c){
+  let t=null,x0=0,y0=0;const stop=()=>{clearTimeout(t);t=null};
+  im.draggable=false;im.addEventListener('contextmenu',e=>e.preventDefault());
+  im.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')return;x0=e.clientX;y0=e.clientY;stop();
+    t=setTimeout(()=>{t=null;const pk=document.getElementById('peek');if(!pk)return;pk.innerHTML='<div class="pbox"><img alt="" src="'+API+c.url+'"></div>';pk.hidden=false;try{navigator.vibrate&&navigator.vibrate(12)}catch{}},420)});
+  im.addEventListener('pointermove',e=>{if(t&&Math.hypot(e.clientX-x0,e.clientY-y0)>10)stop()});
+  ['pointerup','pointercancel','pointerleave'].forEach(n=>im.addEventListener(n,stop));
+}
 function clipRender(){
   const box=$('#cliplist');if(!box)return;box.innerHTML='';
   if(!clipItems.length){box.innerHTML='<div class="sub" style="padding:10px 0">還沒有內容。在這裡貼上的文字或圖片，會同步到你其他登入的裝置。</div>';return}
@@ -1590,7 +1599,7 @@ function clipRender(){
     const d=document.createElement('div');d.className='clipitem';
     const b=document.createElement('div');b.className='clipbody';
     if(c.type==='text'){const t=document.createElement('div');t.className='cliptext';t.textContent=c.text;b.append(t)}
-    else{const im=document.createElement('img');im.className='clipimg';im.loading='eager';im.decoding='async';im.src=API+c.url;b.append(im)}
+    else{const im=document.createElement('img');im.className='clipimg';im.loading='eager';im.decoding='async';im.src=API+c.url;b.append(im);clipPeek(im,c)}
     const m=document.createElement('div');m.className='clipmeta';m.textContent=clipAgo(c.time)+(c.type==='image'?' · '+fmt(c.size):' · '+c.text.length+' 字');b.append(m);
     const bt=document.createElement('div');bt.className='clipbtns mbtns';
     const mk=(label,fn,cls)=>{const x=document.createElement('button');x.className=cls||'ghost';x.textContent=label;x.onclick=()=>fn(x);bt.append(x)};
