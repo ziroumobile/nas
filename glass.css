@@ -863,7 +863,7 @@ html.ios body #app>header{height:66px!important;padding-top:14px!important;paddi
 html.ios body:has(#dock):not(.selecting) .wrap{padding-top:calc(env(safe-area-inset-top) + 48px)!important}
 
 /* Android: the dock is centred with margins, not translateX(-50%) - a half-pixel translate made its labels and icons soft until it was touched */
-html.android body #dock{left:0!important;right:0!important;margin-left:auto!important;margin-right:auto!important;transform:none!important;will-change:auto!important}
+html.android body #dock{left:0!important;right:0!important;margin-left:auto!important;margin-right:auto!important;transform:none;will-change:auto!important}
 
 /* sort direction button: a ring like the sort-by picker next to it */
 html body #order:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpress){box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)!important;border-radius:999px!important}
