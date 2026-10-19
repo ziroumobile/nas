@@ -1018,3 +1018,6 @@ html body .uptarget select{max-width:calc(10ch + 30px)!important}
 @media(min-width:700px){html body .uptarget select{max-width:240px!important;min-width:90px}}
 /* shared links: copy-link button has the same ring as its neighbours */
 html body #modal button[data-copy]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)!important;border-radius:999px!important}
+
+/* computer: the upload target shows the full name, up to about 14 characters (then an ellipsis) */
+@media(min-width:700px){html body .uptarget select{max-width:calc(14ch + 44px)!important;min-width:90px}}
