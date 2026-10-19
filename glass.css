@@ -1007,11 +1007,11 @@ html body .uptarget select{max-width:calc(10ch + 30px)!important}
 .trth.trbad .trbadic svg{color:#ff6b61}
 .trbadic{display:flex;align-items:center;justify-content:center}
 
-/* computer: same header as the phone (title row, round buttons on the right); the + button sits in the middle above the dock */
+/* computer: same header as the phone (title row, round buttons on the right); the + button sits at the right edge of the centred column, where it is on a phone */
 @media(min-width:700px){
   html:not(.ios) #app>header{display:flex;align-items:center;justify-content:space-between;margin:0 0 14px;flex-wrap:nowrap;gap:12px}
   html:not(.ios) body #app>header .hdrbtns{display:flex;gap:10px}
-  html body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){left:50%!important;right:auto!important;margin-left:-30px;bottom:calc(env(safe-area-inset-bottom) + 100px)!important}
+  html body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){left:auto!important;right:max(16px,calc((100vw - 828px)/2 + 16px))!important;margin-left:0;bottom:calc(env(safe-area-inset-bottom) + 84px)!important}
 }
 
 /* computer: the upload target shows its whole name (the 10-character cap is for phones) */
