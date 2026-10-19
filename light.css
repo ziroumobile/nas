@@ -235,7 +235,7 @@ html[data-theme="light"]:not(.ios) body #dock::before,html[data-theme="light"]:n
 html[data-theme="light"]:not(.ios) body #dock.pressing::before,html[data-theme="light"]:not(.ios) body .seg.pressing::before{background:rgba(105,103,95,0.15)}
 html[data-theme="light"] body :is(#clippaste,#clipsend,#clippic):not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpress){box-shadow:inset 0 0 0 1px rgba(0,0,0,0.2)!important}
 html[data-theme="light"] body #order:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpress){box-shadow:inset 0 0 0 1px rgba(0,0,0,0.18)!important}
-html[data-theme="light"] .thcard .thradio{box-shadow:inset 0 0 0 2px #71716c}
+html[data-theme="light"] .thcard .thradio{border:2px solid #71716c}
 html[data-theme="light"] body .selbot button#selshare:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#000000!important}
 
 /* ---- hand-made part ---- */
@@ -317,3 +317,4 @@ html[data-theme="light"] body #order:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not
 
 html[data-theme="light"] body .selbot button#selshare:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#000!important}
 html[data-theme="light"] body .seltop button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
+html[data-theme="light"] body #applock button#lockout:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5),html[data-theme="light"] body button#offout:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5){color:#ff3b30!important}

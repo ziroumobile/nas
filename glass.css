@@ -895,3 +895,6 @@ html body .seltop button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a
 /* second-level settings pages: the tile icon beside the title is the same one as on the settings list, just larger */
 .subtile{display:inline-flex!important;align-items:center;justify-content:center;width:40px!important;height:40px!important;border-radius:11px!important;margin-right:12px;vertical-align:-6px}
 .subtile svg{width:24px!important;height:24px!important}
+
+/* "logout" links stay red (the generic blue button colour has more specificity than #lockout) */
+html body #applock button#lockout:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5),html body button#offout:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5){color:#ff453a!important}
