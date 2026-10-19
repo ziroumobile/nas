@@ -976,3 +976,14 @@ html body #modal button.trrestico:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:
 #tunesheet .seg{width:100%;flex:1 1 auto;max-width:none}
 #tunesheet #drop{margin:0}
 #tunesheet #selmode{display:none!important}
+
+/* header "..." menu (select / reorder) */
+html body #app>header button.hb.inmore:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important}
+html body button#upfab.dropover:not(#nx1):not(#nx2):not(#nx3):not(#nx4){transform:scale(1.2)!important;box-shadow:0 0 0 3px #0a84ff!important}
+#morepop{position:fixed;z-index:85;right:16px;top:calc(env(safe-area-inset-top) + 62px);width:190px;padding:6px;border-radius:22px;background:rgba(44,46,52,.97);box-shadow:0 20px 50px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.12)}
+#morepop[hidden]{display:none}
+#morepop .mpi{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;border:0;background:none;color:#fff;font-size:15px;font-weight:600;text-align:left;border-radius:16px}
+#morepop .mpi+.mpi{border-top:1px solid rgba(255,255,255,.08)}
+#morepop .mpi svg{width:22px;height:22px;flex:none}
+#morepop .mpi:active{background:rgba(120,120,128,.3)}
+@media(min-width:900px){#morepop{right:max(16px,calc((100vw - 828px)/2))}}

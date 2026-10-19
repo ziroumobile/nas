@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.7">
+<meta name="app-version" content="v8.8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261022C">
-<link rel="stylesheet" href="light.css?v=20261022C">
+<link rel="stylesheet" href="glass.css?v=20261022D">
+<link rel="stylesheet" href="light.css?v=20261022D">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261022C"></script>
+<script src="glass.js?v=20261022D"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -829,6 +829,19 @@ if(document.documentElement.classList.contains('ios')||matchMedia('(max-width:69
     const hb=document.querySelector('#app>header .hdrbtns'),btn=document.createElement('button');btn.className='hb';btn.id='dtune';btn.type='button';btn.setAttribute('aria-label','調整');btn.title='調整';
     btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg>';
     if(hb)hb.prepend(btn);
+    const more=document.createElement('button');more.className='hb';more.id='dmore';more.type='button';more.setAttribute('aria-label','更多');more.title='更多';
+    more.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="19" cy="12" r="1.4" fill="currentColor"/></svg>';
+    const dsel=$('#dsel'),dflt=$('#dflt');
+    if(hb&&dsel&&dflt){
+      dsel.after(more);dsel.classList.add('inmore');dflt.classList.add('inmore');
+      const pop=document.createElement('div');pop.id='morepop';pop.hidden=true;
+      const item=(label,svg,fn)=>{const d=document.createElement('button');d.type='button';d.className='mpi';d.innerHTML=svg+'<span>'+label+'</span>';d.onclick=()=>{pop.hidden=true;more.classList.remove('act');fn()};return d};
+      pop.append(item('選取','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg>',()=>dsel.click()),
+                 item('拖動排序','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg>',()=>dflt.click()));
+      document.body.append(pop);
+      more.onclick=e=>{e.stopPropagation();pop.hidden=!pop.hidden;more.classList.toggle('act',!pop.hidden)};
+      document.addEventListener('pointerdown',e=>{if(!pop.hidden&&!e.target.closest('#morepop,#dmore')){pop.hidden=true;more.classList.remove('act')}},true);
+    }
     const set=on=>{sheet.classList.toggle('open',on);bd.classList.toggle('open',on);btn.classList.toggle('act',on)};
     btn.onclick=()=>set(!sheet.classList.contains('open'));bd.onclick=()=>set(false);
     new MutationObserver(()=>{if(document.body.classList.contains('selecting'))set(false)}).observe(document.body,{attributes:true,attributeFilter:['class']});
@@ -1498,6 +1511,7 @@ function closeUps(fromPop){
   if($('#uppage').hidden)return;$('#list').after($('#ups'));$('#uppage').hidden=true;document.body.style.overflow='';
   if(!fromPop&&history.state&&history.state.ups)history.back();
 }
+{const fb=$('#upfab');fb.addEventListener('dragover',e=>{e.preventDefault();fb.classList.add('dropover')});fb.addEventListener('dragleave',()=>fb.classList.remove('dropover'));fb.addEventListener('drop',e=>{e.preventDefault();fb.classList.remove('dropover');dropItems(e.dataTransfer)})}
 $('#upfab').onclick=e=>{if(document.body.classList.contains('uploading'))return openUps();addMenu(e)};$('#upback').onclick=()=>closeUps();addEventListener('popstate',()=>closeUps(true));
 setInterval(updateUploadUI,500);
 const queue=[];let running=0;const MAX_PAR=10,MAX_TRY=3;
