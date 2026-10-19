@@ -898,3 +898,7 @@ html body .seltop button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a
 
 /* "logout" links stay red (the generic blue button colour has more specificity than #lockout) */
 html body #applock button#lockout:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5),html body button#offout:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5){color:#ff453a!important}
+
+/* settings sub-pages: the tile + title and the one-line description are centred on the page */
+#modal.fullpage .mhead:has(.subtile),#modal.fullpage .mhead:has(.subtile)+.sub{text-align:center}
+#modal.fullpage .mhead:has(.subtile) h3{display:block;text-align:center}
