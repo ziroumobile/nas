@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v7.48">
+<meta name="app-version" content="v7.49">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261021ZT">
-<link rel="stylesheet" href="light.css?v=20261021ZT">
+<link rel="stylesheet" href="glass.css?v=20261021ZU">
+<link rel="stylesheet" href="light.css?v=20261021ZU">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261021ZT"></script>
+<script src="glass.js?v=20261021ZU"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1257,13 +1257,20 @@ async function trashWindow(){ // everything that was deleted but is still kept o
   const when=t=>fmtDT(t);
   let j;try{const r=await api('/api/trash');if(!r.ok)throw 0;j=await r.json()}catch{showPage('<h3>🗑 回收區</h3><p class="merr">無法載入</p>');return}
   showPage('<div class="mhead"><h3>🗑 回收區</h3></div><p class="sub">刪除的檔案會先放在這裡，使用者看起來已經刪除，但其實還在主機上。這裡可以還原。'+(j.items.length?'共 '+j.items.length+' 個項目，'+fmtTotal(j.size)+'。':'')+'</p>'+
-    (j.items.length?j.items.map(x=>'<div class="srow"><b>'+(x.kind==='folder'?'📁 資料夾「'+esc(x.path)+'」':'📄 '+esc(x.path))+'</b><small>'+(x.kind==='folder'?x.count+' 個檔案 · ':'')+fmtTotal(x.size)+' · 刪除於 '+when(x.t)+'<br>'+esc(x.user)+(x.dev?' · '+esc(x.dev):'')+'</small><div class="mbtns" style="margin-top:6px"><button data-restore="'+esc(x.id)+'">還原</button></div></div>').join('')
+    (j.items.length?j.items.map(x=>'<div class="srow trrow"><div class="trth">'+(x.thumb?'<img loading="lazy" decoding="async" alt="" src="'+thumbSrc(x.thumb)+'" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{textContent:\'📄\'}))">':'<span>'+(x.kind==='folder'?'📁':'📄')+'</span>')+'</div><div class="trin"><b>'+(x.kind==='folder'?'資料夾「'+esc(x.path)+'」':esc(x.path))+'</b><small>'+(x.kind==='folder'?x.count+' 個檔案 · ':'')+fmtTotal(x.size)+' · 刪除於 '+when(x.t)+'<br>'+esc(x.user)+(x.dev?' · '+esc(x.dev):'')+'</small><div class="mbtns" style="margin-top:6px"><button data-restore="'+esc(x.id)+'">還原</button><button class="del" data-purge="'+esc(x.id)+'">清除</button></div></div></div>').join('')
       +'<div class="mbtns" style="margin-top:16px"><button class="del" id="trempty">清空回收區（永久刪除）</button></div>':'<p class="sub">回收區是空的。</p>'));
   $('#mbox').onclick=async e=>{
     const rb=e.target.closest('button[data-restore]');
     if(rb){rb.disabled=true;const r=await api('/api/trash/restore',{method:'POST',body:JSON.stringify({id:rb.dataset.restore})});const jj=await r.json().catch(()=>({}));
       if(!r.ok){alert(jj.error||'還原失敗');rb.disabled=false;return}
       alert('已還原到：'+jj.restoredTo);await refresh();return trashWindow()}
+    const pb=e.target.closest('button[data-purge]');
+    if(pb){
+      if(!confirm('永久刪除這個項目？\n這個動作無法復原。'))return;
+      const eh=await askEdit('請確認身分，以永久刪除這個項目');if(!eh)return;
+      pb.disabled=true;const r=await api('/api/trash/purge',{method:'POST',headers:eh,body:JSON.stringify({id:pb.dataset.purge})});
+      if(!r.ok){pb.disabled=false;return alert((await r.json().catch(()=>({}))).error||'清除失敗')}
+      return trashWindow()}
     if(e.target.closest('#trempty')){
       if(!confirm('永久刪除回收區裡的全部項目？\n這個動作無法復原。'))return;
       const eh=await askEdit('請確認身分，以清空回收區');if(!eh)return;

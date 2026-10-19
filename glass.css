@@ -919,3 +919,10 @@ html.ios body .seltop button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html:
 /* shared page: the download button sits in the bottom bar as a round button (like the share button on the home page) */
 html body .selbot button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:56px;height:56px;min-width:56px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;pointer-events:auto}
 html body .selbot button#seldl svg{width:26px;height:26px}
+
+/* trash rows: thumbnail on the left, text on the right; the purge button is red text */
+.trrow{display:flex;gap:12px;align-items:flex-start}
+.trth{flex:none;width:64px;height:64px;border-radius:12px;overflow:hidden;background:rgba(120,120,128,.2);display:flex;align-items:center;justify-content:center;font-size:28px}
+.trth img{width:100%;height:100%;object-fit:cover;display:block}
+.trin{min-width:0;flex:1}.trin b{word-break:break-all}
+html body .trrow button.del:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#ff453a!important}
