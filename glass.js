@@ -13,7 +13,7 @@
   const VS = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
   const FS = `precision highp float;
 uniform vec2 u_cssRes;uniform float u_dpr;uniform vec4 u_rect;uniform vec2 u_org;uniform vec2 u_texSize;uniform float u_pad;
-uniform sampler2D u_tex;uniform float u_mag;uniform float u_bezel;uniform float u_lift;uniform vec3 u_tint;uniform float u_dark;uniform float u_clear;uniform vec4 u_ax;uniform float u_n;uniform float u_cy;uniform float u_iy;uniform float u_ly;uniform float u_sh;
+uniform sampler2D u_tex;uniform float u_mag;uniform float u_bezel;uniform float u_lift;uniform vec3 u_tint;uniform float u_dark;uniform float u_clear;uniform vec4 u_ax;uniform float u_ax5;uniform float u_n;uniform float u_cy;uniform float u_iy;uniform float u_ly;uniform float u_sh;
 float sdRR(vec2 p,vec2 hs,float r){vec2 q=abs(p)-hs+r;return length(max(q,0.))+min(max(q.x,q.y),0.)-r;}
 vec3 bgSim(vec2 p){   // stand-in for what is behind the bar: the bar itself (dark, with light top/bottom edges) over a lighter page
   float H=u_texSize.y-2.*u_pad;
@@ -46,7 +46,8 @@ void main(){
     float ax=u_ax.x,bd=abs(segPos.x-u_ax.x);
     if(u_n>1.5&&abs(segPos.x-u_ax.y)<bd){ax=u_ax.y;bd=abs(segPos.x-u_ax.y);}
     if(u_n>2.5&&abs(segPos.x-u_ax.z)<bd){ax=u_ax.z;bd=abs(segPos.x-u_ax.z);}
-    if(u_n>3.5&&abs(segPos.x-u_ax.w)<bd){ax=u_ax.w;}
+    if(u_n>3.5&&abs(segPos.x-u_ax.w)<bd){ax=u_ax.w;bd=abs(segPos.x-u_ax.w);}
+    if(u_n>4.5&&abs(segPos.x-u_ax5)<bd){ax=u_ax5;}
     float ay=segPos.y<(u_iy+u_ly)*.5?u_iy:u_ly;   // icon above the split line, label below it
     vec2 an=vec2(ax,ay);mp=an+(segPos-an)/u_mag;   // icon and label each grow about their OWN centre: nothing moves, it only swells
   }
@@ -131,7 +132,7 @@ void main(){
     gl.useProgram(pr);
     const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    const u = {}; for (const n of ['u_cssRes', 'u_dpr', 'u_rect', 'u_org', 'u_texSize', 'u_pad', 'u_tex', 'u_mag', 'u_bezel', 'u_lift', 'u_tint', 'u_dark', 'u_clear', 'u_ax', 'u_n', 'u_cy', 'u_iy', 'u_ly', 'u_sh']) u[n] = gl.getUniformLocation(pr, n);
+    const u = {}; for (const n of ['u_cssRes', 'u_dpr', 'u_rect', 'u_org', 'u_texSize', 'u_pad', 'u_tex', 'u_mag', 'u_bezel', 'u_lift', 'u_tint', 'u_dark', 'u_clear', 'u_ax', 'u_ax5', 'u_n', 'u_cy', 'u_iy', 'u_ly', 'u_sh']) u[n] = gl.getUniformLocation(pr, n);
     const tex = gl.createTexture();
     s.canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); s.gl = null; });
     return { gl, u, tex };
@@ -213,7 +214,7 @@ void main(){
     gl.uniform2f(u.u_org, ox, oy); gl.uniform2f(u.u_texSize, s.texW, s.texH); gl.uniform1f(u.u_pad, TPAD);
     gl.uniform1f(u.u_mag, L.mag); gl.uniform1f(u.u_bezel, s.dock ? BEZEL : BEZEL * Math.min(1, H / 80)); gl.uniform1f(u.u_lift, Math.min(1, L.grow / gr(s)));   // (a thinner bar gets a proportionally thinner curved edge; the dock keeps its own)
     gl.uniform3f(u.u_tint, 1, 1, 1);
-    { const gm = geom(s), c = gm.slice(0, 4).map(q => q.l + q.w / 2); while (c.length < 4) c.push(-9999); gl.uniform4f(u.u_ax, c[0], c[1], c[2], c[3]); gl.uniform1f(u.u_n, Math.min(4, gm.length)); gl.uniform1f(u.u_cy, gm[0].t + gm[0].h / 2); gl.uniform1f(u.u_iy, s.anchY ? s.anchY.i : gm[0].t + gm[0].h / 2); gl.uniform1f(u.u_ly, s.anchY ? s.anchY.l : gm[0].t + gm[0].h / 2); }
+    { const gm = geom(s), c = gm.slice(0, 5).map(q => q.l + q.w / 2); while (c.length < 5) c.push(-9999); gl.uniform4f(u.u_ax, c[0], c[1], c[2], c[3]); gl.uniform1f(u.u_ax5, c[4]); gl.uniform1f(u.u_n, Math.min(5, gm.length)); gl.uniform1f(u.u_cy, gm[0].t + gm[0].h / 2); gl.uniform1f(u.u_iy, s.anchY ? s.anchY.i : gm[0].t + gm[0].h / 2); gl.uniform1f(u.u_ly, s.anchY ? s.anchY.l : gm[0].t + gm[0].h / 2); }
     gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1); gl.uniform1f(u.u_sh, document.documentElement.getAttribute('data-theme') === 'light' ? 0.09 : 0.30);   // the lens's drop shadow is much fainter on a light page
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
@@ -283,7 +284,7 @@ void main(){
   function step(s, dt) {
     const L = s.lens; let moving = false;
     L.tst = (s.drag && s.drag.started) ? Math.min(STMAX, Math.abs(s.vel || 0) * 0.018) : 0; s.vel = (s.vel || 0) * Math.pow(0.03, dt);
-    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 760, 36.8], ['w', 'vw', 'tw', 760, 36.8], ['grow', 'vg', 'tg', 460, 24.7], ['mag', 'vm', 'tm', 420, 22.7], ['bs', 'vbs', 'tbs', 420, 22.7], ['st', 'vst', 'tst', 700, 36]]) {
+    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 760, 43.5], ['w', 'vw', 'tw', 760, 43.5], ['grow', 'vg', 'tg', 460, 31.5], ['mag', 'vm', 'tm', 420, 29.5], ['bs', 'vbs', 'tbs', 420, 29.5], ['st', 'vst', 'tst', 700, 36]]) {
       if (s.drag && s.drag.started && (k === 'cx' || k === 'w')) { L[k] = L[t]; L[v] = 0; continue; }   // follows the finger 1:1 while dragging
       [L[k], L[v]] = spring(L[k], L[v], L[t], dt, kk, cc);
       if (Math.abs(L[t] - L[k]) > (k === 'mag' || k === 'bs' ? 0.002 : 0.25) || Math.abs(L[v]) > (k === 'mag' || k === 'bs' ? 0.02 : 4)) moving = true;

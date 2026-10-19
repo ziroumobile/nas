@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.19">
+<meta name="app-version" content="v8.20">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261022O">
-<link rel="stylesheet" href="light.css?v=20261022O">
+<link rel="stylesheet" href="glass.css?v=20261022Q">
+<link rel="stylesheet" href="light.css?v=20261022Q">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -377,7 +377,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 <div id="app" hidden>
   <header><h1>📁 我的 NAS</h1><div class="hdrbtns"><button class="hb" id="dsel" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button><button class="hb" id="dflt" type="button" aria-label="拖動排序" title="拖動排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg></button><button class="hb" id="dset" type="button" aria-label="設定" title="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.6 20c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"/></svg></button></div></header>
   <span class="srch" id="srch"><input id="sq" type="search" placeholder="搜尋資料夾或檔名" autocomplete="off" enterkeyhint="search"></span>
-  <nav id="dock"><button id="dhome" class="on" type="button" aria-label="首頁" title="首頁"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.2L12 4l8 7.2V19.5a.5.5 0 0 1-.5.5H15v-5.2H9V20H4.5a.5.5 0 0 1-.5-.5z"/></svg><span class="dl">首頁</span></button><button id="dshare" type="button" aria-label="已分享連結" title="已分享連結" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg><span class="dl">已分享</span><span id="sharen" class="dbadge"></span></button><button id="dclip" type="button" aria-label="剪貼簿" title="剪貼簿"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4.5" width="14" height="16.5" rx="2.5"/><path d="M9 4.5V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v.5M8.5 11h7M8.5 15h5"/></svg><span class="dl">剪貼簿</span><span id="clipn" class="dbadge"></span></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg><span class="dl">搜尋</span></button></nav>
+  <nav id="dock"><button id="dhome" class="on" type="button" aria-label="首頁" title="首頁"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.2L12 4l8 7.2V19.5a.5.5 0 0 1-.5.5H15v-5.2H9V20H4.5a.5.5 0 0 1-.5-.5z"/></svg><span class="dl">首頁</span></button><button id="dshare" type="button" aria-label="已分享連結" title="已分享連結" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg><span class="dl">已分享</span><span id="sharen" class="dbadge"></span></button><button id="dclip" type="button" aria-label="剪貼簿" title="剪貼簿"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4.5" width="14" height="16.5" rx="2.5"/><path d="M9 4.5V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v.5M8.5 11h7M8.5 15h5"/></svg><span class="dl">剪貼簿</span><span id="clipn" class="dbadge"></span></button><button id="dvault" type="button" aria-label="密碼" title="密碼" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg><span class="dl">密碼</span></button><button id="sbtn" type="button" aria-label="搜尋" title="搜尋檔名"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg><span class="dl">搜尋</span></button></nav>
   <div id="setpanel" hidden><div id="setpage"><div class="sethead"><button id="setclose" class="setdone" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div><h2 class="settitle">設定</h2><div class="sgrp"><div class="sacct"><span class="sav" id="sav"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" width="34" height="34"><circle cx="12" cy="8.4" r="3.9"/><path d="M4.6 20.2c.8-4 3.8-6 7.4-6s6.6 2 7.4 6"/></svg></span><div class="sat"><b id="who"></b><small id="whorole"></small></div></div></div><div class="sgrp"><button class="srw" id="setdev" type="button"><span class="sic" style="background:#636366"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="7" y="2.8" width="10" height="18.4" rx="2.6"/><path d="M11 18.2h2"/></svg></span><span class="slb">這台裝置的名稱</span><span class="sv" id="setdevv"></span><span class="sch">›</span></button><button class="srw" id="biobtn" type="button" hidden><span class="sic" style="background:#30d158"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M12 3.5a7.5 7.5 0 0 0-7.5 7.5v2M12 7.2A3.8 3.8 0 0 0 8.2 11v4.2c0 1.5-.4 2.9-1.2 4.1M12 11v4.5c0 2.2-.6 3.9-1.6 5.3M15.8 12.5V11A3.8 3.8 0 0 0 12 7.2M19.5 12v-1A7.5 7.5 0 0 0 16 4.6"/></svg></span><span class="slb">生物辨識</span><span class="sv" id="biobtnv"></span><span class="sch">›</span></button><button class="srw" id="devices" hidden><span class="sic" style="background:#34c759"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="4.5" y="5" width="15" height="10.5" rx="2"/><path d="M2.5 19h19"/></svg></span><span class="slb">其他已登入的裝置</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="appearance" type="button"><span class="sic" style="background:#5e5ce6"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="8.4"/><path d="M12 3.6v16.8" /><path d="M12 3.6a8.4 8.4 0 0 1 0 16.8z" fill="#fff"/></svg></span><span class="slb">外觀</span><span class="sch">›</span></button><button class="srw" id="storerow" type="button"><span class="sic" style="background:#8e8e93"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="3" y="7" width="18" height="10" rx="3"/><path d="M7 12h.01M11 12h6"/></svg></span><span class="slb">儲存空間</span><span class="sv" id="storerowv"></span><span class="sch">›</span></button><button class="srw" id="lockset" type="button" hidden><span class="sic" style="background:#5e5ce6"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="5" y="10.8" width="14" height="9.6" rx="2.6"/><path d="M8.2 10.8V8a3.8 3.8 0 0 1 7.6 0v2.8"/></svg></span><span class="slb">鎖定時間</span><span class="sv" id="locksetv"></span><span class="sch">›</span></button><button class="srw" id="vqset" type="button"><span class="sic" style="background:#ff375f"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="3" y="5.5" width="18" height="13" rx="3"/><path d="M10.3 9.4l4.4 2.6-4.4 2.6z"/></svg></span><span class="slb">預覽畫質</span><span class="sv" id="vqsetv"></span><span class="sch">›</span></button></div>
   <div class="sgrp"><button class="srw" id="actlog" hidden><span class="sic" style="background:#ff9f0a"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.2 2"/></svg></span><span class="slb">活動紀錄</span><span class="sch">›</span></button><button class="srw" id="trash" hidden><span class="sic" style="background:#8e8e93"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M4.5 7h15M9.5 7V4.8h5V7M6.8 7l.8 12a1.8 1.8 0 0 0 1.8 1.7h5.2a1.8 1.8 0 0 0 1.8-1.7l.8-12M10 11v6M14 11v6"/></svg></span><span class="slb">回收區</span><span class="sch">›</span></button></div><div class="sgrp"><button class="srw" id="setpw" hidden><span class="sic" style="background:#8e8e93"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="8.2" cy="15.8" r="3.6"/><path d="M10.8 13.2L19 5M15.8 8.2l2.2 2.2"/></svg></span><span class="slb">編輯密碼</span><span class="sch">›</span></button></div><div class="sgrp"><div class="sinfo"><span class="sic" style="background:#636366"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="8.6"/><path d="M12 11v5.2M12 7.9h.01"/></svg></span><span class="slb">版本</span><span class="sv" id="appver"></span></div></div>
   <div class="sgrp"><button class="srw sred" id="out" type="button"><span class="slb">登出</span></button></div></div></div>
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261022O"></script>
+<script src="glass.js?v=20261022Q"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -488,7 +488,7 @@ async function init(){
   if(needLock())await askUnlock(); // admin with an edit password: ask for it every time the app is opened
   $('#app').hidden=false;
   $('#who').textContent=me.name;$('#whorole').textContent=me.admin?'管理員':'一般使用者';
-  bioCheck();$('#dshare').hidden=!me.admin;
+  bioCheck();$('#dshare').hidden=!me.admin;$('#dvault').hidden=!me.admin;
   if(me.admin)setTimeout(()=>{const pre=()=>api('/api/shares').then(r=>r.ok?r.json():null).then(l=>{if(l){window.__sharesCache=l;setShareBadge(l.length);warmShareThumbs(l)}}).catch(()=>{});pre();clipRefresh();setTimeout(()=>warmShareThumbs(window.__sharesCache),4000);setInterval(()=>{if(!document.hidden)pre()},60000)},800); // warm the pages behind the dock so sliding onto them is instant
  $('#lockset').hidden=!(me.admin&&me.hasEditPassword);$('#trash').hidden=!me.admin;$('#setpw').hidden=$('#actlog').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh().then(()=>setTimeout(prefetchThumbs,600));clipRefresh();
 }
@@ -888,7 +888,7 @@ function addMenu(e){ // upload files / upload a folder / new folder
   m.style.left='auto';m.style.right='16px';m.style.top='auto';m.style.bottom='calc(env(safe-area-inset-bottom) + 84px + 60px + 10px)';m.style.transformOrigin='100% 100%';
 }
 document.addEventListener('pointerdown',e=>{if(addPm&&!e.target.closest('.gmenu')&&!e.target.closest('#upfab'))closeAddMenu()},true);
-$('#dock').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.id==='dshare'||b.id==='sbtn'||b.id==='dclip')return;if(document.body.classList.contains('dockover')){if(!$('#modal').hidden&&$('#modal').classList.contains('fullpage'))closeModal();closeSearchPage(true,true)}},true);
+$('#dock').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.id==='dshare'||b.id==='sbtn'||b.id==='dclip'||b.id==='dvault')return;if(document.body.classList.contains('dockover')){if(!$('#modal').hidden&&$('#modal').classList.contains('fullpage'))closeModal();closeSearchPage(true,true)}},true);
 // ---- search as its own full-screen page: a field on top, matching files below (tap one to preview; the list swipes in the preview) ----
 let spTimer=null;
 function renderSearch(){
@@ -1763,6 +1763,55 @@ function clipOpen(){
   clipSig='';clipRender();clipRefresh();
 }
 $('#dclip').onclick=clipOpen;
+// ---- password manager page ----
+async function vaultOpen(){
+  try{closeViewer(true)}catch{}try{closeSearchPage(true,true)}catch{}
+  if($('#vtitlein')&&!$('#modal').hidden)return;
+  document.body.classList.add('dockover');setDock('dvault');
+  showPage('<h3>密碼</h3><p class="sub">載入中…</p>');
+  let list=[],q='';
+  const load=async()=>{const r=await api('/api/vault');if(!r.ok)throw 0;list=await r.json()};
+  try{await load()}catch{showPage('<h3>密碼</h3><p class="merr">無法載入</p>');return}
+  const draw=()=>{
+    const shown=list.filter(x=>!q||(x.title+' '+x.user+' '+x.url).toLowerCase().includes(q.toLowerCase()));
+    showPage('<div class="pghead"><span class="pgic" style="background:#5e5ce6"><svg stroke="#fff" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg></span><b>密碼</b><p>帳號和密碼加密存放在你的電腦上。要看或複製密碼時，需要編輯密碼或生物辨識。</p></div>'
+      +'<input id="vsearch" type="search" placeholder="搜尋" value="'+esc(q)+'" style="width:100%;padding:11px 14px;border:0;border-radius:14px;background:rgba(120,120,128,.18);color:inherit;font:inherit;margin:0 0 10px">'
+      +'<div class="mbtns" style="margin:0 0 10px"><button id="vadd">＋ 新增密碼</button></div>'
+      +(shown.length?shown.map(x=>'<div class="srow vrow" data-id="'+esc(x.id)+'"><b>'+esc(x.title)+'</b><small>'+esc(x.user||'（沒有帳號）')+(x.url?' · '+esc(x.url):'')+'</small><div class="mbtns" style="margin-top:8px"><button class="ghost" data-vc="user">複製帳號</button><button class="ghost" data-vc="pw">複製密碼</button><button class="ghost" data-vc="show">顯示密碼</button><button class="ghost" data-vc="edit">編輯</button><button class="del" data-vc="del">刪除</button></div><div class="vpw" hidden></div></div>').join(''):'<p class="sub">'+(list.length?'沒有符合的項目。':'還沒有任何密碼。按「新增密碼」開始。')+'</p>')
+      +'<div id="vform" hidden></div>');
+    const sIn=$('#vsearch');sIn.oninput=()=>{q=sIn.value;const pos=sIn.selectionStart;draw();const n=$('#vsearch');n.focus();n.setSelectionRange(pos,pos)};
+  };
+  const form=(it)=>{
+    const f=$('#vform');f.hidden=false;
+    f.innerHTML='<div class="srow"><b>'+(it?'編輯':'新增')+'密碼</b><label>名稱</label><input id="vtitlein" value="'+esc(it?.title||'')+'" autocomplete="off"><label>帳號</label><input id="vuser" value="'+esc(it?.user||'')+'" autocomplete="off" autocapitalize="off"><label>密碼'+(it?'（留空 = 不改）':'')+'</label><input id="vpwin" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"><label>網址（選填）</label><input id="vurl" value="'+esc(it?.url||'')+'" autocapitalize="off"><div class="mbtns" style="margin-top:10px"><button id="vsave">儲存</button><button class="ghost" id="vcancel">取消</button><button class="ghost" id="vgen">產生密碼</button></div><div class="merr" id="verr"></div></div>';
+    f.scrollIntoView({block:'nearest'});
+    $('#vcancel').onclick=()=>{f.hidden=true;f.innerHTML=''};
+    $('#vgen').onclick=()=>{const cs='abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%^&*',a=new Uint32Array(18);crypto.getRandomValues(a);$('#vpwin').value=[...a].map(n=>cs[n%cs.length]).join('')};
+    $('#vsave').onclick=async()=>{
+      const body={id:it?.id,title:$('#vtitlein').value,user:$('#vuser').value,pw:$('#vpwin').value,url:$('#vurl').value};
+      const r=await api('/api/vault',{method:'POST',body:JSON.stringify(body)});
+      if(!r.ok)return $('#verr').textContent=(await r.json().catch(()=>({}))).error||'儲存失敗';
+      await load();draw()};
+  };
+  draw();
+  $('#mbox').onclick=async e=>{
+    if(e.target.closest('#vadd')){return form(null)}
+    const b=e.target.closest('button[data-vc]');if(!b)return;
+    const row=b.closest('.vrow'),it=list.find(x=>x.id===row.dataset.id),k=b.dataset.vc;
+    if(k==='user')return copyText(it.user||'',b);
+    if(k==='edit')return form(it);
+    if(k==='del'){if(!confirm('刪除「'+it.title+'」的密碼？這個動作無法復原。'))return;const eh=await askEdit('請確認身分，以刪除密碼');if(!eh)return;
+      const r=await api('/api/vault/delete',{method:'POST',headers:eh,body:JSON.stringify({id:it.id})});if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'刪除失敗');await load();return draw()}
+    if(k==='pw'||k==='show'){
+      const eh=await askEdit('請確認身分，以查看密碼');if(!eh)return;
+      const r=await api('/api/vault/reveal',{method:'POST',headers:eh,body:JSON.stringify({id:it.id})});
+      if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'無法查看');
+      const j=await r.json();
+      if(k==='pw')return copyText(j.pw,b);
+      const box=row.querySelector('.vpw');box.hidden=false;box.innerHTML='<code style="user-select:all;font-size:16px">'+esc(j.pw)+'</code>';setTimeout(()=>{box.hidden=true;box.textContent=''},15000)}
+  };
+}
+$('#dvault').onclick=vaultOpen;
 setInterval(()=>{if(me&&!document.hidden&&$('#applock').hidden&&$('#offscreen').hidden)clipRefresh()},8000);
 
 // ---- app lock: the login stays, but opening the app (or coming back after a minute away) asks for the edit password ----

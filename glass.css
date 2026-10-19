@@ -1021,3 +1021,6 @@ html body #modal button[data-copy]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){box-s
 
 /* computer: the upload target shows the full name, up to about 14 characters (then an ellipsis) */
 @media(min-width:700px){html body .uptarget select{max-width:calc(14ch + 44px)!important;min-width:90px}}
+
+/* the + upload button is hidden while a file preview is open */
+body:has(#viewer:not([hidden])) button#upfab,body.vopen button#upfab{display:none!important}
