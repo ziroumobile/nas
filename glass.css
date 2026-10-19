@@ -1031,3 +1031,8 @@ body:has(#viewer:not([hidden])) button#upfab,body.vopen button#upfab{display:non
 /* password form buttons: ringed pills like the other text buttons (save in blue) */
 html body #modal button.vform:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.07)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)!important;border-radius:999px!important;color:#fff!important}
 html body #modal button#vsave:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
+
+/* password page: all three inputs look the same; unlock / edit blue, clear red */
+html body #modal input.vin:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:100%;padding:12px 14px;border:0!important;border-radius:14px!important;background:rgba(120,120,128,.18)!important;color:inherit;font:inherit;margin:0 0 10px;-webkit-appearance:none;appearance:none;box-shadow:none!important;outline:none}
+html body #modal button.vblue:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
+html body #modal button.vred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#ff453a!important}

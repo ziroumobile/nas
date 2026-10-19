@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.23">
+<meta name="app-version" content="v8.24">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261022T">
-<link rel="stylesheet" href="light.css?v=20261022T">
+<link rel="stylesheet" href="glass.css?v=20261022U">
+<link rel="stylesheet" href="light.css?v=20261022U">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261022T"></script>
+<script src="glass.js?v=20261022U"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1771,7 +1771,7 @@ async function vaultOpen(){
   if($('#vtitlein')&&!$('#modal').hidden)return;
   document.body.classList.add('dockover');setDock('dvault');
   showPage('<h3>密碼</h3><p class="sub">載入中…</p>');
-  let list=[],q='';
+  let list=[],q='';const unl={};   // unlocked entries (id -> {pw,user,t}); they lock again after one minute
   const load=async()=>{const r=await api('/api/vault');if(!r.ok)throw 0;list=await r.json()};
   try{await load()}catch{showPage('<h3>密碼</h3><p class="merr">無法載入</p>');return}
   const draw=()=>{
@@ -1779,17 +1779,17 @@ async function vaultOpen(){
     showPage('<div class="pghead"><span class="pgic" style="background:#5e5ce6"><svg stroke="#fff" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg></span><b>密碼</b><p>帳號和密碼加密存放在你的電腦上。要看或複製密碼時，需要編輯密碼或生物辨識。</p></div>'
       +'<input id="vsearch" type="search" placeholder="搜尋" value="'+esc(q)+'" style="width:100%;padding:11px 14px;border:0;border-radius:14px;background:rgba(120,120,128,.18);color:inherit;font:inherit;margin:0 0 10px">'
       +'<div class="mbtns" style="margin:0 0 10px"><button id="vadd">＋ 新增密碼</button></div>'
-      +(shown.length?shown.map(x=>'<div class="srow vrow" data-id="'+esc(x.id)+'"><b>'+esc(x.title)+'</b><small>'+esc(x.user||'（沒有帳號）')+(x.url?' · '+esc(x.url):'')+'</small><div class="mbtns" style="margin-top:8px"><button class="ghost" data-vc="user">複製帳號</button><button class="ghost" data-vc="pw">複製密碼</button><button class="ghost" data-vc="show">顯示密碼</button><button class="ghost" data-vc="edit">編輯</button><button class="del" data-vc="del">刪除</button></div><div class="vpw" hidden></div></div>').join(''):'<p class="sub">'+(list.length?'沒有符合的項目。':'還沒有任何密碼。按「新增密碼」開始。')+'</p>')
+      +(shown.length?shown.map(x=>'<div class="srow vrow" data-id="'+esc(x.id)+'"><b>'+esc(x.title)+'</b>'+(unl[x.id]&&unl[x.id].t>Date.now()?'<div class="mbtns" style="margin-top:8px"><button class="vform" data-vc="user">複製帳號</button><button class="vform" data-vc="pw">複製密碼</button></div>':'<div class="mbtns" style="margin-top:8px"><button class="vform vblue" data-vc="unlock">解鎖</button><button class="vform vblue" data-vc="edit">編輯</button><button class="vform vred" data-vc="del">清除</button></div>')+'</div>').join(''):'<p class="sub">'+(list.length?'沒有符合的項目。':'還沒有任何密碼。按「新增密碼」開始。')+'</p>')
       +'<div id="vform" hidden></div>');
     const sIn=$('#vsearch');sIn.oninput=()=>{q=sIn.value;const pos=sIn.selectionStart;draw();const n=$('#vsearch');n.focus();n.setSelectionRange(pos,pos)};
   };
-  const form=(it)=>{
+  const form=(it,auth)=>{
     const f=$('#vform');f.hidden=false;
-    f.innerHTML='<div class="srow"><b>'+(it?'編輯':'新增')+'密碼</b><label>名稱</label><input id="vtitlein" value="'+esc(it?.title||'')+'" autocomplete="off"><label>帳號</label><input id="vuser" value="'+esc(it?.user||'')+'" autocomplete="off" autocapitalize="off"><label>密碼'+(it?'（留空 = 不改）':'')+'</label><input id="vpwin" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="mbtns" style="margin-top:10px"><button class="vform" id="vsave">儲存</button><button class="vform" id="vcancel">取消</button></div><div class="merr" id="verr"></div></div>';
+    f.innerHTML='<div class="srow"><b>'+(it?'編輯':'新增')+'密碼</b><label>名稱</label><input class="vin" id="vtitlein" value="'+esc(it?.title||'')+'" autocomplete="off"><label>帳號</label><input class="vin" id="vuser" value="'+esc(it?.user||'')+'" autocomplete="off" autocapitalize="off" spellcheck="false"><label>密碼'+(it?'（留空 = 不改）':'')+'</label><input class="vin" id="vpwin" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="mbtns" style="margin-top:10px"><button class="vform" id="vsave">儲存</button><button class="vform" id="vcancel">取消</button></div><div class="merr" id="verr"></div></div>';
     f.scrollIntoView({block:'nearest'});
     $('#vcancel').onclick=()=>{f.hidden=true;f.innerHTML=''};
     $('#vsave').onclick=async()=>{
-      const body={id:it?.id,title:$('#vtitlein').value,user:$('#vuser').value,pw:$('#vpwin').value,url:''};
+      const body={id:it?.id,title:$('#vtitlein').value,user:$('#vuser').value,pw:$('#vpwin').value,url:'',tok:auth?.tok,exp:auth?.exp};
       const r=await api('/api/vault',{method:'POST',body:JSON.stringify(body)});
       if(!r.ok)return $('#verr').textContent=(await r.json().catch(()=>({}))).error||'儲存失敗';
       await load();draw()};
@@ -1799,17 +1799,15 @@ async function vaultOpen(){
     if(e.target.closest('#vadd')){return form(null)}
     const b=e.target.closest('button[data-vc]');if(!b)return;
     const row=b.closest('.vrow'),it=list.find(x=>x.id===row.dataset.id),k=b.dataset.vc;
-    if(k==='user')return copyText(it.user||'',b);
-    if(k==='edit')return form(it);
-    if(k==='del'){if(!confirm('刪除「'+it.title+'」的密碼？這個動作無法復原。'))return;const eh=await askEdit('請確認身分，以刪除密碼');if(!eh)return;
-      const r=await api('/api/vault/delete',{method:'POST',headers:eh,body:JSON.stringify({id:it.id})});if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'刪除失敗');await load();return draw()}
-    if(k==='pw'||k==='show'){
-      const eh=await askEdit('請確認身分，以查看密碼');if(!eh)return;
+    const verify=async msg=>{const eh=await askEdit(msg);if(!eh)return null;
       const r=await api('/api/vault/reveal',{method:'POST',headers:eh,body:JSON.stringify({id:it.id})});
-      if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'無法查看');
-      const j=await r.json();
-      if(k==='pw')return copyText(j.pw,b);
-      const box=row.querySelector('.vpw');box.hidden=false;box.innerHTML='<code style="user-select:all;font-size:16px">'+esc(j.pw)+'</code>';setTimeout(()=>{box.hidden=true;box.textContent=''},15000)}
+      if(!r.ok){alert((await r.json().catch(()=>({}))).error||'身分確認失敗');return null}return r.json()};
+    if(k==='unlock'){const j=await verify('請確認身分，以解鎖這筆密碼');if(!j)return;unl[it.id]={pw:j.pw,user:j.user,t:Date.now()+60000};setTimeout(()=>{delete unl[it.id];if($('#vsearch'))draw()},60500);return draw()}
+    if(k==='user'){const u=unl[it.id];return u&&copyText(u.user||'',b)}
+    if(k==='pw'){const u=unl[it.id];return u&&copyText(u.pw,b)}
+    if(k==='edit'){const j=await verify('請確認身分，以編輯這筆密碼');if(!j)return;return form({...it,user:j.user},{tok:j.tok,exp:j.exp})}
+    if(k==='del'){if(!confirm('清除「'+it.title+'」的密碼？這個動作無法復原。'))return;const eh=await askEdit('請確認身分，以清除這筆密碼');if(!eh)return;
+      const r=await api('/api/vault/delete',{method:'POST',headers:eh,body:JSON.stringify({id:it.id})});if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'清除失敗');await load();return draw()}
   };
 }
 $('#dvault').onclick=vaultOpen;
