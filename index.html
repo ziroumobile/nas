@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v7.46">
+<meta name="app-version" content="v7.47">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261021ZR">
-<link rel="stylesheet" href="light.css?v=20261021ZR">
+<link rel="stylesheet" href="glass.css?v=20261021ZS">
+<link rel="stylesheet" href="light.css?v=20261021ZS">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261021ZR"></script>
+<script src="glass.js?v=20261021ZS"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1114,8 +1114,8 @@ function shareDialog(label,payload){
     <div id="scustom" hidden style="display:none;gap:6px;margin-top:6px;align-items:center"><input id="sn" type="text" inputmode="numeric" placeholder="數字" style="width:90px;margin:0"><select id="su"><option value="h">小時</option><option value="d" selected>天</option></select></div>
     <p class="merr" id="serr"></p>
     <div class="mbtns"><button id="smk">建立分享連結</button><button class="ghost" id="scancel">取消</button></div>`);
-  $('#scancel').onclick=closeModal;$('#sp1').focus();
-  const syncForm=()=>{$('#nopw').hidden=!!($('#sp1').value||$('#sp2').value);const c=$('#sexp').value==='custom';$('#scustom').style.display=c?'flex':'none';if(c)$('#sn').focus()};
+  $('#scancel').onclick=closeModal;
+  const syncForm=()=>{$('#nopw').hidden=!!($('#sp1').value||$('#sp2').value);const c=$('#sexp').value==='custom';$('#scustom').hidden=!c;$('#scustom').style.display=c?'flex':'none';if(c)$('#sn').focus()};
   $('#sp1').oninput=$('#sp2').oninput=syncForm;$('#sexp').onchange=syncForm;syncForm();
   $('#smk').onclick=async()=>{
     const p1=$('#sp1').value,p2=$('#sp2').value;
