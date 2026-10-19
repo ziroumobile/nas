@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.5">
+<meta name="app-version" content="v8.6">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261022A">
-<link rel="stylesheet" href="light.css?v=20261022A">
+<link rel="stylesheet" href="glass.css?v=20261022B">
+<link rel="stylesheet" href="light.css?v=20261022B">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261022A"></script>
+<script src="glass.js?v=20261022B"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -692,8 +692,8 @@ function buzz(){ // a short tick: Vibration API (Android), or an invisible switc
 
   // long press on a picture / video: a big preview while the finger stays down (works in select mode too)
   const peek=document.createElement('div');peek.id='peek';peek.hidden=true;document.body.appendChild(peek);
-  let peekAt=0;const hidePeek=()=>{peek.querySelectorAll('video').forEach(v=>{v.pause();v.removeAttribute('src');v.load()});peek.hidden=true;peek.innerHTML='';dragSwallow=Date.now()+400};
-  peek.addEventListener('pointerdown',e=>{if(peek.querySelector('.zoomable')){e.stopPropagation();if(e.target===peek){peek.hidden=true;peek.innerHTML=''}return}if(e.target.closest('video')){e.stopPropagation();return} /* the player's own controls */e.preventDefault();e.stopPropagation();if(Date.now()-peekAt>350)hidePeek()}); // the preview stays after letting go; a tap anywhere closes it
+  let peekAt=0;const hidePeek=()=>{resumeThumbs();peek.querySelectorAll('video').forEach(v=>{v.pause();v.removeAttribute('src');v.load()});peek.hidden=true;peek.innerHTML='';dragSwallow=Date.now()+400};
+  peek.addEventListener('pointerdown',e=>{if(peek.querySelector('.zoomable')){e.stopPropagation();if(e.target===peek){peek.hidden=true;peek.innerHTML='';resumeThumbs()}return}if(e.target.closest('video')){e.stopPropagation();return} /* the player's own controls */e.preventDefault();e.stopPropagation();if(Date.now()-peekAt>350)hidePeek()}); // the preview stays after letting go; a tap anywhere closes it
   peek.addEventListener('click',e=>{e.preventDefault();e.stopPropagation()});peek.addEventListener('contextmenu',e=>e.preventDefault());
   const startPeek=(c,x0,y0,id)=>{
     clearTimeout(pk&&pk.t);pk={x:x0,y:y0,id,on:false};
@@ -701,8 +701,9 @@ function buzz(){ // a short tick: Vibration API (Android), or an invisible switc
       const k=c.dataset.k,x=k&&fileByKey(k);if(!x||ds&&ds.act){pk=null;return}
       pk.on=true;peekAt=Date.now();if(ds)ds=null; // a long press is not a drag-select
       const src=x.thumb?API+x.thumb:x.kind==='image'?API+(x.preview||x.url):'';
-      const media=x.kind==='video'?'<video class="pvid" controls playsinline muted autoplay loop preload="auto" '+(src?'poster="'+src+'" ':'')+'src="'+API+x.url+'"></video>':src?'<img alt="" src="'+src+'">':'<div class="pico">'+(ICON[x.kind]||'📄')+'</div>';
-      peek.innerHTML='<div class="pbox">'+media+'<div class="pname">'+esc(x.name)+'</div></div>';peek.hidden=false;buzz();
+      const media=x.kind==='video'?'<video class="pvid" controls playsinline muted autoplay loop preload="auto" '+(src?'poster="'+src+'" ':'')+'src="'+API+x.url+'"></video>':src?'<img'+(x.kind==='image'?' class="zoomable"':'')+' alt="" src="'+src+'">':'<div class="pico">'+(ICON[x.kind]||'📄')+'</div>';
+      pauseThumbs();peek.innerHTML='<div class="pbox">'+media+'<div class="pname">'+esc(x.name)+'</div></div>';peek.hidden=false;buzz();
+      {const pi=peek.querySelector('img.zoomable');if(pi){zoomPeek(pi);const fu=new Image();fu.fetchPriority='high';fu.onload=()=>{if(peek.contains(pi))pi.src=fu.src};fu.src=API+(x.preview||x.url)}}
       const pv=peek.querySelector('video');if(pv){pv.addEventListener('error',()=>{/* format the browser cannot play: the still picture stays */});const pp=pv.play();if(pp&&pp.catch)pp.catch(()=>{})
         // the peek starts on the original at once; if a converted preview (the 預覽畫質 setting: 720p by default) is already made it switches to that lighter file, otherwise one is queued for next time
         if(vq()!=='orig'&&x.kind==='video')api('/api/vprep?folder='+encodeURIComponent(splitKey(k).folder)+'&name='+encodeURIComponent(x.name)+'&h='+previewHeight()).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.state==='ready'&&peek.contains(pv)&&!pv.paused){const t=pv.currentTime;pv.src=API+j.url;pv.currentTime=t;const p2=pv.play();if(p2&&p2.catch)p2.catch(()=>{})}}).catch(()=>{})}
@@ -1322,7 +1323,7 @@ function openViewer(k,keys){ // keys = an explicit list to browse (e.g. the file
   vi=Math.max(0,vlist.findIndex(i=>i.k===k));if(!vlist.length)return;
   $('#modal').classList.remove('top'); // a preview opened from a dialog sits above it
   if(!vOpen){vOpen=true;history.pushState({viewer:1},'')} // so the phone's back button closes the preview instead of leaving the site
-  $('#viewer').hidden=false;document.body.style.overflow='hidden';showViewer();
+  pauseThumbs();$('#viewer').hidden=false;document.body.style.overflow='hidden';showViewer();
 }
 // the preview player does not need the original 4K file: phones and FHD / 2K screens get <= 1080p, 4K screens <= 1440p (converted once on the PC, then cached)
 // photos: phones show up to 2K (shorter side 1440); desktops follow the same rule as videos
@@ -1399,8 +1400,8 @@ function showViewer(){
   if(x.kind==='image'){
     const img=document.createElement('img');img.className='vimg';img.alt=x.name;
     if(x.thumb)img.src=API+x.thumb; // 720p version shows instantly, the original replaces it when loaded
-    st.append(img);
-    let origDims=null;const full=new Image();full.onload=()=>{if(seq===vseq){img.src=full.src;vmeta=origDims||{w:full.naturalWidth,h:full.naturalHeight};renderInfo()}};full.onerror=()=>{if(seq===vseq&&!x.thumb)img.replaceWith(Object.assign(document.createElement('div'),{className:'vmsg warn',textContent:x.preview?'無法轉換這張照片來預覽，請按右上角「下載」取得原檔':'無法載入圖片'}))};pickImageSrc(splitKey(vlist[vi].k).folder,x,x.preview?API+x.preview:u).then(r=>{if(seq!==vseq)return;origDims=r.w?{w:r.w,h:r.h}:null;full.src=r.src});
+    st.append(img);zoomPeek(img,false);img.style.maxWidth='100%';img.style.maxHeight='100%';
+    let origDims=null;const full=new Image();full.fetchPriority='high';full.onload=()=>{if(seq===vseq){img.src=full.src;vmeta=origDims||{w:full.naturalWidth,h:full.naturalHeight};renderInfo()}};full.onerror=()=>{if(seq===vseq&&!x.thumb)img.replaceWith(Object.assign(document.createElement('div'),{className:'vmsg warn',textContent:x.preview?'無法轉換這張照片來預覽，請按右上角「下載」取得原檔':'無法載入圖片'}))};pickImageSrc(splitKey(vlist[vi].k).folder,x,x.preview?API+x.preview:u).then(r=>{if(seq!==vseq)return;origDims=r.w?{w:r.w,h:r.h}:null;full.src=r.src});
   }else if(x.kind==='video'){
     const v=document.createElement('video');v.controls=true;v.playsInline=true;v.preload='metadata';if(x.thumb)v.poster=API+x.thumb;
     v.addEventListener('error',()=>{if(seq===vseq&&v.getAttribute('src'))msg('這個瀏覽器無法播放此影片格式（例如 iPhone 的 HEVC .mov），請按右上角「下載」後用播放器開啟。','warn')});
@@ -1417,7 +1418,7 @@ function showViewer(){
   }else msg(`<div class="big">📄</div>${esc(x.name)}<br>${fmt(x.size)}<br>此檔案類型無法預覽，請按右上角「下載」。`);
 }
 function closeViewer(fromPop){
-  if(!vOpen)return;vOpen=false;vseq++;stopMedia();$('#vstage').innerHTML='';$('#viewer').hidden=true;$('#vinfop').hidden=true;document.body.style.overflow='';
+  if(!vOpen)return;vOpen=false;resumeThumbs();vseq++;stopMedia();$('#vstage').innerHTML='';$('#viewer').hidden=true;$('#vinfop').hidden=true;document.body.style.overflow='';
   if(!fromPop&&history.state?.viewer)history.back();
 }
 const vgo=d=>{if(vlist.length<2)return;vi=(vi+d+vlist.length)%vlist.length;showViewer()};
@@ -1431,7 +1432,7 @@ document.addEventListener('keydown',e=>{
 let tx=0,ty=0,tOK=false; // swipe left/right anywhere on the picture / video to move between files
 $('#viewer').addEventListener('touchstart',e=>{
   tOK=false;if(e.touches.length!==1)return;
-  const t=e.target;if(t.closest('#vbot,.vtop,#vinfop,.vnav,button,a,audio,iframe,pre'))return;
+  const t=e.target;if(t.closest('#vbot,.vtop,#vinfop,.vnav,button,a,audio,iframe,pre,img[data-z]'))return;
   const v=t.closest('video');if(v&&e.touches[0].clientY>v.getBoundingClientRect().bottom-100)return; // the player's own control bar (scrubber, buttons)
   tx=e.touches[0].clientX;ty=e.touches[0].clientY;tOK=true;
 },{passive:true});
@@ -1636,9 +1637,11 @@ async function clipRefresh(){
     if(sig!==clipSig){clipSig=sig;if($('#cliplist'))clipRender()}}catch{}
 }
 // long press on a clipboard picture = the same full-size preview as long-pressing a file on the home page (a tap anywhere closes it)
-function zoomPeek(img){
-  let sc=1,tx=0,ty=0,d0=0,sc0=1,p0=null,last=0;const apply=()=>{img.style.transform='translate('+tx+'px,'+ty+'px) scale('+sc+')'};
-  img.style.cssText+=';transform-origin:50% 50%;touch-action:none;will-change:transform;max-width:92vw;max-height:80vh';
+function pauseThumbs(){document.querySelectorAll('#list img').forEach(i=>{if(!i.complete&&i.getAttribute('src')){i.dataset.rs=i.getAttribute('src');i.removeAttribute('src')}})}
+function resumeThumbs(){document.querySelectorAll('#list img[data-rs]').forEach(i=>{i.setAttribute('src',i.dataset.rs);delete i.dataset.rs})}
+function zoomPeek(img,fit=true){
+  let sc=1,tx=0,ty=0,d0=0,sc0=1,p0=null,last=0;const apply=()=>{img.style.transform='translate('+tx+'px,'+ty+'px) scale('+sc+')';if(sc>1.02)img.dataset.z='1';else delete img.dataset.z};
+  img.style.cssText+=';transform-origin:50% 50%;touch-action:none;will-change:transform'+(fit?';max-width:92vw;max-height:80vh':'');
   const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
   img.addEventListener('touchstart',e=>{e.preventDefault();if(e.touches.length===2){d0=dist(e.touches);sc0=sc}else if(e.touches.length===1){p0={x:e.touches[0].clientX-tx,y:e.touches[0].clientY-ty,sx:e.touches[0].clientX,sy:e.touches[0].clientY};
       const now=Date.now();if(now-last<280){sc=sc>1.05?1:2.4;if(sc===1){tx=0;ty=0}img.style.transition='transform .2s';apply();setTimeout(()=>img.style.transition='',220)}last=now}},{passive:false});
