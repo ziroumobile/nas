@@ -1000,3 +1000,9 @@ html body #morepop button.mpi:not(#nx1):not(#nx2):not(#nx3):not(#nx4):active{bac
 /* upload target: shows about 10 latin letters or 5 CJK characters (10ch), longer names end with an ellipsis */
 html body .uptarget select{max-width:calc(10ch + 30px)!important}
 @media(min-width:700px){html body .uptarget select{max-width:calc(10ch + 40px)!important}}
+
+/* trash thumbnails: document icon = the file has no preview; broken-picture icon (reddish) = the preview could not be loaded */
+.trth .tric,.trth .trbadic svg{width:30px;height:30px;color:#8e8e93}
+.trth.trbad{background:rgba(255,69,58,.12)}
+.trth.trbad .trbadic svg{color:#ff6b61}
+.trbadic{display:flex;align-items:center;justify-content:center}
