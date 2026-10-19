@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v7.43">
+<meta name="app-version" content="v7.44">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261021ZO">
-<link rel="stylesheet" href="light.css?v=20261021ZO">
+<link rel="stylesheet" href="glass.css?v=20261021ZP">
+<link rel="stylesheet" href="light.css?v=20261021ZP">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261021ZO"></script>
+<script src="glass.js?v=20261021ZP"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -693,7 +693,7 @@ function buzz(){ // a short tick: Vibration API (Android), or an invisible switc
   // long press on a picture / video: a big preview while the finger stays down (works in select mode too)
   const peek=document.createElement('div');peek.id='peek';peek.hidden=true;document.body.appendChild(peek);
   let peekAt=0;const hidePeek=()=>{peek.querySelectorAll('video').forEach(v=>{v.pause();v.removeAttribute('src');v.load()});peek.hidden=true;peek.innerHTML='';dragSwallow=Date.now()+400};
-  peek.addEventListener('pointerdown',e=>{if(e.target.closest('video')){e.stopPropagation();return} /* the player's own controls */e.preventDefault();e.stopPropagation();if(Date.now()-peekAt>350)hidePeek()}); // the preview stays after letting go; a tap anywhere closes it
+  peek.addEventListener('pointerdown',e=>{if(peek.querySelector('.zoomable')){e.stopPropagation();if(e.target===peek){peek.hidden=true;peek.innerHTML=''}return}if(e.target.closest('video')){e.stopPropagation();return} /* the player's own controls */e.preventDefault();e.stopPropagation();if(Date.now()-peekAt>350)hidePeek()}); // the preview stays after letting go; a tap anywhere closes it
   peek.addEventListener('click',e=>{e.preventDefault();e.stopPropagation()});peek.addEventListener('contextmenu',e=>e.preventDefault());
   const startPeek=(c,x0,y0,id)=>{
     clearTimeout(pk&&pk.t);pk={x:x0,y:y0,id,on:false};
@@ -1609,11 +1609,21 @@ async function clipRefresh(){
     if(sig!==clipSig){clipSig=sig;if($('#cliplist'))clipRender()}}catch{}
 }
 // long press on a clipboard picture = the same full-size preview as long-pressing a file on the home page (a tap anywhere closes it)
+function zoomPeek(img){
+  let sc=1,tx=0,ty=0,d0=0,sc0=1,p0=null,last=0;const apply=()=>{img.style.transform='translate('+tx+'px,'+ty+'px) scale('+sc+')'};
+  img.style.cssText+=';transform-origin:50% 50%;touch-action:none;will-change:transform;max-width:92vw;max-height:80vh';
+  const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+  img.addEventListener('touchstart',e=>{e.preventDefault();if(e.touches.length===2){d0=dist(e.touches);sc0=sc}else if(e.touches.length===1){p0={x:e.touches[0].clientX-tx,y:e.touches[0].clientY-ty,sx:e.touches[0].clientX,sy:e.touches[0].clientY};
+      const now=Date.now();if(now-last<280){sc=sc>1.05?1:2.4;if(sc===1){tx=0;ty=0}img.style.transition='transform .2s';apply();setTimeout(()=>img.style.transition='',220)}last=now}},{passive:false});
+  img.addEventListener('touchmove',e=>{e.preventDefault();if(e.touches.length===2&&d0){sc=Math.min(6,Math.max(1,sc0*dist(e.touches)/d0));apply()}
+    else if(e.touches.length===1&&p0&&sc>1){tx=e.touches[0].clientX-p0.x;ty=e.touches[0].clientY-p0.y;apply()}},{passive:false});
+  img.addEventListener('touchend',e=>{if(e.touches.length<2)d0=0;if(sc<=1.02){sc=1;tx=0;ty=0;img.style.transition='transform .18s';apply();setTimeout(()=>img.style.transition='',200)}if(e.touches.length===1)p0={x:e.touches[0].clientX-tx,y:e.touches[0].clientY-ty}});
+}
 function clipPeek(im,c){
   let t=null,x0=0,y0=0;const stop=()=>{clearTimeout(t);t=null};
   im.draggable=false;im.addEventListener('contextmenu',e=>e.preventDefault());
   im.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')return;x0=e.clientX;y0=e.clientY;stop();
-    t=setTimeout(()=>{t=null;const pk=document.getElementById('peek');if(!pk)return;pk.innerHTML='<div class="pbox"><img alt="" src="'+API+c.url+'"></div>';pk.hidden=false;try{navigator.vibrate&&navigator.vibrate(12)}catch{}},420)});
+    t=setTimeout(()=>{t=null;const pk=document.getElementById('peek');if(!pk)return;pk.innerHTML='<div class="pbox"><img class="zoomable" alt="" src="'+API+c.url+'"></div>';pk.hidden=false;try{navigator.vibrate&&navigator.vibrate(12)}catch{}zoomPeek(pk.querySelector('img'));},420)});
   im.addEventListener('pointermove',e=>{if(t&&Math.hypot(e.clientX-x0,e.clientY-y0)>10)stop()});
   ['pointerup','pointercancel','pointerleave'].forEach(n=>im.addEventListener(n,stop));
 }

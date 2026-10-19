@@ -8,8 +8,8 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
-<link rel="stylesheet" href="glass.css?v=20261021ZO">
-<link rel="stylesheet" href="light.css?v=20261021ZO">
+<link rel="stylesheet" href="glass.css?v=20261021ZP">
+<link rel="stylesheet" href="light.css?v=20261021ZP">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <title>檔案分享</title>
@@ -90,7 +90,7 @@ body.selecting .wrap{padding-bottom:100px}
 #appback{transition:background-color .14s,box-shadow .14s,transform .14s}
 #appback:active{background:rgba(235,235,245,.30);box-shadow:inset 0 0 9px rgba(255,255,255,.30);transform:scale(.94)}
 #appback svg{width:24px;height:24px}
-html body.hasback .wrap{padding-top:calc(env(safe-area-inset-top) + 66px)}
+html body.hasback .wrap{padding-top:calc(env(safe-area-inset-top) + 62px)}
 
 /* phones: round back (top left) + info (top right) over the picture, share / download (bottom left) and delete (bottom right) as round buttons; no title, counter or centre pills */
 html.ios #viewer{overflow:hidden;overscroll-behavior:none;touch-action:none}
@@ -124,7 +124,7 @@ html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position
 #app>header button.hb svg{width:24px;height:24px}
 html.ios #app>header{height:auto!important}
 /* the round select button sits on the same row as the back arrow (top right); the title starts below that row so the two never overlap */
-#app{padding-top:30px}
+#app{padding-top:0}
 html.ios body #app>header,html body #app>header{position:static!important;top:auto!important;height:auto!important;padding:0!important;margin:0 0 4px!important;background:none!important}
 body.selecting #appback{display:none!important}   /* select mode has its own back arrow (top left): hide this one so there are never two; leaving select mode brings it back */
 .hdrbtns{position:fixed;z-index:900;top:calc(env(safe-area-inset-top) + 8px);right:14px}
@@ -132,6 +132,7 @@ body.selecting #appback{display:none!important}   /* select mode has its own bac
 /* the round back / select buttons are as solid as the ones on the other pages (no blur: the black status-bar strip above them used to bleed into their top edge) */
 html body #appback,html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(32,34,40,.92)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important}
 html,body{overflow-x:hidden}   /* a stray wide element must never make iOS shrink the whole page to fit (everything, glyphs included, was rendered at ~95% and looked soft) */
+html body #viewer #vdl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
 </style></head><body><div id="topsent" aria-hidden="true"></div><div class="wrap"><div id="appback" role="button" tabindex="0" aria-label="返回" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div>
 <div id="gate" class="card">
   <h1>🔒 檔案分享</h1>
@@ -167,7 +168,7 @@ html,body{overflow-x:hidden}   /* a stray wide element must never make iOS shrin
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="glass.js?v=20261021ZO"></script>
+<script src="glass.js?v=20261021ZP"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
