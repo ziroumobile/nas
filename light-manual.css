@@ -107,3 +107,6 @@ html[data-theme="light"] body #modal button.vform:not(#nx1):not(#nx2):not(#nx3):
 html[data-theme="light"] body #modal button#vsave:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
 html[data-theme="light"] body #modal button.vblue:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
 html[data-theme="light"] body #modal button.vred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#ff3b30!important}
+html[data-theme="light"] .vline+.vline{border-top-color:rgba(0,0,0,.08)}
+html[data-theme="light"] body #modal button#vsave:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #editask #eaok:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
+html[data-theme="light"] body #modal button[data-vc="unlock"]:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #modal button#vcancel:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#000!important}

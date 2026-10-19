@@ -1036,3 +1036,13 @@ html body #modal button#vsave:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a8
 html body #modal input.vin:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:100%;padding:12px 14px;border:0!important;border-radius:14px!important;background:rgba(120,120,128,.18)!important;color:inherit;font:inherit;margin:0 0 10px;-webkit-appearance:none;appearance:none;box-shadow:none!important;outline:none}
 html body #modal button.vblue:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
 html body #modal button.vred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#ff453a!important}
+
+/* unlocked password card */
+.vunl{margin-top:8px}
+.vline{display:flex;align-items:center;gap:10px;padding:8px 0}
+.vline+.vline{border-top:1px solid rgba(255,255,255,.08)}
+.vline .vk{flex:none;width:36px;color:#8e8e93;font-size:14px}
+.vline .vv{flex:1;min-width:0;word-break:break-all;font-size:16px;user-select:all}
+html body #modal .vline button.vform:not(#nx1):not(#nx2):not(#nx3):not(#nx4){flex:none;margin-left:auto;padding:6px 14px!important}
+html body #modal button#vsave:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body #editask #eaok:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
+html body #modal button[data-vc="unlock"]:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body #modal button#vcancel:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:var(--fg)!important}

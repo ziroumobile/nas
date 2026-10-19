@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.24">
+<meta name="app-version" content="v8.25">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261022U">
-<link rel="stylesheet" href="light.css?v=20261022U">
+<link rel="stylesheet" href="glass.css?v=20261022V">
+<link rel="stylesheet" href="light.css?v=20261022V">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261022U"></script>
+<script src="glass.js?v=20261022V"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1779,7 +1779,7 @@ async function vaultOpen(){
     showPage('<div class="pghead"><span class="pgic" style="background:#5e5ce6"><svg stroke="#fff" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg></span><b>密碼</b><p>帳號和密碼加密存放在你的電腦上。要看或複製密碼時，需要編輯密碼或生物辨識。</p></div>'
       +'<input id="vsearch" type="search" placeholder="搜尋" value="'+esc(q)+'" style="width:100%;padding:11px 14px;border:0;border-radius:14px;background:rgba(120,120,128,.18);color:inherit;font:inherit;margin:0 0 10px">'
       +'<div class="mbtns" style="margin:0 0 10px"><button id="vadd">＋ 新增密碼</button></div>'
-      +(shown.length?shown.map(x=>'<div class="srow vrow" data-id="'+esc(x.id)+'"><b>'+esc(x.title)+'</b>'+(unl[x.id]&&unl[x.id].t>Date.now()?'<div class="mbtns" style="margin-top:8px"><button class="vform" data-vc="user">複製帳號</button><button class="vform" data-vc="pw">複製密碼</button></div>':'<div class="mbtns" style="margin-top:8px"><button class="vform vblue" data-vc="unlock">解鎖</button><button class="vform vblue" data-vc="edit">編輯</button><button class="vform vred" data-vc="del">清除</button></div>')+'</div>').join(''):'<p class="sub">'+(list.length?'沒有符合的項目。':'還沒有任何密碼。按「新增密碼」開始。')+'</p>')
+      +(shown.length?shown.map(x=>'<div class="srow vrow" data-id="'+esc(x.id)+'"><b>'+esc(x.title)+'</b>'+(unl[x.id]&&unl[x.id].t>Date.now()?'<div class="vunl"><div class="vline"><span class="vk">帳號</span><span class="vv">'+esc(unl[x.id].user||'（沒有）')+'</span><button class="vform" data-vc="user">複製</button></div><div class="vline"><span class="vk">密碼</span><span class="vv">'+esc(unl[x.id].pw)+'</span><button class="vform" data-vc="pw">複製</button></div></div>':'<div class="mbtns" style="margin-top:8px"><button class="vform" data-vc="unlock">解鎖</button><button class="vform vblue" data-vc="edit">編輯</button><button class="vform vred" data-vc="del">清除</button></div>')+'</div>').join(''):'<p class="sub">'+(list.length?'沒有符合的項目。':'還沒有任何密碼。按「新增密碼」開始。')+'</p>')
       +'<div id="vform" hidden></div>');
     const sIn=$('#vsearch');sIn.oninput=()=>{q=sIn.value;const pos=sIn.selectionStart;draw();const n=$('#vsearch');n.focus();n.setSelectionRange(pos,pos)};
   };
