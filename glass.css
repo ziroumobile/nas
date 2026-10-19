@@ -996,3 +996,7 @@ html body #morepop{background:rgba(40,40,44,.72)!important;-webkit-backdrop-filt
 html body #morepop button.mpi:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:none!important;border:0!important;box-shadow:none!important;border-radius:16px!important;color:#fff!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;transform:none!important}
 html body #morepop button.mpi:not(#nx1):not(#nx2):not(#nx3):not(#nx4)+button.mpi{border-top:0!important}
 html body #morepop button.mpi:not(#nx1):not(#nx2):not(#nx3):not(#nx4):active{background:rgba(120,120,128,.45)!important}
+
+/* upload target: shows about 10 latin letters or 5 CJK characters (10ch), longer names end with an ellipsis */
+html body .uptarget select{max-width:calc(10ch + 30px)!important}
+@media(min-width:700px){html body .uptarget select{max-width:calc(10ch + 40px)!important}}
