@@ -8,8 +8,8 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
-<link rel="stylesheet" href="glass.css?v=20261021ZQ">
-<link rel="stylesheet" href="light.css?v=20261021ZQ">
+<link rel="stylesheet" href="glass.css?v=20261021ZR">
+<link rel="stylesheet" href="light.css?v=20261021ZR">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <title>檔案分享</title>
@@ -168,7 +168,7 @@ html body #viewer #vdl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!imp
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="glass.js?v=20261021ZQ"></script>
+<script src="glass.js?v=20261021ZR"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
@@ -231,7 +231,7 @@ $('#selmode').onclick=$('#dsel').onclick=()=>{selMode=!selMode;if(!selMode)selec
   const sbar=$('#selbar'),top=document.createElement('div'),bot=document.createElement('div');top.className='seltop';bot.className='selbot';
   $('#selexit').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>';$('#selexit').setAttribute('aria-label','返回');
   $('#seldl').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M8 11l4 4 4-4"/><path d="M4.5 17v1.5A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5V17"/></svg>';$('#seldl').setAttribute('aria-label','下載選取');
-  top.append($('#selexit'),$('#selnone'),$('#seldl'));bot.append($('#selcount'));sbar.append(top,bot);
+  top.append($('#selexit'),$('#selnone'));bot.append($('#seldl'),$('#selcount'));sbar.append(top,bot);
   const band=document.createElement('div');band.id='topband';band.style.cssText='background:#000;opacity:1;-webkit-backdrop-filter:none;backdrop-filter:none';band.setAttribute('aria-hidden','true');$('#app').appendChild(band);
 }
 $('#selexit').onclick=()=>{selMode=false;selected.clear();render()};

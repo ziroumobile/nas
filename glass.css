@@ -913,3 +913,9 @@ html body button.glassclose:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:bloc
 
 /* blue download icon in the picture / video viewer and in the select bar (every page that has them) */
 html body #viewer #vdl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body #viewer a#vdl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body .seltop #seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
+
+/* blue download button: same selector weight as the original white rule (it was winning before) */
+html.ios body .seltop button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html:not(.ios) body .seltop button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html.ios body .selbot button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html:not(.ios) body .selbot button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
+/* shared page: the download button sits in the bottom bar as a round button (like the share button on the home page) */
+html body .selbot button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:56px;height:56px;min-width:56px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;pointer-events:auto}
+html body .selbot button#seldl svg{width:26px;height:26px}
