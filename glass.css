@@ -987,3 +987,12 @@ html body button#upfab.dropover:not(#nx1):not(#nx2):not(#nx3):not(#nx4){transfor
 #morepop .mpi svg{width:22px;height:22px;flex:none}
 #morepop .mpi:active{background:rgba(120,120,128,.3)}
 @media(min-width:900px){#morepop{right:max(16px,calc((100vw - 828px)/2))}}
+
+/* upload target: never wider than the room left of the header buttons; a long folder name is cut with an ellipsis instead of running under them */
+html body .uptarget select{max-width:calc(100vw - 292px)!important;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+@media(min-width:700px){html body .uptarget select{max-width:320px!important}}
+/* "..." menu: same glass as the upload-target menu, plain white rows */
+html body #morepop{background:rgba(40,40,44,.72)!important;-webkit-backdrop-filter:blur(24px) saturate(180%)!important;backdrop-filter:blur(24px) saturate(180%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06),0 14px 40px rgba(0,0,0,.5)!important}
+html body #morepop button.mpi:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:none!important;border:0!important;box-shadow:none!important;border-radius:16px!important;color:#fff!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;transform:none!important}
+html body #morepop button.mpi:not(#nx1):not(#nx2):not(#nx3):not(#nx4)+button.mpi{border-top:0!important}
+html body #morepop button.mpi:not(#nx1):not(#nx2):not(#nx3):not(#nx4):active{background:rgba(120,120,128,.45)!important}
