@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.28">
+<meta name="app-version" content="v8.29">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261022Y">
-<link rel="stylesheet" href="light.css?v=20261022Y">
+<link rel="stylesheet" href="glass.css?v=20261022Z">
+<link rel="stylesheet" href="light.css?v=20261022Z">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261022Y"></script>
+<script src="glass.js?v=20261022Z"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -489,7 +489,7 @@ async function init(){
   $('#app').hidden=false;
   $('#who').textContent=me.name;$('#whorole').textContent=me.admin?'管理員':'一般使用者';
   bioCheck();$('#dshare').hidden=!me.admin;$('#dvault').hidden=!me.admin;
-  if(me.admin)setTimeout(()=>{const pre=()=>api('/api/shares').then(r=>r.ok?r.json():null).then(l=>{if(l){window.__sharesCache=l;setShareBadge(l.length);warmShareThumbs(l)}}).catch(()=>{});pre();clipRefresh();setTimeout(()=>warmShareThumbs(window.__sharesCache),4000);setInterval(()=>{if(!document.hidden)pre()},60000)},800); // warm the pages behind the dock so sliding onto them is instant
+  if(me.admin)setTimeout(()=>{const pre=()=>api('/api/shares').then(r=>r.ok?r.json():null).then(l=>{if(l){window.__sharesCache=l;setShareBadge(l.length);warmShareThumbs(l)}}).catch(()=>{});pre();setInterval(()=>{if(!document.hidden)pre()},60000)},800); // warm the pages behind the dock so sliding onto them is instant
  $('#lockset').hidden=!(me.admin&&me.hasEditPassword);$('#trash').hidden=!me.admin;$('#setpw').hidden=$('#actlog').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh().then(()=>setTimeout(prefetchThumbs,600));clipRefresh();
 }
 $('#go').onclick=async()=>{
@@ -783,9 +783,24 @@ function render(force){
 let prefetched=false;
 function prefetchThumbs(){
   if(prefetched||!folders.length)return;prefetched=true;
-  const urls=[];for(const f of sortFolders())for(const x of sortFiles(f.files).slice(0,20))if(x.thumb)urls.push(thumbSrc(x.thumb));
-  let i=0;const worker=()=>{if(document.hidden){setTimeout(worker,2000);return}const u=urls[i++];if(!u)return;const im=new Image();im.decoding='async';im.onload=im.onerror=worker;im.src=u};
-  for(let k=0;k<4;k++)worker();
+  const all=[];for(const f of sortFolders())for(const x of sortFiles(f.files).slice(0,20))if(x.thumb)all.push(thumbSrc(x.thumb));
+  const loadList=(urls,n=4)=>new Promise(done=>{let i=0,live=0,fin=false;const end=()=>{if(!fin){fin=true;done()}};
+    const next=()=>{if(document.hidden){setTimeout(next,1500);return}
+      while(live<n&&i<urls.length){const im=new Image();im.decoding='async';live++;const u=urls[i++];im.onload=im.onerror=()=>{live--;next()};im.src=u}
+      if(!live&&i>=urls.length)end()};
+    setTimeout(end,20000);next()});   // never wait more than 20 s for one stage
+  (async()=>{
+    await loadList(all.slice(0,40));                                   // stage 1: the first 40 thumbnails of the home page
+    window.__stage2=true;                                              // stage 2: everything behind the dock, completely
+    const tasks=[];
+    if(me&&me.admin){
+      tasks.push(api('/api/shares').then(x=>x.ok?x.json():null).then(l=>{if(l){window.__sharesCache=l;setShareBadge(l.filter(z=>!z.expires||z.expires>Date.now()).length);const u=[];for(const sh of l){const keys=sh.type==='folder'?(folders.find(f=>f.name===sh.folder)?.files.map(x=>keyOf(sh.folder,x.name))||[]):(sh.items||[]).map(i=>keyOf(i.folder,i.name));for(const k of keys.slice(0,10)){const x=fileByKey(k);if(x&&x.thumb)u.push(thumbSrc(x.thumb))}}return loadList(u)}}).catch(()=>{}));
+      tasks.push(api('/api/clip').then(x=>x.ok?x.json():[]).then(l=>{clipItems=l;$('#clipn').textContent=l.length?String(l.length):'';return loadList(l.filter(c=>c.type==='image').map(c=>API+c.url))}).catch(()=>{}));
+      tasks.push(api('/api/vault').then(x=>x.ok?x.json():null).catch(()=>{}));
+    }
+    await Promise.all(tasks);
+    await loadList(all.slice(40));                                     // stage 3: back to the home page, the rest
+  })();
 }
 async function refresh(){
   let r;try{r=await api('/api/files')}catch{$('#off').hidden=false;return}
@@ -1665,10 +1680,10 @@ let clipItems=[],clipSig='';
 const clipAgo=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?'剛剛':m<60?m+' 分鐘前':m<1440?Math.round(m/60)+' 小時前':Math.round(m/1440)+' 天前'};
 const warmed=new Set();
 function setShareBadge(n){const b=$('#sharen');if(b)b.textContent=n?String(n):''}
-function warmShareThumbs(list){try{for(const sh of list||[]){const keys=sh.type==='folder'?(folders.find(f=>f.name===sh.folder)?.files.map(x=>keyOf(sh.folder,x.name))||[]):(sh.items||[]).map(i=>keyOf(i.folder,i.name));for(const k of keys.slice(0,10)){const x=fileByKey(k);if(x&&x.thumb){const u=thumbSrc(x.thumb);if(!warmed.has(u)){warmed.add(u);{const im=new Image();im.src=u;if(im.decode)im.decode().catch(()=>{})}}}}}}catch{}}
+function warmShareThumbs(list){if(!window.__stage2)return;try{for(const sh of list||[]){const keys=sh.type==='folder'?(folders.find(f=>f.name===sh.folder)?.files.map(x=>keyOf(sh.folder,x.name))||[]):(sh.items||[]).map(i=>keyOf(i.folder,i.name));for(const k of keys.slice(0,10)){const x=fileByKey(k);if(x&&x.thumb){const u=thumbSrc(x.thumb);if(!warmed.has(u)){warmed.add(u);{const im=new Image();im.src=u;if(im.decode)im.decode().catch(()=>{})}}}}}}catch{}}
 async function clipRefresh(){
   try{const r=await api('/api/clip');if(!r.ok)return;const l=await r.json();const sig=JSON.stringify(l.map(c=>c.id));
-    clipItems=l;$('#clipn').textContent=l.length?String(l.length):'';for(const c of l.slice(0,10))if(c.type==='image'&&!warmed.has(c.url)){warmed.add(c.url);{const im=new Image();im.src=API+c.url;if(im.decode)im.decode().catch(()=>{})}}   // preload so the clipboard page shows its pictures at once
+    clipItems=l;$('#clipn').textContent=l.length?String(l.length):'';for(const c of l.slice(0,10))if(window.__stage2&&c.type==='image'&&!warmed.has(c.url)){warmed.add(c.url);{const im=new Image();im.src=API+c.url;if(im.decode)im.decode().catch(()=>{})}}   // preload so the clipboard page shows its pictures at once
     
     if(sig!==clipSig){clipSig=sig;if($('#cliplist'))clipRender()}}catch{}
 }
