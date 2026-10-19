@@ -871,12 +871,13 @@ html body #order:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(:active):not(.gpres
 /* desktop / Mac: the select-mode back arrow sits exactly where every other page's back arrow sits (same column edge, same height) */
 html:not(.ios) body .seltop{top:calc(env(safe-area-inset-top) + 8px)!important;left:max(14px,calc((100vw - 828px)/2 - 2px))!important;right:max(14px,calc((100vw - 828px)/2 - 2px))!important}
 /* iPad: always keep a solid black cover over the status-bar strip (nothing scrolls visibly under it) */
-html.ios body::before{height:max(env(safe-area-inset-top),24px)!important}
+@media(min-width:700px){html.ios:not(.android) body::before{height:max(env(safe-area-inset-top),24px)!important}}
 
-/* full-screen pages (search, shared, clipboard, upload, storage, settings): the page behind must not scroll or rubber-band under them, otherwise the home content shows through at the top (iPad) */
-html:has(#spage:not([hidden])),html:has(#spage:not([hidden])) body,
-html:has(#modal.fullpage:not([hidden])),html:has(#modal.fullpage:not([hidden])) body,
-html:has(#uppage:not([hidden])),html:has(#uppage:not([hidden])) body,
-html:has(#storage:not([hidden])),html:has(#storage:not([hidden])) body,
-html:has(#setpanel:not([hidden])),html:has(#setpanel:not([hidden])) body{overflow:hidden!important;overscroll-behavior:none!important}
-html.ios #spage,html.ios #uppage,html.ios #storage,html.ios #setpanel{overscroll-behavior:contain}
+/* iPad only: full-screen pages lock the page behind them (no scroll-through at the top) */
+@media(min-width:700px){
+html.ios:not(.android):has(#spage:not([hidden])),html.ios:not(.android):has(#spage:not([hidden])) body,
+html.ios:not(.android):has(#modal.fullpage:not([hidden])),html.ios:not(.android):has(#modal.fullpage:not([hidden])) body,
+html.ios:not(.android):has(#uppage:not([hidden])),html.ios:not(.android):has(#uppage:not([hidden])) body,
+html.ios:not(.android):has(#storage:not([hidden])),html.ios:not(.android):has(#storage:not([hidden])) body,
+html.ios:not(.android):has(#setpanel:not([hidden])),html.ios:not(.android):has(#setpanel:not([hidden])) body{overflow:hidden!important;overscroll-behavior:none!important}
+}
