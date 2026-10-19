@@ -1046,3 +1046,8 @@ html body #modal button.vred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#ff45
 html body #modal .vline button.vform:not(#nx1):not(#nx2):not(#nx3):not(#nx4){flex:none;margin-left:auto;padding:6px 14px!important}
 html body #modal button#vsave:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body #editask #eaok:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
 html body #modal button[data-vc="unlock"]:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body #modal button#vcancel:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:var(--fg)!important}
+
+/* settings switch (like iOS) */
+#privrow .sw{margin-left:auto;flex:none;width:51px;height:31px;border-radius:16px;background:rgba(120,120,128,.4);position:relative;transition:background .25s}
+#privrow .sw i{position:absolute;left:2px;top:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3);transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
+#privrow .sw.on{background:#30d158}#privrow .sw.on i{transform:translateX(20px)}
