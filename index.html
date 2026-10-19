@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.4">
+<meta name="app-version" content="v8.5">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261021ZZ">
-<link rel="stylesheet" href="light.css?v=20261021ZZ">
+<link rel="stylesheet" href="glass.css?v=20261022A">
+<link rel="stylesheet" href="light.css?v=20261022A">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261021ZZ"></script>
+<script src="glass.js?v=20261022A"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1174,12 +1174,11 @@ async function sharesManager(){ // every share: link, password (after entering t
         <div class="shh" data-tog="${esc(s.id)}"><span class="sharr">▾</span><span class="shic" style="background:${s.type==='folder'?'#ff9f0a':'#0a84ff'}">${s.type==='folder'?'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5a2 2 0 0 1 2-2h3.6l2 2h7.4a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h6.5L18 8v11.5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-15a1 1 0 0 1 1-1z"/><path d="M13 3.7V8.5h4.8"/></svg>'}</span><div class="sht"><b>${s.type==='folder'?esc(s.folder):(s.count===1&&s.items&&s.items[0]?esc(s.items[0].name):s.count+' 個檔案')}</b><small>${s.type==='folder'?'資料夾 · '+s.count+' 個檔案（即時）':(s.count===1?'1 個檔案':'多個檔案')} · 建立 ${sd(s.created)}</small></div></div>
         ${thumbs(s)}
         <div class="shl">
-          <div class="shr"><span>連結</span><span class="shv"><button class="ghost" data-copy="${esc(s.id)}" style="padding:4px 12px;white-space:nowrap">複製連結</button></span></div>
           <div class="shr"><span>密碼</span><span class="shv">${pwCell(s)}</span></div>
           <div class="shr"><span>有效期限</span><span class="shv">${s.expires?(s.expires<=Date.now()?'<span style="color:#ff453a">已到期</span>':left(s.expires))+'<small>至 '+sd(s.expires)+'</small>':'永久有效'}</span></div>
           <div class="shr"><span>已開啟</span><span class="shv">${s.opens} 次${s.lastOpen?'<small>最近 '+sd(s.lastOpen)+'</small>':''}</span></div>
         </div>
-        ${s.expires&&s.expires<=Date.now()?`<div style="margin-top:4px"><button class="glassclose" data-close-share="${esc(s.id)}">關閉</button></div>`:`<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin-top:4px"><button class="del" data-revoke="${esc(s.id)}">撤銷這個分享</button><a class="btn vlk" href="${esc(shareUrl(s.id))}" >開啟連結</a></div>`}</div>`).join(''):'<p class="sub">目前沒有任何分享。</p>')+
+        ${s.expires&&s.expires<=Date.now()?`<div style="margin-top:4px"><button class="glassclose" data-close-share="${esc(s.id)}">關閉</button></div>`:`<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin-top:4px"><button class="del" data-revoke="${esc(s.id)}">撤銷這個分享</button><button class="ghost" data-copy="${esc(s.id)}">複製連結</button><a class="btn vlk" href="${esc(shareUrl(s.id))}" >開啟連結</a></div>`}</div>`).join(''):'<p class="sub">目前沒有任何分享。</p>')+
       '');
     $('#sx').onclick=closeModal;
     $('#mbox').onclick=async e=>{
