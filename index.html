@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v7.47">
+<meta name="app-version" content="v7.48">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261021ZS">
-<link rel="stylesheet" href="light.css?v=20261021ZS">
+<link rel="stylesheet" href="glass.css?v=20261021ZT">
+<link rel="stylesheet" href="light.css?v=20261021ZT">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261021ZS"></script>
+<script src="glass.js?v=20261021ZT"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1111,11 +1111,11 @@ function shareDialog(label,payload){
     <div class="mwarn" id="nopw" hidden style="margin:6px 0 0">⚠️ 沒有設密碼：任何拿到連結的人都能開啟，請只傳給你信任的人。</div>
     <label>連結有效期限</label>
     <select id="sexp"><option value="1h">1 小時</option><option value="6h">6 小時</option><option value="1d">1 天</option><option value="7d" selected>7 天</option><option value="30d">30 天</option><option value="never">永久（可隨時撤銷）</option><option value="custom">自訂…</option></select>
-    <div id="scustom" hidden style="display:none;gap:6px;margin-top:6px;align-items:center"><input id="sn" type="text" inputmode="numeric" placeholder="數字" style="width:90px;margin:0"><select id="su"><option value="h">小時</option><option value="d" selected>天</option></select></div>
+    <div id="scustom" hidden style="display:none;gap:6px;margin-top:6px;align-items:center"><input id="sn" type="text" inputmode="numeric" placeholder="數字" style="width:90px;margin:0"><select id="su"><option value="m">分鐘</option><option value="h">小時</option><option value="d" selected>天</option></select></div>
     <p class="merr" id="serr"></p>
     <div class="mbtns"><button id="smk">建立分享連結</button><button class="ghost" id="scancel">取消</button></div>`);
   $('#scancel').onclick=closeModal;
-  const syncForm=()=>{$('#nopw').hidden=!!($('#sp1').value||$('#sp2').value);const c=$('#sexp').value==='custom';$('#scustom').hidden=!c;$('#scustom').style.display=c?'flex':'none';if(c)$('#sn').focus()};
+  const syncForm=()=>{$('#nopw').hidden=!!($('#sp1').value||$('#sp2').value);const c=$('#sexp').value==='custom';$('#scustom').hidden=!c;$('#scustom').style.display=c?'flex':'none'};
   $('#sp1').oninput=$('#sp2').oninput=syncForm;$('#sexp').onchange=syncForm;syncForm();
   $('#smk').onclick=async()=>{
     const p1=$('#sp1').value,p2=$('#sp2').value;
@@ -1128,7 +1128,7 @@ function shareDialog(label,payload){
     else if(ev==='custom'){
       const n=Number($('#sn').value.trim());
       if(!Number.isFinite(n)||n<=0||!/^\d+(\.\d+)?$/.test($('#sn').value.trim()))return $('#serr').textContent='請輸入大於 0 的數字';
-      hours=n*($('#su').value==='d'?24:1);
+      hours=n*($('#su').value==='d'?24:$('#su').value==='m'?1/60:1);
       if(hours>24*3650)return $('#serr').textContent='有效期限最長 3650 天';
     }else hours=ev.endsWith('h')?parseInt(ev):parseInt(ev)*24;
     $('#smk').disabled=true;$('#serr').textContent='';
@@ -1166,7 +1166,7 @@ async function sharesManager(){ // every share: link, password (after entering t
       const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-kind="${x.kind}" src="${thumbSrc(x.thumb)}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
       return `<a class="sc" href="#" data-pv="${esc(k)}" data-sid="${esc(s.id)}" title="${esc(x.name)}">${inner}${keys.length>MAX&&ki===MAX-1?'<span class="more">+'+(keys.length-MAX+1)+'</span>':x.kind==='video'?'<span class="play">▶</span>':''}</a>`}).join('')}</div>`;
   };
-  const pwCell=s=>!s.hasPassword?'<span style="color:#ff9f0a">未設密碼（有連結就能開啟）</span>':!s.pwStored?'<span style="color:var(--mut)">（未儲存）</span>':revealed?(revealed[s.id]==null?'<span style="color:var(--mut)">（無法解密）</span>':`<code style="user-select:all;font-size:15px">${esc(revealed[s.id])}</code> <button class="ghost" data-copypw="${esc(s.id)}" style="padding:2px 8px">複製密碼</button>`):'<code>••••••••</code>';
+  const pwCell=s=>!s.hasPassword?'<span style="color:#ff9f0a">未設密碼</span>':!s.pwStored?'<span style="color:var(--mut)">（未儲存）</span>':revealed?(revealed[s.id]==null?'<span style="color:var(--mut)">（無法解密）</span>':`<code style="user-select:all;font-size:15px">${esc(revealed[s.id])}</code> <button class="ghost" data-copypw="${esc(s.id)}" style="padding:2px 8px">複製密碼</button>`):'<code>••••••••</code>';
   const draw=()=>{
     showPage(`<div class="mhead"><button class="ghost" id="sx">關閉</button></div><div class="pghead"><span class="pgic" style="background:#0a84ff"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.2 4.2 0 0 0 5.9 0l3-3a4.2 4.2 0 0 0-5.9-5.9l-1 1"/><path d="M14 10a4.2 4.2 0 0 0-5.9 0l-3 3a4.2 4.2 0 0 0 5.9 5.9l1-1"/></svg></span><b>已分享連結</b><p>對方開啟連結後可檢視與下載。撤銷後連結立刻失效，對方已經打開的下載連結也一併失效。</p></div>
       ${list.some(s=>s.hasPassword)?`<div class="mbtns" style="margin:0 0 6px">${revealed?'<button class="ghost" data-hide="1">🙈 隱藏密碼</button>':'<button data-reveal="1">🔑 顯示密碼</button>'}</div>`:''}`+
