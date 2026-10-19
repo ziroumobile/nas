@@ -963,3 +963,16 @@ html body #modal .trselbtn.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a
 /* trash: restore is an icon too (blue), same round size as the purge icon */
 html body #modal .trbtn.trrest:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:56px;padding:0!important;display:flex!important;align-items:center;justify-content:center}
 html body #modal button.trrestico:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
+
+/* ---- plan B: bottom "調整" sheet (view switch / sort / upload) ---- */
+#tunebd{position:fixed;inset:0;z-index:79;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .25s}
+#tunebd.open{opacity:1;pointer-events:auto}
+#tunesheet{position:fixed;left:0;right:0;bottom:0;z-index:80;max-width:760px;margin:0 auto;padding:12px 18px calc(env(safe-area-inset-bottom) + 22px);border-radius:30px 30px 0 0;background:rgba(36,38,44,.98);box-shadow:0 -20px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.14);transform:translateY(105%);transition:transform .42s cubic-bezier(.2,.9,.3,1.12)}
+#tunesheet.open{transform:none}
+.tunegrab{width:44px;height:5px;border-radius:3px;background:rgba(255,255,255,.28);margin:0 auto 12px}
+.tunelab{font-size:13px;font-weight:700;color:#8e8e93;margin:16px 4px 8px}
+#tunesheet .bar{margin:0;padding:0;display:flex;gap:8px;align-items:center;flex-wrap:nowrap;background:none!important;box-shadow:none!important}
+#tunesheet .tunesort{justify-content:flex-start}
+#tunesheet .seg{width:100%;flex:1 1 auto;max-width:none}
+#tunesheet #drop{margin:0}
+#tunesheet #selmode{display:none!important}

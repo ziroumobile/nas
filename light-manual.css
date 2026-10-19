@@ -94,3 +94,6 @@ html[data-theme="light"] body .seltop button#selshare:not(#nx1):not(#nx2):not(#n
 html[data-theme="light"] body .selbot button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
 html[data-theme="light"] body #modal .trselbtn.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important}
 html[data-theme="light"] body #modal button.trrestico:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
+html[data-theme="light"] #tunesheet{background:rgba(250,250,252,.98);box-shadow:0 -20px 60px rgba(0,0,0,.25),inset 0 0 0 1px rgba(0,0,0,.1)}
+html[data-theme="light"] .tunegrab{background:rgba(0,0,0,.25)}
+html[data-theme="light"] #tunebd{background:rgba(0,0,0,.25)}

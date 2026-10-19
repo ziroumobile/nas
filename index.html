@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.6">
+<meta name="app-version" content="v8.7">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261022B">
-<link rel="stylesheet" href="light.css?v=20261022B">
+<link rel="stylesheet" href="glass.css?v=20261022C">
+<link rel="stylesheet" href="light.css?v=20261022C">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261022B"></script>
+<script src="glass.js?v=20261022C"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -817,21 +817,23 @@ if(document.documentElement.classList.contains('ios')||matchMedia('(max-width:69
   { // the title (📁 我的 NAS) is gone: the upload target takes its place in the header row, left of the round buttons
     const hd=document.querySelector('#app>header'),h1=hd&&hd.querySelector('h1');w.className='uptarget';w.append($('#selmode'));if(h1)h1.replaceWith(w);else if(hd)hd.prepend(w);
   }   // order below the header: view switch / sort
-  { // the three rows (upload target / view switch / sort) are always fixed right under the title, like the title itself - a scroll-driven switch jittered on Android.
-    // An empty spacer keeps their place in the page, so the list starts exactly below them.
-    const ts=document.createElement('div'),ph=document.createElement('div');ts.id='toolsticky';ph.id='toolph';segBar.before(ph);ph.after(ts);ts.append(segBar,sb);
-    const fit=()=>{
-      const hdr=document.querySelector('#app>header');if(!hdr||$('#app').hidden||document.body.classList.contains('selecting'))return;
-      ph.style.height='0px';const N=ph.offsetTop,top=hdr.getBoundingClientRect().bottom;   // N: where the rows would naturally start; top: just under the fixed title
-      ts.style.top=top+'px';ph.style.height=Math.max(0,top+ts.offsetHeight-N)+'px';
-    };
-    new ResizeObserver(fit).observe(ts);addEventListener('resize',fit);addEventListener('load',fit);
-    new MutationObserver(fit).observe(document.body,{attributes:true,attributeFilter:['class']});new MutationObserver(fit).observe($('#app'),{attributes:true,attributeFilter:['hidden']});
-    setTimeout(fit,300);setTimeout(fit,1500);
+  { // plan B: the view switch, the sort row and the upload drop-zone live in a bottom sheet opened by the "調整" round button; the page itself is just the files
+    const sheet=document.createElement('div'),bd=document.createElement('div');sheet.id='tunesheet';bd.id='tunebd';
+    const lab=t=>{const d=document.createElement('div');d.className='tunelab';d.textContent=t;return d};
+    const grab=document.createElement('div');grab.className='tunegrab';
+    segBar.classList.add('tuneseg');sb.classList.add('tunesort');
+    sheet.append(grab,lab('顯示方式'),segBar,lab('排序'),sb,lab('上傳'),$('#drop'));
+    segBar.firstChild&&segBar.firstChild.nodeType===3&&segBar.removeChild(segBar.firstChild);   // the "顯示方式：" text is now the section label
+    [...sb.childNodes].forEach(n=>{if(n.nodeType===3)sb.removeChild(n)});                        // and "排序："
+    document.body.append(bd,sheet);
+    const hb=document.querySelector('#app>header .hdrbtns'),btn=document.createElement('button');btn.className='hb';btn.id='dtune';btn.type='button';btn.setAttribute('aria-label','調整');btn.title='調整';
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg>';
+    if(hb)hb.prepend(btn);
+    const set=on=>{sheet.classList.toggle('open',on);bd.classList.toggle('open',on);btn.classList.toggle('act',on)};
+    btn.onclick=()=>set(!sheet.classList.contains('open'));bd.onclick=()=>set(false);
+    new MutationObserver(()=>{if(document.body.classList.contains('selecting'))set(false)}).observe(document.body,{attributes:true,attributeFilter:['class']});
+    window.__tuneClose=()=>set(false);
   }
-
-
-  
 }catch(e){console.error('layout',e)}
 // desktop layout (phones / iOS keep the original): row 1 = upload target + new folder + ..., row 2 = sort / select / search, row 3 = view switch; the device name + rename are hidden
 if(!document.documentElement.classList.contains('ios')&&matchMedia('(min-width:700px)').matches){
@@ -1619,7 +1621,7 @@ async function dropItems(dt){
   const out=[];for(const e of ents)await readEntry(e,[],out);
   pickTree(out);
 }
-$('#drop').onclick=()=>$('#f').click();$('#f').onchange=e=>{pick(e.target.files);e.target.value=''};
+$('#drop').onclick=()=>$('#f').click();$('#f').onchange=e=>{pick(e.target.files);e.target.value='';window.__tuneClose&&window.__tuneClose()};
 $('#drop').ondragover=e=>{e.preventDefault();$('#drop').classList.add('over')};
 $('#drop').ondragleave=()=>$('#drop').classList.remove('over');
 $('#drop').ondrop=e=>{e.preventDefault();$('#drop').classList.remove('over');dropItems(e.dataTransfer)};
