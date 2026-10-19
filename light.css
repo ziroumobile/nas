@@ -340,3 +340,4 @@ html[data-theme="light"] body #modal button.trico:not(#nx1):not(#nx2):not(#nx3):
 html[data-theme="light"] body .seltop button#selshare:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#000!important}
 html[data-theme="light"] body .selbot button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
 html[data-theme="light"] body #modal .trselbtn.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important}
+html[data-theme="light"] body #modal button.trrestico:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}

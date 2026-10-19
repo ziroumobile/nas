@@ -959,3 +959,7 @@ html body .selbot button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:56p
 html body .selbot button#seldl svg{width:26px;height:26px}
 /* trash select button: when on, only the icon turns blue (no ring) */
 html body #modal .trselbtn.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important}
+
+/* trash: restore is an icon too (blue), same round size as the purge icon */
+html body #modal .trbtn.trrest:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:56px;padding:0!important;display:flex!important;align-items:center;justify-content:center}
+html body #modal button.trrestico:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}

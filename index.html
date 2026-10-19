@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.2">
+<meta name="app-version" content="v8.3">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261021ZX">
-<link rel="stylesheet" href="light.css?v=20261021ZX">
+<link rel="stylesheet" href="glass.css?v=20261021ZY">
+<link rel="stylesheet" href="light.css?v=20261021ZY">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261021ZX"></script>
+<script src="glass.js?v=20261021ZY"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1260,9 +1260,9 @@ async function trashWindow(selMode=false,keep){ // everything that was deleted b
   const draw=()=>{
     showPage((selMode?'<button class="trallbtn" id="trall" type="button">'+(sel.size&&sel.size===j.items.length?'取消全選':'全選')+'</button>':'')+'<button class="trselbtn hb'+(selMode?' act':'')+'" id="trseltop" type="button" aria-label="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button>'
     +'<div class="mhead"><h3>🗑 回收區</h3></div><p class="sub">刪除的檔案會先放在這裡，使用者看起來已經刪除，但其實還在主機上。這裡可以還原。'+(j.items.length?'共 '+j.items.length+' 個項目，'+fmtTotal(j.size)+'。':'')+'</p>'+
-      (j.items.length?j.items.map(x=>'<div class="srow trrow" data-id="'+esc(x.id)+'">'+(selMode?'<span class="trck'+(sel.has(x.id)?' on':'')+'">'+(sel.has(x.id)?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4.5 4.5 8.5-9"/></svg>':'')+'</span>':'')+'<div class="trth">'+(x.thumb?'<img data-big="'+esc(x.thumb)+'" loading="eager" decoding="async" alt="" src="'+thumbSrc(x.thumb)+'" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{textContent:\'📄\'}))">':'<span>'+(x.kind==='folder'?'📁':'📄')+'</span>')+'</div><div class="trin"><b>'+(x.kind==='folder'?'資料夾「'+esc(x.path)+'」':esc(x.path))+'</b><small>'+(x.kind==='folder'?x.count+' 個檔案 · ':'')+fmtTotal(x.size)+' · 刪除於 '+when(x.t)+'<br>'+esc(x.user)+(x.dev?' · '+esc(x.dev):'')+'</small>'+(selMode?'':'<div class="mbtns" style="margin-top:6px"><button data-restore="'+esc(x.id)+'">還原</button><button class="del trico" data-purge="'+esc(x.id)+'" aria-label="清除"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M9 2.8h6l.8 1.7H20v2.2H4V4.5h4.2z"/><path d="M5.6 8.2h12.8l-.9 11.2a2.2 2.2 0 0 1-2.2 2H8.7a2.2 2.2 0 0 1-2.2-2z"/><path d="M9.6 11v7M12 11v7M14.4 11v7" stroke="#2a2b30" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button></div>')+'</div></div>').join('')
+      (j.items.length?j.items.map(x=>'<div class="srow trrow" data-id="'+esc(x.id)+'">'+(selMode?'<span class="trck'+(sel.has(x.id)?' on':'')+'">'+(sel.has(x.id)?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4.5 4.5 8.5-9"/></svg>':'')+'</span>':'')+'<div class="trth">'+(x.thumb?'<img data-big="'+esc(x.thumb)+'" loading="eager" decoding="async" alt="" src="'+thumbSrc(x.thumb)+'" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{textContent:\'📄\'}))">':'<span>'+(x.kind==='folder'?'📁':'📄')+'</span>')+'</div><div class="trin"><b>'+(x.kind==='folder'?'資料夾「'+esc(x.path)+'」':esc(x.path))+'</b><small>'+(x.kind==='folder'?x.count+' 個檔案 · ':'')+fmtTotal(x.size)+' · 刪除於 '+when(x.t)+'<br>'+esc(x.user)+(x.dev?' · '+esc(x.dev):'')+'</small>'+(selMode?'':'<div class="mbtns" style="margin-top:6px"><button class="trico trrestico" data-restore="'+esc(x.id)+'" aria-label="還原"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.5-4.3L4 8.5"/><path d="M4 4v4.5h4.5"/><path d="M4 13a8 8 0 0 0 14.5 4.3L20 15.5"/><path d="M20 20v-4.5h-4.5"/></svg></button><button class="del trico" data-purge="'+esc(x.id)+'" aria-label="清除"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M9 2.8h6l.8 1.7H20v2.2H4V4.5h4.2z"/><path d="M5.6 8.2h12.8l-.9 11.2a2.2 2.2 0 0 1-2.2 2H8.7a2.2 2.2 0 0 1-2.2-2z"/><path d="M9.6 11v7M12 11v7M14.4 11v7" stroke="#2a2b30" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button></div>')+'</div></div>').join('')
         +(selMode?'<div style="height:96px"></div>':'<div class="mbtns" style="margin-top:16px"><button class="del" id="trempty">清空回收區（永久刪除）</button></div>'):'<p class="sub">回收區是空的。</p>')
-      +(selMode?'<div class="trbar"><button class="trbtn trpurge" id="trpurge" type="button" aria-label="清除"'+(sel.size?'':' disabled')+'><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M9 2.8h6l.8 1.7H20v2.2H4V4.5h4.2z"/><path d="M5.6 8.2h12.8l-.9 11.2a2.2 2.2 0 0 1-2.2 2H8.7a2.2 2.2 0 0 1-2.2-2z"/><path d="M9.6 11v7M12 11v7M14.4 11v7" stroke="#2a2b30" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button><button class="trbtn trrest" id="trrest" type="button"'+(sel.size?'':' disabled')+'>還原</button></div>':''));
+      +(selMode?'<div class="trbar"><button class="trbtn trpurge" id="trpurge" type="button" aria-label="清除"'+(sel.size?'':' disabled')+'><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M9 2.8h6l.8 1.7H20v2.2H4V4.5h4.2z"/><path d="M5.6 8.2h12.8l-.9 11.2a2.2 2.2 0 0 1-2.2 2H8.7a2.2 2.2 0 0 1-2.2-2z"/><path d="M9.6 11v7M12 11v7M14.4 11v7" stroke="#2a2b30" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button><button class="trbtn trrest" id="trrest" type="button" aria-label="還原"'+(sel.size?'':' disabled')+'><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.5-4.3L4 8.5"/><path d="M4 4v4.5h4.5"/><path d="M4 13a8 8 0 0 0 14.5 4.3L20 15.5"/><path d="M20 20v-4.5h-4.5"/></svg></button></div>':''));
   };
   draw();
   const mb0=$('#mbox');if(!mb0._trPeek){mb0._trPeek=1;let t=null,x0=0,y0=0;const stop=()=>{clearTimeout(t);t=null};
@@ -1300,7 +1300,7 @@ async function trashWindow(selMode=false,keep){ // everything that was deleted b
       trashWindow()}
   };
 }
-$('#trash').onclick=trashWindow;
+$('#trash').onclick=()=>trashWindow();
 $('#devices').onclick=devicesWindow;
 
 $('#selshare').onclick=()=>{const items=[...selected].map(splitKey);if(items.length)shareDialog(`${items.length} 個檔案`,{items})};
