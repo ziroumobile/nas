@@ -256,6 +256,8 @@ html[data-theme="light"] #morepop .mpi:active{background:rgba(135,135,127,0.3)}
 html[data-theme="light"] body #morepop{background:rgba(215,215,211,0.72)!important;box-shadow:inset 0 1px 0 rgba(0,0,0,0.12),inset 0 -1px 0 rgba(0,0,0,0.06),0 14px 40px rgba(0,0,0,0.190)!important}
 html[data-theme="light"] body #morepop button.mpi:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#000000!important}
 html[data-theme="light"] body #morepop button.mpi:not(#nx1):not(#nx2):not(#nx3):not(#nx4):active{background:rgba(135,135,127,0.45)!important}
+html[data-theme="light"] .trth .tric,html[data-theme="light"] .trth .trbadic svg{color:#71716c}
+html[data-theme="light"] body #modal button[data-copy]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){box-shadow:inset 0 0 0 1px rgba(0,0,0,0.16)!important}
 
 /* ---- hand-made part ---- */
 html[data-theme="light"]{color-scheme:light;--bg:#f2f2f7;--card:#fff;--fg:#000;--mut:#6c6c70;--ac:#007aff;--bd:#e5e5ea;--seg-fg:#1c1c1e;--seg-blue:#007aff;background:#f2f2f7}
@@ -359,3 +361,5 @@ html[data-theme="light"] #morepop{background:rgba(252,252,254,.98);box-shadow:0 
 html[data-theme="light"] #morepop .mpi{color:#000}
 html[data-theme="light"] body #morepop{background:rgba(250,250,252,.8)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1),0 14px 40px rgba(0,0,0,.2)!important}
 html[data-theme="light"] body #morepop button.mpi:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#000!important}
+html[data-theme="light"] body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"].ios body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"]:not(.ios) body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#000!important}
+html[data-theme="light"] body #modal button[data-copy]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(0,0,0,.045)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important}

@@ -1013,3 +1013,8 @@ html body .uptarget select{max-width:calc(10ch + 30px)!important}
   html:not(.ios) body #app>header .hdrbtns{display:flex;gap:10px}
   html body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){left:50%!important;right:auto!important;margin-left:-30px;bottom:calc(env(safe-area-inset-bottom) + 100px)!important}
 }
+
+/* computer: the upload target shows its whole name (the 10-character cap is for phones) */
+@media(min-width:700px){html body .uptarget select{max-width:240px!important;min-width:90px}}
+/* shared links: copy-link button has the same ring as its neighbours */
+html body #modal button[data-copy]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)!important;border-radius:999px!important}
