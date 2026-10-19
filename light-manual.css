@@ -103,3 +103,5 @@ html[data-theme="light"] body #morepop{background:rgba(250,250,252,.8)!important
 html[data-theme="light"] body #morepop button.mpi:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#000!important}
 html[data-theme="light"] body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"].ios body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"]:not(.ios) body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#000!important}
 html[data-theme="light"] body #modal button[data-copy]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(0,0,0,.045)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important}
+html[data-theme="light"] body #modal button.vform:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(0,0,0,.045)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important;color:#000!important}
+html[data-theme="light"] body #modal button#vsave:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}

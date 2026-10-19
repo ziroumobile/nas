@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.22">
+<meta name="app-version" content="v8.23">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261022S">
-<link rel="stylesheet" href="light.css?v=20261022S">
+<link rel="stylesheet" href="glass.css?v=20261022T">
+<link rel="stylesheet" href="light.css?v=20261022T">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261022S"></script>
+<script src="glass.js?v=20261022T"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1785,12 +1785,11 @@ async function vaultOpen(){
   };
   const form=(it)=>{
     const f=$('#vform');f.hidden=false;
-    f.innerHTML='<div class="srow"><b>'+(it?'編輯':'新增')+'密碼</b><label>名稱</label><input id="vtitlein" value="'+esc(it?.title||'')+'" autocomplete="off"><label>帳號</label><input id="vuser" value="'+esc(it?.user||'')+'" autocomplete="off" autocapitalize="off"><label>密碼'+(it?'（留空 = 不改）':'')+'</label><input id="vpwin" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"><label>網址（選填）</label><input id="vurl" value="'+esc(it?.url||'')+'" autocapitalize="off"><div class="mbtns" style="margin-top:10px"><button id="vsave">儲存</button><button class="ghost" id="vcancel">取消</button><button class="ghost" id="vgen">產生密碼</button></div><div class="merr" id="verr"></div></div>';
+    f.innerHTML='<div class="srow"><b>'+(it?'編輯':'新增')+'密碼</b><label>名稱</label><input id="vtitlein" value="'+esc(it?.title||'')+'" autocomplete="off"><label>帳號</label><input id="vuser" value="'+esc(it?.user||'')+'" autocomplete="off" autocapitalize="off"><label>密碼'+(it?'（留空 = 不改）':'')+'</label><input id="vpwin" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="mbtns" style="margin-top:10px"><button class="vform" id="vsave">儲存</button><button class="vform" id="vcancel">取消</button></div><div class="merr" id="verr"></div></div>';
     f.scrollIntoView({block:'nearest'});
     $('#vcancel').onclick=()=>{f.hidden=true;f.innerHTML=''};
-    $('#vgen').onclick=()=>{const cs='abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%^&*',a=new Uint32Array(18);crypto.getRandomValues(a);$('#vpwin').value=[...a].map(n=>cs[n%cs.length]).join('')};
     $('#vsave').onclick=async()=>{
-      const body={id:it?.id,title:$('#vtitlein').value,user:$('#vuser').value,pw:$('#vpwin').value,url:$('#vurl').value};
+      const body={id:it?.id,title:$('#vtitlein').value,user:$('#vuser').value,pw:$('#vpwin').value,url:''};
       const r=await api('/api/vault',{method:'POST',body:JSON.stringify(body)});
       if(!r.ok)return $('#verr').textContent=(await r.json().catch(()=>({}))).error||'儲存失敗';
       await load();draw()};
