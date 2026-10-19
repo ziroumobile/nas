@@ -84,3 +84,7 @@ html[data-theme="light"] body button.glassclose:not(#nx1):not(#nx2):not(#nx3):no
 html[data-theme="light"] body #viewer #vdl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
 html[data-theme="light"] body button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body .seltop #seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
 html[data-theme="light"].ios body .seltop button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"]:not(.ios) body .seltop button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"].ios body .selbot button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"]:not(.ios) body .selbot button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
+html[data-theme="light"] body #modal .trselbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #modal .trbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.92)!important;color:#000!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important}
+html[data-theme="light"] body #modal .trselbtn.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
+html[data-theme="light"] body #modal .trbtn.trpurge:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#ff3b30!important}
+html[data-theme="light"] body #modal .trbtn.trrest:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}

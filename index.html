@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v7.49">
+<meta name="app-version" content="v7.50">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261021ZU">
-<link rel="stylesheet" href="light.css?v=20261021ZU">
+<link rel="stylesheet" href="glass.css?v=20261021ZV">
+<link rel="stylesheet" href="light.css?v=20261021ZV">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261021ZU"></script>
+<script src="glass.js?v=20261021ZV"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1252,14 +1252,33 @@ async function devicesWindow(){ // the other devices signed in to this account; 
     const r=await api('/api/sessions/revoke',{method:'POST',headers:bh,body:JSON.stringify({ids:b.dataset.sid.split(',')})});
     if(!r.ok){alert((await r.json().catch(()=>({}))).error||'登出失敗');b.disabled=false;return}devicesWindow()};
 }
-async function trashWindow(){ // everything that was deleted but is still kept on the NAS: put it back, or empty it for good
+async function trashWindow(selMode=false,keep){ // everything that was deleted but is still kept on the NAS: put it back, or remove it for good
   showPage('<h3>🗑 回收區</h3><p class="sub">載入中…</p>');
   const when=t=>fmtDT(t);
   let j;try{const r=await api('/api/trash');if(!r.ok)throw 0;j=await r.json()}catch{showPage('<h3>🗑 回收區</h3><p class="merr">無法載入</p>');return}
-  showPage('<div class="mhead"><h3>🗑 回收區</h3></div><p class="sub">刪除的檔案會先放在這裡，使用者看起來已經刪除，但其實還在主機上。這裡可以還原。'+(j.items.length?'共 '+j.items.length+' 個項目，'+fmtTotal(j.size)+'。':'')+'</p>'+
-    (j.items.length?j.items.map(x=>'<div class="srow trrow"><div class="trth">'+(x.thumb?'<img loading="lazy" decoding="async" alt="" src="'+thumbSrc(x.thumb)+'" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{textContent:\'📄\'}))">':'<span>'+(x.kind==='folder'?'📁':'📄')+'</span>')+'</div><div class="trin"><b>'+(x.kind==='folder'?'資料夾「'+esc(x.path)+'」':esc(x.path))+'</b><small>'+(x.kind==='folder'?x.count+' 個檔案 · ':'')+fmtTotal(x.size)+' · 刪除於 '+when(x.t)+'<br>'+esc(x.user)+(x.dev?' · '+esc(x.dev):'')+'</small><div class="mbtns" style="margin-top:6px"><button data-restore="'+esc(x.id)+'">還原</button><button class="del" data-purge="'+esc(x.id)+'">清除</button></div></div></div>').join('')
-      +'<div class="mbtns" style="margin-top:16px"><button class="del" id="trempty">清空回收區（永久刪除）</button></div>':'<p class="sub">回收區是空的。</p>'));
+  const sel=new Set(keep||[]);
+  const draw=()=>{
+    showPage('<button class="trselbtn'+(selMode?' act':'')+'" id="trseltop" type="button" aria-label="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button>'
+    +'<div class="mhead"><h3>🗑 回收區</h3></div><p class="sub">刪除的檔案會先放在這裡，使用者看起來已經刪除，但其實還在主機上。這裡可以還原。'+(j.items.length?'共 '+j.items.length+' 個項目，'+fmtTotal(j.size)+'。':'')+'</p>'+
+      (j.items.length?j.items.map(x=>'<div class="srow trrow" data-id="'+esc(x.id)+'">'+(selMode?'<span class="trck'+(sel.has(x.id)?' on':'')+'">'+(sel.has(x.id)?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4.5 4.5 8.5-9"/></svg>':'')+'</span>':'')+'<div class="trth">'+(x.thumb?'<img loading="lazy" decoding="async" alt="" src="'+thumbSrc(x.thumb)+'" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{textContent:\'📄\'}))">':'<span>'+(x.kind==='folder'?'📁':'📄')+'</span>')+'</div><div class="trin"><b>'+(x.kind==='folder'?'資料夾「'+esc(x.path)+'」':esc(x.path))+'</b><small>'+(x.kind==='folder'?x.count+' 個檔案 · ':'')+fmtTotal(x.size)+' · 刪除於 '+when(x.t)+'<br>'+esc(x.user)+(x.dev?' · '+esc(x.dev):'')+'</small>'+(selMode?'':'<div class="mbtns" style="margin-top:6px"><button data-restore="'+esc(x.id)+'">還原</button><button class="del" data-purge="'+esc(x.id)+'">清除</button></div>')+'</div></div>').join('')
+        +(selMode?'<div style="height:96px"></div>':'<div class="mbtns" style="margin-top:16px"><button class="del" id="trempty">清空回收區（永久刪除）</button></div>'):'<p class="sub">回收區是空的。</p>')
+      +(selMode?'<div class="trbar"><button class="trbtn trpurge" id="trpurge" type="button"'+(sel.size?'':' disabled')+'>清除</button><button class="trbtn trrest" id="trrest" type="button"'+(sel.size?'':' disabled')+'>還原</button></div>':''));
+  };
+  draw();
+  const del1=async id=>{const r=await api('/api/trash/purge',{method:'POST',body:JSON.stringify({id})});if(!r.ok)throw new Error((await r.json().catch(()=>({}))).error||'清除失敗')};
   $('#mbox').onclick=async e=>{
+    if(e.target.closest('#trseltop')){selMode=!selMode;sel.clear();return draw()}
+    if(selMode){
+      const row=e.target.closest('.trrow');
+      if(row&&!e.target.closest('button')){const id=row.dataset.id;if(sel.has(id))sel.delete(id);else sel.add(id);return draw()}
+      if(e.target.closest('#trpurge')&&sel.size){
+        if(!confirm('永久刪除選取的 '+sel.size+' 個項目？\n這個動作無法復原。'))return;
+        let fail='';for(const id of [...sel]){try{await del1(id)}catch(er){fail=er.message;break}}
+        if(fail)alert(fail);return trashWindow(false)}
+      if(e.target.closest('#trrest')&&sel.size){
+        let n=0,fail='';for(const id of [...sel]){const r=await api('/api/trash/restore',{method:'POST',body:JSON.stringify({id})});if(r.ok)n++;else fail=(await r.json().catch(()=>({}))).error||'還原失敗'}
+        if(fail)alert('已還原 '+n+' 個，其餘失敗：'+fail);await refresh();return trashWindow(false)}
+      return}
     const rb=e.target.closest('button[data-restore]');
     if(rb){rb.disabled=true;const r=await api('/api/trash/restore',{method:'POST',body:JSON.stringify({id:rb.dataset.restore})});const jj=await r.json().catch(()=>({}));
       if(!r.ok){alert(jj.error||'還原失敗');rb.disabled=false;return}
@@ -1267,9 +1286,7 @@ async function trashWindow(){ // everything that was deleted but is still kept o
     const pb=e.target.closest('button[data-purge]');
     if(pb){
       if(!confirm('永久刪除這個項目？\n這個動作無法復原。'))return;
-      const eh=await askEdit('請確認身分，以永久刪除這個項目');if(!eh)return;
-      pb.disabled=true;const r=await api('/api/trash/purge',{method:'POST',headers:eh,body:JSON.stringify({id:pb.dataset.purge})});
-      if(!r.ok){pb.disabled=false;return alert((await r.json().catch(()=>({}))).error||'清除失敗')}
+      pb.disabled=true;try{await del1(pb.dataset.purge)}catch(er){pb.disabled=false;return alert(er.message)}
       return trashWindow()}
     if(e.target.closest('#trempty')){
       if(!confirm('永久刪除回收區裡的全部項目？\n這個動作無法復原。'))return;
