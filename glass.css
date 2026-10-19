@@ -910,3 +910,6 @@ html body a.btn.dlrow:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body button.d
 
 /* expired share: one frosted-glass button with white text (replaces revoke / open) */
 html body button.glassclose:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:block!important;width:100%;padding:13px 16px!important;border-radius:999px!important;background:rgba(120,120,128,.38)!important;-webkit-backdrop-filter:blur(18px) saturate(170%)!important;backdrop-filter:blur(18px) saturate(170%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)!important;color:#fff!important;font-size:16px;font-weight:700}
+
+/* blue download icon in the picture / video viewer and in the select bar (every page that has them) */
+html body #viewer #vdl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body #viewer a#vdl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body .seltop #seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
