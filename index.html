@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.21">
+<meta name="app-version" content="v8.22">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261022R">
-<link rel="stylesheet" href="light.css?v=20261022R">
+<link rel="stylesheet" href="glass.css?v=20261022S">
+<link rel="stylesheet" href="light.css?v=20261022S">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261022R"></script>
+<script src="glass.js?v=20261022S"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1268,11 +1268,13 @@ async function devicesWindow(){ // the other devices signed in to this account; 
   const when=t=>fmtDT(t);
   let j;try{const r=await api('/api/sessions');if(!r.ok)throw 0;j=await r.json()}catch{showPage('<h3>📱 其他已登入的裝置</h3><p class="merr">無法載入</p><div class="mbtns"><button class="ghost" id="dvx">關閉</button></div>');$('#dvx').onclick=closeModal;return}
   const groups=new Map(); // the same phone can hold several logins (an old one, the browser, the installed app): show it once
-  for(const x of j.sessions.filter(x=>x.id!==j.current)){const key=(x.dev||'')+'|'+uaShort(x.ua),g=groups.get(key);
+  const me0=j.sessions.find(x=>x.id===j.current),meKey=me0?(me0.dev||'')+'|'+uaShort(me0.ua):null;
+  const stale=j.sessions.filter(x=>x.id!==j.current&&meKey&&(x.dev||'')+'|'+uaShort(x.ua)===meKey);   // earlier logins of THIS very device / browser: not "other devices"
+  for(const x of j.sessions.filter(x=>x.id!==j.current&&!stale.includes(x))){const key=(x.dev||'')+'|'+uaShort(x.ua),g=groups.get(key);
     if(!g)groups.set(key,{...x,ids:[x.id]});else{g.ids.push(x.id);g.last=Math.max(g.last,x.last);g.first=Math.min(g.first,x.first)}}
   const others=[...groups.values()].sort((a,b)=>b.last-a.last);
   showPage('<div class="mhead"><h3>📱 其他已登入的裝置（'+others.length+'）</h3><button class="ghost" id="dvx">關閉</button></div><p class="sub">選擇要登出哪一台。登出後那台裝置會回到登入畫面，要重新輸入密碼。只列出主機看過的登入。</p>'+
-    (others.length?others.map(x=>'<div class="srow"><b>'+esc(x.dev||'（未命名）')+'</b><small>'+esc(uaShort(x.ua))+'<br>最近使用 '+when(x.last)+' · 首次 '+when(x.first)+'</small><div class="mbtns" style="margin-top:6px"><button class="del" data-sid="'+esc(x.ids.join(','))+'">登出這台</button></div></div>').join(''):'<p class="sub">沒有其他已登入的裝置。</p>'));
+    (stale.length?'<div class="srow"><b>這台裝置的舊登入（'+stale.length+'）</b><small>這支手機／瀏覽器以前登入留下的，不是別的裝置。</small><div class="mbtns" style="margin-top:6px"><button class="del" data-sid="'+esc(stale.map(x=>x.id).join(','))+'">登出舊登入</button></div></div>':'')+(others.length?others.map(x=>'<div class="srow"><b>'+esc(x.dev||'（未命名）')+'</b><small>'+esc(uaShort(x.ua))+'<br>最近使用 '+when(x.last)+' · 首次 '+when(x.first)+'</small><div class="mbtns" style="margin-top:6px"><button class="del" data-sid="'+esc(x.ids.join(','))+'">登出這台</button></div></div>').join(''):'<p class="sub">沒有其他已登入的裝置。</p>'));
   $('#dvx').onclick=closeModal;
   $('#mbox').onclick=async e=>{const b=e.target.closest('button[data-sid]');if(!b)return;if(!confirm('登出這台裝置？'))return;
     const bh=await askBioOnly('用生物辨識確認，登出這台裝置');if(!bh)return;b.disabled=true;
