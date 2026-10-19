@@ -1060,3 +1060,6 @@ html body #modal button[data-vc="unlock"]:not(#nx1):not(#nx2):not(#nx3):not(#nx4
 #cliplist .sub{grid-column:1/-1}
 /* dock badges: the number is always white (also with two digits) */
 html body #dock .dbadge{color:#fff!important}
+
+/* the + upload button must not show over a file preview (same weight as its own display:flex rule) */
+html body:has(#viewer:not([hidden])) button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important}
