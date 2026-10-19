@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v7.36">
+<meta name="app-version" content="v7.37">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261021ZG">
-<link rel="stylesheet" href="light.css?v=20261021ZG">
+<link rel="stylesheet" href="glass.css?v=20261021ZI">
+<link rel="stylesheet" href="light.css?v=20261021ZI">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261021ZG"></script>
+<script src="glass.js?v=20261021ZI"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -514,7 +514,22 @@ function pickPage(title,note,list,cur,save){ // a list of choices (check mark on
 $('#lockset').onclick=()=>pickPage('🔒 鎖定時間','離開 App 超過這段時間，再回來時要重新解鎖（編輯密碼或生物辨識）。只記在這台裝置上。',LOCKS,lockKey(),k=>{try{ls.set('nas_lock',k)}catch{}});
 const theme=()=>{try{return localStorage.getItem('nas_theme')==='light'?'light':'dark'}catch{return 'dark'}};
 function setTheme(v){try{localStorage.setItem('nas_theme',v)}catch{}const de=document.documentElement;if(v==='light')de.setAttribute('data-theme','light');else de.removeAttribute('data-theme');de.style.background=v==='light'?'#f2f2f7':'';const tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content',v==='light'?'#f2f2f7':'#000000');try{window.glassThemeChanged&&glassThemeChanged()}catch{}}
-$('#appearance').onclick=()=>pickPage('🌓 外觀','選擇淺色或深色模式。',[['dark','深色'],['light','淺色']],theme(),setTheme);
+function themeThumb(light){
+  const bg=light?'#f2f2f7':'#000',cd=light?'#fff':'#1c1c1e',tx=light?'#d4d4dc':'#48484a',lb=light?'#2c2c2e':'#e5e5ea',ring=light?'rgba(0,0,0,.14)':'rgba(255,255,255,.16)';
+  const row=(y,c)=>'<span style="position:absolute;left:8px;top:'+y+'px;width:12px;height:12px;border-radius:3px;background:'+c+'"></span><span style="position:absolute;left:26px;top:'+(y+2)+'px;width:44px;height:3px;border-radius:2px;background:'+lb+'"></span><span style="position:absolute;left:26px;top:'+(y+8)+'px;width:26px;height:2px;border-radius:2px;background:'+tx+'"></span>';
+  return '<span class="thumb" style="position:relative;display:block;width:96px;height:176px;border-radius:18px;background:'+bg+';box-shadow:0 0 0 1.5px '+ring+';overflow:hidden">'
+   +'<span style="position:absolute;left:8px;top:16px;width:18px;height:18px;border-radius:9px;background:'+cd+';box-shadow:inset 0 0 0 1px '+ring+'"></span>'
+   +'<span style="position:absolute;left:8px;top:42px;width:44px;height:7px;border-radius:3px;background:'+lb+'"></span>'
+   +'<span style="position:absolute;left:5px;top:58px;width:86px;height:34px;border-radius:9px;background:'+cd+'"></span>'
+   +'<span style="position:absolute;left:5px;top:98px;width:86px;height:58px;border-radius:9px;background:'+cd+'">'+row(7,'#ff9f0a')+row(24,'#0a84ff')+row(41,'#5e5ce6')+'</span>'
+   +'<span style="position:absolute;left:12px;right:12px;bottom:6px;height:12px;border-radius:6px;background:'+cd+';box-shadow:inset 0 0 0 1px '+ring+'"></span></span>';
+}
+$('#appearance').onclick=()=>{
+  const draw=()=>{const cur=theme();
+    showPage('<div class="mhead"><h3>🌓 外觀</h3></div><p class="sub">選擇淺色或深色模式。</p><div class="thgrid">'+[['light','淺色'],['dark','深色']].map(([k,n])=>'<button class="thcard" data-k="'+k+'" type="button">'+themeThumb(k==='light')+'<span class="thname">'+n+'</span><span class="thradio'+(cur===k?' on':'')+'">'+(cur===k?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4.5 4.5 8.5-9"/></svg>':'')+'</span></button>').join('')+'</div>');
+    $('#mbox').onclick=e=>{const b=e.target.closest('button[data-k]');if(!b)return;if(b.dataset.k!==theme()){setTheme(b.dataset.k);syncPrefs();draw()}};
+  };draw();
+};
 $('#vqset').onclick=()=>pickPage('🎞 預覽畫質','影片和照片預覽使用的畫質。選「原檔」就不轉檔，直接播放原始檔案（較大、可能無法播放某些格式）。只記在這台裝置上。',VQS,vq(),k=>{try{ls.set('nas_vq',k)}catch{}});
 syncPrefs();$('#dset').addEventListener('click',()=>setTimeout(syncPrefs,0));
 $('#setdev').onclick=()=>$('#rename').click();

@@ -881,3 +881,13 @@ html.ios:not(.android):has(#uppage:not([hidden])),html.ios:not(.android):has(#up
 html.ios:not(.android):has(#storage:not([hidden])),html.ios:not(.android):has(#storage:not([hidden])) body,
 html.ios:not(.android):has(#setpanel:not([hidden])),html.ios:not(.android):has(#setpanel:not([hidden])) body{overflow:hidden!important;overscroll-behavior:none!important}
 }
+
+/* appearance page: two preview cards with a round check under each (like iOS) */
+.thgrid{display:flex;justify-content:center;gap:44px;margin-top:26px}
+html body #modal .thcard:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:flex!important;flex-direction:column;align-items:center;gap:12px;width:auto!important;min-height:0!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;color:inherit!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;transform:none!important}
+.thcard .thname{font-size:16px;font-weight:500}
+.thcard .thradio{width:26px;height:26px;border-radius:50%;border:2px solid #8e8e93;box-sizing:border-box;box-shadow:none!important;display:flex;align-items:center;justify-content:center;transition:background .2s,box-shadow .2s}
+.thcard .thradio.on{background:#0a84ff;border-color:#0a84ff}
+/* select bar: share is the plain icon, download is the blue one (swapped) */
+html body .selbot button#selshare:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#fff!important}
+html body .seltop button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
