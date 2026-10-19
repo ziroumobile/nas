@@ -939,3 +939,12 @@ html body #modal .trbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){pointer-events:a
 html body #modal .trbtn.trpurge:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#ff453a!important}
 html body #modal .trbtn.trrest:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
 html body #modal .trbtn:disabled:not(#nx1):not(#nx2):not(#nx3):not(#nx4){opacity:.4}
+
+/* trash select button: same press swell (q-bounce) as the home round buttons; "select all" pill to its left; icon-only purge buttons */
+html body #modal .trselbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body #modal .trbtn.trpurge:not(#nx1):not(#nx2):not(#nx3):not(#nx4){transition:background-color .14s ease,box-shadow .14s ease,transform .5s cubic-bezier(.3,1.7,.5,1)!important}
+html body #modal .trselbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress),html body #modal .trbtn.trpurge:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){transform:scale(1.13)!important;transition:background-color .1s ease,box-shadow .1s ease,transform .32s cubic-bezier(.3,1.7,.5,1)!important}
+html body #modal .trallbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:fixed;z-index:6;top:calc(env(safe-area-inset-top) + 8px);right:70px;height:46px;padding:0 18px!important;border-radius:23px!important;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important;font-size:15px;font-weight:700}
+@media(min-width:900px){html body #modal .trallbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){right:calc(max(14px,calc((100vw - 828px)/2 - 2px)) + 56px)}}
+html body #modal .trbtn.trpurge:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:56px;padding:0!important;display:flex!important;align-items:center;justify-content:center}
+html body #modal button.trico:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:inline-flex!important;align-items:center;justify-content:center;width:42px;height:38px;padding:0!important;color:#ff453a!important}
+html body #modal button.trico svg{width:20px;height:20px}

@@ -88,3 +88,5 @@ html[data-theme="light"] body #modal .trselbtn:not(#nx1):not(#nx2):not(#nx3):not
 html[data-theme="light"] body #modal .trselbtn.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
 html[data-theme="light"] body #modal .trbtn.trpurge:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#ff3b30!important}
 html[data-theme="light"] body #modal .trbtn.trrest:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
+html[data-theme="light"] body #modal .trallbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.92)!important;color:#000!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important}
+html[data-theme="light"] body #modal button.trico:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#ff3b30!important}
