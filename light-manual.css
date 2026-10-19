@@ -110,3 +110,6 @@ html[data-theme="light"] body #modal button.vred:not(#nx1):not(#nx2):not(#nx3):n
 html[data-theme="light"] .vline+.vline{border-top-color:rgba(0,0,0,.08)}
 html[data-theme="light"] body #modal button#vsave:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #editask #eaok:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
 html[data-theme="light"] body #modal button[data-vc="unlock"]:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #modal button#vcancel:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#000!important}
+html[data-theme="light"] body #modal button#smk:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body #modal button#scancel:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(0,0,0,.045)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important;color:#000!important}
+html[data-theme="light"] body #modal button#smk:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
+html[data-theme="light"] body .sc .more{color:#fff!important}
