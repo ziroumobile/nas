@@ -948,3 +948,14 @@ html body #modal .trallbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:fixe
 html body #modal .trbtn.trpurge:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:56px;padding:0!important;display:flex!important;align-items:center;justify-content:center}
 html body #modal button.trico:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:inline-flex!important;align-items:center;justify-content:center;width:42px;height:38px;padding:0!important;color:#ff453a!important}
 html body #modal button.trico svg{width:20px;height:20px}
+
+/* select mode: nothing of the scrolled page shows between the button row and the sticky rows */
+html body.selecting #topband{height:calc(env(safe-area-inset-top) + 66px)!important}
+/* select mode swap: the share button is now in the top row (right), the download button in the bottom row (left, blue) */
+html body .seltop button#selshare:not(#nx1):not(#nx2):not(#nx3):not(#nx4){margin-left:auto;width:46px;height:46px;min-width:46px;padding:0!important;border-radius:50%!important;color:#fff!important;display:flex!important;align-items:center;justify-content:center}
+html body .seltop button#selshare[hidden]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important}
+html body .seltop button#selshare svg{width:24px;height:24px}
+html body .selbot button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){width:56px;height:56px;min-width:56px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;pointer-events:auto;color:#0a84ff!important}
+html body .selbot button#seldl svg{width:26px;height:26px}
+/* trash select button: when on, only the icon turns blue (no ring) */
+html body #modal .trselbtn.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important}
