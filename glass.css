@@ -1006,3 +1006,10 @@ html body .uptarget select{max-width:calc(10ch + 30px)!important}
 .trth.trbad{background:rgba(255,69,58,.12)}
 .trth.trbad .trbadic svg{color:#ff6b61}
 .trbadic{display:flex;align-items:center;justify-content:center}
+
+/* computer: same header as the phone (title row, round buttons on the right); the + button sits in the middle above the dock */
+@media(min-width:700px){
+  html:not(.ios) #app>header{display:flex;align-items:center;justify-content:space-between;margin:0 0 14px;flex-wrap:nowrap;gap:12px}
+  html:not(.ios) body #app>header .hdrbtns{display:flex;gap:10px}
+  html body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){left:50%!important;right:auto!important;margin-left:-30px;bottom:calc(env(safe-area-inset-bottom) + 100px)!important}
+}
