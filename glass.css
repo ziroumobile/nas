@@ -904,3 +904,6 @@ html body #applock button#lockout:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#n
 #modal.fullpage .mhead h3 .subtile{margin-right:0;vertical-align:baseline;flex:none}
 #storage .sthead h2:has(.subtile){display:flex;align-items:center;gap:12px}
 #storage .sthead h2 .subtile{margin-right:0;flex:none}
+
+/* every "下載" button has blue text */
+html body a.btn.dlrow:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body button.dlbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body #seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}

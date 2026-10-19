@@ -8,8 +8,8 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
-<link rel="stylesheet" href="glass.css?v=20261021ZM">
-<link rel="stylesheet" href="light.css?v=20261021ZM">
+<link rel="stylesheet" href="glass.css?v=20261021ZN">
+<link rel="stylesheet" href="light.css?v=20261021ZN">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <title>檔案分享</title>
@@ -167,7 +167,7 @@ html,body{overflow-x:hidden}   /* a stray wide element must never make iOS shrin
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="glass.js?v=20261021ZM"></script>
+<script src="glass.js?v=20261021ZN"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
@@ -218,7 +218,7 @@ function render(){
   const items=list.map((x,i)=>{
     const sel=selected.has(x.url)?' sel':'';
     if(view!=='list')return `<div class="cell${sel}" data-i="${i}" title="${esc(x.name)}"><span class="chk"></span>${media(x,i)}<div class="cn">${esc(x.name)}</div></div>`;
-    return `<div class="row${sel}" data-i="${i}"><span class="chk"></span>${media(x,i)}<div class="info"><a href="${API+x.url}" data-open="${i}">${esc(x.name)}</a><small>${fmt(x.size)} · 更新 ${new Date(x.mtime).toLocaleDateString()}</small></div><a class="btn" href="${API+x.url}&dl=1" style="padding:4px 10px">下載</a></div>`}).join('');
+    return `<div class="row${sel}" data-i="${i}"><span class="chk"></span>${media(x,i)}<div class="info"><a href="${API+x.url}" data-open="${i}">${esc(x.name)}</a><small>${fmt(x.size)} · 更新 ${new Date(x.mtime).toLocaleDateString()}</small></div><a class="btn dlrow" href="${API+x.url}&dl=1" style="padding:4px 10px">下載</a></div>`}).join('');
   $('#list').innerHTML=view==='list'?items:`<div class="nine${view==='small'?' small':''}">${items}</div>`;
   $('#selbar').hidden=!selMode;$('#selcount').textContent='已選 '+selected.size+' 個';$('#seldl').disabled=$('#selnone').disabled=!selected.size;
 }

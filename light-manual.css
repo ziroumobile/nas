@@ -79,3 +79,4 @@ html[data-theme="light"] body #order:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not
 html[data-theme="light"] body .selbot button#selshare:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#000!important}
 html[data-theme="light"] body .seltop button#seldl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
 html[data-theme="light"] body #applock button#lockout:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5),html[data-theme="light"] body button#offout:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5){color:#ff3b30!important}
+html[data-theme="light"] body a.btn.dlrow:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html[data-theme="light"] body button.dlbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
