@@ -1024,3 +1024,6 @@ html body #modal button[data-copy]:not(#nx1):not(#nx2):not(#nx3):not(#nx4){box-s
 
 /* the + upload button is hidden while a file preview is open */
 body:has(#viewer:not([hidden])) button#upfab,body.vopen button#upfab{display:none!important}
+
+/* computer: the select was measured without the room its arrow takes, so names were cut after ~2 characters; let it size itself, capped at ~14 characters */
+@media(min-width:700px){html:not(.ios) body .uptarget select{width:auto!important;min-width:110px;max-width:calc(14ch + 70px)!important;padding-right:34px}}
