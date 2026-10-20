@@ -1080,3 +1080,6 @@ html body #modal button#smk:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body #m
 html body #modal button#smk:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
 /* the "+N" over the last shared thumbnail is always white */
 html body .sc .more{color:#fff!important}
+
+/* clipboard: cells off-screen are not laid out / decoded until they are near the viewport (much lighter on a computer) */
+#cliplist .clipitem{content-visibility:auto;contain-intrinsic-size:auto 220px}

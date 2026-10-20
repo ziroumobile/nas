@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.31">
+<meta name="app-version" content="v8.32">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023B">
-<link rel="stylesheet" href="light.css?v=20261023B">
+<link rel="stylesheet" href="glass.css?v=20261023C">
+<link rel="stylesheet" href="light.css?v=20261023C">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023B"></script>
+<script src="glass.js?v=20261023C"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1697,6 +1697,10 @@ function zoomPeek(img,fit=true){
   let sc=1,tx=0,ty=0,d0=0,sc0=1,p0=null,last=0;const apply=()=>{img.style.transform='translate('+tx+'px,'+ty+'px) scale('+sc+')';if(sc>1.02)img.dataset.z='1';else delete img.dataset.z};
   img.style.cssText+=';transform-origin:50% 50%;touch-action:none;will-change:transform'+(fit?';max-width:92vw;max-height:80vh':'');
   const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+  img.addEventListener('wheel',e=>{e.preventDefault();sc=Math.min(6,Math.max(1,sc*(e.deltaY<0?1.15:1/1.15)));if(sc<=1.02){sc=1;tx=0;ty=0}apply()},{passive:false});
+  let md=null;img.addEventListener('mousedown',e=>{if(sc>1.02){md={x:e.clientX-tx,y:e.clientY-ty};e.preventDefault()}});
+  addEventListener('mousemove',e=>{if(md&&img.isConnected){tx=e.clientX-md.x;ty=e.clientY-md.y;apply()}});addEventListener('mouseup',()=>{md=null});
+  img.addEventListener('dblclick',e=>{e.preventDefault();sc=sc>1.05?1:2.4;if(sc===1){tx=0;ty=0}img.style.transition='transform .2s';apply();setTimeout(()=>img.style.transition='',220)});
   img.addEventListener('touchstart',e=>{e.preventDefault();if(e.touches.length===2){d0=dist(e.touches);sc0=sc}else if(e.touches.length===1){p0={x:e.touches[0].clientX-tx,y:e.touches[0].clientY-ty,sx:e.touches[0].clientX,sy:e.touches[0].clientY};
       const now=Date.now();if(now-last<280){sc=sc>1.05?1:2.4;if(sc===1){tx=0;ty=0}img.style.transition='transform .2s';apply();setTimeout(()=>img.style.transition='',220)}last=now}},{passive:false});
   img.addEventListener('touchmove',e=>{e.preventDefault();if(e.touches.length===2&&d0){sc=Math.min(6,Math.max(1,sc0*dist(e.touches)/d0));apply()}
@@ -1706,19 +1710,20 @@ function zoomPeek(img,fit=true){
 function clipPeek(im,c){
   let t=null,x0=0,y0=0;const stop=()=>{clearTimeout(t);t=null};
   im.draggable=false;im.addEventListener('contextmenu',e=>e.preventDefault());
+  im.style.cursor='zoom-in';im.addEventListener('click',e=>{if(e.pointerType&&e.pointerType!=='mouse'&&e.pointerType!=='')return;if(matchMedia('(pointer:coarse)').matches)return;const pk=document.getElementById('peek');if(!pk)return;pk.innerHTML='<div class="pbox"><img class="zoomable" alt="" src="'+API+c.url+'"></div>';pk.hidden=false;zoomPeek(pk.querySelector('img'))});
   im.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')return;x0=e.clientX;y0=e.clientY;stop();
     t=setTimeout(()=>{t=null;const pk=document.getElementById('peek');if(!pk)return;pk.innerHTML='<div class="pbox"><img class="zoomable" alt="" src="'+API+c.url+'"></div>';pk.hidden=false;try{navigator.vibrate&&navigator.vibrate(12)}catch{}zoomPeek(pk.querySelector('img'));},420)});
   im.addEventListener('pointermove',e=>{if(t&&Math.hypot(e.clientX-x0,e.clientY-y0)>10)stop()});
   ['pointerup','pointercancel','pointerleave'].forEach(n=>im.addEventListener(n,stop));
 }
 function clipRender(){
-  const box=$('#cliplist');if(!box)return;box.innerHTML='';
+  const box=$('#cliplist');if(!box)return;clipRender._n=0;box.innerHTML='';
   if(!clipItems.length){box.innerHTML='<div class="sub" style="padding:10px 0">還沒有內容。在這裡貼上的文字或圖片，會同步到你其他登入的裝置。</div>';return}
   for(const c of clipItems){
     const d=document.createElement('div');d.className='clipitem';
     const b=document.createElement('div');b.className='clipbody';
     if(c.type==='text'){const t=document.createElement('div');t.className='cliptext';t.textContent=c.text;b.append(t)}
-    else{const im=document.createElement('img');im.className='clipimg';im.loading='eager';im.decoding='async';im.src=API+c.url;b.append(im);clipPeek(im,c)}
+    else{const im=document.createElement('img');im.className='clipimg';im.loading=(clipRender._n=(clipRender._n||0)+1)>6?'lazy':'eager';im.decoding='async';im.src=API+c.url;b.append(im);clipPeek(im,c)}
     const m=document.createElement('div');m.className='clipmeta';m.textContent=clipAgo(c.time)+(c.type==='image'?' · '+fmt(c.size):' · '+c.text.length+' 字');b.append(m);
     const bt=document.createElement('div');bt.className='clipbtns mbtns';
     const mk=(label,fn,cls)=>{const x=document.createElement('button');x.className=cls||'ghost';x.textContent=label;x.onclick=()=>fn(x);bt.append(x)};
