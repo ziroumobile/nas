@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.37">
+<meta name="app-version" content="v8.38">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023H">
-<link rel="stylesheet" href="light.css?v=20261023H">
+<link rel="stylesheet" href="glass.css?v=20261023I">
+<link rel="stylesheet" href="light.css?v=20261023I">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023H"></script>
+<script src="glass.js?v=20261023I"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -620,8 +620,21 @@ setInterval(()=>{
   });
 },2000);
 function thumbErr(img){const n=+img.dataset.try||0;if(n<4&&img.dataset.src0!==''){img.dataset.try=n+1;const u=img.dataset.src0||(img.dataset.src0=img.getAttribute('src'));setTimeout(()=>{if(img.isConnected)img.src=u+(u.includes('?')?'&':'?')+'r='+(n+1)},2500*(n+1));return} /* thumbnails may still be being made on the PC: retry a few times before giving up */ const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.kind==='video'?'🎬':'🖼';img.replaceWith(d)}
+const TQ={max:6,paused:false,started:0,raf:0};
+function tqPump(){
+  if(TQ.paused||document.hidden)return;
+  const imgs=[...document.querySelectorAll('#list img.tq')];let live=0;const wait=[];
+  for(const i of imgs){if(i.dataset.ts)wait.push(i);else if(!i.complete&&i.getAttribute('src'))live++}
+  if(!wait.length||live>=TQ.max)return;
+  const vh=innerHeight,vis=[],rest=[];
+  for(const i of wait){if(!i.offsetParent)continue;const b=i.getBoundingClientRect();if(b.bottom>-300&&b.top<vh+300)vis.push([b.top,i]);else rest.push(i)}   // closed folders have no layout: they wait
+  vis.sort((a,b)=>a[0]-b[0]);
+  for(const i of [...vis.map(v=>v[1]),...rest]){if(live>=TQ.max)break;live++;const u=i.dataset.ts;delete i.dataset.ts;i.dataset.src0=u;TQ.started++;const fin=()=>tqPump();i.addEventListener('load',fin,{once:true});i.addEventListener('error',fin,{once:true});i.src=u}
+}
+const tqSoon=()=>{if(!TQ.raf)TQ.raf=requestAnimationFrame(()=>{TQ.raf=0;tqPump()})};
+addEventListener('scroll',tqSoon,{passive:true,capture:true});addEventListener('resize',tqSoon);document.addEventListener('toggle',tqSoon,true);   // scrolling, or opening a folder, re-sorts the queue
 function media(x,k){
-  const inner=x.thumb?`<img class="ico" loading="eager" decoding="async" data-kind="${x.kind}" src="${thumbSrc(x.thumb)}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
+  const inner=x.thumb?`<img class="ico tq" decoding="async" data-kind="${x.kind}" data-ts="${thumbSrc(x.thumb)}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
   return `<a class="thumbA" href="${API+x.url}" target="_blank" rel="noopener" data-open="${esc(k)}">${inner}${x.kind==='video'?'<span class="play">▶</span>':''}</a>`;
 }
 // selection: pick many files to download, or (admin only) delete
@@ -792,8 +805,8 @@ function prefetchThumbs(){
       if(!live&&i>=urls.length)end()};
     setTimeout(end,20000);next()});   // never wait more than 20 s for one stage
   (async()=>{
-    await loadList(all.slice(0,40));                                   // stage 1: the first 40 thumbnails of the home page
-    window.__stage2=true;                                              // stage 2: everything behind the dock, completely
+    tqPump();{const t0=Date.now();await new Promise(done=>{const w=()=>{const left=document.querySelectorAll('#list img.tq[data-ts]').length,live=[...document.querySelectorAll('#list img.tq')].filter(i=>!i.dataset.ts&&i.getAttribute('src')&&!i.complete).length;if((TQ.started>=40&&live===0)||(!left&&live===0)||Date.now()-t0>20000)done();else setTimeout(w,300)};w()})}   // stage 1: the screen first, then top to bottom, until 40 are in
+    TQ.paused=true;window.__stage2=true;                                              // stage 2: everything behind the dock, completely
     if(me&&me.admin){
       try{const x=await api('/api/shares');const l=x.ok?await x.json():null;                                    // 2a: shared links (their thumbnails first)
         if(l){window.__sharesCache=l;setShareBadge(l.filter(z=>!z.expires||z.expires>Date.now()).length);const u=[];for(const sh of l){const keys=sh.type==='folder'?(folders.find(f=>f.name===sh.folder)?.files.map(x=>keyOf(sh.folder,x.name))||[]):(sh.items||[]).map(i=>keyOf(i.folder,i.name));for(const k of keys.slice(0,10)){const x=fileByKey(k);if(x&&x.thumb)u.push(thumbSrc(x.thumb))}}await loadList(u,6)}}catch{}
@@ -802,7 +815,8 @@ function prefetchThumbs(){
     }
     const tasks=[];
     await Promise.all(tasks);
-    await loadList(all.slice(40));                                     // stage 3: back to the home page, the rest
+    TQ.paused=false;tqPump();                                          // stage 3: back to the home page
+    await loadList(all.slice(40),2);                                   // (closed folders are only warmed in the background)
   })();
 }
 async function refresh(){
@@ -1691,8 +1705,8 @@ async function clipRefresh(){
     if(sig!==clipSig){clipSig=sig;if($('#cliplist'))clipRender()}}catch{}
 }
 // long press on a clipboard picture = the same full-size preview as long-pressing a file on the home page (a tap anywhere closes it)
-function pauseThumbs(){document.querySelectorAll('#list img').forEach(i=>{if(!i.complete&&i.getAttribute('src')){i.dataset.rs=i.getAttribute('src');i.removeAttribute('src')}})}
-function resumeThumbs(){document.querySelectorAll('#list img[data-rs]').forEach(i=>{i.setAttribute('src',i.dataset.rs);delete i.dataset.rs})}
+function pauseThumbs(){TQ.paused=true;document.querySelectorAll('#list img').forEach(i=>{if(!i.complete&&i.getAttribute('src')){i.dataset.rs=i.getAttribute('src');i.removeAttribute('src')}})}
+function resumeThumbs(){TQ.paused=false;tqSoon();document.querySelectorAll('#list img[data-rs]').forEach(i=>{i.setAttribute('src',i.dataset.rs);delete i.dataset.rs})}
 function zoomPeek(img,fit=true){
   let sc=1,tx=0,ty=0,d0=0,sc0=1,p0=null,last=0;const apply=()=>{img.style.transform='translate('+tx+'px,'+ty+'px) scale('+sc+')';if(sc>1.02)img.dataset.z='1';else delete img.dataset.z};
   img.style.cssText+=';transform-origin:50% 50%;touch-action:none;will-change:transform'+(fit?';max-width:92vw;max-height:80vh':'');
@@ -1744,11 +1758,12 @@ async function clipCopy(c,btn){
   try{
     if(c.type==='text'){let ok=false;try{await navigator.clipboard.writeText(c.text);ok=true}catch{ok=legacyCopy(c.text)}if(!ok)throw 0}
     else{
-      const item=new ClipboardItem({'image/png':clipPng(c)});   // a promise (usually already resolved), so the clipboard is claimed inside the tap
-      await navigator.clipboard.write([item]);
+      if(!navigator.clipboard||!navigator.clipboard.write||typeof ClipboardItem==='undefined')throw Object.assign(new Error('此瀏覽器不支援複製圖片'),{name:'NoSupport'});
+      try{await navigator.clipboard.write([new ClipboardItem({'image/png':clipPng(c)})])}   // a promise (usually already resolved), so the clipboard is claimed inside the tap
+      catch(e1){const b=await clipPng(c);await navigator.clipboard.write([new ClipboardItem({'image/png':b})])}
     }
     btn.textContent='已複製 ✓';
-  }catch{btn.textContent='複製失敗'}
+  }catch(e){btn.textContent='複製失敗';try{console.warn('clip copy',e)}catch{}if(c.type!=='text'&&e&&e.name)alert('複製圖片失敗（'+e.name+'）'+(e.message?'\n'+e.message:''))}
   setTimeout(()=>btn.textContent=old,1500);
 }
 async function clipSendText(t){
@@ -1810,7 +1825,7 @@ async function vaultOpen(){
     showPage('<div class="pghead"><span class="pgic" style="background:#5e5ce6"><svg stroke="#fff" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg></span><b>密碼</b><p>帳號和密碼加密存放在你的電腦上。要看或複製密碼時，需要編輯密碼或生物辨識。</p></div>'
       +'<input id="vsearch" type="search" placeholder="搜尋" value="'+esc(q)+'" style="width:100%;padding:11px 14px;border:0;border-radius:14px;background:rgba(120,120,128,.18);color:inherit;font:inherit;margin:0 0 10px">'
       +'<div class="mbtns" style="margin:0 0 10px"><button id="vadd">＋ 新增密碼</button></div>'
-      +(shown.length?shown.map(x=>'<div class="srow vrow" data-id="'+esc(x.id)+'"><b>'+esc(x.title)+'</b>'+(unl[x.id]&&unl[x.id].t>Date.now()?'<div class="vunl"><div class="vline"><span class="vk">帳號</span><span class="vv">'+esc(maskPriv(unl[x.id].user)||'（沒有）')+'</span><button class="vform" data-vc="user">複製</button></div><div class="vline"><span class="vk">密碼</span><span class="vv">'+esc(maskPriv(unl[x.id].pw))+'</span><button class="vform" data-vc="pw">複製</button></div></div>':'<div class="mbtns" style="margin-top:8px"><button class="vform" data-vc="unlock">解鎖</button><button class="vform vblue" data-vc="edit">編輯</button><button class="vform vred" data-vc="del">清除</button></div>')+'</div>').join(''):'<p class="sub">'+(list.length?'沒有符合的項目。':'還沒有任何密碼。按「新增密碼」開始。')+'</p>')
+      +(shown.length?shown.map(x=>'<div class="srow vrow" data-id="'+esc(x.id)+'"><b>'+esc(x.title)+'</b>'+(unl[x.id]&&unl[x.id].t>Date.now()?'<div class="vunl"><div class="vline"><span class="vk">帳號</span><span class="vv">'+esc(maskPriv(unl[x.id].user)||'（沒有）')+'</span><button class="vform" data-vc="user">複製</button></div><div class="vline"><span class="vk">密碼</span><span class="vv">'+esc(maskPriv(unl[x.id].pw))+'</span><button class="vform" data-vc="pw">複製</button></div><div class="mbtns" style="margin-top:8px"><button class="vform" data-vc="lock">關閉</button></div></div>':'<div class="mbtns" style="margin-top:8px"><button class="vform" data-vc="unlock">解鎖</button><button class="vform vblue" data-vc="edit">編輯</button><button class="vform vred" data-vc="del">清除</button></div>')+'</div>').join(''):'<p class="sub">'+(list.length?'沒有符合的項目。':'還沒有任何密碼。按「新增密碼」開始。')+'</p>')
       +'<div id="vform" hidden></div>');
     const sIn=$('#vsearch');sIn.oninput=()=>{q=sIn.value;const pos=sIn.selectionStart;draw();const n=$('#vsearch');n.focus();n.setSelectionRange(pos,pos)};
   };
@@ -1834,6 +1849,7 @@ async function vaultOpen(){
       const r=await api('/api/vault/reveal',{method:'POST',headers:eh,body:JSON.stringify({id:it.id})});
       if(!r.ok){alert((await r.json().catch(()=>({}))).error||'身分確認失敗');return null}return r.json()};
     if(k==='unlock'){const j=await verify('請確認身分，以解鎖這筆密碼');if(!j)return;unl[it.id]={pw:j.pw,user:j.user,t:Date.now()+60000};setTimeout(()=>{delete unl[it.id];if($('#vsearch'))draw()},60500);return draw()}
+    if(k==='lock'){delete unl[it.id];return draw()}
     if(k==='user'){const u=unl[it.id];return u&&copyText(u.user||'',b)}
     if(k==='pw'){const u=unl[it.id];return u&&copyText(u.pw,b)}
     if(k==='edit'){const j=await verify('請確認身分，以編輯這筆密碼');if(!j)return;return form({...it,user:j.user},{tok:j.tok,exp:j.exp})}
