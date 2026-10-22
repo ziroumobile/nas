@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.43">
+<meta name="app-version" content="v8.44">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023N">
-<link rel="stylesheet" href="light.css?v=20261023N">
+<link rel="stylesheet" href="glass.css?v=20261023O">
+<link rel="stylesheet" href="light.css?v=20261023O">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -125,6 +125,8 @@ body.selecting .wrap{padding-bottom:100px}
 #peek .pico{width:42vmin;height:42vmin;display:flex;align-items:center;justify-content:center;font-size:20vmin;border-radius:18px;background:#1c1e21}
 #peek .pname{color:#fff;font-size:13px;max-width:92vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @keyframes pk{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+.spdtest [hidden]{display:none!important}
+html:not(.ios):not(.android) #app>header{position:sticky;top:0;z-index:20;background:var(--bg);margin:0 -16px 12px;padding:8px 16px} /* Windows / desktop: the toolbar row stays at the top while the page scrolls (iOS has its own fixed one in glass.css) */
 html.ios #toolsticky{display:flow-root;position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 38px);z-index:57;background:#000;padding:2px 16px 0;margin:0}
 body.selecting #list{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:pan-y} /* sideways drags reach the page (drag-select), vertical ones still scroll */
 /* uploads: no list at the bottom of the page any more - a frosted round button bottom right opens the progress page */
@@ -429,7 +431,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023N"></script>
+<script src="glass.js?v=20261023O"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -482,15 +484,16 @@ async function init(){
   const t=await token();
   if(!t){$('#login').hidden=false;$('#app').hidden=true;return}
   $('#login').hidden=true; // the home page stays hidden until we know whether the lock screen must come first
+  const filesP=api('/api/files').catch(()=>null);   // the file list is asked for at the same time as /api/me instead of after it (saves one round trip over the tunnel)
   let r;try{r=await api('/api/me')}catch{return hostBlocked('主機可能關機，或通道還沒啟動（開機後要執行 start.ps1）。')}
   if(!r.ok){if(r.status===401){await dropLogin();$('#app').hidden=true;$('#login').hidden=false;return} /* signed out elsewhere: show the login page (no retry loop) */return hostBlocked('主機回應了錯誤（'+r.status+'），請稍後再試。')}
   $('#off').hidden=true;me=await r.json();
   if(needLock())await askUnlock(); // admin with an edit password: ask for it every time the app is opened
   $('#app').hidden=false;
   $('#who').textContent=me.name;$('#whorole').textContent=me.admin?'管理員':'一般使用者';
-  bioCheck();measureSpeed();if(me.admin){loadPrivacy();document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadPrivacy()})}$('#dshare').hidden=!me.admin;$('#dvault').hidden=!me.admin;
+  bioCheck();if(me.admin){loadPrivacy();document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadPrivacy()})}$('#dshare').hidden=!me.admin;$('#dvault').hidden=!me.admin;
   if(me.admin)setTimeout(()=>{const pre=()=>api('/api/shares').then(r=>r.ok?r.json():null).then(l=>{if(l){window.__sharesCache=l;setShareBadge(l.length);warmShareThumbs(l)}}).catch(()=>{});pre();setInterval(()=>{if(!document.hidden)pre()},60000)},800); // warm the pages behind the dock so sliding onto them is instant
- $('#lockset').hidden=!(me.admin&&me.hasEditPassword);$('#trash').hidden=!me.admin;$('#setpw').hidden=$('#actlog').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh().then(()=>setTimeout(prefetchThumbs,600));clipRefresh();
+ $('#lockset').hidden=!(me.admin&&me.hasEditPassword);$('#trash').hidden=!me.admin;$('#setpw').hidden=$('#actlog').hidden=$('#vshare').hidden=$('#vdel').hidden=!me.admin;refresh(filesP).then(()=>prefetchThumbs());clipRefresh();
 }
 $('#go').onclick=async()=>{
   const{error}=await sb.auth.signInWithPassword({email:$('#u').value.trim(),password:$('#p').value});
@@ -550,17 +553,21 @@ function themeThumb(light){
 }
 $('#speedrow').onclick=()=>{const m=measuredMbps();pickPage('⚡ 網速上限','載入縮圖時最多使用多少網速，避免占滿你的網路。選「自動」會用這台裝置測到的網速的 40%'+(m?'（上次測到約 '+m+' Mbps，目前上限約 '+capMbps().toFixed(1)+' Mbps）':'')+'。只記在這台裝置上。',SPEEDS,speedSel(),k=>{if(k==='custom'){const v=parseFloat(prompt('輸入網速上限（Mbps）',ls.get('nas_speedcustom')||'20'));if(!(v>0))return;ls.set('nas_speedcustom',String(v))}ls.set('nas_speedcap',k);syncPrefs()});
   const box=$('#mbox'),blk=document.createElement('div');blk.className='sgrp2 spdtest';
-  blk.innerHTML='<button class="prow" id="spdgo" type="button"><span>測試網速（下載 100 MB）</span></button><div class="spdst" id="spdst" hidden></div><button class="prow" id="spdcancel" type="button" hidden><span style="color:#ff453a">取消</span></button>';
+  blk.innerHTML='<div class="prow spdmb"><span>下載大小（MB）</span><input id="spdmb" type="number" inputmode="numeric" min="1" max="1000" step="1" style="width:84px;text-align:right;padding:6px 8px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg);font:inherit"></div><button class="prow" id="spdgo" type="button"><span id="spdgol">測試網速</span></button><div class="spdst" id="spdst" hidden></div><button class="prow" id="spdcancel" type="button" hidden><span style="color:#ff453a">取消</span></button>';
   box.append(blk);
   let ac=null;
-  $('#spdgo').onclick=async e=>{e.stopPropagation();if(ac)return;ac=new AbortController();const st=$('#spdst'),go=$('#spdgo'),cn=$('#spdcancel');st.hidden=false;cn.hidden=false;go.disabled=true;st.textContent='測試中…';
+  const mbIn=$('#spdmb');mbIn.value=ls.get('nas_spdmb')||'100';
+  const wantMB=()=>Math.min(1000,Math.max(1,Math.round(parseFloat(mbIn.value))||100));
+  const showGo=()=>{$('#spdgol').textContent='測試網速（下載 '+wantMB()+' MB）'};showGo();
+  mbIn.oninput=()=>{ls.set('nas_spdmb',String(wantMB()));showGo()};mbIn.onclick=e=>e.stopPropagation();
+  $('#spdgo').onclick=async e=>{e.stopPropagation();if(ac)return;const MB=wantMB();mbIn.value=MB;ls.set('nas_spdmb',String(MB));showGo();ac=new AbortController();const st=$('#spdst'),go=$('#spdgo'),cn=$('#spdcancel');st.hidden=false;cn.hidden=false;go.disabled=true;mbIn.disabled=true;st.textContent='測試中…';
     const t0=performance.now();let got=0,done=false;
-    try{const r=await api('/api/speedtest?kb=102400&t='+Date.now(),{cache:'no-store',signal:ac.signal});if(!r.ok)throw new Error('伺服器回應 '+r.status);const rd=r.body.getReader();
+    try{const r=await api('/api/speedtest?kb='+(MB*1024)+'&t='+Date.now(),{cache:'no-store',signal:ac.signal});if(!r.ok)throw new Error('伺服器回應 '+r.status);const rd=r.body.getReader();
       for(;;){const{done:d,value}=await rd.read();if(d){done=true;break}got+=value.length;const sec=(performance.now()-t0)/1000;if(sec>0.3)st.textContent='已下載 '+(got/1048576).toFixed(1)+' MB · 目前約 '+(got*8/sec/1e6).toFixed(1)+' Mbps'}
       const sec=(performance.now()-t0)/1000,mb=got*8/sec/1e6;ls.set('nas_speedmeas',mb.toFixed(1));syncPrefs();
-      st.textContent='完成：100 MB 用了 '+sec.toFixed(1)+' 秒，平均約 '+mb.toFixed(1)+' Mbps（自動上限約 '+(mb*0.4).toFixed(1)+' Mbps）'}
+      st.textContent='完成：'+MB+' MB 用了 '+sec.toFixed(1)+' 秒，平均約 '+mb.toFixed(1)+' Mbps（自動上限約 '+(mb*0.4).toFixed(1)+' Mbps）'}
     catch(er){const sec=(performance.now()-t0)/1000;st.textContent=er&&er.name==='AbortError'?('已取消（下載了 '+(got/1048576).toFixed(1)+' MB，'+sec.toFixed(1)+' 秒）'):('測試失敗：'+(er&&er.message||'連線中斷'))}
-    ac=null;go.disabled=false;cn.hidden=true};
+    ac=null;go.disabled=false;mbIn.disabled=false;cn.hidden=true};
   $('#spdcancel').onclick=e=>{e.stopPropagation();if(ac)ac.abort()};}
 $('#privrow').onclick=()=>{loadPrivacy();pickPage('👁 隱私','開啟後，密碼頁解鎖時，帳號和密碼只顯示前 5 個字元，後面用 ***** 取代；複製時仍然是完整內容。關閉則整個顯示。只記在這台裝置上。',[['1','開'],['0','關']],privacy()?'1':'0',k=>savePrivacy(k==='1'))};
 $('#appearance').onclick=()=>{
@@ -844,10 +851,11 @@ function prefetchThumbs(){
     await Promise.all(tasks);
     TQ.paused=false;tqPump();                                          // stage 3: back to the home page
     await loadList(all.slice(40),2);                                   // (closed folders are only warmed in the background)
+    measureSpeed();                                                    // the speed test runs last, when nothing else is downloading (it used to take bandwidth from the first screen)
   })();
 }
-async function refresh(){
-  let r;try{r=await api('/api/files')}catch{$('#off').hidden=false;return}
+async function refresh(pre){
+  let r;try{r=pre?await pre:await api('/api/files');if(!r)throw 0}catch{$('#off').hidden=false;return}
   if(!r.ok)return;$('#off').hidden=true;
   folders=await r.json();drawTarget();drawDisk();
   const have=new Set(allKeys());for(const k of selected)if(!have.has(k))selected.delete(k); // files that vanished
