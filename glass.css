@@ -1083,3 +1083,6 @@ html body .sc .more{color:#fff!important}
 
 /* clipboard: cells off-screen are not laid out / decoded until they are near the viewport (much lighter on a computer) */
 #cliplist .clipitem{content-visibility:auto;contain-intrinsic-size:auto 220px}
+
+/* "open page" link of a clipboard item that is a web address: transparent, blue text */
+html body #modal a.clipopen:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:inline-flex;align-items:center;padding:6px 10px;background:transparent!important;box-shadow:none!important;border:0!important;color:#0a84ff!important;font-size:14px;font-weight:600;text-decoration:none}

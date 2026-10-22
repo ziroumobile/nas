@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.33">
+<meta name="app-version" content="v8.34">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023D">
-<link rel="stylesheet" href="light.css?v=20261023D">
+<link rel="stylesheet" href="glass.css?v=20261023E">
+<link rel="stylesheet" href="light.css?v=20261023E">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023D"></script>
+<script src="glass.js?v=20261023E"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1686,7 +1686,7 @@ function setShareBadge(n){const b=$('#sharen');if(b)b.textContent=n?String(n):''
 function warmShareThumbs(list){if(!window.__stage2)return;try{for(const sh of list||[]){const keys=sh.type==='folder'?(folders.find(f=>f.name===sh.folder)?.files.map(x=>keyOf(sh.folder,x.name))||[]):(sh.items||[]).map(i=>keyOf(i.folder,i.name));for(const k of keys.slice(0,10)){const x=fileByKey(k);if(x&&x.thumb){const u=thumbSrc(x.thumb);if(!warmed.has(u)){warmed.add(u);{const im=new Image();im.src=u;if(im.decode)im.decode().catch(()=>{})}}}}}}catch{}}
 async function clipRefresh(){
   try{const r=await api('/api/clip');if(!r.ok)return;const l=await r.json();const sig=JSON.stringify(l.map(c=>c.id));
-    clipItems=l;$('#clipn').textContent=l.length?String(l.length):'';for(const c of l.slice(0,10))if(window.__stage2&&c.type==='image'&&!warmed.has(c.url)){warmed.add(c.url);{const im=new Image();im.src=API+c.url+'&res=480';if(im.decode)im.decode().catch(()=>{})}}   // preload so the clipboard page shows its pictures at once
+    clipItems=l;if(!clipRefresh._p){clipRefresh._p=1;clipPrep()}$('#clipn').textContent=l.length?String(l.length):'';for(const c of l.slice(0,10))if(window.__stage2&&c.type==='image'&&!warmed.has(c.url)){warmed.add(c.url);{const im=new Image();im.src=API+c.url+'&res=480';if(im.decode)im.decode().catch(()=>{})}}   // preload so the clipboard page shows its pictures at once
     
     if(sig!==clipSig){clipSig=sig;if($('#cliplist'))clipRender()}}catch{}
 }
@@ -1716,6 +1716,7 @@ function clipPeek(im,c){
   im.addEventListener('pointermove',e=>{if(t&&Math.hypot(e.clientX-x0,e.clientY-y0)>10)stop()});
   ['pointerup','pointercancel','pointerleave'].forEach(n=>im.addEventListener(n,stop));
 }
+function clipPrep(){const imgs=clipItems.filter(c=>c.type==='image').slice(0,8);let i=0;const next=()=>{const c=imgs[i++];if(!c)return;clipPng(c).catch(()=>{}).finally(()=>setTimeout(next,400))};setTimeout(next,1500)}
 function clipRender(){
   const box=$('#cliplist');if(!box)return;clipRender._n=0;box.innerHTML='';
   if(!clipItems.length){box.innerHTML='<div class="sub" style="padding:10px 0">還沒有內容。在這裡貼上的文字或圖片，會同步到你其他登入的裝置。</div>';return}
@@ -1727,6 +1728,7 @@ function clipRender(){
     const m=document.createElement('div');m.className='clipmeta';m.textContent=clipAgo(c.time)+(c.type==='image'?' · '+fmt(c.size):' · '+c.text.length+' 字');b.append(m);
     const bt=document.createElement('div');bt.className='clipbtns mbtns';
     const mk=(label,fn,cls)=>{const x=document.createElement('button');x.className=cls||'ghost';x.textContent=label;x.onclick=()=>fn(x);bt.append(x)};
+    if(c.type==='text'&&/^https?:\/\/\S+$/i.test((c.text||'').trim())){const a=document.createElement('a');a.className='clipopen';a.href=c.text.trim();a.target='_blank';a.rel='noopener noreferrer';a.textContent='開啟網頁';bt.append(a)}
     mk(c.type==='text'?'複製':'複製圖片',x=>clipCopy(c,x));
     if(c.type==='image')mk('下載',()=>{const a=document.createElement('a');a.href=API+c.url;a.download='clip.'+(c.mime.split('/')[1]||'png').replace('jpeg','jpg');document.body.append(a);a.click();a.remove()},'dlbtn');
     mk('刪除',async()=>{await api('/api/clip?id='+c.id,{method:'DELETE'});clipSig='';clipRefresh()},'del');
@@ -1735,12 +1737,16 @@ function clipRender(){
 }
 const toPng=blob=>new Promise((ok,no)=>{const u=URL.createObjectURL(blob),im=new Image();im.onload=()=>{const cv=document.createElement('canvas');cv.width=im.naturalWidth;cv.height=im.naturalHeight;cv.getContext('2d').drawImage(im,0,0);URL.revokeObjectURL(u);cv.toBlob(b=>b?ok(b):no(),'image/png')};im.onerror=()=>{URL.revokeObjectURL(u);no()};im.src=u});
 function legacyCopy(txt){const ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:0;left:0;opacity:0;font-size:16px';document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,ta.value.length);let ok=false;try{ok=document.execCommand('copy')}catch{}ta.remove();return ok}
+function clipPng(c){   // PNG of a clipboard picture, fetched once and kept
+  if(!c._png)c._png=(async()=>{const blob=await (await fetch(API+c.url)).blob();return blob.type==='image/png'?blob:await toPng(blob)})().catch(e=>{c._png=null;throw e});
+  return c._png;
+}
 async function clipCopy(c,btn){
   const old=btn.textContent;
   try{
     if(c.type==='text'){let ok=false;try{await navigator.clipboard.writeText(c.text);ok=true}catch{ok=legacyCopy(c.text)}if(!ok)throw 0}
     else{
-      const item=new ClipboardItem({'image/png':(async()=>{const blob=await (await fetch(API+c.url)).blob();return blob.type==='image/png'?blob:await toPng(blob)})()});   // a promise, so the clipboard is claimed inside the tap
+      const item=new ClipboardItem({'image/png':clipPng(c)});   // a promise (usually already resolved), so the clipboard is claimed inside the tap
       await navigator.clipboard.write([item]);
     }
     btn.textContent='已複製 ✓';
