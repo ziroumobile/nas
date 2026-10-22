@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.49">
+<meta name="app-version" content="v8.50">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023T">
-<link rel="stylesheet" href="light.css?v=20261023T">
+<link rel="stylesheet" href="glass.css?v=20261023U">
+<link rel="stylesheet" href="light.css?v=20261023U">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -126,6 +126,16 @@ body.selecting .wrap{padding-bottom:100px}
 #peek .pname{color:#fff;font-size:13px;max-width:92vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @keyframes pk{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
 .spdtest [hidden]{display:none!important}
+@keyframes nasInR{from{transform:translateX(100%)}to{transform:none}}
+@keyframes nasOutL{from{transform:none;filter:brightness(1)}to{transform:translateX(-30%);filter:brightness(.6)}}
+@keyframes nasOutR{from{transform:none}to{transform:translateX(100%)}}
+@keyframes nasInL{from{transform:translateX(-30%);filter:brightness(.6)}to{transform:none;filter:brightness(1)}}
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation-duration:.42s;animation-timing-function:cubic-bezier(.32,.72,0,1);animation-fill-mode:both}
+::view-transition-old(root){z-index:2;animation-name:nasOutR}
+::view-transition-new(root){z-index:1;animation-name:nasInL}
+/* pages opened from the dock have no back arrow: the dock is the way out */
+html body.dockover #modal.fullpage button#pgback:not(#nx1):not(#nx2):not(#nx3):not(#nx4),html body.dockover #spage button#spback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important}
 html:not(.ios):not(.android) body #topband,html:not(.ios):not(.android) body.selecting::before{background:var(--bg)!important}
 html:not(.ios):not(.android) body.selecting #app>header{display:none}
 html:not(.ios):not(.android) body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 70px)!important}
@@ -153,7 +163,7 @@ html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position
 #upback svg{width:24px;height:24px}
 #total{display:none}
 #dock button{position:relative}
-.dbadge{position:absolute;top:5px;right:12px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ff453a;color:#fff;font-size:11px;font-weight:700;line-height:17px;text-align:center;box-shadow:0 0 0 2px rgba(20,22,26,.9);pointer-events:none}html body #modal.fullpage button#vreorder:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:flex;position:fixed;z-index:3;right:max(14px,calc((100vw - 828px)/2 - 2px));top:calc(env(safe-area-inset-top) + 8px);width:46px;height:46px;padding:0!important;border-radius:50%!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.dbadge{position:absolute;top:5px;right:12px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ff453a;color:#fff;font-size:11px;font-weight:700;line-height:17px;text-align:center;box-shadow:0 0 0 2px rgba(20,22,26,.9);pointer-events:none}html body #modal.fullpage button#vreorder:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:flex;position:fixed;z-index:3;right:calc(max(14px,calc((100vw - 828px)/2 - 2px)) + var(--sbw,0px));top:calc(env(safe-area-inset-top) + 8px);width:46px;height:46px;padding:0!important;border-radius:50%!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 #vreorder svg{width:24px;height:24px}html body #modal.fullpage button#vreorder.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
 .vrow{position:relative}.vrow.vro{padding-right:62px!important}.vgrip{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:44px;height:48px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;border-radius:10px;background:linear-gradient(#8e8e93,#8e8e93) center 15px/22px 3px no-repeat,linear-gradient(#8e8e93,#8e8e93) center 22px/22px 3px no-repeat,linear-gradient(#8e8e93,#8e8e93) center 29px/22px 3px no-repeat}.vgrip:active,.vrow.vdrag .vgrip{background-color:rgba(127,127,127,.18)}.vrow.vdrag{opacity:.9;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:2}.vpin{font-size:12px;margin-left:6px}
 .dbadge:empty{display:none}#dock .dbadge{display:none!important}
@@ -445,7 +455,7 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023T"></script>
+<script src="glass.js?v=20261023U"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -884,6 +894,7 @@ async function refresh(pre){
   const have=new Set(allKeys());for(const k of selected)if(!have.has(k))selected.delete(k); // files that vanished
   render(false);updateSelUI();initTarget();
 }
+addEventListener('pagereveal',e=>{try{if(e.viewTransition&&navigation.activation&&navigation.activation.navigationType==='reload')e.viewTransition.skipTransition()}catch{}});   // a reload is not a page change: no slide
 syncToolbar();fitSel($('#sort'));
 // no scrolling of the page behind the settings / shared-links windows
 {let y=0;const b=document.body,lock=()=>{const open=!$('#modal').hidden||!$('#setpanel').hidden||!$('#viewer').hidden||!$('#storage').hidden||!$('#uppage').hidden,on=b.classList.contains('mlock');
@@ -1801,13 +1812,17 @@ function clipRender(){
     const m=document.createElement('div');m.className='clipmeta';m.textContent=clipAgo(c.time)+(c.type==='image'?' · '+fmt(c.size):' · '+c.text.length+' 字');b.append(m);
     const bt=document.createElement('div');bt.className='clipbtns mbtns';
     const mk=(label,fn,cls)=>{const x=document.createElement('button');x.className=cls||'ghost';x.textContent=label;x.onclick=()=>fn(x);bt.append(x)};
-    if(c.type==='text'&&/^https?:\/\/\S+$/i.test((c.text||'').trim())){const a=document.createElement('a');a.className='clipopen';a.href=c.text.trim();a.target='_blank';a.rel='noopener noreferrer';a.textContent='開啟網頁';bt.append(a)}
-    mk(c.type==='text'?'複製':'複製圖片',x=>clipCopy(c,x));
-    if(c.type==='image'&&navigator.canShare)mk('傳到其他 App',async()=>{try{const f=new File([await clipPng(c)],'clip.png',{type:'image/png'});if(navigator.canShare({files:[f]}))await navigator.share({files:[f]});else alert('這個瀏覽器不能把圖片傳給其他 App')}catch(e){if(e&&e.name!=='AbortError')alert('傳送失敗（'+(e.name||'')+'）')}});
-    if(c.type==='image')mk('下載',async x=>{const nm='clip.'+(c.mime.split('/')[1]||'png').replace('jpeg','jpg'),u=API+c.url+'&dl=1';
+    mk('複製',x=>clipCopy(c,x));
+    mk('傳送',async()=>{try{   // hand it to another app through the system share sheet
+      if(c.type==='text'){if(!navigator.share)return alert('這個瀏覽器不能把文字傳給其他 App');await navigator.share({text:c.text});return}
+      const f=new File([await clipPng(c)],'clip.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f]});else alert('這個瀏覽器不能把圖片傳給其他 App')
+    }catch(e){if(e&&e.name!=='AbortError')alert('傳送失敗（'+(e.name||'')+'）')}});
+    mk('下載',async x=>{
+      if(c.type==='text'){const u=URL.createObjectURL(new Blob([c.text],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=u;a.download='clip.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);return}
+      const nm='clip.'+(c.mime.split('/')[1]||'png').replace('jpeg','jpg'),u=API+c.url+'&dl=1';
       if(IOS){const f=await dlFile(u,nm,x);if(f)offerSave([f]);return}   // iPhone / iPad: fetch it and hand it to the share sheet, like the home page
       const a=document.createElement('a');a.href=u;a.download=nm;document.body.append(a);a.click();a.remove()},'dlbtn');
-    mk('刪除',async()=>{await api('/api/clip?id='+c.id,{method:'DELETE'});clipSig='';clipRefresh()},'del');
+    mk('清除',async()=>{await api('/api/clip?id='+c.id,{method:'DELETE'});clipSig='';clipRefresh()},'del');
     b.append(bt);d.append(b);box.append(d);
   }
 }
@@ -1895,6 +1910,7 @@ async function vaultOpen(){
       +'<div class="mbtns" style="margin:0 0 10px"><button id="vadd">＋ 新增密碼</button></div><button id="vreorder" type="button" aria-label="'+(ro?'完成':'拖動排序')+'" title="'+(ro?'完成':'拖動排序')+'"'+(ro?' class="act"':'')+'>'+(ro?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4.5 4.5 8.5-9"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg>')+'</button>'
       +(shown.length?shown.map(x=>'<div class="srow vrow'+(ro?' vro':'')+'" data-id="'+esc(x.id)+'"><b>'+esc(x.title)+'</b>'+(x.pin?'<span class="vpin">📌</span>':'')+(ro?'<span class="vgrip" aria-label="拖動調整順序"></span>':'')+(ro?'':unl[x.id]&&unl[x.id].t>Date.now()?'<div class="vunl"><div class="vline"><span class="vk">帳號</span><span class="vv">'+esc(maskPriv(unl[x.id].user)||'（沒有）')+'</span><button class="vform" data-vc="user">複製</button></div><div class="vline"><span class="vk">密碼</span><span class="vv">'+esc(maskPriv(unl[x.id].pw))+'</span><button class="vform" data-vc="pw">複製</button></div><div class="mbtns" style="margin-top:8px"><button class="vform" data-vc="lock">關閉</button></div></div>':'<div class="mbtns" style="margin-top:8px"><button class="vform" data-vc="unlock">解鎖</button><button class="vform vblue" data-vc="edit">編輯</button><button class="vform" data-vc="pin">'+(x.pin?'取消置頂':'置頂')+'</button><button class="vform vred" data-vc="del">清除</button></div>')+'</div>').join(''):'<p class="sub">'+(list.length?'沒有符合的項目。':'還沒有任何密碼。按「新增密碼」開始。')+'</p>')
       +'<div id="vform" hidden></div>');
+    {const mb=$('#mbox');document.documentElement.style.setProperty('--sbw',(mb.offsetWidth-mb.clientWidth)+'px')}   // keep the round button inside the scrollbar
     const sIn=$('#vsearch');sIn.oninput=()=>{q=sIn.value;const pos=sIn.selectionStart;draw();const n=$('#vsearch');n.focus();n.setSelectionRange(pos,pos)};
   };
   const form=(it,auth)=>{
