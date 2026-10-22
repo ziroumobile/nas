@@ -118,3 +118,6 @@ html[data-theme="light"] body #modal a.clipopen:not(#nx1):not(#nx2):not(#nx3):no
 html[data-theme="light"] body #editask button:not(#nx1):not(#nx2):not(#nx3):not(#nx4){box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important}
 html[data-theme="light"]:not(.ios) body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.84)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important;color:#000!important}
 html[data-theme="light"] body #modal .shc > div[style*="flex-wrap"] > :is(button,a):not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(0,0,0,.045)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important}
+
+html[data-theme="light"] body #modal.fullpage button#vreorder:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.84)!important;color:#000!important;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.13),0 3px 10px rgba(0,0,0,.08)!important}
+html[data-theme="light"] body #modal.fullpage button#vreorder.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
