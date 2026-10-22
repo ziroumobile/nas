@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.40">
+<meta name="app-version" content="v8.41">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023K">
-<link rel="stylesheet" href="light.css?v=20261023K">
+<link rel="stylesheet" href="glass.css?v=20261023L">
+<link rel="stylesheet" href="light.css?v=20261023L">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023K"></script>
+<script src="glass.js?v=20261023L"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -510,8 +510,11 @@ const SPEEDS=[['auto','自動（測到的網速的 40%）'],['1','1 Mbps'],['2',
 const speedSel=()=>{const v=ls.get('nas_speedcap');return SPEEDS.some(x=>x[0]===v)?v:'auto'};
 const measuredMbps=()=>{const v=parseFloat(ls.get('nas_speedmeas'));return isFinite(v)&&v>0?v:null};
 function capMbps(){const sel=speedSel();if(sel==='0')return Infinity;if(sel!=='auto')return +sel;const m=measuredMbps();return m?Math.max(0.5,m*0.4):Infinity}
-async function measureSpeed(){   // times 1 MB from the NAS; the result is kept for the cap and shown in settings
-  try{const t0=performance.now();const r=await api('/api/speedtest?kb=1024&t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const b=await r.arrayBuffer();const sec=(performance.now()-t0)/1000;if(sec>0&&b.byteLength)ls.set('nas_speedmeas',String((b.byteLength*8/sec/1e6).toFixed(1)))}catch{}
+async function measureSpeed(){   // asks for 8 MB and gives it 2 seconds: if it has not all arrived by then the download is cut off and (bytes received / 2 s) is the speed
+  try{const ac=new AbortController(),t0=performance.now(),timer=setTimeout(()=>ac.abort(),2000);let got=0,full=false;
+    try{const r=await api('/api/speedtest?kb=8192&t='+Date.now(),{cache:'no-store',signal:ac.signal});if(!r.ok)throw 0;const rd=r.body.getReader();for(;;){const{done,value}=await rd.read();if(done){full=true;break}got+=value.length}}catch{}
+    clearTimeout(timer);const sec=full?Math.max(0.05,(performance.now()-t0)/1000):2;
+    if(got>0)ls.set('nas_speedmeas',String((got*8/sec/1e6).toFixed(1)))}catch{}
 }
 const privacy=()=>{try{return ls.get('nas_privacy')==='1'}catch{return false}};
 const maskPriv=t=>{t=String(t||'');return privacy()&&t.length>5?t.slice(0,5)+'*****':t};
