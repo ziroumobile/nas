@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.47">
+<meta name="app-version" content="v8.48">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023R">
-<link rel="stylesheet" href="light.css?v=20261023R">
+<link rel="stylesheet" href="glass.css?v=20261023S">
+<link rel="stylesheet" href="light.css?v=20261023S">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -150,7 +150,8 @@ html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position
 #upback svg{width:24px;height:24px}
 #total{display:none}
 #dock button{position:relative}
-.dbadge{position:absolute;top:5px;right:12px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ff453a;color:#fff;font-size:11px;font-weight:700;line-height:17px;text-align:center;box-shadow:0 0 0 2px rgba(20,22,26,.9);pointer-events:none}.dbadge:empty{display:none}#dock .dbadge{display:none!important}
+.dbadge{position:absolute;top:5px;right:12px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ff453a;color:#fff;font-size:11px;font-weight:700;line-height:17px;text-align:center;box-shadow:0 0 0 2px rgba(20,22,26,.9);pointer-events:none}.vrow{position:relative}.vrow.vro{padding-right:62px!important}.vgrip{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:44px;height:48px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;border-radius:10px;background:linear-gradient(#8e8e93,#8e8e93) center 15px/22px 3px no-repeat,linear-gradient(#8e8e93,#8e8e93) center 22px/22px 3px no-repeat,linear-gradient(#8e8e93,#8e8e93) center 29px/22px 3px no-repeat}.vgrip:active,.vrow.vdrag .vgrip{background-color:rgba(127,127,127,.18)}.vrow.vdrag{opacity:.9;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:2}.vpin{font-size:12px;margin-left:6px}
+.dbadge:empty{display:none}#dock .dbadge{display:none!important}
 body.selecting #app>header .hdrbtns{visibility:hidden}
 #spage{position:fixed;inset:0;z-index:96;background:#000;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 76px) 16px calc(env(safe-area-inset-bottom) + 110px)}
 #spage[hidden]{display:none}
@@ -432,13 +433,14 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 <script>
 // no saved login: show the login page at once (don't wait for the Supabase script below) and measure the connection speed while the person types
 try{if(!Object.keys(localStorage).some(function(k){return /^sb-.*-auth-token/.test(k)})){document.getElementById('login').hidden=false;window.__spdEarly=1;
+var sc=localStorage.getItem('nas_speedcap');if(sc&&sc!=='auto')window.__spdDone=true;else
 (async function(){try{var u=(await(await fetch('url.json?t='+Date.now())).json()).url.replace(/\/$/,''),ac=new AbortController(),t0=performance.now(),tm=setTimeout(function(){ac.abort()},2000),got=0,full=false;
 try{var r=await fetch(u+'/api/speedtest-open?t='+Date.now(),{cache:'no-store',signal:ac.signal});if(!r.ok)throw 0;var rd=r.body.getReader();for(;;){var x=await rd.read();if(x.done){full=true;break}got+=x.value.length}}catch(e){}
 clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got>0){localStorage.setItem('nas_speedmeas',(got*8/sec/1e6).toFixed(1));window.__spdDone=true}}catch(e){}})()}}catch(e){}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023R"></script>
+<script src="glass.js?v=20261023S"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -520,7 +522,8 @@ const SPEEDS=[['5','5 Mbps'],['15','15 Mbps'],['30','30 Mbps'],['50','50 Mbps'],
 const speedSel=()=>{const v=ls.get('nas_speedcap');return SPEEDS.some(x=>x[0]===v)?v:'auto'};
 const measuredMbps=()=>{const v=parseFloat(ls.get('nas_speedmeas'));return isFinite(v)&&v>0?v:null};
 function capMbps(){const sel=speedSel();if(sel==='0')return Infinity;if(sel==='custom'){const c=parseFloat(ls.get('nas_speedcustom'));return c>0?c:Infinity}if(sel!=='auto')return +sel;const m=measuredMbps();return m?Math.max(0.5,m*0.4):Infinity}
-async function measureSpeed(open){   // asks for 8 MB and gives it 2 seconds: if it has not all arrived by then the download is cut off and (bytes received / 2 s) is the speed
+async function measureSpeed(open){
+  if(speedSel()!=='auto')return;   // a limit chosen by hand needs no measurement   // asks for 8 MB and gives it 2 seconds: if it has not all arrived by then the download is cut off and (bytes received / 2 s) is the speed
   try{const ac=new AbortController(),t0=performance.now(),timer=setTimeout(()=>ac.abort(),2000);let got=0,full=false;
     try{if(open&&!API)await findApi();const r=open?await fetch(API+'/api/speedtest-open?t='+Date.now(),{cache:'no-store',signal:ac.signal}):await api('/api/speedtest?kb=8192&t='+Date.now(),{cache:'no-store',signal:ac.signal});if(!r.ok)throw 0;const rd=r.body.getReader();for(;;){const{done,value}=await rd.read();if(done){full=true;break}got+=value.length}}catch{}
     clearTimeout(timer);const sec=full?Math.max(0.05,(performance.now()-t0)/1000):2;
@@ -669,11 +672,14 @@ function tqPump(){
   const vh=innerHeight,vis=[],rest=[];
   for(const i of wait){if(!i.offsetParent)continue;const b=i.getBoundingClientRect();if(b.bottom>-300&&b.top<vh+300)vis.push([b.top,i]);else rest.push(i)}   // closed folders have no layout: they wait
   vis.sort((a,b)=>a[0]-b[0]);
-  for(const i of [...vis.map(v=>v[1]),...rest]){if(live>=tqMax())break;if(!paceOK()){setTimeout(tqSoon,200);break}live++;const u=i.dataset.ts;delete i.dataset.ts;i.dataset.src0=u;TQ.started++;const fin=()=>tqPump();i.addEventListener('load',fin,{once:true});i.addEventListener('error',fin,{once:true});i.src=u}
+  for(const i of [...vis.map(v=>v[1]),...rest]){if(live>=tqMax())break;if(!paceOK()){setTimeout(tqSoon,200);break}live++;const u=i.dataset.ts;delete i.dataset.ts;i.dataset.src0=u;i.dataset.t0=Date.now();TQ.started++;const fin=()=>tqPump();i.addEventListener('load',fin,{once:true});i.addEventListener('error',fin,{once:true});i.src=u}
 }
 let tqPaceT=[];
 function paceOK(){const now=Date.now();tqPaceT=tqPaceT.filter(t=>now-t<1000);const mb=capMbps();if(!isFinite(mb))return true;const rate=Math.max(16,Math.floor(mb*1e6/8/thumbBytes()));if(tqPaceT.length>=rate)return false;tqPaceT.push(now);return true}   // about 35 kB per thumbnail
 const tqSoon=()=>{if(!TQ.raf)TQ.raf=requestAnimationFrame(()=>{TQ.raf=0;tqPump()})};
+setInterval(()=>{if(document.hidden)return;document.querySelectorAll('#list img.tq').forEach(i=>{   // asked for but nothing arrived for 10 s (dropped request): ask again, up to 3 times
+  if(i.dataset.ts||!i.getAttribute('src')||i.complete||!i.dataset.t0||Date.now()-i.dataset.t0<10000)return;
+  const n=+i.dataset.stall||0;if(n>=3)return;i.dataset.stall=n+1;i.dataset.t0=Date.now();const u=i.dataset.src0||i.getAttribute('src');i.src=u+(u.includes('?')?'&':'?')+'r=s'+(n+1)})},3000);
 try{new MutationObserver(tqSoon).observe(document.getElementById('list'),{childList:true,subtree:true})}catch{}
 addEventListener('scroll',tqSoon,{passive:true,capture:true});addEventListener('resize',tqSoon);document.addEventListener('toggle',tqSoon,true);   // scrolling, or opening a folder, re-sorts the queue
 function media(x,k){
@@ -1868,15 +1874,15 @@ async function vaultOpen(){
   if($('#vtitlein')&&!$('#modal').hidden)return;
   document.body.classList.add('dockover');setDock('dvault');
   showPage('<h3>密碼</h3><p class="sub">載入中…</p>');
-  let list=[],q='';const unl={};   // unlocked entries (id -> {pw,user,t}); they lock again after one minute
+  let list=[],q='',ro=false;const unl={};   // unlocked entries (id -> {pw,user,t}); they lock again after one minute
   const load=async()=>{const r=await api('/api/vault');if(!r.ok)throw 0;list=await r.json()};
   try{await load()}catch{showPage('<h3>密碼</h3><p class="merr">無法載入</p>');return}
   const draw=()=>{
     const shown=list.filter(x=>!q||(x.title+' '+x.user+' '+x.url).toLowerCase().includes(q.toLowerCase()));
     showPage('<div class="pghead"><span class="pgic" style="background:#5e5ce6"><svg stroke="#fff" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg></span><b>密碼</b><p>帳號和密碼加密存放在你的電腦上。要看或複製密碼時，需要編輯密碼或生物辨識。</p></div>'
       +'<input id="vsearch" type="search" placeholder="搜尋" value="'+esc(q)+'" style="width:100%;padding:11px 14px;border:0;border-radius:14px;background:rgba(120,120,128,.18);color:inherit;font:inherit;margin:0 0 10px">'
-      +'<div class="mbtns" style="margin:0 0 10px"><button id="vadd">＋ 新增密碼</button></div>'
-      +(shown.length?shown.map(x=>'<div class="srow vrow" data-id="'+esc(x.id)+'"><b>'+esc(x.title)+'</b>'+(unl[x.id]&&unl[x.id].t>Date.now()?'<div class="vunl"><div class="vline"><span class="vk">帳號</span><span class="vv">'+esc(maskPriv(unl[x.id].user)||'（沒有）')+'</span><button class="vform" data-vc="user">複製</button></div><div class="vline"><span class="vk">密碼</span><span class="vv">'+esc(maskPriv(unl[x.id].pw))+'</span><button class="vform" data-vc="pw">複製</button></div><div class="mbtns" style="margin-top:8px"><button class="vform" data-vc="lock">關閉</button></div></div>':'<div class="mbtns" style="margin-top:8px"><button class="vform" data-vc="unlock">解鎖</button><button class="vform vblue" data-vc="edit">編輯</button><button class="vform vred" data-vc="del">清除</button></div>')+'</div>').join(''):'<p class="sub">'+(list.length?'沒有符合的項目。':'還沒有任何密碼。按「新增密碼」開始。')+'</p>')
+      +'<div class="mbtns" style="margin:0 0 10px"><button id="vadd">＋ 新增密碼</button><button id="vreorder"'+(ro?' class="act"':'')+'>'+(ro?'完成':'☰ 拖動排序')+'</button></div>'
+      +(shown.length?shown.map(x=>'<div class="srow vrow'+(ro?' vro':'')+'" data-id="'+esc(x.id)+'"><b>'+esc(x.title)+'</b>'+(x.pin?'<span class="vpin">📌</span>':'')+(ro?'<span class="vgrip" aria-label="拖動調整順序"></span>':'')+(ro?'':unl[x.id]&&unl[x.id].t>Date.now()?'<div class="vunl"><div class="vline"><span class="vk">帳號</span><span class="vv">'+esc(maskPriv(unl[x.id].user)||'（沒有）')+'</span><button class="vform" data-vc="user">複製</button></div><div class="vline"><span class="vk">密碼</span><span class="vv">'+esc(maskPriv(unl[x.id].pw))+'</span><button class="vform" data-vc="pw">複製</button></div><div class="mbtns" style="margin-top:8px"><button class="vform" data-vc="lock">關閉</button></div></div>':'<div class="mbtns" style="margin-top:8px"><button class="vform" data-vc="unlock">解鎖</button><button class="vform vblue" data-vc="edit">編輯</button><button class="vform" data-vc="pin">'+(x.pin?'取消置頂':'置頂')+'</button><button class="vform vred" data-vc="del">清除</button></div>')+'</div>').join(''):'<p class="sub">'+(list.length?'沒有符合的項目。':'還沒有任何密碼。按「新增密碼」開始。')+'</p>')
       +'<div id="vform" hidden></div>');
     const sIn=$('#vsearch');sIn.oninput=()=>{q=sIn.value;const pos=sIn.selectionStart;draw();const n=$('#vsearch');n.focus();n.setSelectionRange(pos,pos)};
   };
@@ -1894,12 +1900,14 @@ async function vaultOpen(){
   draw();
   $('#mbox').onclick=async e=>{
     if(e.target.closest('#vadd')){return form(null)}
+    if(e.target.closest('#vreorder')){ro=!ro;if(ro){q='';$('#vform').hidden=true}return draw()}
     const b=e.target.closest('button[data-vc]');if(!b)return;
     const row=b.closest('.vrow'),it=list.find(x=>x.id===row.dataset.id),k=b.dataset.vc;
     const verify=async msg=>{const eh=await askEdit(msg);if(!eh)return null;
       const r=await api('/api/vault/reveal',{method:'POST',headers:eh,body:JSON.stringify({id:it.id})});
       if(!r.ok){alert((await r.json().catch(()=>({}))).error||'身分確認失敗');return null}return r.json()};
     if(k==='unlock'){const j=await verify('請確認身分，以解鎖這筆密碼');if(!j)return;unl[it.id]={pw:j.pw,user:j.user,t:Date.now()+60000};setTimeout(()=>{delete unl[it.id];if($('#vsearch'))draw()},60500);return draw()}
+    if(k==='pin'){const r=await api('/api/vault/pin',{method:'POST',body:JSON.stringify({id:it.id,pinned:!it.pin})});if(r.ok){await load();draw()}return}
     if(k==='lock'){delete unl[it.id];return draw()}
     if(k==='user'){const u=unl[it.id];return u&&copyText(u.user||'',b)}
     if(k==='pw'){const u=unl[it.id];return u&&copyText(u.pw,b)}
@@ -1907,6 +1915,13 @@ async function vaultOpen(){
     if(k==='del'){if(!confirm('清除「'+it.title+'」的密碼？這個動作無法復原。'))return;const eh=await askEdit('請確認身分，以清除這筆密碼');if(!eh)return;
       const r=await api('/api/vault/delete',{method:'POST',headers:eh,body:JSON.stringify({id:it.id})});if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'清除失敗');await load();return draw()}
   };
+  $('#mbox').onpointerdown=e=>{   // drag a password up or down by its three-line handle (reorder mode)
+    const g=e.target.closest('.vgrip');if(!g)return;e.preventDefault();
+    const row=g.closest('.vrow'),rows=()=>[...row.parentNode.querySelectorAll('.vrow')];row.classList.add('vdrag');
+    const move=ev=>{const y=ev.clientY;for(const o of rows()){if(o===row)continue;const r=o.getBoundingClientRect();if(y>r.top&&y<r.bottom){if(y<r.top+r.height/2)o.before(row);else o.after(row);break}}};
+    const end=async()=>{removeEventListener('pointermove',move);removeEventListener('pointerup',end);removeEventListener('pointercancel',end);row.classList.remove('vdrag');
+      try{await api('/api/vault/order',{method:'POST',body:JSON.stringify({ids:rows().map(r=>r.dataset.id)})});await load()}catch{}draw()};
+    addEventListener('pointermove',move);addEventListener('pointerup',end);addEventListener('pointercancel',end)};
 }
 $('#dvault').onclick=vaultOpen;
 setInterval(()=>{if(me&&!document.hidden&&$('#applock').hidden&&$('#offscreen').hidden)clipRefresh()},8000);

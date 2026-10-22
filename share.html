@@ -8,8 +8,8 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
-<link rel="stylesheet" href="glass.css?v=20261023R">
-<link rel="stylesheet" href="light.css?v=20261023R">
+<link rel="stylesheet" href="glass.css?v=20261023S">
+<link rel="stylesheet" href="light.css?v=20261023S">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <title>檔案分享</title>
@@ -168,7 +168,7 @@ html body #viewer #vdl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!imp
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="glass.js?v=20261023R"></script>
+<script src="glass.js?v=20261023S"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
@@ -202,7 +202,7 @@ const submitPw=()=>{const pw=$('#pw').value;if(pw)openShare(pw)};
 if(!/^[A-Za-z0-9_-]{22}$/.test(id)){$('#gate').innerHTML='<h1>🔒 檔案分享</h1><p class="sub">連結不完整或已失效。</p>'}
 else{$('#go').onclick=submitPw;$('#pw').onkeydown=e=>{if(e.key==='Enter')submitPw()};openShare()}
 
-let view='nine',sortBy='date',asc=false,selMode=false;const selected=new Set();
+let view='small',sortBy='date',asc=false,selMode=false;const selected=new Set();
 const cmpName=(a,b)=>a.name.localeCompare(b.name,'zh-Hant',{numeric:true});
 const CMP={name:cmpName,date:(a,b)=>a.mtime-b.mtime,size:(a,b)=>a.size-b.size};
 const sorted=()=>[...files].sort((a,b)=>(asc?1:-1)*CMP[sortBy](a,b)||cmpName(a,b));
@@ -212,7 +212,8 @@ function thumbErr(img){const d=document.createElement('div');d.className='ico';d
 
 // ---- thumbnail queue: the screen first, top to bottom; how many load at once follows the measured speed (40% of it, like the home page's "auto"), never fewer than 16 ----
 let spdMbps=null;
-const tqMax=()=>Math.max(16,spdMbps?Math.floor(spdMbps*0.4*1e6/8/135000):64);
+const capSet=(()=>{try{const v=localStorage.getItem('nas_speedcap');if(!v||v==='auto')return null;if(v==='0')return Infinity;if(v==='custom'){const c=parseFloat(localStorage.getItem('nas_speedcustom'));return c>0?c:null}const n=+v;return n>0?n:null}catch{return null}})();   // this browser's own speed limit (if the owner chose one), otherwise 40% of the measured speed
+const tqMax=()=>Math.max(16,capSet!==null?(isFinite(capSet)?Math.floor(capSet*1e6/8/135000):64):spdMbps?Math.floor(spdMbps*0.4*1e6/8/135000):64);
 let tqRaf=0;const tqSoon=()=>{if(!tqRaf)tqRaf=requestAnimationFrame(()=>{tqRaf=0;tqPump()})};
 function tqPump(){
   const imgs=[...document.querySelectorAll('#list img.tq')];let live=0;const wait=[];
@@ -221,10 +222,13 @@ function tqPump(){
   const vh=innerHeight,vis=[],rest=[];
   for(const i of wait){if(!i.offsetParent)continue;const b=i.getBoundingClientRect();if(b.bottom>-300&&b.top<vh+300)vis.push([b.top,i]);else rest.push(i)}
   vis.sort((a,b)=>a[0]-b[0]);
-  for(const i of [...vis.map(v=>v[1]),...rest]){if(live>=max)break;live++;const u=i.dataset.ts;delete i.dataset.ts;const fin=()=>tqPump();i.addEventListener('load',fin,{once:true});i.addEventListener('error',fin,{once:true});i.src=u}
+  for(const i of [...vis.map(v=>v[1]),...rest]){if(live>=max)break;live++;const u=i.dataset.ts;delete i.dataset.ts;i.dataset.src0=u;i.dataset.t0=Date.now();const fin=()=>tqPump();i.addEventListener('load',fin,{once:true});i.addEventListener('error',fin,{once:true});i.src=u}
 }
 addEventListener('scroll',tqSoon,{passive:true});addEventListener('resize',tqSoon);
-(async()=>{try{if(!API)await findApi();const ac=new AbortController(),t0=performance.now(),tm=setTimeout(()=>ac.abort(),2000);let got=0,full=false;   // speed test (8 MB, 2 s) while the page opens
+setInterval(()=>{if(document.hidden)return;document.querySelectorAll('#list img.tq').forEach(i=>{   // asked for but nothing arrived for 10 s: ask again, up to 3 times
+  if(i.dataset.ts||!i.getAttribute('src')||i.complete||!i.dataset.t0||Date.now()-i.dataset.t0<10000)return;
+  const n=+i.dataset.stall||0;if(n>=3)return;i.dataset.stall=n+1;i.dataset.t0=Date.now();const u=i.dataset.src0||i.getAttribute('src');i.src=u+(u.includes('?')?'&':'?')+'r=s'+(n+1)})},3000);
+(async()=>{try{if(capSet!==null)return;if(!API)await findApi();const ac=new AbortController(),t0=performance.now(),tm=setTimeout(()=>ac.abort(),2000);let got=0,full=false;   // speed test (8 MB, 2 s) while the page opens
   try{const r=await fetch(API+'/api/speedtest-open?t='+Date.now(),{cache:'no-store',signal:ac.signal});if(!r.ok)throw 0;const rd=r.body.getReader();for(;;){const{done,value}=await rd.read();if(done){full=true;break}got+=value.length}}catch{}
   clearTimeout(tm);const sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got>0){spdMbps=got*8/sec/1e6;tqSoon()}}catch{}})();
 function media(x,i){
