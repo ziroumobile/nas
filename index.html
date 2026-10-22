@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.45">
+<meta name="app-version" content="v8.46">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023P">
-<link rel="stylesheet" href="light.css?v=20261023P">
+<link rel="stylesheet" href="glass.css?v=20261023Q">
+<link rel="stylesheet" href="light.css?v=20261023Q">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -431,7 +431,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023P"></script>
+<script src="glass.js?v=20261023Q"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -482,7 +482,7 @@ async function init(){
   clearInterval(initRetry);$('#offscreen').hidden=true;
   $('#dev').textContent=device;
   const t=await token();
-  if(!t){$('#login').hidden=false;$('#app').hidden=true;return}
+  if(!t){$('#login').hidden=false;$('#app').hidden=true;if(!window.__spdTried){window.__spdTried=true;measureSpeed(true)}return}   // the speed is measured while the login page is on screen, so this login uses a fresh value
   $('#login').hidden=true; // the home page stays hidden until we know whether the lock screen must come first
   const filesP=api('/api/files').catch(()=>null);   // the file list is asked for at the same time as /api/me instead of after it (saves one round trip over the tunnel)
   let r;try{r=await api('/api/me')}catch{return hostBlocked('主機可能關機，或通道還沒啟動（開機後要執行 start.ps1）。')}
@@ -513,11 +513,11 @@ const SPEEDS=[['5','5 Mbps'],['15','15 Mbps'],['30','30 Mbps'],['50','50 Mbps'],
 const speedSel=()=>{const v=ls.get('nas_speedcap');return SPEEDS.some(x=>x[0]===v)?v:'auto'};
 const measuredMbps=()=>{const v=parseFloat(ls.get('nas_speedmeas'));return isFinite(v)&&v>0?v:null};
 function capMbps(){const sel=speedSel();if(sel==='0')return Infinity;if(sel==='custom'){const c=parseFloat(ls.get('nas_speedcustom'));return c>0?c:Infinity}if(sel!=='auto')return +sel;const m=measuredMbps();return m?Math.max(0.5,m*0.4):Infinity}
-async function measureSpeed(){   // asks for 8 MB and gives it 2 seconds: if it has not all arrived by then the download is cut off and (bytes received / 2 s) is the speed
+async function measureSpeed(open){   // asks for 8 MB and gives it 2 seconds: if it has not all arrived by then the download is cut off and (bytes received / 2 s) is the speed
   try{const ac=new AbortController(),t0=performance.now(),timer=setTimeout(()=>ac.abort(),2000);let got=0,full=false;
-    try{const r=await api('/api/speedtest?kb=8192&t='+Date.now(),{cache:'no-store',signal:ac.signal});if(!r.ok)throw 0;const rd=r.body.getReader();for(;;){const{done,value}=await rd.read();if(done){full=true;break}got+=value.length}}catch{}
+    try{if(open&&!API)await findApi();const r=open?await fetch(API+'/api/speedtest-open?t='+Date.now(),{cache:'no-store',signal:ac.signal}):await api('/api/speedtest?kb=8192&t='+Date.now(),{cache:'no-store',signal:ac.signal});if(!r.ok)throw 0;const rd=r.body.getReader();for(;;){const{done,value}=await rd.read();if(done){full=true;break}got+=value.length}}catch{}
     clearTimeout(timer);const sec=full?Math.max(0.05,(performance.now()-t0)/1000):2;
-    if(got>0)ls.set('nas_speedmeas',String((got*8/sec/1e6).toFixed(1)))}catch{}
+    if(got>0){ls.set('nas_speedmeas',String((got*8/sec/1e6).toFixed(1)));window.__spdDone=true}}catch{}
 }
 const privacy=()=>{try{return ls.get('nas_privacy')==='1'}catch{return false}};
 const maskPriv=t=>{t=String(t||'');return privacy()&&t.length>5?t.slice(0,5)+'*****':t};
@@ -651,7 +651,7 @@ setInterval(()=>{
   });
 },2000);
 function thumbErr(img){const n=+img.dataset.try||0;if(n<4&&img.dataset.src0!==''){img.dataset.try=n+1;const u=img.dataset.src0||(img.dataset.src0=img.getAttribute('src'));setTimeout(()=>{if(img.isConnected)img.src=u+(u.includes('?')?'&':'?')+'r='+(n+1)},2500*(n+1));return} /* thumbnails may still be being made on the PC: retry a few times before giving up */ const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.kind==='video'?'🎬':'🖼';img.replaceWith(d)}
-const TQ={max:6,paused:false,started:0,raf:0};
+const TQ={max:16,paused:false,started:0,raf:0};
 function tqPump(){
   if(TQ.paused||document.hidden)return;
   const imgs=[...document.querySelectorAll('#list img.tq')];let live=0;const wait=[];
@@ -851,7 +851,7 @@ function prefetchThumbs(){
     await Promise.all(tasks);
     TQ.paused=false;tqPump();                                          // stage 3: back to the home page
     await loadList(all.slice(40),2);                                   // (closed folders are only warmed in the background)
-    measureSpeed();                                                    // the speed test runs last, when nothing else is downloading (it used to take bandwidth from the first screen)
+    if(!window.__spdDone)measureSpeed();                               // (already measured on the login page? then not again) the speed test runs last, when nothing else is downloading (it used to take bandwidth from the first screen)
   })();
 }
 let filesTxt='';
