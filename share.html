@@ -8,8 +8,8 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
-<link rel="stylesheet" href="glass.css?v=20261023I">
-<link rel="stylesheet" href="light.css?v=20261023I">
+<link rel="stylesheet" href="glass.css?v=20261023J">
+<link rel="stylesheet" href="light.css?v=20261023J">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <title>檔案分享</title>
@@ -168,7 +168,7 @@ html body #viewer #vdl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!imp
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="glass.js?v=20261023I"></script>
+<script src="glass.js?v=20261023J"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
@@ -330,8 +330,11 @@ $('#viewer').addEventListener('touchend',e=>{
   const bar=document.querySelector('.bar');const hb=document.querySelector('.hdrbtns');if(!bar||!hb)return;
   const sheet=document.createElement('div'),bd=document.createElement('div');sheet.id='tunesheet';bd.id='tunebd';
   const grab=document.createElement('div');grab.className='tunegrab';
-  const lab=document.createElement('div');lab.className='tunelab';lab.textContent='顯示方式與排序';
-  sheet.append(grab,lab,bar);document.body.append(bd,sheet);
+  const lab=t=>{const d=document.createElement('div');d.className='tunelab';d.textContent=t;return d};
+  const row=(...els)=>{const d=document.createElement('div');d.className='bar tunerow';d.append(...els);return d};
+  const seg=bar.querySelector('.seg'),sort=bar.querySelector('#sort'),order=bar.querySelector('#order');
+  bar.style.display='none';                                    // what is left of the old bar (the hidden select button) stays in the page, out of sight
+  sheet.append(grab,lab('顯示方式'),row(seg),lab('排序'),row(sort,order),bar);document.body.append(bd,sheet);
   const btn=document.createElement('button');btn.className='hb';btn.id='dtune';btn.type='button';btn.setAttribute('aria-label','調整');
   btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg>';
   hb.prepend(btn);
