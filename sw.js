@@ -13,6 +13,10 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request, url = new URL(req.url);
   if (req.method !== 'GET' || url.origin !== location.origin || url.pathname.endsWith('/url.json')) return;
+  if (url.search.startsWith('?v=')) { // glass.css / light.css / glass.js carry a version stamp: a new version is a new URL, so the cached copy is always right
+    e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(res => { if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); } return res; })));
+    return;
+  }
   e.respondWith(
     fetch(req, { cache: 'no-cache' })
       .then(res => { if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); } return res; })

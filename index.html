@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.46">
+<meta name="app-version" content="v8.47">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023Q">
-<link rel="stylesheet" href="light.css?v=20261023Q">
+<link rel="stylesheet" href="glass.css?v=20261023R">
+<link rel="stylesheet" href="light.css?v=20261023R">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -150,7 +150,7 @@ html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position
 #upback svg{width:24px;height:24px}
 #total{display:none}
 #dock button{position:relative}
-.dbadge{position:absolute;top:5px;right:12px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ff453a;color:#fff;font-size:11px;font-weight:700;line-height:17px;text-align:center;box-shadow:0 0 0 2px rgba(20,22,26,.9);pointer-events:none}.dbadge:empty{display:none}
+.dbadge{position:absolute;top:5px;right:12px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ff453a;color:#fff;font-size:11px;font-weight:700;line-height:17px;text-align:center;box-shadow:0 0 0 2px rgba(20,22,26,.9);pointer-events:none}.dbadge:empty{display:none}#dock .dbadge{display:none!important}
 body.selecting #app>header .hdrbtns{visibility:hidden}
 #spage{position:fixed;inset:0;z-index:96;background:#000;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 76px) 16px calc(env(safe-area-inset-bottom) + 110px)}
 #spage[hidden]{display:none}
@@ -429,9 +429,16 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
   <button class="danger" id="seldel" hidden>刪除選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
+<script>
+// no saved login: show the login page at once (don't wait for the Supabase script below) and measure the connection speed while the person types
+try{if(!Object.keys(localStorage).some(function(k){return /^sb-.*-auth-token/.test(k)})){document.getElementById('login').hidden=false;window.__spdEarly=1;
+(async function(){try{var u=(await(await fetch('url.json?t='+Date.now())).json()).url.replace(/\/$/,''),ac=new AbortController(),t0=performance.now(),tm=setTimeout(function(){ac.abort()},2000),got=0,full=false;
+try{var r=await fetch(u+'/api/speedtest-open?t='+Date.now(),{cache:'no-store',signal:ac.signal});if(!r.ok)throw 0;var rd=r.body.getReader();for(;;){var x=await rd.read();if(x.done){full=true;break}got+=x.value.length}}catch(e){}
+clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got>0){localStorage.setItem('nas_speedmeas',(got*8/sec/1e6).toFixed(1));window.__spdDone=true}}catch(e){}})()}}catch(e){}
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023Q"></script>
+<script src="glass.js?v=20261023R"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -482,7 +489,7 @@ async function init(){
   clearInterval(initRetry);$('#offscreen').hidden=true;
   $('#dev').textContent=device;
   const t=await token();
-  if(!t){$('#login').hidden=false;$('#app').hidden=true;if(!window.__spdTried){window.__spdTried=true;measureSpeed(true)}return}   // the speed is measured while the login page is on screen, so this login uses a fresh value
+  if(!t){$('#login').hidden=false;$('#app').hidden=true;if(!window.__spdTried&&!window.__spdEarly){window.__spdTried=true;measureSpeed(true)}return}   // the speed is measured while the login page is on screen, so this login uses a fresh value
   $('#login').hidden=true; // the home page stays hidden until we know whether the lock screen must come first
   const filesP=api('/api/files').catch(()=>null);   // the file list is asked for at the same time as /api/me instead of after it (saves one round trip over the tunnel)
   let r;try{r=await api('/api/me')}catch{return hostBlocked('主機可能關機，或通道還沒啟動（開機後要執行 start.ps1）。')}
@@ -651,19 +658,21 @@ setInterval(()=>{
   });
 },2000);
 function thumbErr(img){const n=+img.dataset.try||0;if(n<4&&img.dataset.src0!==''){img.dataset.try=n+1;const u=img.dataset.src0||(img.dataset.src0=img.getAttribute('src'));setTimeout(()=>{if(img.isConnected)img.src=u+(u.includes('?')?'&':'?')+'r='+(n+1)},2500*(n+1));return} /* thumbnails may still be being made on the PC: retry a few times before giving up */ const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.kind==='video'?'🎬':'🖼';img.replaceWith(d)}
-const TQ={max:16,paused:false,started:0,raf:0};
+const TQ={paused:false,started:0,raf:0};
+const thumbBytes=()=>document.documentElement.classList.contains('ios')?60000:135000;   // average size of one 480p / 720p thumbnail
+function tqMax(){const mb=capMbps();return Math.max(16,isFinite(mb)?Math.floor(mb*1e6/8/thumbBytes()):64)}   // how many may load at once = how many the speed limit can deliver per second (never fewer than 16)
 function tqPump(){
   if(TQ.paused||document.hidden)return;
   const imgs=[...document.querySelectorAll('#list img.tq')];let live=0;const wait=[];
   for(const i of imgs){if(i.dataset.ts)wait.push(i);else if(!i.complete&&i.getAttribute('src'))live++}
-  if(!wait.length||live>=TQ.max)return;
+  if(!wait.length||live>=tqMax())return;
   const vh=innerHeight,vis=[],rest=[];
   for(const i of wait){if(!i.offsetParent)continue;const b=i.getBoundingClientRect();if(b.bottom>-300&&b.top<vh+300)vis.push([b.top,i]);else rest.push(i)}   // closed folders have no layout: they wait
   vis.sort((a,b)=>a[0]-b[0]);
-  for(const i of [...vis.map(v=>v[1]),...rest]){if(live>=TQ.max)break;if(!paceOK()){setTimeout(tqSoon,200);break}live++;const u=i.dataset.ts;delete i.dataset.ts;i.dataset.src0=u;TQ.started++;const fin=()=>tqPump();i.addEventListener('load',fin,{once:true});i.addEventListener('error',fin,{once:true});i.src=u}
+  for(const i of [...vis.map(v=>v[1]),...rest]){if(live>=tqMax())break;if(!paceOK()){setTimeout(tqSoon,200);break}live++;const u=i.dataset.ts;delete i.dataset.ts;i.dataset.src0=u;TQ.started++;const fin=()=>tqPump();i.addEventListener('load',fin,{once:true});i.addEventListener('error',fin,{once:true});i.src=u}
 }
 let tqPaceT=[];
-function paceOK(){const now=Date.now();tqPaceT=tqPaceT.filter(t=>now-t<1000);const mb=capMbps();if(!isFinite(mb))return true;const rate=Math.max(2,Math.floor(mb*1e6/8/35000));if(tqPaceT.length>=rate)return false;tqPaceT.push(now);return true}   // about 35 kB per thumbnail
+function paceOK(){const now=Date.now();tqPaceT=tqPaceT.filter(t=>now-t<1000);const mb=capMbps();if(!isFinite(mb))return true;const rate=Math.max(16,Math.floor(mb*1e6/8/thumbBytes()));if(tqPaceT.length>=rate)return false;tqPaceT.push(now);return true}   // about 35 kB per thumbnail
 const tqSoon=()=>{if(!TQ.raf)TQ.raf=requestAnimationFrame(()=>{TQ.raf=0;tqPump()})};
 try{new MutationObserver(tqSoon).observe(document.getElementById('list'),{childList:true,subtree:true})}catch{}
 addEventListener('scroll',tqSoon,{passive:true,capture:true});addEventListener('resize',tqSoon);document.addEventListener('toggle',tqSoon,true);   // scrolling, or opening a folder, re-sorts the queue

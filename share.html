@@ -8,8 +8,8 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
-<link rel="stylesheet" href="glass.css?v=20261023Q">
-<link rel="stylesheet" href="light.css?v=20261023Q">
+<link rel="stylesheet" href="glass.css?v=20261023R">
+<link rel="stylesheet" href="light.css?v=20261023R">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <title>檔案分享</title>
@@ -168,7 +168,7 @@ html body #viewer #vdl:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!imp
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="glass.js?v=20261023Q"></script>
+<script src="glass.js?v=20261023R"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
@@ -209,8 +209,26 @@ const sorted=()=>[...files].sort((a,b)=>(asc?1:-1)*CMP[sortBy](a,b)||cmpName(a,b
 function syncToolbar(){for(const[v,i]of[['list','#vlist'],['nine','#vnine'],['small','#vsmall']])$(i).classList.toggle('on',view===v);$('#sort').value=sortBy;$('#order').textContent=asc?'↑ 由小到大':'↓ 由大到小';$('#selmode').classList.toggle('on',selMode);if(window.glassSegSync)glassSegSync()}
 const ICON={image:'🖼',video:'🎬',file:'📄'};
 function thumbErr(img){const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.k==='video'?'🎬':'🖼';img.replaceWith(d)}
+
+// ---- thumbnail queue: the screen first, top to bottom; how many load at once follows the measured speed (40% of it, like the home page's "auto"), never fewer than 16 ----
+let spdMbps=null;
+const tqMax=()=>Math.max(16,spdMbps?Math.floor(spdMbps*0.4*1e6/8/135000):64);
+let tqRaf=0;const tqSoon=()=>{if(!tqRaf)tqRaf=requestAnimationFrame(()=>{tqRaf=0;tqPump()})};
+function tqPump(){
+  const imgs=[...document.querySelectorAll('#list img.tq')];let live=0;const wait=[];
+  for(const i of imgs){if(i.dataset.ts)wait.push(i);else if(!i.complete&&i.getAttribute('src'))live++}
+  const max=tqMax();if(!wait.length||live>=max)return;
+  const vh=innerHeight,vis=[],rest=[];
+  for(const i of wait){if(!i.offsetParent)continue;const b=i.getBoundingClientRect();if(b.bottom>-300&&b.top<vh+300)vis.push([b.top,i]);else rest.push(i)}
+  vis.sort((a,b)=>a[0]-b[0]);
+  for(const i of [...vis.map(v=>v[1]),...rest]){if(live>=max)break;live++;const u=i.dataset.ts;delete i.dataset.ts;const fin=()=>tqPump();i.addEventListener('load',fin,{once:true});i.addEventListener('error',fin,{once:true});i.src=u}
+}
+addEventListener('scroll',tqSoon,{passive:true});addEventListener('resize',tqSoon);
+(async()=>{try{if(!API)await findApi();const ac=new AbortController(),t0=performance.now(),tm=setTimeout(()=>ac.abort(),2000);let got=0,full=false;   // speed test (8 MB, 2 s) while the page opens
+  try{const r=await fetch(API+'/api/speedtest-open?t='+Date.now(),{cache:'no-store',signal:ac.signal});if(!r.ok)throw 0;const rd=r.body.getReader();for(;;){const{done,value}=await rd.read();if(done){full=true;break}got+=value.length}}catch{}
+  clearTimeout(tm);const sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got>0){spdMbps=got*8/sec/1e6;tqSoon()}}catch{}})();
 function media(x,i){
-  const inner=x.thumb?`<img class="ico" loading="lazy" decoding="async" data-k="${x.kind}" src="${API+x.thumb}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
+  const inner=x.thumb?`<img class="ico tq" decoding="async" data-k="${x.kind}" data-ts="${API+x.thumb}" alt="" onerror="thumbErr(this)">`:`<div class="ico">${ICON[x.kind]}</div>`;
   return `<a class="thumbA" href="${API+x.url}" data-open="${i}">${inner}${x.kind==='video'?'<span class="play">▶</span>':''}</a>`;
 }
 function render(){
@@ -221,6 +239,7 @@ function render(){
     if(view!=='list')return `<div class="cell${sel}" data-i="${i}" title="${esc(x.name)}"><span class="chk"></span>${media(x,i)}<div class="cn">${esc(x.name)}</div></div>`;
     return `<div class="row${sel}" data-i="${i}"><span class="chk"></span>${media(x,i)}<div class="info"><a href="${API+x.url}" data-open="${i}">${esc(x.name)}</a><small>${fmt(x.size)} · 更新 ${new Date(x.mtime).toLocaleDateString()}</small></div><a class="btn dlrow" href="${API+x.url}&dl=1" style="padding:4px 10px">下載</a></div>`}).join('');
   $('#list').innerHTML=view==='list'?items:`<div class="nine${view==='small'?' small':''}">${items}</div>`;
+  tqPump();
   $('#selbar').hidden=!selMode;$('#selcount').textContent='已選 '+selected.size+' 個';$('#seldl').disabled=$('#selnone').disabled=!selected.size;
 }
 const setView=v=>{view=v;render()};
