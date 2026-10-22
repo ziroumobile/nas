@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v8.42">
+<meta name="app-version" content="v8.43">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023M">
-<link rel="stylesheet" href="light.css?v=20261023M">
+<link rel="stylesheet" href="glass.css?v=20261023N">
+<link rel="stylesheet" href="light.css?v=20261023N">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -429,7 +429,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023M"></script>
+<script src="glass.js?v=20261023N"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -506,7 +506,7 @@ const lockKey=()=>{try{return ls.get('nas_lock')||'60'}catch{return '60'}};
 const lockMs=()=>(LOCKS.find(x=>x[0]===lockKey())||LOCKS[1])[2];
 const vq=()=>{try{const q=ls.get('nas_vq');return VQS.some(x=>x[0]===q)?q:'720'}catch{return '720'}};
 const prefLabel=(list,key)=>((list.find(x=>x[0]===key)||list[0])[1]).replace(/（.*$/,'');
-const SPEEDS=[['auto','自動（測到的網速的 40%）'],['5','5 Mbps'],['15','15 Mbps'],['30','30 Mbps'],['50','50 Mbps'],['100','100 Mbps'],['150','150 Mbps'],['300','300 Mbps'],['500','500 Mbps'],['custom','自訂…'],['0','不限制']];
+const SPEEDS=[['5','5 Mbps'],['15','15 Mbps'],['30','30 Mbps'],['50','50 Mbps'],['100','100 Mbps'],['150','150 Mbps'],['300','300 Mbps'],['500','500 Mbps'],['custom','自訂…'],['auto','自動（測到的網速的 40%）'],['0','不限制']];
 const speedSel=()=>{const v=ls.get('nas_speedcap');return SPEEDS.some(x=>x[0]===v)?v:'auto'};
 const measuredMbps=()=>{const v=parseFloat(ls.get('nas_speedmeas'));return isFinite(v)&&v>0?v:null};
 function capMbps(){const sel=speedSel();if(sel==='0')return Infinity;if(sel==='custom'){const c=parseFloat(ls.get('nas_speedcustom'));return c>0?c:Infinity}if(sel!=='auto')return +sel;const m=measuredMbps();return m?Math.max(0.5,m*0.4):Infinity}
@@ -548,7 +548,20 @@ function themeThumb(light){
    +'<span style="position:absolute;left:5px;top:98px;width:86px;height:58px;border-radius:9px;background:'+cd+'">'+row(7,'#ff9f0a')+row(24,'#0a84ff')+row(41,'#5e5ce6')+'</span>'
    +'<span style="position:absolute;left:12px;right:12px;bottom:6px;height:12px;border-radius:6px;background:'+cd+';box-shadow:inset 0 0 0 1px '+ring+'"></span></span>';
 }
-$('#speedrow').onclick=()=>{const m=measuredMbps();pickPage('⚡ 網速上限','載入縮圖時最多使用多少網速，避免占滿你的網路。選「自動」會用這台裝置測到的網速的 40%'+(m?'（上次測到約 '+m+' Mbps，目前上限約 '+capMbps().toFixed(1)+' Mbps）':'')+'。只記在這台裝置上。',SPEEDS,speedSel(),k=>{if(k==='custom'){const v=parseFloat(prompt('輸入網速上限（Mbps）',ls.get('nas_speedcustom')||'20'));if(!(v>0))return;ls.set('nas_speedcustom',String(v))}ls.set('nas_speedcap',k);syncPrefs()})};
+$('#speedrow').onclick=()=>{const m=measuredMbps();pickPage('⚡ 網速上限','載入縮圖時最多使用多少網速，避免占滿你的網路。選「自動」會用這台裝置測到的網速的 40%'+(m?'（上次測到約 '+m+' Mbps，目前上限約 '+capMbps().toFixed(1)+' Mbps）':'')+'。只記在這台裝置上。',SPEEDS,speedSel(),k=>{if(k==='custom'){const v=parseFloat(prompt('輸入網速上限（Mbps）',ls.get('nas_speedcustom')||'20'));if(!(v>0))return;ls.set('nas_speedcustom',String(v))}ls.set('nas_speedcap',k);syncPrefs()});
+  const box=$('#mbox'),blk=document.createElement('div');blk.className='sgrp2 spdtest';
+  blk.innerHTML='<button class="prow" id="spdgo" type="button"><span>測試網速（下載 100 MB）</span></button><div class="spdst" id="spdst" hidden></div><button class="prow" id="spdcancel" type="button" hidden><span style="color:#ff453a">取消</span></button>';
+  box.append(blk);
+  let ac=null;
+  $('#spdgo').onclick=async e=>{e.stopPropagation();if(ac)return;ac=new AbortController();const st=$('#spdst'),go=$('#spdgo'),cn=$('#spdcancel');st.hidden=false;cn.hidden=false;go.disabled=true;st.textContent='測試中…';
+    const t0=performance.now();let got=0,done=false;
+    try{const r=await api('/api/speedtest?kb=102400&t='+Date.now(),{cache:'no-store',signal:ac.signal});if(!r.ok)throw new Error('伺服器回應 '+r.status);const rd=r.body.getReader();
+      for(;;){const{done:d,value}=await rd.read();if(d){done=true;break}got+=value.length;const sec=(performance.now()-t0)/1000;if(sec>0.3)st.textContent='已下載 '+(got/1048576).toFixed(1)+' MB · 目前約 '+(got*8/sec/1e6).toFixed(1)+' Mbps'}
+      const sec=(performance.now()-t0)/1000,mb=got*8/sec/1e6;ls.set('nas_speedmeas',mb.toFixed(1));syncPrefs();
+      st.textContent='完成：100 MB 用了 '+sec.toFixed(1)+' 秒，平均約 '+mb.toFixed(1)+' Mbps（自動上限約 '+(mb*0.4).toFixed(1)+' Mbps）'}
+    catch(er){const sec=(performance.now()-t0)/1000;st.textContent=er&&er.name==='AbortError'?('已取消（下載了 '+(got/1048576).toFixed(1)+' MB，'+sec.toFixed(1)+' 秒）'):('測試失敗：'+(er&&er.message||'連線中斷'))}
+    ac=null;go.disabled=false;cn.hidden=true};
+  $('#spdcancel').onclick=e=>{e.stopPropagation();if(ac)ac.abort()};}
 $('#privrow').onclick=()=>{loadPrivacy();pickPage('👁 隱私','開啟後，密碼頁解鎖時，帳號和密碼只顯示前 5 個字元，後面用 ***** 取代；複製時仍然是完整內容。關閉則整個顯示。只記在這台裝置上。',[['1','開'],['0','關']],privacy()?'1':'0',k=>savePrivacy(k==='1'))};
 $('#appearance').onclick=()=>{
   const draw=()=>{const cur=theme();

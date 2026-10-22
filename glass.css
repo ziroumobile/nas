@@ -1102,3 +1102,6 @@ html body #modal .shc > div[style*="flex-wrap"] > :is(button,a):not(#nx1):not(#n
 #tunesheet .tunerow select{flex:1 1 0;min-width:0;max-width:none!important;width:auto!important}
 #tunesheet .tunerow #order{flex:1 1 0;min-width:0}
 #tunesheet .tunerow .seg{width:100%}
+
+.spdtest{margin-top:16px}
+.spdst{padding:10px 16px;font-size:14px;color:#8e8e93;line-height:1.5}
