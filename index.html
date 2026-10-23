@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.7">
+<meta name="app-version" content="v9.8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023b">
-<link rel="stylesheet" href="light.css?v=20261023b">
+<link rel="stylesheet" href="glass.css?v=20261023c">
+<link rel="stylesheet" href="light.css?v=20261023c">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -126,6 +126,7 @@ body.selecting .wrap{padding-bottom:100px}
 #peek .pname{color:#fff;font-size:13px;max-width:92vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @keyframes pk{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
 .spdtest [hidden]{display:none!important}
+html.android #topcap{display:none!important}   /* Android: the toolbar is not fixed there, a fixed block would cover it */
 html.ios #topcap{position:fixed;left:0;right:0;top:0;height:max(env(safe-area-inset-top),1px);background:#000;z-index:58}
 @media(min-width:700px){html.ios:not(.android) #topcap{height:max(env(safe-area-inset-top),24px)}}
 html.ios body:not(.mlock):not(.dockover) #topcap{height:calc(max(0px,calc(env(safe-area-inset-top) - 6px)) + 58px)!important}   /* home page: one solid block from the top edge down to the bottom of the toolbar (iOS / iPadOS only treat a block that tall as the top bar) */
@@ -467,8 +468,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023b"></script>
-<script src="docview.js?v=20261023b"></script>
+<script src="glass.js?v=20261023c"></script>
+<script src="docview.js?v=20261023c"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -803,8 +804,9 @@ function buzz(){ // a short tick: Vibration API (Android), or an invisible switc
 
   // long press on a picture / video: a big preview while the finger stays down (works in select mode too)
   const peek=document.createElement('div');peek.id='peek';peek.hidden=true;document.body.appendChild(peek);
-  let peekAt=0;const hidePeek=()=>{resumeThumbs();peek.querySelectorAll('video').forEach(v=>{v.pause();v.removeAttribute('src');v.load()});peek.hidden=true;peek.innerHTML='';dragSwallow=Date.now()+400};
+  let peekAt=0;const hidePeek=()=>{resumeThumbs();peek.querySelectorAll('video').forEach(v=>{v.pause();v.removeAttribute('src');v.load()});peek.hidden=true;peek.innerHTML='';dragSwallow=Date.now()+400;window.__noClickUntil=Date.now()+700};
   peek.addEventListener('pointerdown',e=>{if(peek.querySelector('.zoomable')){e.stopPropagation();if(!e.target.closest('img.zoomable')){e.preventDefault();hidePeek()}return}if(e.target.closest('video')){e.stopPropagation();return} /* the player's own controls */e.preventDefault();e.stopPropagation();if(Date.now()-peekAt>350)hidePeek()}); // the preview stays after letting go; a tap anywhere closes it
+  document.addEventListener('click',e=>{if(Date.now()<(window.__noClickUntil||0)){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation()}},true);   // the click that follows the tap closing the preview would land on whatever is underneath
   peek.addEventListener('click',e=>{e.preventDefault();e.stopPropagation()});peek.addEventListener('contextmenu',e=>e.preventDefault());
   const startPeek=(c,x0,y0,id)=>{
     clearTimeout(pk&&pk.t);pk={x:x0,y:y0,id,on:false};
@@ -1256,6 +1258,7 @@ const shareUrl=id=>new URL('share.html',location.href).href.split('#')[0].split(
 const showPage=html=>{const m=$('#modal'),keep=m.classList.contains('fullpage')&&!m.hidden?$('#mbox').scrollTop:0;showModal(html);m.classList.add('fullpage');$('#mbox').scrollTop=keep};
 $('#pgback').onclick=()=>{if(window.__setBack){window.__setBack=false;popAnim(closeModal)}else closeModal()}; // back = the home page
 const showModal=html=>{$('#modal').classList.remove('fullpage');$('#mbox').innerHTML=html;$('#modal').classList.toggle('top',vOpen);$('#modal').hidden=false};
+const dockOn=id=>document.querySelector('#dock button.on')?.id===id;
 const setDock=id=>{document.querySelectorAll('#dock button').forEach(b=>b.classList.toggle('on',b.id===id))};
 const closeModal=()=>{document.body.classList.remove('dockover');setDock('dhome');$('#modal').hidden=true;$('#modal').classList.remove('top','fullpage');$('#mbox').innerHTML=''}; // also drops any password fields from the page
 $('#modal').onclick=e=>{if(e.target.id==='modal')closeModal()};
@@ -1312,7 +1315,8 @@ async function sharesManager(){ // every share: link, password (after entering t
   let list=cached||[],revealed=null; // revealed passwords live only in this dialog and are dropped when it closes
   const load=async()=>{const r=await api('/api/shares');if(!r.ok)throw 0;list=await r.json();window.__sharesCache=list;setShareBadge(list.filter(s=>!s.expires||s.expires>Date.now()).length)};
   if(cached){const before=JSON.stringify(cached);load().then(()=>{if(JSON.stringify(list)===before)return;if(document.querySelector('#dock button.on')?.id==='dshare'&&!$('#modal').hidden&&typeof draw==='function')draw()}).catch(()=>{})}
-  else try{await load()}catch{showPage('<h3>🔗 已分享連結</h3><p class="merr">無法載入</p><div class="mbtns"><button class="ghost" id="sx">關閉</button></div>');$('#sx').onclick=closeModal;return}
+  else try{await load()}catch{if(dockOn('dshare')){showPage('<h3>🔗 已分享連結</h3><p class="merr">無法載入</p><div class="mbtns"><button class="ghost" id="sx">關閉</button></div>');$('#sx').onclick=closeModal}return}
+  if(!dockOn('dshare'))return;
   const when=t=>fmtDT(t),sd=t=>{const d=new Date(t),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+' '+p(d.getHours())+':'+p(d.getMinutes())};   // date for the cards
   const left=t=>{const ms=t-Date.now();if(ms<=0)return'已到期';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return d?`剩 ${d} 天 ${h} 小時`:h?`剩 ${h} 小時 ${m} 分`:`剩 ${m} 分鐘`};
   const keysOf=s=>s.type==='folder'?(folders.find(f=>f.name===s.folder)?.files.map(x=>keyOf(s.folder,x.name))||[]):(s.items||[]).map(i=>keyOf(i.folder,i.name)).filter(k=>fileByKey(k));
@@ -1924,7 +1928,8 @@ async function vaultOpen(){
   showPage('<h3>密碼</h3><p class="sub">載入中…</p>');
   let list=[],q='',ro=false;const unl={};   // unlocked entries (id -> {pw,user,t}); they lock again after one minute
   const load=async()=>{const r=await api('/api/vault');if(!r.ok)throw 0;list=await r.json()};
-  try{await load()}catch{showPage('<h3>密碼</h3><p class="merr">無法載入</p>');return}
+  try{await load()}catch{if(dockOn('dvault'))showPage('<h3>密碼</h3><p class="merr">無法載入</p>');return}
+  if(!dockOn('dvault'))return;   // another dock button was pressed while this was loading
   const draw=()=>{
     const shown=list.filter(x=>!q||(x.title+' '+x.user+' '+x.url).toLowerCase().includes(q.toLowerCase()));
     showPage('<div class="pghead"><span class="pgic" style="background:#5e5ce6"><svg stroke="#fff" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg></span><b>密碼</b><p>帳號和密碼加密存放在你的電腦上。要看或複製密碼時，需要編輯密碼或生物辨識。</p></div>'
