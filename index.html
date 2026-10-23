@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.8">
+<meta name="app-version" content="v9.9">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023c">
-<link rel="stylesheet" href="light.css?v=20261023c">
+<link rel="stylesheet" href="glass.css?v=20261023d">
+<link rel="stylesheet" href="light.css?v=20261023d">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -468,8 +468,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023c"></script>
-<script src="docview.js?v=20261023c"></script>
+<script src="glass.js?v=20261023d"></script>
+<script src="docview.js?v=20261023d"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1590,7 +1590,12 @@ function closeViewer(fromPop){
 }
 const vgo=d=>{if(vlist.length<2)return;vi=(vi+d+vlist.length)%vlist.length;showViewer()};
 $('#vdl').dataset.pct='下載';$('#vdl').onclick=e=>{const x=window.__vx;if(IOS&&x&&x.size<=BLOB_MAX){e.preventDefault();dlFile($('#vdl').href,x.name,$('#vdl')).then(f=>f&&offerSave([f]))}};
-$('#vclose').onclick=()=>closeViewer();$('#vback').onclick=()=>closeViewer();$('#vprev').onclick=()=>vgo(-1);$('#vnext').onclick=()=>vgo(1);
+$('#vclose').onclick=()=>closeViewer();$('#vback').onclick=()=>closeViewer();
+{const vb=$('#vback');let vd=null;   // a tap on the preview's back button must work the first time
+  vb.addEventListener('pointerdown',e=>{vd={x:e.clientX,y:e.clientY}});
+  vb.addEventListener('pointerup',e=>{if(!vd)return;const d=Math.hypot(e.clientX-vd.x,e.clientY-vd.y);vd=null;if(d<14&&e.pointerType!=='mouse'&&vOpen){window.__noClickUntil=Date.now()+600;closeViewer()}});
+  vb.addEventListener('pointercancel',()=>{vd=null})}
+$('#vprev').onclick=()=>vgo(-1);$('#vnext').onclick=()=>vgo(1);
 $('#vstage').onclick=e=>{if(e.target.id==='vstage')closeViewer()};
 addEventListener('popstate',()=>closeViewer(true));
 document.addEventListener('keydown',e=>{
