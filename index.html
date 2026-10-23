@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.10">
+<meta name="app-version" content="v9.11">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023e">
-<link rel="stylesheet" href="light.css?v=20261023e">
+<link rel="stylesheet" href="glass.css?v=20261023f">
+<link rel="stylesheet" href="light.css?v=20261023f">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -468,8 +468,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023e"></script>
-<script src="docview.js?v=20261023e"></script>
+<script src="glass.js?v=20261023f"></script>
+<script src="docview.js?v=20261023f"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -615,19 +615,18 @@ $('#convrow').onclick=async function convPage(){   // converted copies (video / 
   showPage('<div class="mhead"><h3>🔄 轉檔</h3></div><p class="sub">載入中…</p>');
   let d;try{const r=await api('/api/conv');if(!r.ok)throw 0;d=await r.json()}catch{showPage('<div class="mhead"><h3>🔄 轉檔</h3></div><p class="merr">無法載入</p>');return}
   const sel=new Set(),KIND={video:'🎬',doc:'📄',photo:'🖼'},sz=n=>fmt(n);
-  const picked=()=>{let n=0,b=0;for(const it of d.items)if(sel.has(it.id)){n++;b+=it.size}if(sel.has('orphan')){n+=d.orphan.count;b+=d.orphan.size}if(sel.has('thumbs')){n+=d.thumbs.count;b+=d.thumbs.size}return{n,b}};
+  const picked=()=>{let n=0,b=0;for(const it of d.items)if(sel.has(it.id)){n++;b+=it.size}if(sel.has('orphan')){n+=d.orphan.count;b+=d.orphan.size}return{n,b}};
   const draw=()=>{const p=picked(),tot=d.items.reduce((s,i)=>s+i.size,0)+d.orphan.size;
     const row=(k,label,sub)=>'<button class="prow" data-c="'+esc(k)+'" type="button"><span>'+label+(sub?' <small style="opacity:.6">'+sub+'</small>':'')+'</span>'+(sel.has(k)?'<span class="chk">✓</span>':'')+'</button>';
     showPage('<div class="mhead"><h3>🔄 轉檔</h3></div><p class="sub">影片、照片（含 HEIC）和文件（Word、PowerPoint）第一次預覽時，會在這台電腦上轉成比較輕的版本並保存。這裡可以看到已轉好的內容，勾選後清除只會刪除轉出來的複本，不會動到原檔；之後再打開時會重新轉。目前共 '+sz(tot)+'。</p>'+
       (d.items.length||d.orphan.count?'<div class="sgrp2">'+d.items.map(i=>row(i.id,KIND[i.kind]+' '+esc(i.name),esc(i.folder)+' · '+sz(i.size))).join('')+(d.orphan.count?row('orphan','🗂 原檔已更換或刪除的複本',d.orphan.count+' 個 · '+sz(d.orphan.size)):'')+'</div>':'<p class="sub">目前沒有已轉好的內容。</p>')+
-      (d.thumbs.count?'<p class="sub" style="margin-top:14px">縮圖（每次載入清單時用，清除後會慢慢重新產生）</p><div class="sgrp2">'+row('thumbs','🖼 全部縮圖',d.thumbs.count+' 張 · '+sz(d.thumbs.size))+'</div>':'')+
       '<div class="sgrp2 spdtest" style="margin-top:14px"><button class="prow" id="cvall" type="button"><span>全選轉檔內容</span></button><button class="prow" id="cvnone" type="button"><span>取消選取</span></button><button class="prow" id="cvgo" type="button"'+(p.n?'':' disabled')+'><span style="color:#ff453a">清除選取'+(p.n?'（'+p.n+' 個 · '+sz(p.b)+'）':'')+'</span></button></div>');
     $('#mbox').onclick=async e=>{
       const c=e.target.closest('button[data-c]');if(c){const k=c.dataset.c;sel.has(k)?sel.delete(k):sel.add(k);return draw()}
       if(e.target.closest('#cvall')){for(const i of d.items)sel.add(i.id);if(d.orphan.count)sel.add('orphan');return draw()}
       if(e.target.closest('#cvnone')){sel.clear();return draw()}
       if(e.target.closest('#cvgo')){const q=picked();if(!q.n||!confirm('清除選取的 '+q.n+' 個轉檔複本（'+sz(q.b)+'）？原檔不會被刪除，之後需要時會重新轉。'))return;
-        const r=await api('/api/conv/clear',{method:'POST',body:JSON.stringify({ids:d.items.filter(i=>sel.has(i.id)).map(i=>i.id),orphan:sel.has('orphan'),thumbs:sel.has('thumbs')})});
+        const r=await api('/api/conv/clear',{method:'POST',body:JSON.stringify({ids:d.items.filter(i=>sel.has(i.id)).map(i=>i.id),orphan:sel.has('orphan')})});
         if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'清除失敗');return convPage()}};
   };draw();
 };
@@ -1613,7 +1612,7 @@ $('#vdl').dataset.pct='下載';$('#vdl').onclick=e=>{const x=window.__vx;if(IOS&
 $('#vclose').onclick=()=>closeViewer();$('#vback').onclick=()=>closeViewer();
 {const vb=$('#vback');let vd=null;   // a tap on the preview's back button must work the first time
   vb.addEventListener('pointerdown',e=>{vd={x:e.clientX,y:e.clientY}});
-  vb.addEventListener('pointerup',e=>{if(!vd)return;const d=Math.hypot(e.clientX-vd.x,e.clientY-vd.y);vd=null;if(d<14&&e.pointerType!=='mouse'&&vOpen){window.__noClickUntil=Date.now()+600;vb.classList.add('gpress');setTimeout(()=>{vb.classList.remove('gpress');if(vOpen)closeViewer()},170)}});
+  vb.addEventListener('pointerup',e=>{if(!vd)return;const d=Math.hypot(e.clientX-vd.x,e.clientY-vd.y);vd=null;if(d<14&&e.pointerType!=='mouse'&&vOpen){window.__noClickUntil=Date.now()+600;vb.classList.add('gpress');setTimeout(()=>{vb.classList.remove('gpress');if(vOpen)closeViewer()},100)}});
   vb.addEventListener('pointercancel',()=>{vd=null})}
 $('#vprev').onclick=()=>vgo(-1);$('#vnext').onclick=()=>vgo(1);
 $('#vstage').onclick=e=>{if(e.target.id==='vstage')closeViewer()};

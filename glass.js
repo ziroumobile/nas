@@ -426,13 +426,20 @@ void main(){
   window.__glass = { switches, step: (dt, n = 1) => switches.forEach(s => { if (s.lens) for (let i = 0; i < n; i++) { step(s, dt); } if (s.lens) draw(s); }), draw: () => switches.forEach(draw), geom }; // test hooks
 })();
 
-// back buttons: the press feedback (grey flash) is seen first, the page change / slide animation starts a moment later (like iOS)
+// round buttons (back, toolbar, select mode, + , preview): the press feedback (grey flash) is seen first and the action starts 0.1 s later, like iOS.
+// A tap has to really land on the circle: phone browsers snap a tap that lands NEAR a button onto it, so the finger position (pointer events are not snapped) is checked.
 (() => {
-  const BACK = '#pgback,#setclose,#upback,#spback,#stback,#appback,#vback';
+  const SEL = '#pgback,#setclose,#upback,#spback,#stback,#appback,#vback,#app>header button.hb,#modal.fullpage button#vreorder,.seltop button,.selbot button,button#upfab,#viewer .vc';
+  let pt = null;
+  document.addEventListener('pointerdown', e => { pt = { x: e.clientX, y: e.clientY, t: Date.now() }; }, true);
   document.addEventListener('click', e => {
-    const b = e.target.closest && e.target.closest(BACK); if (!b || b.__go) return;
+    const b = e.target.closest && e.target.closest(SEL); if (!b || b.__go) return;
+    const r = b.getBoundingClientRect();
+    if (pt && Date.now() - pt.t < 1500 && e.detail !== 0 && Math.abs(r.width - r.height) < 6 && r.width < 70 && r.width > 0) {   // a round button
+      if (Math.hypot(pt.x - (r.left + r.width / 2), pt.y - (r.top + r.height / 2)) > r.width / 2 + 3) { e.preventDefault(); e.stopImmediatePropagation(); return; }
+    }
     e.preventDefault(); e.stopImmediatePropagation();
     b.classList.add('gpress');
-    setTimeout(() => { b.classList.remove('gpress'); b.__go = true; try { b.click(); } finally { b.__go = false; } }, 170);
+    setTimeout(() => { b.classList.remove('gpress'); b.__go = true; try { b.click(); } finally { b.__go = false; } }, 100);
   }, true);
 })();
