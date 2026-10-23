@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.11">
+<meta name="app-version" content="v9.12">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023f">
-<link rel="stylesheet" href="light.css?v=20261023f">
+<link rel="stylesheet" href="glass.css?v=20261023h">
+<link rel="stylesheet" href="light.css?v=20261023h">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -126,6 +126,15 @@ body.selecting .wrap{padding-bottom:100px}
 #peek .pname{color:#fff;font-size:13px;max-width:92vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @keyframes pk{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
 .spdtest [hidden]{display:none!important}
+.prow.cvrow{display:flex;align-items:center;gap:12px;text-align:left;width:100%}
+.cvth{flex:none;width:48px;height:48px;border-radius:10px;background:rgba(127,127,127,.18);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:22px}
+.cvth img{width:100%;height:100%;object-fit:cover;display:block}
+.cvtx{flex:1;min-width:0}.cvtx b{display:block;font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cvtx small{display:block;opacity:.6;font-size:12px;margin-top:2px}
+.cvcats{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 12px}
+.cvcats button.on{background:#0a84ff!important;color:#fff!important}
+body.convsel .seltop,body.convsel .selbot{z-index:130}
+body.convsel #seldl,body.convsel #selshare,body.convsel #selall{display:none!important}
+body.convsel #modal.fullpage #mbox{padding-bottom:150px}
 html.android #topcap{display:none!important}   /* Android: the toolbar is not fixed there, a fixed block would cover it */
 html.ios #topcap{position:fixed;left:0;right:0;top:0;height:max(env(safe-area-inset-top),1px);background:#000;z-index:58}
 @media(min-width:700px){html.ios:not(.android) #topcap{height:max(env(safe-area-inset-top),24px)}}
@@ -468,8 +477,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023f"></script>
-<script src="docview.js?v=20261023f"></script>
+<script src="glass.js?v=20261023h"></script>
+<script src="docview.js?v=20261023h"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -611,24 +620,37 @@ $('#speedrow').onclick=function speedPage(){const m=measuredMbps();pickPage('⚡
     catch(er){const sec=(performance.now()-t0)/1000;st.textContent=er&&er.name==='AbortError'?('已取消（下載了 '+(got/1048576).toFixed(1)+' MB，'+sec.toFixed(1)+' 秒）'):('測試失敗：'+(er&&er.message||'連線中斷'))}
     ac=null;go.disabled=false;mbIn.disabled=false;cn.hidden=true};
   $('#spdcancel').onclick=e=>{e.stopPropagation();if(ac)ac.abort()};}
-$('#convrow').onclick=async function convPage(){   // converted copies (video / photo / document previews): look and choose what to clear
+$('#convrow').onclick=async function convPage(){   // converted copies (video / photo / document previews): look, filter by type, select (same select UI as the home page) and clear
   showPage('<div class="mhead"><h3>🔄 轉檔</h3></div><p class="sub">載入中…</p>');
   let d;try{const r=await api('/api/conv');if(!r.ok)throw 0;d=await r.json()}catch{showPage('<div class="mhead"><h3>🔄 轉檔</h3></div><p class="merr">無法載入</p>');return}
-  const sel=new Set(),KIND={video:'🎬',doc:'📄',photo:'🖼'},sz=n=>fmt(n);
+  const KIND={video:'🎬',doc:'📄',photo:'🖼'},CATS=[['all','全部'],['video','影片'],['photo','照片'],['doc','文件']],sz=n=>fmt(n);
+  let cat='all',mode=false;const sel=new Set(),saved={},hid={},EL=['selexit','selnone','selall','seldel','seldl','selshare'];
+  const vis=()=>d.items.filter(i=>cat==='all'||i.kind===cat);
   const picked=()=>{let n=0,b=0;for(const it of d.items)if(sel.has(it.id)){n++;b+=it.size}if(sel.has('orphan')){n+=d.orphan.count;b+=d.orphan.size}return{n,b}};
-  const draw=()=>{const p=picked(),tot=d.items.reduce((s,i)=>s+i.size,0)+d.orphan.size;
-    const row=(k,label,sub)=>'<button class="prow" data-c="'+esc(k)+'" type="button"><span>'+label+(sub?' <small style="opacity:.6">'+sub+'</small>':'')+'</span>'+(sel.has(k)?'<span class="chk">✓</span>':'')+'</button>';
-    showPage('<div class="mhead"><h3>🔄 轉檔</h3></div><p class="sub">影片、照片（含 HEIC）和文件（Word、PowerPoint）第一次預覽時，會在這台電腦上轉成比較輕的版本並保存。這裡可以看到已轉好的內容，勾選後清除只會刪除轉出來的複本，不會動到原檔；之後再打開時會重新轉。目前共 '+sz(tot)+'。</p>'+
-      (d.items.length||d.orphan.count?'<div class="sgrp2">'+d.items.map(i=>row(i.id,KIND[i.kind]+' '+esc(i.name),esc(i.folder)+' · '+sz(i.size))).join('')+(d.orphan.count?row('orphan','🗂 原檔已更換或刪除的複本',d.orphan.count+' 個 · '+sz(d.orphan.size)):'')+'</div>':'<p class="sub">目前沒有已轉好的內容。</p>')+
-      '<div class="sgrp2 spdtest" style="margin-top:14px"><button class="prow" id="cvall" type="button"><span>全選轉檔內容</span></button><button class="prow" id="cvnone" type="button"><span>取消選取</span></button><button class="prow" id="cvgo" type="button"'+(p.n?'':' disabled')+'><span style="color:#ff453a">清除選取'+(p.n?'（'+p.n+' 個 · '+sz(p.b)+'）':'')+'</span></button></div>');
-    $('#mbox').onclick=async e=>{
-      const c=e.target.closest('button[data-c]');if(c){const k=c.dataset.c;sel.has(k)?sel.delete(k):sel.add(k);return draw()}
-      if(e.target.closest('#cvall')){for(const i of d.items)sel.add(i.id);if(d.orphan.count)sel.add('orphan');return draw()}
-      if(e.target.closest('#cvnone')){sel.clear();return draw()}
-      if(e.target.closest('#cvgo')){const q=picked();if(!q.n||!confirm('清除選取的 '+q.n+' 個轉檔複本（'+sz(q.b)+'）？原檔不會被刪除，之後需要時會重新轉。'))return;
-        const r=await api('/api/conv/clear',{method:'POST',body:JSON.stringify({ids:d.items.filter(i=>sel.has(i.id)).map(i=>i.id),orphan:sel.has('orphan')})});
-        if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'清除失敗');return convPage()}};
-  };draw();
+  const bar=()=>{const p=picked();$('#selcount').textContent='已選 '+p.n+' 個';$('#seldel').disabled=!p.n};
+  const endSel=()=>{if(!mode)return;mode=false;window.__convSel=false;window.__convEnd=null;for(const id of EL){$('#'+id).onclick=saved[id];$('#'+id).hidden=hid[id]}document.body.classList.remove('selecting','convsel');$('#selbar').hidden=true;sel.clear();if(!$("#modal").hidden&&$("#cvlist"))draw()};
+  const startSel=()=>{if(mode)return;mode=true;window.__convSel=true;window.__convEnd=endSel;for(const id of EL){saved[id]=$('#'+id).onclick;hid[id]=$('#'+id).hidden}
+    $('#selexit').onclick=endSel;$('#selnone').onclick=()=>{sel.clear();draw()};$('#seldel').onclick=doClear;$('#seldl').hidden=true;$('#selshare').hidden=true;$('#selall').hidden=true;$('#seldel').hidden=false;
+    $('#seldel').setAttribute('aria-label','清除選取');document.body.classList.add('selecting','convsel');$('#selbar').hidden=false;bar()};
+  const doClear=async()=>{const q=picked();if(!q.n||!confirm('清除選取的 '+q.n+' 個轉檔複本（'+sz(q.b)+'）？原檔不會被刪除，之後需要時會重新轉。'))return;
+    const r=await api('/api/conv/clear',{method:'POST',body:JSON.stringify({ids:d.items.filter(i=>sel.has(i.id)).map(i=>i.id),orphan:sel.has('orphan')})});
+    if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'清除失敗');endSel();return convPage()};
+  const draw=()=>{const list=vis(),tot=d.items.reduce((s,i)=>s+i.size,0)+d.orphan.size,cnt=k=>k==='all'?d.items.length:d.items.filter(i=>i.kind===k).length;
+    const row=i=>'<button class="prow cvrow" data-c="'+esc(i.id)+'" type="button"><span class="cvth">'+(i.thumb?'<img loading="lazy" decoding="async" alt="" src="'+thumbSrc(i.thumb)+'" onerror="this.replaceWith(document.createTextNode(&quot;'+KIND[i.kind]+'&quot;))">':KIND[i.kind])+'</span><span class="cvtx"><b>'+esc(i.name)+'</b><small>'+esc(i.folder)+' · '+sz(i.size)+'</small></span>'+(sel.has(i.id)?'<span class="chk">✓</span>':'')+'</button>';
+    showPage('<div class="mhead"><h3>🔄 轉檔</h3></div><p class="sub">影片、照片（含 HEIC）和文件（Word、PowerPoint）第一次預覽時，會在這台電腦上轉成比較輕的版本並保存。這裡可以看到已轉好的內容；清除只會刪除轉出來的複本，不會動到原檔，之後再打開時會重新轉。目前共 '+sz(tot)+'。</p>'+
+      (mode?'':'<button id="vreorder" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button>')+
+      '<div class="cvcats">'+CATS.map(([k,l])=>'<button class="ghost'+(cat===k?' on':'')+'" data-cat="'+k+'" type="button">'+l+' '+cnt(k)+'</button>').join('')+(mode&&list.length?'<button class="ghost" id="cvall" type="button">全選</button>':'')+'</div>'+
+      '<div id="cvlist">'+(list.length||(cat==='all'&&d.orphan.count)?'<div class="sgrp2">'+list.map(row).join('')+(cat==='all'&&d.orphan.count?'<button class="prow cvrow" data-c="orphan" type="button"><span class="cvth">🗂</span><span class="cvtx"><b>原檔已更換或刪除的複本</b><small>'+d.orphan.count+' 個 · '+sz(d.orphan.size)+'</small></span>'+(sel.has('orphan')?'<span class="chk">✓</span>':'')+'</button>':'')+'</div>':'<p class="sub">目前沒有已轉好的內容。</p>')+'</div>');
+    if(mode)bar();
+    $('#mbox').onclick=e=>{
+      const k=e.target.closest('button[data-cat]');if(k){cat=k.dataset.cat;return draw()}
+      if(e.target.closest('#vreorder'))return startSel(),draw();
+      if(e.target.closest('#cvall')){for(const i of vis())sel.add(i.id);return draw()}
+      const c=e.target.closest('button[data-c]');if(c){if(!mode)startSel();const id=c.dataset.c;sel.has(id)?sel.delete(id):sel.add(id);return draw()}};
+  };
+  window.__convEnd&&window.__convEnd();   // (a leftover select mode from an earlier visit)
+  if(!window.__convObs){window.__convObs=new MutationObserver(()=>{if($('#modal').hidden&&window.__convEnd)window.__convEnd()});window.__convObs.observe($('#modal'),{attributes:true,attributeFilter:['hidden']})}
+  draw();
 };
 $('#privrow').onclick=()=>{loadPrivacy();pickPage('👁 隱私','開啟後，密碼頁解鎖時，帳號和密碼只顯示前 5 個字元，後面用 ***** 取代；複製時仍然是完整內容。關閉則整個顯示。只記在這台裝置上。',[['1','開'],['0','關']],privacy()?'1':'0',k=>savePrivacy(k==='1'))};
 $('#appearance').onclick=()=>{
@@ -859,6 +881,7 @@ function markFullFolders(){ // a folder with every one of its files selected get
     el.classList.toggle('allsel',all);const sb=el.querySelector(':scope>summary [data-selfolder]');if(sb)sb.textContent=all?'取消全選':'全選'}
 }
 function updateSelUI(){
+  if(window.__convSel)return;   // the conversion page is using the select bar
   markFullFolders();
   document.body.classList.toggle('selecting',selMode);
   $('#selbar').hidden=!selMode;$('#selmode').classList.toggle('on',selMode);
