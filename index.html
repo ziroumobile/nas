@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.2">
+<meta name="app-version" content="v9.3">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023W">
-<link rel="stylesheet" href="light.css?v=20261023W">
+<link rel="stylesheet" href="glass.css?v=20261023X">
+<link rel="stylesheet" href="light.css?v=20261023X">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -126,16 +126,20 @@ body.selecting .wrap{padding-bottom:100px}
 #peek .pname{color:#fff;font-size:13px;max-width:92vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @keyframes pk{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
 .spdtest [hidden]{display:none!important}
+html.ios #topcap{position:fixed;left:0;right:0;top:0;height:max(env(safe-area-inset-top),1px);background:#000;z-index:58;pointer-events:none}
+@media(min-width:700px){html.ios:not(.android) #topcap{height:max(env(safe-area-inset-top),24px)}}
+html.ios #app>header{top:max(0px,calc(env(safe-area-inset-top) - 6px))!important}
+
 /* iPad: the dock and the + button sit higher, clear of the home-indicator corner */
-@media(min-width:700px){html.ios:not(.android) body #dock{bottom:calc(env(safe-area-inset-bottom) + 18px)!important}html.ios:not(.android) body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){bottom:calc(env(safe-area-inset-bottom) + 102px)!important}}
+@media(min-width:700px){html.ios:not(.android) body #dock{bottom:calc(env(safe-area-inset-bottom) + 10px)!important}html.ios:not(.android) body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){bottom:calc(env(safe-area-inset-bottom) + 94px)!important}}
 /* phones / iPad: the round buttons at the top are solid, not see-through glass: nothing scrolls blurred behind them */
 html.ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button#vreorder,.seltop button):not(#nx1):not(#nx2):not(#nx3):not(#nx4){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(44,44,48,.96)!important}
 html.ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button#vreorder,.seltop button):not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){background:rgba(88,88,94,.96)!important}
 
 @keyframes nasInR{from{transform:translateX(100%)}to{transform:none}}
-@keyframes nasOutL{from{transform:none;filter:brightness(1)}to{transform:translateX(-30%);filter:brightness(.6)}}
+@keyframes nasOutL{from{transform:none}to{transform:translateX(-30%)}}
 @keyframes nasOutR{from{transform:none}to{transform:translateX(100%)}}
-@keyframes nasInL{from{transform:translateX(-30%);filter:brightness(.6)}to{transform:none;filter:brightness(1)}}
+@keyframes nasInL{from{transform:translateX(-30%)}to{transform:none}}
 @view-transition{navigation:auto}
 ::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation-duration:.42s;animation-timing-function:cubic-bezier(.32,.72,0,1);animation-fill-mode:both}
 ::view-transition-old(root){z-index:2;animation-name:nasOutR}
@@ -390,7 +394,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
 #setpage .sred .slb{flex:none}#offscreen{z-index:500;background:#000}#applock{z-index:500;background:#000}#setbody{display:flex;flex-direction:column;align-items:stretch;gap:8px}#setbody button{text-align:left}
 #gear{background:none;border:0;font-size:22px;line-height:1;padding:4px 8px;border-radius:8px;color:var(--fg)}#gear:hover{background:var(--card)}
 @media(max-width:699px){.bar button,:is(.bar,.uptarget) select{padding:6px 12px;font-size:14px}}
-</style></head><body><div class="wrap">
+</style></head><body><div id="topcap" aria-hidden="true"></div><div class="wrap">
 <div id="login" class="card" hidden>
   <div class="lgic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="6.4" rx="2"/><rect x="3.5" y="13.6" width="17" height="6.4" rx="2"/><path d="M7.4 7.2h.01M7.4 16.8h.01M11 7.2h5.6M11 16.8h5.6"/></svg></div>
   <h1>登入 NAS</h1>
@@ -462,7 +466,7 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023W"></script>
+<script src="glass.js?v=20261023X"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -915,8 +919,8 @@ syncToolbar();fitSel($('#sort'));
 const NAVE='cubic-bezier(.32,.72,0,1)',NAVD=422;
 const navTop=()=>!$('#storage').hidden?$('#storage'):(!$('#modal').hidden?$('#modal'):null);
 function pushAnim(){const p=$('#setpanel'),top=navTop();if(!top||!p.animate){p.hidden=true;return}
-  top.style.zIndex='110';top.animate([{transform:'translateX(100%)',boxShadow:'-14px 0 30px rgba(0,0,0,.45)'},{transform:'translateX(0)',boxShadow:'-14px 0 30px rgba(0,0,0,.45)'}],{duration:NAVD,easing:NAVE});
-  p.animate([{transform:'translateX(0)',filter:'brightness(1)'},{transform:'translateX(-30%)',filter:'brightness(.6)'}],{duration:NAVD,easing:NAVE,fill:'forwards'}).finished.then(()=>{p.hidden=true;p.getAnimations().forEach(a=>a.cancel());top.style.zIndex=''}).catch(()=>{p.hidden=true;top.style.zIndex=''})}
+  top.style.zIndex='110';top.animate([{transform:'translateX(100%)'},{transform:'translateX(0)'}],{duration:NAVD,easing:NAVE});
+  p.animate([{transform:'translateX(0)'},{transform:'translateX(-30%)'}],{duration:NAVD,easing:NAVE,fill:'forwards'}).finished.then(()=>{p.hidden=true;p.getAnimations().forEach(a=>a.cancel());top.style.zIndex=''}).catch(()=>{p.hidden=true;top.style.zIndex=''})}
 function pushWhenShown(){   // start the slide in the same moment the new page is shown (a mutation callback runs before the next paint), so it never appears in place first
   const targets=[$('#modal'),$('#storage')];let obs=null;
   const go=()=>{if(navTop()){if(obs)obs.disconnect();obs=null;pushAnim();return true}return false};
@@ -924,13 +928,13 @@ function pushWhenShown(){   // start the slide in the same moment the new page i
 }
 function popAnim(done){const p=$('#setpanel'),top=navTop();if(!top||!p.animate){done();p.hidden=false;return}
   p.hidden=false;p.style.zIndex='100';top.style.zIndex='110';
-  p.animate([{transform:'translateX(-30%)',filter:'brightness(.6)'},{transform:'translateX(0)',filter:'brightness(1)'}],{duration:NAVD,easing:NAVE});
-  top.animate([{transform:'translateX(0)',boxShadow:'-14px 0 30px rgba(0,0,0,.45)'},{transform:'translateX(100%)',boxShadow:'-14px 0 30px rgba(0,0,0,.45)'}],{duration:NAVD,easing:NAVE,fill:'forwards'}).finished.then(()=>{done();top.getAnimations().forEach(a=>a.cancel());top.style.zIndex='';p.style.zIndex=''}).catch(()=>{done();top.style.zIndex='';p.style.zIndex=''})}
+  p.animate([{transform:'translateX(-30%)'},{transform:'translateX(0)'}],{duration:NAVD,easing:NAVE});
+  top.animate([{transform:'translateX(0)'},{transform:'translateX(100%)'}],{duration:NAVD,easing:NAVE,fill:'forwards'}).finished.then(()=>{done();top.getAnimations().forEach(a=>a.cancel());top.style.zIndex='';p.style.zIndex=''}).catch(()=>{done();top.style.zIndex='';p.style.zIndex=''})}
 {const p=$('#setpanel');let closing=false;
   const close=()=>{if(p.hidden||closing)return;if(!p.animate){p.hidden=true;return}   // back to the home page: the settings slide out to the right
     closing=true;p.style.pointerEvents='none';
     const fin=()=>{p.hidden=true;p.getAnimations().forEach(a=>a.cancel());p.style.pointerEvents='';closing=false};
-    p.animate([{transform:'translateX(0)',boxShadow:'-14px 0 30px rgba(0,0,0,.45)'},{transform:'translateX(100%)',boxShadow:'-14px 0 30px rgba(0,0,0,.45)'}],{duration:NAVD,easing:NAVE,fill:'forwards'}).finished.then(fin).catch(fin)};
+    p.animate([{transform:'translateX(0)'},{transform:'translateX(100%)'}],{duration:NAVD,easing:NAVE,fill:'forwards'}).finished.then(fin).catch(fin)};
   const openSet=()=>{p.hidden=false;if(p.animate)p.animate([{transform:'translateX(100%)'},{transform:'translateX(0)'}],{duration:NAVD,easing:NAVE})};
   window.__setBack=false;   // true while a page opened from the settings is showing: its back arrow returns to the settings, the settings' own back arrow goes home
   $('#dset').onclick=()=>{window.__setBack=false;if(p.hidden)openSet();else close()};$('#setclose').onclick=()=>{window.__setBack=false;close()};
