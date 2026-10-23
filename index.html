@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.1">
+<meta name="app-version" content="v9.2">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023V">
-<link rel="stylesheet" href="light.css?v=20261023V">
+<link rel="stylesheet" href="glass.css?v=20261023W">
+<link rel="stylesheet" href="light.css?v=20261023W">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -126,6 +126,12 @@ body.selecting .wrap{padding-bottom:100px}
 #peek .pname{color:#fff;font-size:13px;max-width:92vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @keyframes pk{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
 .spdtest [hidden]{display:none!important}
+/* iPad: the dock and the + button sit higher, clear of the home-indicator corner */
+@media(min-width:700px){html.ios:not(.android) body #dock{bottom:calc(env(safe-area-inset-bottom) + 18px)!important}html.ios:not(.android) body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){bottom:calc(env(safe-area-inset-bottom) + 102px)!important}}
+/* phones / iPad: the round buttons at the top are solid, not see-through glass: nothing scrolls blurred behind them */
+html.ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button#vreorder,.seltop button):not(#nx1):not(#nx2):not(#nx3):not(#nx4){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(44,44,48,.96)!important}
+html.ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button#vreorder,.seltop button):not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){background:rgba(88,88,94,.96)!important}
+
 @keyframes nasInR{from{transform:translateX(100%)}to{transform:none}}
 @keyframes nasOutL{from{transform:none;filter:brightness(1)}to{transform:translateX(-30%);filter:brightness(.6)}}
 @keyframes nasOutR{from{transform:none}to{transform:translateX(100%)}}
@@ -456,7 +462,7 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023V"></script>
+<script src="glass.js?v=20261023W"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -553,9 +559,9 @@ const syncPrivacy=()=>{};   // the row shows no state; the on / off choice lives
 const loadPrivacy=()=>api('/api/ui-prefs').then(x=>x.ok?x.json():null).then(j=>{if(j)ls.set('nas_privacy',j.privacy?'1':'0')}).catch(()=>{});
 const savePrivacy=on=>{ls.set('nas_privacy',on?'1':'0');api('/api/ui-prefs',{method:'PUT',body:JSON.stringify({privacy:on})}).catch(()=>{})};
 const syncPrefs=()=>{{const v=$('#speedrowv');if(v)v.textContent=speedSel()==='auto'?'自動':speedSel()==='0'?'不限制':speedSel()==='custom'?(ls.get('nas_speedcustom')||'')+' Mbps':speedSel()+' Mbps'}syncPrivacy();$('#locksetv').textContent=prefLabel(LOCKS,lockKey());$('#vqsetv').textContent=prefLabel(VQS,vq())};
-function pickPage(title,note,list,cur,save){ // a list of choices (check mark on the current one); picking one saves it and goes back to the settings page
+function pickPage(title,note,list,cur,save,again){ // a list of choices (check mark on the current one); picking one saves it and goes back to the settings page
   showPage('<div class="mhead"><h3>'+title+'</h3></div><p class="sub">'+note+'</p><div class="sgrp2">'+list.map(x=>'<button class="prow" data-k="'+esc(x[0])+'"><span>'+esc(x[1])+'</span>'+(x[0]===cur?'<span class="chk">✓</span>':'')+'</button>').join('')+'</div>');
-  $('#mbox').onclick=e=>{const b=e.target.closest('button[data-k]');if(!b)return;save(b.dataset.k);syncPrefs();window.__setBack=false;popAnim(closeModal)};
+  $('#mbox').onclick=e=>{const b=e.target.closest('button[data-k]');if(!b)return;save(b.dataset.k);syncPrefs();if(again){again();return}window.__setBack=false;popAnim(closeModal)};
 }
 $('#lockset').onclick=()=>pickPage('🔒 鎖定時間','離開 App 超過這段時間，再回來時要重新解鎖（編輯密碼或生物辨識）。只記在這台裝置上。',LOCKS,lockKey(),k=>{try{ls.set('nas_lock',k)}catch{}});
 const theme=()=>{try{return localStorage.getItem('nas_theme')==='light'?'light':'dark'}catch{return 'dark'}};
@@ -579,7 +585,8 @@ function themeThumb(light){
    +'<span style="position:absolute;left:5px;top:98px;width:86px;height:58px;border-radius:9px;background:'+cd+'">'+row(7,'#ff9f0a')+row(24,'#0a84ff')+row(41,'#5e5ce6')+'</span>'
    +'<span style="position:absolute;left:12px;right:12px;bottom:6px;height:12px;border-radius:6px;background:'+cd+';box-shadow:inset 0 0 0 1px '+ring+'"></span></span>';
 }
-$('#speedrow').onclick=()=>{const m=measuredMbps();pickPage('⚡ 網速上限','載入縮圖時最多使用多少網速，避免占滿你的網路。選「自動」會用這台裝置測到的網速的一部分（低於 50 Mbps 用 55%，50 Mbps 以上用 85%）'+(m?'（上次測到約 '+m+' Mbps，目前上限約 '+capMbps().toFixed(1)+' Mbps）':'')+'。只記在這台裝置上。',SPEEDS,speedSel(),k=>{if(k==='custom'){const v=parseFloat(prompt('輸入網速上限（Mbps）',ls.get('nas_speedcustom')||'20'));if(!(v>0))return;ls.set('nas_speedcustom',String(v))}ls.set('nas_speedcap',k);syncPrefs()});
+$('#speedrow').onclick=function speedPage(){const m=measuredMbps();pickPage('⚡ 網速上限','載入縮圖時最多使用多少網速，避免占滿你的網路。選「自動」會用這台裝置測到的網速的一部分（低於 50 Mbps 用 55%，50 Mbps 以上用 85%）'+(m?'（上次測到約 '+m+' Mbps，目前上限約 '+capMbps().toFixed(1)+' Mbps）':'')+'。只記在這台裝置上。',SPEEDS,speedSel(),k=>{if(k==='custom'){const v=parseFloat(prompt('輸入網速上限（Mbps）',ls.get('nas_speedcustom')||'20'));if(!(v>0))return;ls.set('nas_speedcustom',String(v))}ls.set('nas_speedcap',k);syncPrefs()},speedPage);   // picking a level keeps this page open (check mark moves), no jump back to the settings
+ 
   const box=$('#mbox'),blk=document.createElement('div');blk.className='sgrp2 spdtest';
   blk.innerHTML='<div class="prow spdmb"><span>下載大小（MB，最大 1000）</span><input id="spdmb" type="number" inputmode="numeric" min="1" max="1000" step="1" style="width:84px;text-align:right;padding:6px 8px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg);font:inherit"></div><button class="prow" id="spdgo" type="button"><span id="spdgol">測試網速</span></button><div class="spdst" id="spdst" hidden></div><button class="prow" id="spdcancel" type="button" hidden><span style="color:#ff453a">取消</span></button>';
   box.append(blk);
