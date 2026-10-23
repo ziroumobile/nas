@@ -6,10 +6,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex,nofollow">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
-<link rel="stylesheet" href="glass.css?v=20261023a">
-<link rel="stylesheet" href="light.css?v=20261023a">
+<link rel="stylesheet" href="glass.css?v=20261023b">
+<link rel="stylesheet" href="light.css?v=20261023b">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <title>檔案分享</title>
@@ -180,7 +180,8 @@ html.ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="glass.js?v=20261023a"></script>
+<script src="glass.js?v=20261023b"></script>
+<script src="docview.js?v=20261023b"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
@@ -334,7 +335,10 @@ function showViewer(){
     if(!st.contains(v))st.append(v);
   }else if(ext==='mp3'||ext==='wav'){
     msg('<div class="big">🎵</div>'+esc(x.name));const a=document.createElement('audio');a.controls=true;a.addEventListener('loadedmetadata',()=>{if(seq===vseq){vmeta={dur:a.duration};renderInfo()}});a.src=u;st.append(a);a.play().catch(()=>{});
-  }else if(ext==='pdf'){const fr=document.createElement('iframe');fr.src=u;st.append(fr)}
+  }else if(ext==='pdf'||NASDoc.OFFICE.test(ext)){   // PDF / Word / PowerPoint: shown page by page (Word and PowerPoint are converted to PDF by the NAS first)
+    const office=ext!=='pdf';
+    NASDoc.show(st,{isCurrent:()=>seq===vseq,getPdf:async s=>{if(!office)return u;for(let i=0;i<100;i++){if(seq!==vseq)return null;const r=await fetch(API+x.url.replace('/api/sfile?','/api/sdocprep?'));const j=await r.json().catch(()=>({}));if(j.state==='ready')return API+j.url;if(j.state==='failed')throw new Error('failed');s.textContent='正在轉成 PDF 預覽…（第一次打開需要幾秒）';await new Promise(r=>setTimeout(r,1500))}throw new Error('timeout')}}).catch(()=>{if(seq===vseq){st.innerHTML='';msg('無法預覽這個文件，請按右上角「下載」。','warn')}});}
+
   else if(ext==='txt'){
     msg('載入中…');
     fetch(u).then(r=>r.text()).then(t=>{if(seq!==vseq)return;st.innerHTML='';const p=document.createElement('pre');p.textContent=t.length>300000?t.slice(0,300000)+'\n\n…（內容過長，只顯示前 300KB）':t;st.append(p)}).catch(()=>{if(seq===vseq){st.innerHTML='';msg('無法載入文字內容','warn')}});
@@ -349,7 +353,7 @@ document.addEventListener('keydown',e=>{if(!vOpen)return;if(e.key==='Escape'){if
 let tx=0,ty=0,tOK=false; // swipe left/right anywhere on the picture / video to move between files
 $('#viewer').addEventListener('touchstart',e=>{
   tOK=false;if(e.touches.length!==1)return;
-  const t=e.target;if(t.closest('#vbot,.vtop,#vinfop,.vnav,button,a,audio,iframe,pre'))return;
+  const t=e.target;if(t.closest('#vbot,.vtop,#vinfop,.vnav,button,a,audio,iframe,pre,.docbox'))return;
   const v=t.closest('video');if(v&&e.touches[0].clientY>v.getBoundingClientRect().bottom-100)return; // the player's own control bar
   tx=e.touches[0].clientX;ty=e.touches[0].clientY;tOK=true;
 },{passive:true});
