@@ -425,3 +425,14 @@ void main(){
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => switches.forEach(s => { if (!s.active) relayout(s); }));
   window.__glass = { switches, step: (dt, n = 1) => switches.forEach(s => { if (s.lens) for (let i = 0; i < n; i++) { step(s, dt); } if (s.lens) draw(s); }), draw: () => switches.forEach(draw), geom }; // test hooks
 })();
+
+// back buttons: the press feedback (grey flash) is seen first, the page change / slide animation starts a moment later (like iOS)
+(() => {
+  const BACK = '#pgback,#setclose,#upback,#spback,#stback,#appback,#vback';
+  document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest(BACK); if (!b || b.__go) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    b.classList.add('gpress');
+    setTimeout(() => { b.classList.remove('gpress'); b.__go = true; try { b.click(); } finally { b.__go = false; } }, 170);
+  }, true);
+})();

@@ -146,3 +146,6 @@ html[data-theme="light"] #vinfop .ik,html[data-theme="light"].ios #viewer #vinfo
 html[data-theme="light"] .vnav,html[data-theme="light"].ios .vnav{background:rgba(255,255,255,.9);color:#1c1c1e;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.13),0 2px 8px rgba(0,0,0,.1)}
 html[data-theme="light"] #viewer .docst{color:#3a3a3c}
 html[data-theme="light"] .play{background:rgba(255,255,255,.88);color:#1c1c1e;box-shadow:0 0 0 .5px rgba(0,0,0,.14),0 1px 4px rgba(0,0,0,.14)}
+
+html[data-theme="light"].android body #dock{background:transparent!important}
+html[data-theme="light"].android body #dock::before{background:rgba(255,255,255,.34)!important;-webkit-backdrop-filter:blur(9px)!important;backdrop-filter:blur(9px)!important}
