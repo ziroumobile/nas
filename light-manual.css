@@ -119,11 +119,11 @@ html[data-theme="light"] body #editask button:not(#nx1):not(#nx2):not(#nx3):not(
 html[data-theme="light"]:not(.ios) body .seltop button#selexit:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.84)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important;color:#000!important}
 html[data-theme="light"] body #modal .shc > div[style*="flex-wrap"] > :is(button,a):not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(0,0,0,.045)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.17)!important}
 
-html[data-theme="light"] body #modal.fullpage button#vreorder:not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.84)!important;color:#000!important;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.13),0 3px 10px rgba(0,0,0,.08)!important}
-html[data-theme="light"] body #modal.fullpage button#vreorder.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
+html[data-theme="light"] body #modal.fullpage button:is(#vreorder,#cvtune):not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.84)!important;color:#000!important;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.13),0 3px 10px rgba(0,0,0,.08)!important}
+html[data-theme="light"] body #modal.fullpage button:is(#vreorder,#cvtune).act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#007aff!important}
 
-html[data-theme="light"].ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button#vreorder,.seltop button):not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.96)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.13),0 2px 8px rgba(0,0,0,.07)!important}
-html[data-theme="light"].ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button#vreorder,.seltop button):not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){background:rgba(226,226,232,.98)!important}
+html[data-theme="light"].ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button:is(#vreorder,#cvtune),.seltop button):not(#nx1):not(#nx2):not(#nx3):not(#nx4){background:rgba(255,255,255,.96)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.13),0 2px 8px rgba(0,0,0,.07)!important}
+html[data-theme="light"].ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button:is(#vreorder,#cvtune),.seltop button):not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){background:rgba(226,226,232,.98)!important}
 
 html[data-theme="light"].ios #topcap{background:#f2f2f7}
 
@@ -149,3 +149,6 @@ html[data-theme="light"] .play{background:rgba(255,255,255,.88);color:#1c1c1e;bo
 
 html[data-theme="light"].android body #dock{background:transparent!important}
 html[data-theme="light"].android body #dock::before{background:rgba(255,255,255,.34)!important;-webkit-backdrop-filter:blur(9px)!important;backdrop-filter:blur(9px)!important}
+
+html[data-theme="light"] #cvsheet{background:rgba(250,250,252,.98);box-shadow:0 -20px 60px rgba(0,0,0,.25),inset 0 0 0 1px rgba(0,0,0,.1)}
+html[data-theme="light"] #cvbd{background:rgba(0,0,0,.25)}

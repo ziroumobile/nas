@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.12">
+<meta name="app-version" content="v9.13">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023h">
-<link rel="stylesheet" href="light.css?v=20261023h">
+<link rel="stylesheet" href="glass.css?v=20261023j">
+<link rel="stylesheet" href="light.css?v=20261023j">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -126,6 +126,24 @@ body.selecting .wrap{padding-bottom:100px}
 #peek .pname{color:#fff;font-size:13px;max-width:92vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @keyframes pk{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
 .spdtest [hidden]{display:none!important}
+html body #modal.fullpage #mbox button#cvtune:not(#nx1):not(#nx2):not(#nx3):not(#nx4){right:calc(max(0px,(100vw - 860px)/2) + 72px + var(--sbw,0px)/2)}
+html.ios body #modal.fullpage #mbox button#cvtune:not(#nx1):not(#nx2):not(#nx3):not(#nx4){right:72px!important}
+#cvtune svg{width:24px;height:24px}
+.cvgrid{display:grid;gap:10px 8px;grid-template-columns:repeat(3,1fr);padding:2px}
+.cvgrid.small{grid-template-columns:repeat(5,1fr);gap:6px}
+.cvcell{position:relative;background:none!important;border:0!important;padding:0!important;text-align:left;color:inherit;display:block;width:100%;min-width:0;box-shadow:none!important}
+.cvcell .cvth{width:100%;height:auto;aspect-ratio:1;border-radius:12px;font-size:30px}
+.cvcell .cvn{display:block;font-size:12px;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cvcell small{display:block;font-size:11px;opacity:.6}
+.cvgrid.small .cvn,.cvgrid.small small{display:none}
+.cvcell .chk{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:#0a84ff;color:#fff!important;display:flex;align-items:center;justify-content:center;font-size:13px;line-height:1}
+#cvbd{position:fixed;inset:0;z-index:134;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .25s}
+#cvbd.open{opacity:1;pointer-events:auto}
+#cvsheet{position:fixed;left:0;right:0;bottom:0;z-index:135;max-width:760px;margin:0 auto;padding:12px 18px calc(env(safe-area-inset-bottom) + 22px);border-radius:30px 30px 0 0;background:rgba(36,38,44,.98);box-shadow:0 -20px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.14);transform:translateY(105%);transition:transform .42s cubic-bezier(.2,.9,.3,1.12)}
+#cvsheet.open{transform:none}
+#cvsheet .bar{margin:0;padding:0;display:flex;gap:8px;align-items:center;flex-wrap:nowrap;background:none!important;box-shadow:none!important}
+#cvsheet .tunesort{justify-content:flex-start}
+#cvsheet .seg{width:100%;flex:1 1 auto;max-width:none}
 .prow.cvrow{display:flex;align-items:center;gap:12px;text-align:left;width:100%}
 .cvth{flex:none;width:48px;height:48px;border-radius:10px;background:rgba(127,127,127,.18);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:22px}
 .cvth img{width:100%;height:100%;object-fit:cover;display:block}
@@ -144,8 +162,8 @@ html.ios #app>header{top:max(0px,calc(env(safe-area-inset-top) - 6px))!important
 /* iPad: the dock and the + button sit higher, clear of the home-indicator corner */
 @media(min-width:700px){html.ios:not(.android) body #dock{bottom:calc(env(safe-area-inset-bottom) + 10px)!important}html.ios:not(.android) body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){bottom:calc(env(safe-area-inset-bottom) + 94px)!important}}
 /* phones / iPad: the round buttons at the top are solid, not see-through glass: nothing scrolls blurred behind them */
-html.ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button#vreorder,.seltop button):not(#nx1):not(#nx2):not(#nx3):not(#nx4){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(44,44,48,.96)!important}
-html.ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button#vreorder,.seltop button):not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){background:rgba(88,88,94,.96)!important}
+html.ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button:is(#vreorder,#cvtune),.seltop button):not(#nx1):not(#nx2):not(#nx3):not(#nx4){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(44,44,48,.96)!important}
+html.ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button:is(#vreorder,#cvtune),.seltop button):not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){background:rgba(88,88,94,.96)!important}
 
 @keyframes nasInR{from{transform:translateX(100%)}to{transform:none}}
 @keyframes nasOutL{from{transform:none}to{transform:translateX(-30%)}}
@@ -184,9 +202,9 @@ html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position
 #upback svg{width:24px;height:24px}
 #total{display:none}
 #dock button{position:relative}
-.dbadge{position:absolute;top:5px;right:12px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ff453a;color:#fff;font-size:11px;font-weight:700;line-height:17px;text-align:center;box-shadow:0 0 0 2px rgba(20,22,26,.9);pointer-events:none}html body #modal.fullpage button#vreorder:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:flex;position:fixed;z-index:3;right:calc(max(0px,(100vw - 860px)/2) + 16px + var(--sbw,0px)/2);top:calc(env(safe-area-inset-top) + 24px);width:46px;height:46px;padding:0!important;border-radius:50%!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-html.ios body #modal.fullpage button#vreorder:not(#nx1):not(#nx2):not(#nx3):not(#nx4){right:16px!important;top:env(safe-area-inset-top)!important}   /* phones: same spot as the home page's settings button */
-#vreorder svg{width:24px;height:24px}html:not(.ios) #modal.fullpage #mbox:has(#vreorder){padding-top:calc(env(safe-area-inset-top) + 84px)} /* desktop: the round button sits at the settings-button height, so the page starts below it */html body #modal.fullpage button#vreorder.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
+.dbadge{position:absolute;top:5px;right:12px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ff453a;color:#fff;font-size:11px;font-weight:700;line-height:17px;text-align:center;box-shadow:0 0 0 2px rgba(20,22,26,.9);pointer-events:none}html body #modal.fullpage button:is(#vreorder,#cvtune):not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:flex;position:fixed;z-index:3;right:calc(max(0px,(100vw - 860px)/2) + 16px + var(--sbw,0px)/2);top:calc(env(safe-area-inset-top) + 24px);width:46px;height:46px;padding:0!important;border-radius:50%!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.ios body #modal.fullpage button:is(#vreorder,#cvtune):not(#nx1):not(#nx2):not(#nx3):not(#nx4){right:16px!important;top:env(safe-area-inset-top)!important}   /* phones: same spot as the home page's settings button */
+#vreorder svg{width:24px;height:24px}html:not(.ios) #modal.fullpage #mbox:has(#vreorder){padding-top:calc(env(safe-area-inset-top) + 84px)} /* desktop: the round button sits at the settings-button height, so the page starts below it */html body #modal.fullpage button:is(#vreorder,#cvtune).act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
 .vrow{position:relative}.vrow.vro{padding-right:62px!important}.vgrip{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:44px;height:48px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;border-radius:10px;background:linear-gradient(#8e8e93,#8e8e93) center 15px/22px 3px no-repeat,linear-gradient(#8e8e93,#8e8e93) center 22px/22px 3px no-repeat,linear-gradient(#8e8e93,#8e8e93) center 29px/22px 3px no-repeat}.vgrip:active,.vrow.vdrag .vgrip{background-color:rgba(127,127,127,.18)}.vrow.vdrag{opacity:.9;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:2}.vpin{font-size:12px;margin-left:6px}
 .dbadge:empty{display:none}#dock .dbadge{display:none!important}
 body.selecting #app>header .hdrbtns{visibility:hidden}
@@ -477,8 +495,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023h"></script>
-<script src="docview.js?v=20261023h"></script>
+<script src="glass.js?v=20261023j"></script>
+<script src="docview.js?v=20261023j"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -620,36 +638,61 @@ $('#speedrow').onclick=function speedPage(){const m=measuredMbps();pickPage('⚡
     catch(er){const sec=(performance.now()-t0)/1000;st.textContent=er&&er.name==='AbortError'?('已取消（下載了 '+(got/1048576).toFixed(1)+' MB，'+sec.toFixed(1)+' 秒）'):('測試失敗：'+(er&&er.message||'連線中斷'))}
     ac=null;go.disabled=false;mbIn.disabled=false;cn.hidden=true};
   $('#spdcancel').onclick=e=>{e.stopPropagation();if(ac)ac.abort()};}
+function cvSheet(){   // the bottom sheet of the conversions page (view switch / sort), built once
+  let o=window.__cvSheet;if(o)return o;
+  const CV=window.__cv,bd=document.createElement('div'),sh=document.createElement('div');bd.id='cvbd';sh.id='cvsheet';
+  const lab=t=>{const d=document.createElement('div');d.className='tunelab';d.textContent=t;return d},grab=document.createElement('div');grab.className='tunegrab';
+  const seg=document.createElement('span');seg.className='seg';const segRow=document.createElement('div');segRow.className='bar tuneseg';
+  const VB=[['list','☰ 列表'],['nine','▩ 中圖示'],['small','▪ 小圖示']];
+  for(const[k,l]of VB){const b=document.createElement('button');b.className='ghost';b.type='button';b.dataset.v=k;b.textContent=l;seg.append(b)}segRow.append(seg);
+  const sortRow=document.createElement('div');sortRow.className='bar tunesort';
+  const sel=document.createElement('select');sel.innerHTML='<option value="size">大小</option><option value="name">名稱</option><option value="folder">資料夾</option>';
+  const ord=document.createElement('button');ord.className='ghost';ord.type='button';sortRow.append(sel,ord);
+  sh.append(grab,lab('顯示方式'),segRow,lab('排序'),sortRow);document.body.append(bd,sh);
+  const sync=()=>{seg.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===CV.view));sel.value=CV.sort;ord.textContent=CV.asc?'↑ 由小到大':'↓ 由大到小';if(window.glassSegSync)glassSegSync()};
+  const save=()=>{ls.set('nas_cvview',CV.view);ls.set('nas_cvsort',CV.sort);ls.set('nas_cvasc',CV.asc?'1':'0');sync();CV.redraw&&CV.redraw()};
+  seg.addEventListener('click',e=>{const b=e.target.closest('button[data-v]');if(b){CV.view=b.dataset.v;save()}});
+  sel.onchange=()=>{CV.sort=sel.value;CV.asc=CV.sort==='name'||CV.sort==='folder';save()};ord.onclick=()=>{CV.asc=!CV.asc;save()};
+  bd.onclick=()=>o.close();
+  o=window.__cvSheet={toggle:()=>{sync();const on=!sh.classList.contains('open');sh.classList.toggle('open',on);bd.classList.toggle('open',on);if(on&&window.glassSegSync)setTimeout(glassSegSync,0)},close:()=>{sh.classList.remove('open');bd.classList.remove('open')}};
+  if(window.glassBuild)glassBuild(seg);sync();return o;
+}
 $('#convrow').onclick=async function convPage(){   // converted copies (video / photo / document previews): look, filter by type, select (same select UI as the home page) and clear
   showPage('<div class="mhead"><h3>🔄 轉檔</h3></div><p class="sub">載入中…</p>');
   let d;try{const r=await api('/api/conv');if(!r.ok)throw 0;d=await r.json()}catch{showPage('<div class="mhead"><h3>🔄 轉檔</h3></div><p class="merr">無法載入</p>');return}
   const KIND={video:'🎬',doc:'📄',photo:'🖼'},CATS=[['all','全部'],['video','影片'],['photo','照片'],['doc','文件']],sz=n=>fmt(n);
   let cat='all',mode=false;const sel=new Set(),saved={},hid={},EL=['selexit','selnone','selall','seldel','seldl','selshare'];
-  const vis=()=>d.items.filter(i=>cat==='all'||i.kind===cat);
+  const CV=window.__cv||(window.__cv={view:ls.get('nas_cvview')||'list',sort:ls.get('nas_cvsort')||'size',asc:ls.get('nas_cvasc')==='1'});
+  const CMP={size:(a,b)=>a.size-b.size,name:(a,b)=>a.name.localeCompare(b.name,'zh-Hant',{numeric:true}),folder:(a,b)=>a.folder.localeCompare(b.folder,'zh-Hant')||a.name.localeCompare(b.name,'zh-Hant',{numeric:true})};
+  const vis=()=>d.items.filter(i=>cat==='all'||i.kind===cat).sort((a,b)=>(CV.asc?1:-1)*CMP[CV.sort](a,b));
   const picked=()=>{let n=0,b=0;for(const it of d.items)if(sel.has(it.id)){n++;b+=it.size}if(sel.has('orphan')){n+=d.orphan.count;b+=d.orphan.size}return{n,b}};
   const bar=()=>{const p=picked();$('#selcount').textContent='已選 '+p.n+' 個';$('#seldel').disabled=!p.n};
   const endSel=()=>{if(!mode)return;mode=false;window.__convSel=false;window.__convEnd=null;for(const id of EL){$('#'+id).onclick=saved[id];$('#'+id).hidden=hid[id]}document.body.classList.remove('selecting','convsel');$('#selbar').hidden=true;sel.clear();if(!$("#modal").hidden&&$("#cvlist"))draw()};
-  const startSel=()=>{if(mode)return;mode=true;window.__convSel=true;window.__convEnd=endSel;for(const id of EL){saved[id]=$('#'+id).onclick;hid[id]=$('#'+id).hidden}
+  const startSel=()=>{if(mode)return;window.__cvSheet&&window.__cvSheet.close();mode=true;window.__convSel=true;window.__convEnd=endSel;for(const id of EL){saved[id]=$('#'+id).onclick;hid[id]=$('#'+id).hidden}
     $('#selexit').onclick=endSel;$('#selnone').onclick=()=>{sel.clear();draw()};$('#seldel').onclick=doClear;$('#seldl').hidden=true;$('#selshare').hidden=true;$('#selall').hidden=true;$('#seldel').hidden=false;
     $('#seldel').setAttribute('aria-label','清除選取');document.body.classList.add('selecting','convsel');$('#selbar').hidden=false;bar()};
   const doClear=async()=>{const q=picked();if(!q.n||!confirm('清除選取的 '+q.n+' 個轉檔複本（'+sz(q.b)+'）？原檔不會被刪除，之後需要時會重新轉。'))return;
     const r=await api('/api/conv/clear',{method:'POST',body:JSON.stringify({ids:d.items.filter(i=>sel.has(i.id)).map(i=>i.id),orphan:sel.has('orphan')})});
     if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'清除失敗');endSel();return convPage()};
   const draw=()=>{const list=vis(),tot=d.items.reduce((s,i)=>s+i.size,0)+d.orphan.size,cnt=k=>k==='all'?d.items.length:d.items.filter(i=>i.kind===k).length;
+    const th=i=>(i.thumb?'<img loading="lazy" decoding="async" alt="" src="'+thumbSrc(i.thumb)+'" onerror="this.replaceWith(document.createTextNode(&quot;'+KIND[i.kind]+'&quot;))">':KIND[i.kind]);
+    const cell=i=>'<button class="cvcell" data-c="'+esc(i.id)+'" type="button" title="'+esc(i.name)+'"><span class="cvth">'+th(i)+'</span><span class="cvn">'+esc(i.name)+'</span><small>'+sz(i.size)+'</small>'+(sel.has(i.id)?'<span class="chk">✓</span>':'')+'</button>';
     const row=i=>'<button class="prow cvrow" data-c="'+esc(i.id)+'" type="button"><span class="cvth">'+(i.thumb?'<img loading="lazy" decoding="async" alt="" src="'+thumbSrc(i.thumb)+'" onerror="this.replaceWith(document.createTextNode(&quot;'+KIND[i.kind]+'&quot;))">':KIND[i.kind])+'</span><span class="cvtx"><b>'+esc(i.name)+'</b><small>'+esc(i.folder)+' · '+sz(i.size)+'</small></span>'+(sel.has(i.id)?'<span class="chk">✓</span>':'')+'</button>';
     showPage('<div class="mhead"><h3>🔄 轉檔</h3></div><p class="sub">影片、照片（含 HEIC）和文件（Word、PowerPoint）第一次預覽時，會在這台電腦上轉成比較輕的版本並保存。這裡可以看到已轉好的內容；清除只會刪除轉出來的複本，不會動到原檔，之後再打開時會重新轉。目前共 '+sz(tot)+'。</p>'+
-      (mode?'':'<button id="vreorder" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button>')+
+      (mode?'':'<button id="cvtune" type="button" aria-label="調整" title="調整"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg></button><button id="vreorder" type="button" aria-label="選取" title="選取"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 12.3l2.9 2.9L16.3 9.6"/></svg></button>')+
       '<div class="cvcats">'+CATS.map(([k,l])=>'<button class="ghost'+(cat===k?' on':'')+'" data-cat="'+k+'" type="button">'+l+' '+cnt(k)+'</button>').join('')+(mode&&list.length?'<button class="ghost" id="cvall" type="button">全選</button>':'')+'</div>'+
-      '<div id="cvlist">'+(list.length||(cat==='all'&&d.orphan.count)?'<div class="sgrp2">'+list.map(row).join('')+(cat==='all'&&d.orphan.count?'<button class="prow cvrow" data-c="orphan" type="button"><span class="cvth">🗂</span><span class="cvtx"><b>原檔已更換或刪除的複本</b><small>'+d.orphan.count+' 個 · '+sz(d.orphan.size)+'</small></span>'+(sel.has('orphan')?'<span class="chk">✓</span>':'')+'</button>':'')+'</div>':'<p class="sub">目前沒有已轉好的內容。</p>')+'</div>');
+      '<div id="cvlist">'+(list.length||(cat==='all'&&d.orphan.count)?(CV.view==='list'?'<div class="sgrp2">':'<div class="cvgrid'+(CV.view==='small'?' small':'')+'">')+list.map(CV.view==='list'?row:cell).join('')+(cat==='all'&&d.orphan.count&&CV.view!=='list'?'<button class="cvcell" data-c="orphan" type="button" title="原檔已更換或刪除的複本"><span class="cvth">🗂</span><span class="cvn">已更換或刪除的複本</span><small>'+d.orphan.count+' 個 · '+sz(d.orphan.size)+'</small>'+(sel.has('orphan')?'<span class="chk">✓</span>':'')+'</button>':'')+(cat==='all'&&d.orphan.count&&CV.view==='list'?'<button class="prow cvrow" data-c="orphan" type="button"><span class="cvth">🗂</span><span class="cvtx"><b>原檔已更換或刪除的複本</b><small>'+d.orphan.count+' 個 · '+sz(d.orphan.size)+'</small></span>'+(sel.has('orphan')?'<span class="chk">✓</span>':'')+'</button>':'')+'</div>':'<p class="sub">目前沒有已轉好的內容。</p>')+'</div>');
     if(mode)bar();
     $('#mbox').onclick=e=>{
       const k=e.target.closest('button[data-cat]');if(k){cat=k.dataset.cat;return draw()}
+      if(e.target.closest('#cvtune'))return cvSheet().toggle();
       if(e.target.closest('#vreorder'))return startSel(),draw();
       if(e.target.closest('#cvall')){for(const i of vis())sel.add(i.id);return draw()}
       const c=e.target.closest('button[data-c]');if(c){if(!mode)startSel();const id=c.dataset.c;sel.has(id)?sel.delete(id):sel.add(id);return draw()}};
   };
+  CV.redraw=()=>{if(!$('#modal').hidden&&$('#cvlist'))draw()};
   window.__convEnd&&window.__convEnd();   // (a leftover select mode from an earlier visit)
-  if(!window.__convObs){window.__convObs=new MutationObserver(()=>{if($('#modal').hidden&&window.__convEnd)window.__convEnd()});window.__convObs.observe($('#modal'),{attributes:true,attributeFilter:['hidden']})}
+  if(!window.__convObs){window.__convObs=new MutationObserver(()=>{if($('#modal').hidden){window.__cvSheet&&window.__cvSheet.close();window.__convEnd&&window.__convEnd()}});window.__convObs.observe($('#modal'),{attributes:true,attributeFilter:['hidden']})}
   draw();
 };
 $('#privrow').onclick=()=>{loadPrivacy();pickPage('👁 隱私','開啟後，密碼頁解鎖時，帳號和密碼只顯示前 5 個字元，後面用 ***** 取代；複製時仍然是完整內容。關閉則整個顯示。只記在這台裝置上。',[['1','開'],['0','關']],privacy()?'1':'0',k=>savePrivacy(k==='1'))};
