@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.5">
+<meta name="app-version" content="v9.6">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023Z">
-<link rel="stylesheet" href="light.css?v=20261023Z">
+<link rel="stylesheet" href="glass.css?v=20261023a">
+<link rel="stylesheet" href="light.css?v=20261023a">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -176,7 +176,7 @@ html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position
 #dock button{position:relative}
 .dbadge{position:absolute;top:5px;right:12px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ff453a;color:#fff;font-size:11px;font-weight:700;line-height:17px;text-align:center;box-shadow:0 0 0 2px rgba(20,22,26,.9);pointer-events:none}html body #modal.fullpage button#vreorder:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:flex;position:fixed;z-index:3;right:calc(max(0px,(100vw - 860px)/2) + 16px + var(--sbw,0px)/2);top:calc(env(safe-area-inset-top) + 24px);width:46px;height:46px;padding:0!important;border-radius:50%!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 html.ios body #modal.fullpage button#vreorder:not(#nx1):not(#nx2):not(#nx3):not(#nx4){right:16px!important;top:env(safe-area-inset-top)!important}   /* phones: same spot as the home page's settings button */
-#vreorder svg{width:24px;height:24px}html body #modal.fullpage button#vreorder.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
+#vreorder svg{width:24px;height:24px}html:not(.ios) #modal.fullpage #mbox:has(#vreorder){padding-top:calc(env(safe-area-inset-top) + 84px)} /* desktop: the round button sits at the settings-button height, so the page starts below it */html body #modal.fullpage button#vreorder.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
 .vrow{position:relative}.vrow.vro{padding-right:62px!important}.vgrip{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:44px;height:48px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;border-radius:10px;background:linear-gradient(#8e8e93,#8e8e93) center 15px/22px 3px no-repeat,linear-gradient(#8e8e93,#8e8e93) center 22px/22px 3px no-repeat,linear-gradient(#8e8e93,#8e8e93) center 29px/22px 3px no-repeat}.vgrip:active,.vrow.vdrag .vgrip{background-color:rgba(127,127,127,.18)}.vrow.vdrag{opacity:.9;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:2}.vpin{font-size:12px;margin-left:6px}
 .dbadge:empty{display:none}#dock .dbadge{display:none!important}
 body.selecting #app>header .hdrbtns{visibility:hidden}
@@ -467,7 +467,7 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023Z"></script>
+<script src="glass.js?v=20261023a"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
