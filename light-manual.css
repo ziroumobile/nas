@@ -152,3 +152,4 @@ html[data-theme="light"].android body #dock::before{background:rgba(255,255,255,
 
 html[data-theme="light"] #cvsheet{background:rgba(250,250,252,.98);box-shadow:0 -20px 60px rgba(0,0,0,.25),inset 0 0 0 1px rgba(0,0,0,.1)}
 html[data-theme="light"] #cvbd{background:rgba(0,0,0,.25)}
+html[data-theme="light"]:not(.ios) #viewer .vtop :is(#vshare,#vinfo,#vclose,#vdlj,#vback){color:#1c1c1e!important}
