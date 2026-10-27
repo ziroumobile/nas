@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.14">
+<meta name="app-version" content="v9.15">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023k">
-<link rel="stylesheet" href="light.css?v=20261023k">
+<link rel="stylesheet" href="glass.css?v=20261023l">
+<link rel="stylesheet" href="light.css?v=20261023l">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -495,8 +495,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023k"></script>
-<script src="docview.js?v=20261023k"></script>
+<script src="glass.js?v=20261023l"></script>
+<script src="docview.js?v=20261023l"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -630,11 +630,11 @@ $('#speedrow').onclick=function speedPage(){const m=measuredMbps();pickPage('⚡
   const showGo=()=>{$('#spdgol').textContent='測試網速（下載 '+wantMB()+' MB）'};showGo();
   mbIn.oninput=()=>{ls.set('nas_spdmb',String(wantMB()));showGo()};mbIn.onclick=e=>e.stopPropagation();
   $('#spdgo').onclick=async e=>{e.stopPropagation();if(ac)return;const MB=wantMB();mbIn.value=MB;ls.set('nas_spdmb',String(MB));showGo();ac=new AbortController();const st=$('#spdst'),go=$('#spdgo'),cn=$('#spdcancel');st.hidden=false;cn.hidden=false;go.disabled=true;mbIn.disabled=true;st.textContent='測試中…';
-    const t0=performance.now();let got=0,done=false;
+    const t0=performance.now();let got=0,done=false,peak=0;const hist=[[0,0]];   // hist: [seconds, bytes]; the current speed is measured over the last second
     try{const r=await api('/api/speedtest?kb='+(MB*1024)+'&t='+Date.now(),{cache:'no-store',signal:ac.signal});if(!r.ok)throw new Error('伺服器回應 '+r.status);const rd=r.body.getReader();
-      for(;;){const{done:d,value}=await rd.read();if(d){done=true;break}got+=value.length;const sec=(performance.now()-t0)/1000;if(sec>0.3)st.textContent='已下載 '+(got/1048576).toFixed(1)+' MB · 目前約 '+(got*8/sec/1e6).toFixed(1)+' Mbps'}
+      for(;;){const{done:d,value}=await rd.read();if(d){done=true;break}got+=value.length;const sec=(performance.now()-t0)/1000;hist.push([sec,got]);while(hist.length>2&&hist[1][0]<=sec-1)hist.shift();const h0=hist[0],cur=sec>h0[0]?(got-h0[1])*8/(sec-h0[0])/1e6:0;if(sec>1&&cur>peak)peak=cur;if(sec>0.3)st.textContent='已下載 '+(got/1048576).toFixed(1)+' MB · 目前約 '+cur.toFixed(1)+' · 最大 '+Math.max(peak,cur).toFixed(1)+' · 平均 '+(got*8/sec/1e6).toFixed(1)+' Mbps'}
       const sec=(performance.now()-t0)/1000,mb=got*8/sec/1e6;ls.set('nas_speedmeas',mb.toFixed(1));syncPrefs();
-      st.textContent='完成：'+MB+' MB 用了 '+sec.toFixed(1)+' 秒，平均約 '+mb.toFixed(1)+' Mbps（自動上限約 '+(mb*autoShare(mb)).toFixed(1)+' Mbps）'}
+      st.textContent='完成：'+MB+' MB 用了 '+sec.toFixed(1)+' 秒，平均約 '+mb.toFixed(1)+' Mbps，最大約 '+Math.max(peak,mb).toFixed(1)+' Mbps（自動上限約 '+(mb*autoShare(mb)).toFixed(1)+' Mbps）'}
     catch(er){const sec=(performance.now()-t0)/1000;st.textContent=er&&er.name==='AbortError'?('已取消（下載了 '+(got/1048576).toFixed(1)+' MB，'+sec.toFixed(1)+' 秒）'):('測試失敗：'+(er&&er.message||'連線中斷'))}
     ac=null;go.disabled=false;mbIn.disabled=false;cn.hidden=true};
   $('#spdcancel').onclick=e=>{e.stopPropagation();if(ac)ac.abort()};}
