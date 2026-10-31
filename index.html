@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.26">
+<meta name="app-version" content="v9.27">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023w">
-<link rel="stylesheet" href="light.css?v=20261023w">
+<link rel="stylesheet" href="glass.css?v=20261023x">
+<link rel="stylesheet" href="light.css?v=20261023x">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -502,8 +502,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023w"></script>
-<script src="docview.js?v=20261023w"></script>
+<script src="glass.js?v=20261023x"></script>
+<script src="docview.js?v=20261023x"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -706,14 +706,15 @@ $('#convrow').onclick=async function convPage(){   // converted copies (video / 
 // Server status: sampled every 3 s from login on (while the tab is visible). Only the last 60 s are kept in memory, older samples are dropped.
 function stPoll(){
   if(window.__stPoll)return;window.__stPoll=1;const H=window.__stH=[];
+  let busy=0;
   const go=async()=>{
-    if(document.hidden)return;
+    if(document.hidden||busy)return;busy=1;
     try{const r=await api('/api/status');if(!r.ok)throw 0;const d=await r.json(),now=Date.now(),w=d.power&&(d.power.cpu!=null||d.power.gpu!=null)?Math.round(((d.power.cpu||0)+(d.power.gpu||0)+d.power.rest)/d.power.eff):null;
       H.push({t:now,cpu:d.cpu,temp:d.cpuTemp!=null?d.cpuTemp:null,mem:d.mem.total?d.mem.used/d.mem.total*100:0,gpu:d.gpu?d.gpu.util:null,gtemp:d.gpu&&d.gpu.temp!=null?d.gpu.temp:null,vram:d.gpu&&d.gpu.memTotal?d.gpu.memUsed/d.gpu.memTotal*100:null,w});
       while(H.length&&H[0].t<now-60000)H.shift();
       window.__stLastD=d;window.__stLastAt=now;window.__stErr=0;if(window.__stOn)window.__stOn()}
-    catch{window.__stErr=1;if(window.__stOn)window.__stOn()}};
-  let tm;const sched=()=>{clearTimeout(tm);tm=setTimeout(async()=>{await go();sched()},window.__stOn?1000:5000)};window.__stKick=()=>{go();sched()};go();sched();   // every 5 s in the background, every 2 s while the status page is open
+    catch{window.__stErr=1;if(window.__stOn)window.__stOn()}finally{busy=0}};
+  let tm;const sched=()=>{clearTimeout(tm);tm=setTimeout(()=>{go();sched()},window.__stOn?1000:5000)};window.__stKick=()=>{go();sched()};go();sched();   // every 5 s in the background, every 2 s while the status page is open
 }
 $('#statusrow').onclick=function statusPage(){   // live view of the NAS computer, refreshed every 3 s while the page is open
   showPage('<div class="mhead"><h3>🖥 伺服器狀態</h3></div><p class="sub">登入後每 5 秒自動收集，開著這頁每 1 秒更新 · 圖表只保留最近 1 分鐘</p><div id="stbox"><p class="sub">載入中…</p></div>');
@@ -724,7 +725,7 @@ $('#statusrow').onclick=function statusPage(){   // live view of the NAS compute
   const spark=(k,fixedMax,k2,unit,tk)=>{   // last-60-seconds line chart (second line optional), y ticks 0 30 50 70 100
     const all=window.__stH||[],now=Date.now(),H=all.filter(x=>x[k]!=null);if(H.length<2)return'<div class="svsp svsp0">收集中…</div>';
     const mx=fixedMax||Math.max(100,Math.ceil(Math.max(...H.map(x=>x[k]))*1.1)),X=t=>((t-(now-60000))/60000*120).toFixed(1),Y=v=>(30-Math.min(v,mx)/mx*28).toFixed(1);
-    const line=(key,cls)=>{const P=all.filter(x=>x[key]!=null);return P.length<2?'':'<polygon class="'+cls+'" points="'+X(P[0].t)+',30 '+P.map(x=>X(x.t)+','+Y(x[key])).join(' ')+' '+X(P[P.length-1].t)+',30"/><polyline class="'+cls+'" points="'+P.map(x=>X(x.t)+','+Y(x[key])).join(' ')+'"/>'};
+    const line=(key,cls)=>{const P=all.filter(x=>x[key]!=null);if(P.length)P.push({t:now,[key]:P[P.length-1][key]});return P.length<2?'':'<polygon class="'+cls+'" points="'+X(P[0].t)+',30 '+P.map(x=>X(x.t)+','+Y(x[key])).join(' ')+' '+X(P[P.length-1].t)+',30"/><polyline class="'+cls+'" points="'+P.map(x=>X(x.t)+','+Y(x[key])).join(' ')+'"/>'};
     const ticks=(tk||[0,30,50,70,100]).filter(v=>v<=mx);
     return'<div class="svspw"><svg class="svsp" viewBox="0 0 120 32" preserveAspectRatio="none">'+ticks.map(v=>'<line x1="0" x2="120" y1="'+Y(v)+'" y2="'+Y(v)+'"/>').join('')+line(k,'a')+(k2?line(k2,'b'):'')+'</svg>'+ticks.map(v=>'<i class="svtk" style="bottom:'+(6.25+v/mx*87.5).toFixed(2)+'%">'+v+'</i>').join('')+'</div><div class="svspl"><span>60 秒前</span><span></span><span>現在</span></div>'};
   const draw=d=>{
