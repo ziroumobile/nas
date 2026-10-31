@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.20">
+<meta name="app-version" content="v9.21">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023q">
-<link rel="stylesheet" href="light.css?v=20261023q">
+<link rel="stylesheet" href="glass.css?v=20261023r">
+<link rel="stylesheet" href="light.css?v=20261023r">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -502,8 +502,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023q"></script>
-<script src="docview.js?v=20261023q"></script>
+<script src="glass.js?v=20261023r"></script>
+<script src="docview.js?v=20261023r"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1550,6 +1550,7 @@ async function trashWindow(selMode=false,keep){ // everything that was deleted b
   const mb0=$('#mbox');if(!mb0._trPeek){mb0._trPeek=1;let t=null,x0=0,y0=0;const stop=()=>{clearTimeout(t);t=null};
     mb0.addEventListener('pointerdown',e=>{const im=e.target.closest('.trth img');if(!im||e.pointerType==='mouse')return;x0=e.clientX;y0=e.clientY;stop();t=setTimeout(()=>{t=null;const pk=document.getElementById('peek');if(!pk)return;pk.innerHTML='<div class="pbox"><img class="zoomable" alt="" src="'+API+im.dataset.big+'&res=720"></div>';pk.hidden=false;try{navigator.vibrate&&navigator.vibrate(12)}catch{}zoomPeek(pk.querySelector('img'))},420)});
     mb0.addEventListener('pointermove',e=>{if(t&&Math.hypot(e.clientX-x0,e.clientY-y0)>10)stop()});['pointerup','pointercancel'].forEach(n=>mb0.addEventListener(n,stop));mb0.addEventListener('contextmenu',e=>{if(e.target.closest('.trth img'))e.preventDefault()})}
+  const gone=ids=>{j.items=j.items.filter(x=>!ids.includes(x.id));j.size=j.items.reduce((a,x)=>a+(x.size||0),0)};
   const del1=async id=>{const r=await api('/api/trash/purge',{method:'POST',body:JSON.stringify({id})});if(!r.ok)throw new Error((await r.json().catch(()=>({}))).error||'清除失敗')};
   $('#mbox').onclick=async e=>{
     if(e.target.closest('#trseltop')){selMode=!selMode;sel.clear();return draw()}
@@ -1559,7 +1560,8 @@ async function trashWindow(selMode=false,keep){ // everything that was deleted b
       if(row&&!e.target.closest('button')){const id=row.dataset.id;if(sel.has(id))sel.delete(id);else sel.add(id);return draw()}
       if(e.target.closest('#trpurge')&&sel.size){
         if(!confirm('永久刪除選取的 '+sel.size+' 個項目？\n這個動作無法復原。'))return;
-        let fail='';for(const id of [...sel]){try{await del1(id)}catch(er){fail=er.message;break}}
+        const ids=[...sel];gone(ids);selMode=false;sel.clear();draw();   // rows vanish at once; the files are removed in the background
+        let fail='';for(const id of ids){try{await del1(id)}catch(er){fail=er.message;break}}
         if(fail)alert(fail);return trashWindow(false)}
       if(e.target.closest('#trrest')&&sel.size){
         let n=0,fail='';for(const id of [...sel]){const r=await api('/api/trash/restore',{method:'POST',body:JSON.stringify({id})});if(r.ok)n++;else fail=(await r.json().catch(()=>({}))).error||'還原失敗'}
@@ -1572,14 +1574,15 @@ async function trashWindow(selMode=false,keep){ // everything that was deleted b
     const pb=e.target.closest('button[data-purge]');
     if(pb){
       if(!confirm('永久刪除這個項目？\n這個動作無法復原。'))return;
-      pb.disabled=true;try{await del1(pb.dataset.purge)}catch(er){pb.disabled=false;return alert(er.message)}
-      return trashWindow()}
+      const id=pb.dataset.purge;gone([id]);draw();
+      try{await del1(id)}catch(er){alert(er.message);return trashWindow()}
+      return}
     if(e.target.closest('#trempty')){
       if(!confirm('永久刪除回收區裡的全部項目？\n這個動作無法復原。'))return;
       const eh=await askEdit('請確認身分，以清空回收區');if(!eh)return;
+      gone(j.items.map(x=>x.id));draw();
       const r=await api('/api/trash/empty',{method:'POST',headers:eh});
-      if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'清空失敗');
-      trashWindow()}
+      if(!r.ok){alert((await r.json().catch(()=>({}))).error||'清空失敗');return trashWindow()}}
   };
 }
 $('#trash').onclick=()=>trashWindow();
