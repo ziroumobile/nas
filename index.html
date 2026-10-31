@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.18">
+<meta name="app-version" content="v9.19">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023o">
-<link rel="stylesheet" href="light.css?v=20261023o">
+<link rel="stylesheet" href="glass.css?v=20261023p">
+<link rel="stylesheet" href="light.css?v=20261023p">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -502,8 +502,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023o"></script>
-<script src="docview.js?v=20261023o"></script>
+<script src="glass.js?v=20261023p"></script>
+<script src="docview.js?v=20261023p"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -715,6 +715,7 @@ $('#statusrow').onclick=function statusPage(){   // live view of the NAS compute
     $('#stbox').innerHTML=
       '<div class="sgrp2 svgrp"><div class="svc"><div class="svh"><span>處理器 CPU</span><b>'+d.cpu+'%</b></div>'+bar(d.cpu)+'<small>'+esc(d.cpuModel||'')+' · '+d.cores+' 執行緒</small></div>'+
       '<div class="svc"><div class="svh"><span>記憶體</span><b>'+mp+'%</b></div>'+bar(mp)+'<small>'+fmt(d.mem.used)+' / '+fmt(d.mem.total)+'（伺服器程式用 '+fmt(d.mem.proc)+'）</small></div>'+
+      (d.power&&(d.power.cpu!=null||d.power.gpu!=null)?(()=>{const w=d.power,c=w.cpu||0,g=w.gpu||0,est=Math.round((c+g+w.rest)/w.eff);return'<div class="svc"><div class="svh"><span>耗電（瓦數）</span><b>約 '+est+' W</b></div>'+bar(Math.min(100,est/6))+'<small>CPU '+(w.cpu!=null?w.cpu.toFixed(1)+' W':'讀不到')+' · 顯示卡 '+(w.gpu!=null?w.gpu.toFixed(1)+' W':'讀不到')+'（這兩項是電腦自己回報的實測值）。整機是估算：(CPU + 顯示卡 + 其他零件約 '+w.rest+' W) ÷ 電源效率 '+Math.round(w.eff*100)+'%，不是插座上量到的；要準確數字需要智慧插座或電表。</small></div>'})():'')+
       (d.gpu?'<div class="svc"><div class="svh"><span>顯示卡 GPU</span><b>'+d.gpu.util+'%</b></div>'+bar(d.gpu.util)+'<small>'+esc(d.gpu.name)+' · '+d.gpu.temp+'°C · 顯示記憶體 '+fmt(d.gpu.memUsed)+' / '+fmt(d.gpu.memTotal)+'</small></div>':'')+'</div>'+
       '<p class="sub" style="margin-top:16px">磁碟</p><div class="sgrp2 svgrp">'+d.disks.map(k=>{const u=k.total-k.free,p=pct(u,k.total);return'<div class="svc"><div class="svh"><span>'+esc(k.name)+'</span><b>剩 '+fmt(k.free)+'</b></div>'+bar(p)+'<small>已用 '+fmt(u)+' / '+fmt(k.total)+'（'+p+'%）</small></div>'}).join('')+'</div>'+
       '<p class="sub" style="margin-top:16px">背景工作</p><div class="sgrp2 svgrp">'+row('影片轉檔',vj)+row('文件轉 PDF',dj)+'</div>'+
