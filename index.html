@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.15">
+<meta name="app-version" content="v9.16">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023l">
-<link rel="stylesheet" href="light.css?v=20261023l">
+<link rel="stylesheet" href="glass.css?v=20261023m">
+<link rel="stylesheet" href="light.css?v=20261023m">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -495,8 +495,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023l"></script>
-<script src="docview.js?v=20261023l"></script>
+<script src="glass.js?v=20261023m"></script>
+<script src="docview.js?v=20261023m"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1663,12 +1663,14 @@ function showViewer(){
     msg('<div class="big">🎵</div>'+esc(x.name));const a=document.createElement('audio');a.controls=true;a.addEventListener('loadedmetadata',()=>{if(seq===vseq){vmeta={dur:a.duration};renderInfo()}});a.src=u;st.append(a);a.play().catch(()=>{});
   }else if(ext==='pdf'||NASDoc.OFFICE.test(ext)){   // PDF / Word / PowerPoint: shown page by page (Word and PowerPoint are converted to PDF by the NAS first)
     const office=ext!=='pdf',fo=splitKey(vlist[vi].k).folder;
-    NASDoc.show(st,{isCurrent:()=>seq===vseq,getPdf:async s=>{if(!office)return u;for(let i=0;i<100;i++){if(seq!==vseq)return null;const r=await api('/api/docprep?folder='+encodeURIComponent(fo)+'&name='+encodeURIComponent(x.name));const j=await r.json().catch(()=>({}));if(j.state==='ready')return API+j.url;if(j.state==='failed')throw new Error('failed');s.textContent='正在轉成 PDF 預覽…（第一次打開需要幾秒）';await new Promise(r=>setTimeout(r,1500))}throw new Error('timeout')}}).catch(()=>{if(seq===vseq){st.innerHTML='';msg('無法預覽這個文件，請按右上角「下載」。','warn')}});
+    NASDoc.show(st,{isCurrent:()=>seq===vseq,getPdf:async s=>{if(!office)return u;for(let i=0;i<100;i++){if(seq!==vseq)return null;const r=await api('/api/docprep?folder='+encodeURIComponent(fo)+'&name='+encodeURIComponent(x.name));const j=await r.json().catch(()=>({}));if(j.state==='ready'){warmDocs(vi);return API+j.url}if(j.state==='failed')throw new Error('failed');s.textContent='正在轉成 PDF 預覽…（第一次打開需要幾秒）';await new Promise(r=>setTimeout(r,600))}throw new Error('timeout')}}).catch(()=>{if(seq===vseq){st.innerHTML='';msg('無法預覽這個文件，請按右上角「下載」。','warn')}});
   }else if(ext==='txt'){
     msg('載入中…');
     fetch(u).then(r=>r.text()).then(t=>{if(seq!==vseq)return;st.innerHTML='';const p=document.createElement('pre');p.textContent=t.length>300000?t.slice(0,300000)+'\n\n…（內容過長，只顯示前 300KB）':t;st.append(p)}).catch(()=>{if(seq===vseq){st.innerHTML='';msg('無法載入文字內容','warn')}});
   }else msg(`<div class="big">📄</div>${esc(x.name)}<br>${fmt(x.size)}<br>此檔案類型無法預覽，請按右上角「下載」。`);
 }
+// once this document is ready, the next / previous Word or PowerPoint file in the list is converted in the background, so flipping to it is instant
+function warmDocs(at){for(const d of[1,-1]){const k=vlist[(at+d+vlist.length)%vlist.length]?.k;if(!k)continue;const{folder,name}=splitKey(k),e=(name.split('.').pop()||'');if(!/^(docx?|docm|rtf|odt|pptx?|pptm|ppsx|potx)$/i.test(e)||k===vlist[at]?.k)continue;api('/api/docprep?folder='+encodeURIComponent(folder)+'&name='+encodeURIComponent(name)).catch(()=>{})}}
 function closeViewer(fromPop){
   if(!vOpen)return;vOpen=false;resumeThumbs();vseq++;stopMedia();$('#vstage').innerHTML='';$('#viewer').hidden=true;$('#vinfop').hidden=true;document.body.style.overflow='';
   if(!fromPop&&history.state?.viewer)history.back();
