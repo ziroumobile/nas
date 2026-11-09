@@ -8,8 +8,8 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
-<link rel="stylesheet" href="glass.css?v=20261023y">
-<link rel="stylesheet" href="light.css?v=20261023y">
+<link rel="stylesheet" href="glass.css?v=20261023z">
+<link rel="stylesheet" href="light.css?v=20261023z">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <title>檔案分享</title>
@@ -59,6 +59,8 @@ select{padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(-
 .row.sel{background:rgba(37,99,235,.12)}
 #selbar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;z-index:10;box-shadow:0 -2px 10px rgba(0,0,0,.15)}
 #selbar[hidden]{display:none}
+/* select mode: a "全選" pill at the top right, next to the back arrow / 取消選取 (glass.css hides #selall on the home page, where it is not wanted) */
+html body .seltop button#selall:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:inline-flex!important;margin-left:auto;color:#0a84ff!important;font-weight:600}
 body.selecting .wrap{padding-bottom:100px}
 #viewer{position:fixed;inset:0;background:#000;z-index:30;display:flex;flex-direction:column}
 #viewer[hidden]{display:none}
@@ -176,13 +178,13 @@ html.ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#
 </div>
 <div id="selbar" hidden>
   <b id="selcount">已選 0 個</b>
-  <button class="ghost" id="selall" hidden>全選</button>
+  <button class="ghost" id="selall">全選</button>
   <button class="ghost" id="selnone">取消選取</button>
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="glass.js?v=20261023y"></script>
-<script src="docview.js?v=20261023y"></script>
+<script src="glass.js?v=20261023z"></script>
+<script src="docview.js?v=20261023z"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
@@ -258,7 +260,7 @@ function render(){
     return `<div class="row${sel}" data-i="${i}"><span class="chk"></span>${media(x,i)}<div class="info"><a href="${API+x.url}" data-open="${i}">${esc(x.name)}</a><small>${fmt(x.size)} · 更新 ${new Date(x.mtime).toLocaleDateString()}</small></div><a class="btn dlrow" href="${API+x.url}&dl=1" style="padding:4px 10px">下載</a></div>`}).join('');
   $('#list').innerHTML=view==='list'?items:`<div class="nine${view==='small'?' small':''}">${items}</div>`;
   tqPump();
-  $('#selbar').hidden=!selMode;$('#selcount').textContent='已選 '+selected.size+' 個';$('#seldl').disabled=$('#selnone').disabled=!selected.size;
+  $('#selbar').hidden=!selMode;$('#selcount').textContent='已選 '+selected.size+' 個';$('#seldl').disabled=$('#selnone').disabled=!selected.size;$('#selall').disabled=!files.length||selected.size>=files.length;
 }
 const setView=v=>{view=v;render()};
 $('#vlist').onclick=()=>setView('list');$('#vnine').onclick=()=>setView('nine');$('#vsmall').onclick=()=>setView('small');
@@ -268,7 +270,7 @@ $('#selmode').onclick=$('#dsel').onclick=()=>{selMode=!selMode;if(!selMode)selec
   const sbar=$('#selbar'),top=document.createElement('div'),bot=document.createElement('div');top.className='seltop';bot.className='selbot';
   $('#selexit').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>';$('#selexit').setAttribute('aria-label','返回');
   $('#seldl').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M8 11l4 4 4-4"/><path d="M4.5 17v1.5A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5V17"/></svg>';$('#seldl').setAttribute('aria-label','下載選取');
-  top.append($('#selexit'),$('#selnone'));bot.append($('#seldl'),$('#selcount'));sbar.append(top,bot);
+  top.append($('#selexit'),$('#selnone'),$('#selall'));bot.append($('#seldl'),$('#selcount'));sbar.append(top,bot);
   const band=document.createElement('div');band.id='topband';band.style.cssText='background:#000;opacity:1;-webkit-backdrop-filter:none;backdrop-filter:none';band.setAttribute('aria-hidden','true');$('#app').appendChild(band);
 }
 $('#selexit').onclick=()=>{selMode=false;selected.clear();render()};
