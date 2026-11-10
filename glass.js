@@ -246,7 +246,7 @@ void main(){
 
 
   // ---------- layout / pill ----------
-  const PILL_MS = 380, out3 = p => 1 - Math.pow(1 - p, 3);
+  const PILL_MS = 340, out3 = p => 1 - Math.pow(1 - p, 3);
   const pillNow = s => {                                             // where the capsule is right now (centre + size), mid-animation included
     const p = s.pill, q = s._pp; if (!q) return null;
     if (p._fn) { const u = Math.min(1, (performance.now() - p._t0) / p._ms); return p._fn(u); }
@@ -272,13 +272,10 @@ void main(){
     p.getBoundingClientRect();
     const glide = animate && from && p.animate && !p.classList.contains('hidden') && s.seg.getClientRects().length;
     if (!glide) { if (!animate) p.classList.remove('noanim'); else setTimeout(() => p.classList.remove('noanim'), 0); return; }
-    // timed from the App Store recording: leaves at once, stretches long and grows on the way (~0.1 s), lands a little big, eases back (~0.27 s)
-    const TF = 0.30, BIG = 1.22, c1 = r.l + r.w / 2, y1 = r.t + r.h / 2, dist = Math.abs(c1 - from.cx);
-    runPill(s, u => {
-      if (u < TF) { const q = u / TF, e = out3(q), g = 1 + (BIG - 1) * q;
-        return { cx: from.cx + (c1 - from.cx) * e, cy: from.cy + (y1 - from.cy) * e, w: (from.w + (r.w - from.w) * e) * g + dist * 0.6 * Math.sin(Math.PI * q), h: (from.h + (r.h - from.h) * e) * g }; }
-      const q = (u - TF) / (1 - TF), g = BIG - (BIG - 1) * out3(q);
-      return { cx: c1, cy: y1, w: r.w * g, h: r.h * g };
+    // one smooth run from A to B (ease in-out); half way it is squashed into a flat ellipse, at B it is the resting capsule again
+    const c1 = r.l + r.w / 2, y1 = r.t + r.h / 2, dist = Math.abs(c1 - from.cx), io = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+    runPill(s, u => { const e = io(u), sh = Math.sin(Math.PI * u);
+      return { cx: from.cx + (c1 - from.cx) * e, cy: from.cy + (y1 - from.cy) * e, w: from.w + (r.w - from.w) * e + dist * 0.55 * sh + r.w * 0.10 * sh, h: (from.h + (r.h - from.h) * e) * (1 - 0.22 * sh) };
     }, PILL_MS, 36);
   }
   function pulsePill(s) {                                            // a tap on the option that is already selected: the capsule squashes into a flat ellipse and springs back
@@ -301,9 +298,9 @@ void main(){
   // ---------- the lens: springs ----------
   const spring = (cur, vel, target, dt, k, c) => { const a = k * (target - cur) - c * vel; vel += a * dt; return [cur + vel * dt, vel]; };
   function startLens(s) {
-    if (s.bAnim) { try { s.bAnim.cancel(); } catch { } s.bAnim = null; } s.bDown = null; s.seg.style.transition = '';
+    const bb = s.bb; if (bb) bb.run = false; s.seg.style.transition = '';
     s.gc = null; s.active = false; const r = geom(s)[selected(s)];
-    s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, bs: 1, vbs: 0, tbs: s.dock ? 1.07 : 1.05, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: gr(s), tm: MAG, st: 0, vst: 0, tst: 0 };
+    s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, bs: bb ? bb.v : 1, vbs: bb ? bb.vel : 0, tbs: s.dock ? 1.07 : 1.05, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: gr(s), tm: MAG, st: 0, vst: 0, tst: 0 };
     s.hookOff = false; s.active = true; s.hot = selected(s); s.seg.classList.add('dragging', 'pressing', 'lensing'); setHot(s, s.hot, true);
     makeTexture(s);                                                  // labels as they look right now
     s.pill.classList.add('hidden'); s.canvas.classList.add('on');   // the dark capsule disappears while the dock is touched and comes back (at the chosen item) after release
@@ -340,17 +337,23 @@ void main(){
     raf(frame);
   }
   const baseTf = s => (s.dock && !document.documentElement.classList.contains('android') ? 'translateX(-50%) ' : '');
-  function bounce(s, down) {                                         // the "Q" bounce of the whole bar on a tap: swells on touch, springs back (with a little overshoot) when the finger lifts
-    const el = s.seg, k = s.dock ? 1.06 : 1.04, base = baseTf(s); if (!el.animate) return;
-    if (down) { if (s.bAnim) { try { s.bAnim.cancel(); } catch { } } el.style.transition = 'none';
-      s.bAnim = el.animate([{ transform: base + 'scale(1)' }, { transform: base + 'scale(' + k + ')' }], { duration: 140, easing: 'cubic-bezier(.2,.9,.3,1)', fill: 'forwards' }); s.bDown = s.bAnim; return; }
-    const up = () => { if (!s.bDown) return; const dn = s.bDown; s.bDown = null;
-      const an = el.animate([{ transform: base + 'scale(' + k + ')' }, { transform: base + 'scale(.985)', offset: .5 }, { transform: base + 'scale(1.004)', offset: .78 }, { transform: base + 'scale(1)' }], { duration: 420, easing: 'ease-out' });
-      s.bAnim = an; try { dn.cancel(); } catch { } an.onfinish = () => { if (s.bAnim === an) { s.bAnim = null; el.style.transition = ''; } }; };
-    if (s.bDown && s.bDown.playState === 'running') s.bDown.finished.then(up, () => { }); else up();   // a tap shorter than the swell still shows the whole swell first
+  function bounce(s, down) {                                         // the whole bar swells while touched and springs back when let go: the same spring as the lens's (so a tap and a long press feel alike)
+    const el = s.seg, bb = s.bb || (s.bb = { v: 1, vel: 0, t: 1, run: false, last: 0 });
+    bb.t = down ? (s.dock ? 1.07 : 1.05) : 1; if (down && bb.v > 1.0005) bb.vel += 1.3;   // a re-press while still swollen bounces again, like the lens
+    if (bb.run || s.lens) return;
+    bb.run = true; bb.last = performance.now(); el.style.transition = 'none';
+    const frame = now => {
+      if (s.lens) { bb.run = false; return; }                           // the lens loop has taken over the transform
+      const dt = Math.min(0.034, Math.max(0.001, (now - bb.last) / 1000)); bb.last = now;
+      [bb.v, bb.vel] = spring(bb.v, bb.vel, bb.t, dt, 260, 21);
+      el.style.transform = baseTf(s) + 'scale(' + bb.v.toFixed(4) + ')';
+      if (Math.abs(bb.t - bb.v) > 0.002 || Math.abs(bb.vel) > 0.02) raf(frame);
+      else { bb.run = false; bb.v = bb.t; bb.vel = 0; if (bb.t === 1) { el.style.transform = ''; el.style.transition = ''; } else el.style.transform = baseTf(s) + 'scale(' + bb.t + ')'; }
+    };
+    raf(frame);
   }
   function finishLens(s) {                                           // lens has settled into its option: swap back to the resting pill
-    s.canvas.classList.remove('on'); s.active = false; s.lens = null;
+    s.canvas.classList.remove('on'); s.active = false; s.lens = null; if (s.bb) { s.bb.v = 1; s.bb.vel = 0; s.bb.t = 1; s.bb.run = false; }
     s.pillAway = false; s.seg.style.transform = ''; s.gc = null; s.seg.style.removeProperty('--lensclip'); s.seg.classList.remove('pressing', 'lensing'); s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); });
     const pk = s.pendingK; s.pendingK = null;                        // the (heavy) view switch runs only now, after the lens has landed, so it can't stutter the animation
     if (pk == null) { s.seg.classList.remove('dragging'); setHot(s, -1, true); }
@@ -438,7 +441,7 @@ void main(){
       const s = build(dk, true); window.glassDockEngine = s;
       if (s) { const root = getComputedStyle(dk); for (const col of [root.getPropertyValue('--seg-fg').trim() || '#fff', root.getPropertyValue('--seg-blue').trim() || '#0a84ff']) s.btns.forEach(b => b.querySelector('svg') && iconImg(s, b, col));   // decode the icons ahead of time so the lens never shows an empty frame
       }
-      if (s) { let t = 0; new MutationObserver(() => { if (s.active || t) return; t = setTimeout(() => { t = 0; if (!s.active) { s._b = null; s.gc = null; s.tc = null; s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); }); placePill(s, selected(s), true); makeTexture(s); } }, 0); }).observe(dk, { subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'style'] }); }
+      if (s) { let t = 0; new MutationObserver(recs => { if (s.active || t) return; if (recs.every(m => m.target === dk && m.attributeName === 'style')) return; /* the bar's own bounce transform: nothing to rebuild */ t = setTimeout(() => { t = 0; if (!s.active) { s._b = null; s.gc = null; s.tc = null; s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); }); placePill(s, selected(s), true); makeTexture(s); } }, 0); }).observe(dk, { subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'style'] }); }
     }
   };
   // ---------- drop-down menus (replace the native <select> list, which iOS draws far from the button) ----------
