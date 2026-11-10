@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.29">
+<meta name="app-version" content="v9.30">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023z">
-<link rel="stylesheet" href="light.css?v=20261023z">
+<link rel="stylesheet" href="glass.css?v=20261023a2">
+<link rel="stylesheet" href="light.css?v=20261023a2">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -39,6 +39,7 @@ select{padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(-
 #drop{border:2px dashed var(--bd);border-radius:12px;padding:22px;text-align:center;color:var(--mut);margin-bottom:12px;cursor:pointer}
 #drop.over{border-color:var(--ac);color:var(--ac)}
 details.fold{margin-bottom:12px;position:relative}
+[data-k].hitk{outline:3px solid var(--ac);outline-offset:-3px;border-radius:6px;transition:outline-color .3s}
 details.fold.hitf{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac);transition:box-shadow .3s}
 details.fold.allsel{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac)}
 .pinb{position:absolute;top:5px;right:6px;color:var(--ac);display:flex;padding:6px;margin:-6px;transform:rotate(35deg)}
@@ -503,8 +504,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023z"></script>
-<script src="docview.js?v=20261023z"></script>
+<script src="glass.js?v=20261023a2"></script>
+<script src="docview.js?v=20261023a2"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -967,6 +968,13 @@ function buzz(){ // a short tick: Vibration API (Android), or an invisible switc
   const pend=()=>{if(!pk)return;clearTimeout(pk.t);if(pk.on)dragSwallow=Date.now()+500;pk=null};
   addEventListener('pointerup',pend,true);addEventListener('pointercancel',pend,true);
   list.addEventListener('contextmenu',e=>{if(e.target.closest(SEL))e.preventDefault()});
+  { // search results: long press = preview (same peek as above), a plain tap jumps to the file on the home page
+    const sr=$('#spres');
+    sr.addEventListener('pointerdown',e=>{if(pk){clearTimeout(pk.t)}pk=null;if(e.pointerType==='mouse')return;const c=e.target.closest('a.sprow[data-k]');if(c)startPeek(c,e.clientX,e.clientY,e.pointerId)});
+    sr.addEventListener('pointermove',e=>{if(pk&&!pk.on&&Math.hypot(e.clientX-pk.x,e.clientY-pk.y)>8){clearTimeout(pk.t);pk=null}});
+    addEventListener('pointerup',()=>{if(!peek.hidden)window.__noClickUntil=Date.now()+600},true);   // letting go after a long press must not also count as a tap
+    sr.addEventListener('contextmenu',e=>e.preventDefault());
+  }
 }
 function markFullFolders(){ // a folder with every one of its files selected gets a blue ring
   if(!selMode&&!document.querySelector('details.fold.allsel'))return;
@@ -1176,13 +1184,13 @@ function renderSearch(){
     const th=x.thumb?'<img loading="lazy" decoding="async" alt="" src="'+thumbSrc(x.thumb)+'" onerror="this.remove()">':ICON[x.kind]||'📄';
     return '<a class="sprow" href="#" data-k="'+esc(keyOf(f,x.name))+'"><span class="spth">'+th+(x.kind==='video'?'<span class="play">▶</span>':'')+'</span><span class="spm"><b>'+mark(x.name)+'</b><small>'+esc(f.replace(/\//g,' / '))+' · '+fmt(x.size)+' · '+new Date(x.mtime).toLocaleDateString()+'</small></span></a>'}).join('');
 }
-function goFolder(name){ // jump to a folder on the main page: open it (and the folders above it) and scroll it into view
+function goFolder(name,key){ // jump to a folder on the main page: open it (and the folders above it) and scroll it into view
   closeSearchPage(true,true);
   const parts=name.split('/');for(let i=1;i<=parts.length;i++)opened.add(parts.slice(0,i).join('/'));
   try{ls.set('nas_open',JSON.stringify([...opened]))}catch{}
   render(false);
-  setTimeout(()=>{const el=document.querySelector('#list details.fold[data-f="'+(window.CSS&&CSS.escape?CSS.escape(name):name)+'"]');if(!el)return;
-    el.scrollIntoView({behavior:'smooth',block:'center'});el.classList.add('hitf');setTimeout(()=>el.classList.remove('hitf'),1800)},120);
+  setTimeout(()=>{const el=(key&&document.querySelector('#list [data-k="'+CSS.escape(key)+'"]'))||document.querySelector('#list details.fold[data-f="'+(window.CSS&&CSS.escape?CSS.escape(name):name)+'"]');if(!el)return;
+    el.scrollIntoView({behavior:'smooth',block:'center'});const c=key&&el.matches('[data-k]')?'hitk':'hitf';el.classList.add(c);setTimeout(()=>el.classList.remove(c),2200)},120);
 }
 function openSearchPage(){
   try{closeModal()}catch{}   // a page opened from the dock (clipboard, shared links) must not stay underneath: back from search goes home
@@ -1200,7 +1208,7 @@ $('#spq').addEventListener('input',()=>{clearTimeout(spTimer);spTimer=setTimeout
 $('#spback').onclick=()=>closeSearchPage();
 $('#spres').addEventListener('click',e=>{const a=e.target.closest('a.sprow');if(!a)return;e.preventDefault();
   if(a.dataset.f){$('#spq').blur();return goFolder(a.dataset.f)}
-  const keys=[...document.querySelectorAll('#spres a.sprow[data-k]')].map(x=>x.dataset.k);$('#spq').blur();openViewer(a.dataset.k,keys)});
+  $('#spq').blur();goFolder(splitKey(a.dataset.k).folder,a.dataset.k)});
 addEventListener('popstate',()=>closeSearchPage(true));
 $('#sbtn').onclick=e=>{e.stopImmediatePropagation();if(!$('#spage').hidden){$('#spq').focus();return}openSearchPage()};
 function goHome(){ // back to the top of the file list: close whatever is open on top of it
