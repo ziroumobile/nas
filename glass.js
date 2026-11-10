@@ -246,37 +246,47 @@ void main(){
 
 
   // ---------- layout / pill ----------
-  const PILL_MS = 380;
+  const PILL_MS = 380, out3 = p => 1 - Math.pow(1 - p, 3);
+  const pillNow = s => {                                             // where the capsule is right now (centre + size), mid-animation included
+    const p = s.pill, q = s._pp; if (!q) return null;
+    if (p._fn) { const u = Math.min(1, (performance.now() - p._t0) / p._ms); return p._fn(u); }
+    return { cx: q.l + q.w / 2, cy: q.t + q.h / 2, w: q.w, h: q.h };
+  };
+  const runPill = (s, fn, ms, N) => {                                // play fn(u) -> {cx,cy,w,h} over ms, then leave the capsule on its resting rule
+    const p = s.pill; if (p._anim) { try { p._anim.cancel(); } catch { } }
+    const kf = []; for (let j = 0; j <= N; j++) { const v = fn(j / N); kf.push({ transform: 'translate(' + (v.cx - v.w / 2).toFixed(2) + 'px,' + (v.cy - v.h / 2).toFixed(2) + 'px)', width: v.w.toFixed(2) + 'px', height: v.h.toFixed(2) + 'px', easing: 'linear' }); }
+    p.classList.add('noanim');
+    const an = p.animate(kf, { duration: ms, easing: 'linear' }); p._anim = an; p._fn = fn; p._ms = ms; p._t0 = performance.now();
+    const clear = () => { if (p._anim === an) { p._anim = null; p._fn = null; p.classList.remove('noanim'); } };
+    an.onfinish = clear; an.oncancel = () => { if (p._anim === an) { p._anim = null; p._fn = null; } };
+  };
   function placePill(s, i, animate) {
     const r = geom(s)[i]; if (!r || !r.w) return;
     const p = s.pill, prev = s._pp;
     if (animate && prev && prev.l === r.l && prev.t === r.t && prev.w === r.w && prev.h === r.h) return;   // already there (this is also called for unrelated class changes)
-    // where the capsule is on screen right now (it may be in the middle of an earlier glide)
-    let from = prev;
-    if (p._anim) { const pr = p.getBoundingClientRect(), sr = s.seg.getBoundingClientRect(); from = { l: pr.left - sr.left - s.seg.clientLeft, t: pr.top - sr.top - s.seg.clientTop, w: pr.width, h: pr.height }; try { p._anim.cancel(); } catch { } p._anim = null; }
+    const from = pillNow(s);
     s._pp = { l: r.l, t: r.t, w: r.w, h: r.h };
-    const glide = animate && from && p.animate && !p.classList.contains('hidden') && s.seg.getClientRects().length;
+    if (p._anim && !animate) { try { p._anim.cancel(); } catch { } }
     p.classList.add('noanim');
     p.style.transform = `translate(${r.l}px,${r.t}px)`; p.style.width = r.w + 'px'; p.style.height = r.h + 'px';
     p.getBoundingClientRect();
+    const glide = animate && from && p.animate && !p.classList.contains('hidden') && s.seg.getClientRects().length;
     if (!glide) { if (!animate) p.classList.remove('noanim'); else setTimeout(() => p.classList.remove('noanim'), 0); return; }
-    const out3 = p => 1 - Math.pow(1 - p, 3), TF = 0.30, BIG = 1.22;                               // TF: share of the time spent travelling; BIG: size on arrival (rest = 1)
-    const c0 = from.l + from.w / 2, c1 = r.l + r.w / 2, y0 = from.t + from.h / 2, y1 = r.t + r.h / 2, dist = Math.abs(c1 - c0), N = 36, kf = [];
-    for (let j = 0; j <= N; j++) {
-      const u = j / N; let cx, cy, w, h;
-      if (u < TF) {                                                                                 // on the way: grows while it goes, stretched long in the middle (a flat ellipse)
-        const p = u / TF, e = out3(p), g = 1 + (BIG - 1) * p;
-        cx = c0 + (c1 - c0) * e; cy = y0 + (y1 - y0) * e;
-        w = (from.w + (r.w - from.w) * e) * g + dist * 0.6 * Math.sin(Math.PI * p); h = (from.h + (r.h - from.h) * e) * g;
-      } else {                                                                                      // landed: eases back down to the resting capsule
-        const q = (u - TF) / (1 - TF), g = BIG - (BIG - 1) * out3(q);
-        cx = c1; cy = y1; w = r.w * g; h = r.h * g;
-      }
-      kf.push({ transform: `translate(${(cx - w / 2).toFixed(2)}px,${(cy - h / 2).toFixed(2)}px)`, width: w.toFixed(2) + 'px', height: h.toFixed(2) + 'px', easing: 'linear' });
-    }
-    const a = p.animate(kf, { duration: PILL_MS, easing: 'linear' }); p._anim = a;
-    const done = () => { if (p._anim === a) { p._anim = null; p.classList.remove('noanim'); } };
-    a.onfinish = done; a.oncancel = () => { if (p._anim === a) p._anim = null; };
+    // timed from the App Store recording: leaves at once, stretches long and grows on the way (~0.1 s), lands a little big, eases back (~0.27 s)
+    const TF = 0.30, BIG = 1.22, c1 = r.l + r.w / 2, y1 = r.t + r.h / 2, dist = Math.abs(c1 - from.cx);
+    runPill(s, u => {
+      if (u < TF) { const q = u / TF, e = out3(q), g = 1 + (BIG - 1) * q;
+        return { cx: from.cx + (c1 - from.cx) * e, cy: from.cy + (y1 - from.cy) * e, w: (from.w + (r.w - from.w) * e) * g + dist * 0.6 * Math.sin(Math.PI * q), h: (from.h + (r.h - from.h) * e) * g }; }
+      const q = (u - TF) / (1 - TF), g = BIG - (BIG - 1) * out3(q);
+      return { cx: c1, cy: y1, w: r.w * g, h: r.h * g };
+    }, PILL_MS, 36);
+  }
+  function pulsePill(s) {                                            // a tap on the option that is already selected: the capsule squashes into a flat ellipse and springs back
+    const q = s._pp, p = s.pill; if (!q || !p.animate || p.classList.contains('hidden')) return;
+    const from = pillNow(s), cx = q.l + q.w / 2, cy = q.t + q.h / 2;
+    runPill(s, u => { const sh = Math.sin(Math.PI * Math.min(1, u * 1.15)), back = u > .6 ? (u - .6) / .4 : 0, ov = Math.sin(Math.PI * back) * 0.04;   // squash, then a small overshoot the other way
+      const w0 = from.w + (q.w - from.w) * Math.min(1, u * 3), h0 = from.h + (q.h - from.h) * Math.min(1, u * 3);
+      return { cx: from.cx + (cx - from.cx) * Math.min(1, u * 3), cy: from.cy + (cy - from.cy) * Math.min(1, u * 3), w: w0 * (1 + 0.24 * sh - ov), h: h0 * (1 - 0.16 * sh + ov) }; }, 340, 30);
   }
   function relayout(s) {
     if (!s.dock) { const b0 = s.btns[0]; if (b0 && b0.offsetHeight) s.grow = Math.max(8, s.seg.clientHeight - b0.offsetHeight + 18);
@@ -291,7 +301,7 @@ void main(){
   // ---------- the lens: springs ----------
   const spring = (cur, vel, target, dt, k, c) => { const a = k * (target - cur) - c * vel; vel += a * dt; return [cur + vel * dt, vel]; };
   function startLens(s) {
-    clearTimeout(s.bounceT); s.seg.style.transition = '';
+    if (s.bAnim) { try { s.bAnim.cancel(); } catch { } s.bAnim = null; } s.bDown = null; s.seg.style.transition = '';
     s.gc = null; s.active = false; const r = geom(s)[selected(s)];
     s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, bs: 1, vbs: 0, tbs: s.dock ? 1.07 : 1.05, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: gr(s), tm: MAG, st: 0, vst: 0, tst: 0 };
     s.hookOff = false; s.active = true; s.hot = selected(s); s.seg.classList.add('dragging', 'pressing', 'lensing'); setHot(s, s.hot, true);
@@ -330,11 +340,14 @@ void main(){
     raf(frame);
   }
   const baseTf = s => (s.dock && !document.documentElement.classList.contains('android') ? 'translateX(-50%) ' : '');
-  function bounce(s, down) {                                         // quick swell of the whole bar on a tap (the "Q" bounce), spring back with a little overshoot when the finger lifts
-    const el = s.seg; clearTimeout(s.bounceT);
-    el.style.transition = down ? 'transform .16s cubic-bezier(.2,.9,.3,1.3)' : 'transform .5s cubic-bezier(.3,1.7,.5,1)';
-    el.style.transform = baseTf(s) + (down ? 'scale(' + (s.dock ? 1.06 : 1.04) + ')' : 'scale(1)');
-    if (!down) s.bounceT = setTimeout(() => { if (!s.lens) { el.style.transition = ''; el.style.transform = ''; } }, 520);
+  function bounce(s, down) {                                         // the "Q" bounce of the whole bar on a tap: swells on touch, springs back (with a little overshoot) when the finger lifts
+    const el = s.seg, k = s.dock ? 1.06 : 1.04, base = baseTf(s); if (!el.animate) return;
+    if (down) { if (s.bAnim) { try { s.bAnim.cancel(); } catch { } } el.style.transition = 'none';
+      s.bAnim = el.animate([{ transform: base + 'scale(1)' }, { transform: base + 'scale(' + k + ')' }], { duration: 140, easing: 'cubic-bezier(.2,.9,.3,1)', fill: 'forwards' }); s.bDown = s.bAnim; return; }
+    const up = () => { if (!s.bDown) return; const dn = s.bDown; s.bDown = null;
+      const an = el.animate([{ transform: base + 'scale(' + k + ')' }, { transform: base + 'scale(.985)', offset: .5 }, { transform: base + 'scale(1.004)', offset: .78 }, { transform: base + 'scale(1)' }], { duration: 420, easing: 'ease-out' });
+      s.bAnim = an; try { dn.cancel(); } catch { } an.onfinish = () => { if (s.bAnim === an) { s.bAnim = null; el.style.transition = ''; } }; };
+    if (s.bDown && s.bDown.playState === 'running') s.bDown.finished.then(up, () => { }); else up();   // a tap shorter than the swell still shows the whole swell first
   }
   function finishLens(s) {                                           // lens has settled into its option: swap back to the resting pill
     s.canvas.classList.remove('on'); s.active = false; s.lens = null;
@@ -389,7 +402,7 @@ void main(){
     const end = e => {
       const d = s.drag; if (!d || (e && e.pointerId !== d.id)) return;
       clearTimeout(s.pressT); s.drag = null; if (!s.lens) bounce(s, false);
-      if (!d.started) return;                                        // a plain tap: the button's own click does the work
+      if (!d.started) { if (e && e.type === 'pointerup') { const rect = seg.getBoundingClientRect(), k = nearest(e.clientX - rect.left - seg.clientLeft); if (k === selected(s)) pulsePill(s); } return; }   // a plain tap: the button's own click does the work
       const rect = seg.getBoundingClientRect();
       const k = e && e.type === 'pointerup' ? nearest(e.clientX - rect.left - seg.clientLeft) : (s.hot >= 0 ? s.hot : selected(s));   // a cancelled touch (iOS does this) still counts as a tap on the option under the lens
       const wait = s.gl && s.lens ? Math.max(0, 260 - (Date.now() - d.t0)) : 0;   // a quick tap still shows the lens swelling before it lands
