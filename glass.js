@@ -246,11 +246,31 @@ void main(){
 
 
   // ---------- layout / pill ----------
+  const PILL_MS = 520;
   function placePill(s, i, animate) {
     const r = geom(s)[i]; if (!r || !r.w) return;
-    const p = s.pill; if (!animate) p.classList.add('noanim');
+    const p = s.pill, prev = s._pp;
+    if (animate && prev && prev.l === r.l && prev.t === r.t && prev.w === r.w && prev.h === r.h) return;   // already there (this is also called for unrelated class changes)
+    // where the capsule is on screen right now (it may be in the middle of an earlier glide)
+    let from = prev;
+    if (p._anim) { const pr = p.getBoundingClientRect(), sr = s.seg.getBoundingClientRect(); from = { l: pr.left - sr.left - s.seg.clientLeft, t: pr.top - sr.top - s.seg.clientTop, w: pr.width, h: pr.height }; try { p._anim.cancel(); } catch { } p._anim = null; }
+    s._pp = { l: r.l, t: r.t, w: r.w, h: r.h };
+    const glide = animate && from && p.animate && !p.classList.contains('hidden') && s.seg.getClientRects().length;
+    p.classList.add('noanim');
     p.style.transform = `translate(${r.l}px,${r.t}px)`; p.style.width = r.w + 'px'; p.style.height = r.h + 'px';
-    if (!animate) { p.getBoundingClientRect(); p.classList.remove('noanim'); }
+    p.getBoundingClientRect();
+    if (!glide) { if (!animate) p.classList.remove('noanim'); else setTimeout(() => p.classList.remove('noanim'), 0); return; }
+    const ease = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;                 // ease in-out: slow start, smooth middle, slow landing
+    const c0 = from.l + from.w / 2, c1 = r.l + r.w / 2, y0 = from.t + from.h / 2, y1 = r.t + r.h / 2, dist = Math.abs(c1 - c0), N = 24, kf = [];
+    for (let j = 0; j <= N; j++) {
+      const u = j / N, e = ease(u), sh = Math.sin(Math.PI * u);                                    // sh: 0 at both ends, 1 half way
+      const w = from.w + (r.w - from.w) * e + dist * 0.42 * sh, h = (from.h + (r.h - from.h) * e) * (1 - 0.32 * sh);   // half way it is long and flat, like a flattened ellipse
+      const cx = c0 + (c1 - c0) * e, cy = y0 + (y1 - y0) * e;
+      kf.push({ transform: `translate(${(cx - w / 2).toFixed(2)}px,${(cy - h / 2).toFixed(2)}px)`, width: w.toFixed(2) + 'px', height: h.toFixed(2) + 'px', easing: 'linear' });
+    }
+    const a = p.animate(kf, { duration: PILL_MS, easing: 'linear' }); p._anim = a;
+    const done = () => { if (p._anim === a) { p._anim = null; p.classList.remove('noanim'); } };
+    a.onfinish = done; a.oncancel = () => { if (p._anim === a) p._anim = null; };
   }
   function relayout(s) {
     if (!s.dock) { const b0 = s.btns[0]; if (b0 && b0.offsetHeight) s.grow = Math.max(8, s.seg.clientHeight - b0.offsetHeight + 18);
@@ -328,16 +348,21 @@ void main(){
     seg.addEventListener('pointerdown', e => {
       if (e.button > 0) return; s.liveK = null; s.drag = { id: e.pointerId, x0: e.clientX, started: false, t0: Date.now() };
       if (!s.gl) return;
-      s.drag.started = true;   // the lens swells the moment it is touched, no drag needed
-      if (!s.active) startLens(s);
-      else if (s.lens) { const L = s.lens; L.tbs = s.dock ? 1.07 : 1.05; L.tg = gr(s); L.tm = MAG; L.vbs += 1.3; L.vm += 4.5; L.vg += 70; s.hookOff = false; s.pill.classList.add('hidden'); s.seg.classList.add('pressing', 'lensing'); }   // a quick second tap bounces just like the first (and hides the capsule again)
-      const t = target(e); s.lens.tx = t.cx; s.lens.tw = t.w; s.lens.tg = gr(s); s.lens.tm = MAG; if (!s.running) loop(s);
+      s.drag.ex = e.clientX; clearTimeout(s.pressT);
+      const begin = () => {                                          // long press: the clear glass lens appears and follows the finger
+        const d = s.drag; if (!d || d.started) return; d.started = true;
+        if (!s.active) startLens(s);
+        else if (s.lens) { const L = s.lens; L.tbs = s.dock ? 1.07 : 1.05; L.tg = gr(s); L.tm = MAG; L.vbs += 1.3; L.vm += 4.5; L.vg += 70; s.hookOff = false; s.pill.classList.add('hidden'); s.seg.classList.add('pressing', 'lensing'); }
+        const t = target({ clientX: d.ex }); s.lens.tx = t.cx; s.lens.tw = t.w; s.lens.tg = gr(s); s.lens.tm = MAG; if (!s.running) loop(s);
+      };
+      if (s.active) begin(); else s.pressT = setTimeout(begin, 200);   // a tap shorter than that is just a tap: the capsule glides (placePill) and the page switches at once
     });
     seg.addEventListener('pointermove', e => {
       const d = s.drag; if (!d || e.pointerId !== d.id) return;
+      d.ex = e.clientX;
       if (!d.started) {
         if (Math.abs(e.clientX - d.x0) < 5) return;
-        d.started = true; try { seg.setPointerCapture(e.pointerId); } catch { }
+        clearTimeout(s.pressT); d.started = true; try { seg.setPointerCapture(e.pointerId); } catch { }
         if (s.gl) { if (!s.active) startLens(s); else if (s.lens) { s.lens.tg = gr(s); s.lens.tm = MAG; } }
         else { s.active = true; s.pill.classList.add('noanim'); seg.classList.add('dragging'); }
       }
@@ -348,7 +373,7 @@ void main(){
     });
     const end = e => {
       const d = s.drag; if (!d || (e && e.pointerId !== d.id)) return;
-      s.drag = null;
+      clearTimeout(s.pressT); s.drag = null;
       if (!d.started) return;                                        // a plain tap: the button's own click does the work
       const rect = seg.getBoundingClientRect();
       const k = e && e.type === 'pointerup' ? nearest(e.clientX - rect.left - seg.clientLeft) : (s.hot >= 0 ? s.hot : selected(s));   // a cancelled touch (iOS does this) still counts as a tap on the option under the lens
