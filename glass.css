@@ -1110,3 +1110,8 @@ html body #modal .shc > div[style*="flex-wrap"] > :is(button,a):not(#nx1):not(#n
 html:not([data-theme="light"]).ios body #dock::before{background:rgba(60,62,68,.16)!important;-webkit-backdrop-filter:blur(9px) saturate(170%)!important;backdrop-filter:blur(9px) saturate(170%)!important}
 html:not([data-theme="light"]).ios body #dock.pressing::before{background:rgba(150,152,160,.15)!important}
 html:not([data-theme="light"]).ios body #dock .seg-pill{background:rgba(0,0,0,.28)!important}
+
+/* dock colours measured from the iOS 26 App Store tab bar (dark): bar #242424 at 80% + blur, selected capsule black at 55%; iPhone, iPad and Mac alike (Android keeps its own) */
+html:not(.android):not([data-theme="light"]) body #dock::before{background:rgba(36,36,36,.80)!important;-webkit-backdrop-filter:blur(20px) saturate(150%)!important;backdrop-filter:blur(20px) saturate(150%)!important;box-shadow:inset 0 .5px 0 rgba(255,255,255,.22),inset 0 -.5px 0 rgba(255,255,255,.08),0 6px 16px rgba(0,0,0,.35)!important}
+html:not(.android):not([data-theme="light"]) body #dock.pressing::before{background:rgba(70,70,74,.80)!important}
+html:not(.android):not([data-theme="light"]) body #dock .seg-pill{background:rgba(0,0,0,.55)!important;box-shadow:inset 0 .5px 0 rgba(255,255,255,.06)!important}

@@ -246,7 +246,7 @@ void main(){
 
 
   // ---------- layout / pill ----------
-  const PILL_MS = 520;
+  const PILL_MS = 540;
   function placePill(s, i, animate) {
     const r = geom(s)[i]; if (!r || !r.w) return;
     const p = s.pill, prev = s._pp;
@@ -260,12 +260,18 @@ void main(){
     p.style.transform = `translate(${r.l}px,${r.t}px)`; p.style.width = r.w + 'px'; p.style.height = r.h + 'px';
     p.getBoundingClientRect();
     if (!glide) { if (!animate) p.classList.remove('noanim'); else setTimeout(() => p.classList.remove('noanim'), 0); return; }
-    const ease = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;                 // ease in-out: slow start, smooth middle, slow landing
-    const c0 = from.l + from.w / 2, c1 = r.l + r.w / 2, y0 = from.t + from.h / 2, y1 = r.t + r.h / 2, dist = Math.abs(c1 - c0), N = 24, kf = [];
+    const out3 = p => 1 - Math.pow(1 - p, 3), TF = 0.34, BIG = 1.22;                               // TF: share of the time spent travelling; BIG: size on arrival (rest = 1)
+    const c0 = from.l + from.w / 2, c1 = r.l + r.w / 2, y0 = from.t + from.h / 2, y1 = r.t + r.h / 2, dist = Math.abs(c1 - c0), N = 36, kf = [];
     for (let j = 0; j <= N; j++) {
-      const u = j / N, e = ease(u), sh = Math.sin(Math.PI * u);                                    // sh: 0 at both ends, 1 half way
-      const w = from.w + (r.w - from.w) * e + dist * 0.42 * sh, h = (from.h + (r.h - from.h) * e) * (1 - 0.32 * sh);   // half way it is long and flat, like a flattened ellipse
-      const cx = c0 + (c1 - c0) * e, cy = y0 + (y1 - y0) * e;
+      const u = j / N; let cx, cy, w, h;
+      if (u < TF) {                                                                                 // on the way: grows while it goes, stretched long in the middle (a flat ellipse)
+        const p = u / TF, e = out3(p), g = 1 + (BIG - 1) * p;
+        cx = c0 + (c1 - c0) * e; cy = y0 + (y1 - y0) * e;
+        w = (from.w + (r.w - from.w) * e) * g + dist * 0.6 * Math.sin(Math.PI * p); h = (from.h + (r.h - from.h) * e) * g;
+      } else {                                                                                      // landed: eases back down to the resting capsule
+        const q = (u - TF) / (1 - TF), g = BIG - (BIG - 1) * out3(q);
+        cx = c1; cy = y1; w = r.w * g; h = r.h * g;
+      }
       kf.push({ transform: `translate(${(cx - w / 2).toFixed(2)}px,${(cy - h / 2).toFixed(2)}px)`, width: w.toFixed(2) + 'px', height: h.toFixed(2) + 'px', easing: 'linear' });
     }
     const a = p.animate(kf, { duration: PILL_MS, easing: 'linear' }); p._anim = a;
