@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.32">
+<meta name="app-version" content="v9.33">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023a4">
-<link rel="stylesheet" href="light.css?v=20261023a4">
+<link rel="stylesheet" href="glass.css?v=20261023a5">
+<link rel="stylesheet" href="light.css?v=20261023a5">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -505,8 +505,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023a4"></script>
-<script src="docview.js?v=20261023a4"></script>
+<script src="glass.js?v=20261023a5"></script>
+<script src="docview.js?v=20261023a5"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -830,7 +830,7 @@ setInterval(()=>{
     i.src=u+(u.includes('?')?'&':'?')+'r=f'+(n+1);
   });
 },2000);
-function thumbErr(img){const n=+img.dataset.try||0;if(n<4&&img.dataset.src0!==''){img.dataset.try=n+1;const u=img.dataset.src0||(img.dataset.src0=img.getAttribute('src'));setTimeout(()=>{if(img.isConnected)img.src=u+(u.includes('?')?'&':'?')+'r='+(n+1)},2500*(n+1));return} /* thumbnails may still be being made on the PC: retry a few times before giving up */ const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.kind==='video'?'🎬':'🖼';img.replaceWith(d)}
+function thumbErr(img){const n=+img.dataset.try||0;if(n<4&&img.dataset.src0!==''){img.dataset.try=n+1;const u=img.dataset.src0||(img.dataset.src0=img.getAttribute('src'));setTimeout(()=>{if(img.isConnected)img.src=u+(u.includes('?')?'&':'?')+'r='+(n+1)},2500*(n+1));return} /* thumbnails may still be being made on the PC: retry a few times before giving up */ const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.kind==='video'?'🎬':img.dataset.kind==='file'?'📄':'🖼';img.replaceWith(d)}
 const TQ={paused:false,started:0,raf:0};
 const thumbBytes=()=>document.documentElement.classList.contains('ios')?60000:135000;   // average size of one 480p / 720p thumbnail
 function tqMax(){const mb=capMbps();return Math.max(16,isFinite(mb)?Math.floor(mb*1e6/8/thumbBytes()):64)}   // how many may load at once = how many the speed limit can deliver per second (never fewer than 16)
