@@ -173,3 +173,6 @@ html[data-theme="light"].ios:not(.android) body #dock.pressing::before,html[data
 html[data-theme="light"]:not(.android):not(#nx1) body #dock::before{background:rgba(255,255,255,.36)!important;-webkit-backdrop-filter:blur(22px) saturate(160%)!important;backdrop-filter:blur(22px) saturate(160%)!important;box-shadow:inset 0 .5px 0 rgba(255,255,255,.95),inset 0 -.5px 0 rgba(0,0,0,.12),inset 0 0 0 .5px rgba(0,0,0,.07),0 6px 18px rgba(0,0,0,.10)!important}
 html[data-theme="light"]:not(.android):not(#nx1) body #dock.pressing::before{background:rgba(225,225,230,.50)!important}
 html[data-theme="light"]:not(.android):not(#nx1) body #dock .seg-pill,html[data-theme="light"]:not(.android):not(#nx1) #dock .seg-pill{background:rgba(0,0,0,.08)!important;box-shadow:none!important}
+
+/* light dock: a tapped button gets no dark disc of its own (only the capsule moves, as in dark mode) */
+html[data-theme="light"] body #dock button:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):is(:active,.gpress,.act),html[data-theme="light"] body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):is(:active,.gpress){background:transparent!important;box-shadow:none!important}

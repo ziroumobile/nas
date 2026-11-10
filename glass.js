@@ -246,7 +246,7 @@ void main(){
 
 
   // ---------- layout / pill ----------
-  const PILL_MS = 540;
+  const PILL_MS = 380;
   function placePill(s, i, animate) {
     const r = geom(s)[i]; if (!r || !r.w) return;
     const p = s.pill, prev = s._pp;
@@ -260,7 +260,7 @@ void main(){
     p.style.transform = `translate(${r.l}px,${r.t}px)`; p.style.width = r.w + 'px'; p.style.height = r.h + 'px';
     p.getBoundingClientRect();
     if (!glide) { if (!animate) p.classList.remove('noanim'); else setTimeout(() => p.classList.remove('noanim'), 0); return; }
-    const out3 = p => 1 - Math.pow(1 - p, 3), TF = 0.34, BIG = 1.22;                               // TF: share of the time spent travelling; BIG: size on arrival (rest = 1)
+    const out3 = p => 1 - Math.pow(1 - p, 3), TF = 0.30, BIG = 1.22;                               // TF: share of the time spent travelling; BIG: size on arrival (rest = 1)
     const c0 = from.l + from.w / 2, c1 = r.l + r.w / 2, y0 = from.t + from.h / 2, y1 = r.t + r.h / 2, dist = Math.abs(c1 - c0), N = 36, kf = [];
     for (let j = 0; j <= N; j++) {
       const u = j / N; let cx, cy, w, h;
@@ -291,6 +291,7 @@ void main(){
   // ---------- the lens: springs ----------
   const spring = (cur, vel, target, dt, k, c) => { const a = k * (target - cur) - c * vel; vel += a * dt; return [cur + vel * dt, vel]; };
   function startLens(s) {
+    clearTimeout(s.bounceT); s.seg.style.transition = '';
     s.gc = null; s.active = false; const r = geom(s)[selected(s)];
     s.lens = { cx: r.l + r.w / 2, w: r.w, grow: 0, mag: 1, bs: 1, vbs: 0, tbs: s.dock ? 1.07 : 1.05, vx: 0, vw: 0, vg: 0, vm: 0, tx: r.l + r.w / 2, tw: r.w, tg: gr(s), tm: MAG, st: 0, vst: 0, tst: 0 };
     s.hookOff = false; s.active = true; s.hot = selected(s); s.seg.classList.add('dragging', 'pressing', 'lensing'); setHot(s, s.hot, true);
@@ -328,6 +329,13 @@ void main(){
     };
     raf(frame);
   }
+  const baseTf = s => (s.dock && !document.documentElement.classList.contains('android') ? 'translateX(-50%) ' : '');
+  function bounce(s, down) {                                         // quick swell of the whole bar on a tap (the "Q" bounce), spring back with a little overshoot when the finger lifts
+    const el = s.seg; clearTimeout(s.bounceT);
+    el.style.transition = down ? 'transform .16s cubic-bezier(.2,.9,.3,1.3)' : 'transform .5s cubic-bezier(.3,1.7,.5,1)';
+    el.style.transform = baseTf(s) + (down ? 'scale(' + (s.dock ? 1.06 : 1.04) + ')' : 'scale(1)');
+    if (!down) s.bounceT = setTimeout(() => { if (!s.lens) { el.style.transition = ''; el.style.transform = ''; } }, 520);
+  }
   function finishLens(s) {                                           // lens has settled into its option: swap back to the resting pill
     s.canvas.classList.remove('on'); s.active = false; s.lens = null;
     s.pillAway = false; s.seg.style.transform = ''; s.gc = null; s.seg.style.removeProperty('--lensclip'); s.seg.classList.remove('pressing', 'lensing'); s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); });
@@ -362,6 +370,7 @@ void main(){
         const t = target({ clientX: d.ex }); s.lens.tx = t.cx; s.lens.tw = t.w; s.lens.tg = gr(s); s.lens.tm = MAG; if (!s.running) loop(s);
       };
       if (s.active) begin(); else s.pressT = setTimeout(begin, 200);   // a tap shorter than that is just a tap: the capsule glides (placePill) and the page switches at once
+      if (!s.active) bounce(s, true);
     });
     seg.addEventListener('pointermove', e => {
       const d = s.drag; if (!d || e.pointerId !== d.id) return;
@@ -379,7 +388,7 @@ void main(){
     });
     const end = e => {
       const d = s.drag; if (!d || (e && e.pointerId !== d.id)) return;
-      clearTimeout(s.pressT); s.drag = null;
+      clearTimeout(s.pressT); s.drag = null; if (!s.lens) bounce(s, false);
       if (!d.started) return;                                        // a plain tap: the button's own click does the work
       const rect = seg.getBoundingClientRect();
       const k = e && e.type === 'pointerup' ? nearest(e.clientX - rect.left - seg.clientLeft) : (s.hot >= 0 ? s.hot : selected(s));   // a cancelled touch (iOS does this) still counts as a tap on the option under the lens
