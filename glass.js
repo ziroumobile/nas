@@ -166,7 +166,7 @@ void main(){
     }
     x.textAlign = 'center'; x.textBaseline = 'middle';
     // colours come straight from the CSS variables (not from the buttons' animated colour): white, except the blue one = the option the lens is over
-    const root = getComputedStyle(document.documentElement);
+    const root = getComputedStyle(s.seg || document.documentElement);   // read from the switch itself, so the dock can have its own colours
     const white = root.getPropertyValue('--seg-fg').trim() || '#fff', blue = root.getPropertyValue('--seg-blue').trim() || '#0a84ff';
     const blueIdx = bi;
     s.btns.forEach((b, i) => {
@@ -383,7 +383,7 @@ void main(){
     const dk = document.getElementById('dock');
     if (dk) {
       const s = build(dk, true); window.glassDockEngine = s;
-      if (s) { const root = getComputedStyle(document.documentElement); for (const col of [root.getPropertyValue('--seg-fg').trim() || '#fff', root.getPropertyValue('--seg-blue').trim() || '#0a84ff']) s.btns.forEach(b => b.querySelector('svg') && iconImg(s, b, col));   // decode the icons ahead of time so the lens never shows an empty frame
+      if (s) { const root = getComputedStyle(dk); for (const col of [root.getPropertyValue('--seg-fg').trim() || '#fff', root.getPropertyValue('--seg-blue').trim() || '#0a84ff']) s.btns.forEach(b => b.querySelector('svg') && iconImg(s, b, col));   // decode the icons ahead of time so the lens never shows an empty frame
       }
       if (s) { let t = 0; new MutationObserver(() => { if (s.active || t) return; t = setTimeout(() => { t = 0; if (!s.active) { s._b = null; s.gc = null; s.tc = null; s.btns.forEach(b => { b._lh = false; b.classList.remove('lens-hide'); }); placePill(s, selected(s), true); makeTexture(s); } }, 0); }).observe(dk, { subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'style'] }); }
     }
