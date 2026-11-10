@@ -284,7 +284,7 @@ void main(){
   function step(s, dt) {
     const L = s.lens; let moving = false;
     L.tst = (s.drag && s.drag.started) ? Math.min(STMAX, Math.abs(s.vel || 0) * 0.018) : 0; s.vel = (s.vel || 0) * Math.pow(0.03, dt);
-    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 760, 43.5], ['w', 'vw', 'tw', 760, 43.5], ['grow', 'vg', 'tg', 460, 31.5], ['mag', 'vm', 'tm', 420, 29.5], ['bs', 'vbs', 'tbs', 420, 29.5], ['st', 'vst', 'tst', 700, 36]]) {
+    for (const [k, v, t, kk, cc] of [['cx', 'vx', 'tx', 300, 26], ['w', 'vw', 'tw', 300, 26], ['grow', 'vg', 'tg', 260, 22], ['mag', 'vm', 'tm', 240, 20], ['bs', 'vbs', 'tbs', 260, 21], ['st', 'vst', 'tst', 700, 36]]) {
       if (s.drag && s.drag.started && (k === 'cx' || k === 'w')) { L[k] = L[t]; L[v] = 0; continue; }   // follows the finger 1:1 while dragging
       [L[k], L[v]] = spring(L[k], L[v], L[t], dt, kk, cc);
       if (Math.abs(L[t] - L[k]) > (k === 'mag' || k === 'bs' ? 0.002 : 0.25) || Math.abs(L[v]) > (k === 'mag' || k === 'bs' ? 0.02 : 4)) moving = true;
@@ -352,7 +352,7 @@ void main(){
       if (!d.started) return;                                        // a plain tap: the button's own click does the work
       const rect = seg.getBoundingClientRect();
       const k = e && e.type === 'pointerup' ? nearest(e.clientX - rect.left - seg.clientLeft) : (s.hot >= 0 ? s.hot : selected(s));   // a cancelled touch (iOS does this) still counts as a tap on the option under the lens
-      const wait = s.gl && s.lens ? Math.max(0, 110 - (Date.now() - d.t0)) : 0;   // a quick tap still shows the lens swelling before it lands
+      const wait = s.gl && s.lens ? Math.max(0, 260 - (Date.now() - d.t0)) : 0;   // a quick tap still shows the lens swelling before it lands
       s.suppressClick = true; setTimeout(() => { s.suppressClick = false; }, wait + 80);
       if (wait) { const t = e ? target(e) : null; if (t && s.lens) { s.lens.tx = t.cx; s.lens.tw = t.w; } s.hold = true; setTimeout(() => { s.hold = false; release(k); }, wait); } else release(k);
     };

@@ -446,3 +446,6 @@ html[data-theme="light"].ios:not(.android) body #dock.pressing::before,html[data
 /* iPhone light mode dock (iOS 26 light tab bar): clear white glass bar, black labels, a light translucent-black capsule behind the selected tab; while held the capsule goes and the bar turns whiter */
 html[data-theme="light"].ios:not(.android) body #dock,html[data-theme="light"].android body #dock,html[data-theme="light"].ios body #dock.lens-bar{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}
 html[data-theme="light"].ios body #dock .seg-pill,html[data-theme="light"].ios #dock .seg-pill{background:rgba(0,0,0,.10)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,.05)!important}
+
+/* light dock: much more see-through (clear glass; the page shows through blurred) */
+html[data-theme="light"].ios:not(.android) body #dock::before,html[data-theme="light"].android body #dock::before,html[data-theme="light"].ios body #dock::before{background:rgba(255,255,255,.16)!important;-webkit-backdrop-filter:blur(12px) saturate(180%)!important;backdrop-filter:blur(12px) saturate(180%)!important;box-shadow:inset 0 .5px 0 rgba(255,255,255,.95),inset 0 -.5px 0 rgba(0,0,0,.14),inset 0 0 0 .5px rgba(0,0,0,.06),0 8px 22px rgba(0,0,0,.12)!important}

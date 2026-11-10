@@ -1105,3 +1105,8 @@ html body #modal .shc > div[style*="flex-wrap"] > :is(button,a):not(#nx1):not(#n
 
 .spdtest{margin-top:16px}
 .spdst{padding:10px 16px;font-size:14px;color:#8e8e93;line-height:1.5}
+
+/* dock: more see-through, like the iOS 26 tab bar (a light grey tint + blur instead of a dark slab), and a more transparent selected capsule */
+html:not([data-theme="light"]).ios body #dock::before{background:rgba(60,62,68,.16)!important;-webkit-backdrop-filter:blur(9px) saturate(170%)!important;backdrop-filter:blur(9px) saturate(170%)!important}
+html:not([data-theme="light"]).ios body #dock.pressing::before{background:rgba(150,152,160,.15)!important}
+html:not([data-theme="light"]).ios body #dock .seg-pill{background:rgba(0,0,0,.28)!important}
