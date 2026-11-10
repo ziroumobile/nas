@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.31">
+<meta name="app-version" content="v9.32">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023a3">
-<link rel="stylesheet" href="light.css?v=20261023a3">
+<link rel="stylesheet" href="glass.css?v=20261023a4">
+<link rel="stylesheet" href="light.css?v=20261023a4">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -39,7 +39,8 @@ select{padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(-
 #drop{border:2px dashed var(--bd);border-radius:12px;padding:22px;text-align:center;color:var(--mut);margin-bottom:12px;cursor:pointer}
 #drop.over{border-color:var(--ac);color:var(--ac)}
 details.fold{margin-bottom:12px;position:relative}
-[data-k].hitk{outline:3px solid var(--ac);outline-offset:-3px;border-radius:6px;transition:outline-color .3s}
+[data-k].hitk{outline:3px solid var(--ac);outline-offset:-3px;border-radius:6px}
+.cell.hitk::after{content:"";position:absolute;inset:0;border:4px solid var(--ac);border-radius:4px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.85);z-index:5;pointer-events:none}   /* grid views: the picture covers an outline, so the frame is an overlay */
 details.fold.hitf{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac);transition:box-shadow .3s}
 details.fold.allsel{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac)}
 .pinb{position:absolute;top:5px;right:6px;color:var(--ac);display:flex;padding:6px;margin:-6px;transform:rotate(35deg)}
@@ -504,8 +505,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023a3"></script>
-<script src="docview.js?v=20261023a3"></script>
+<script src="glass.js?v=20261023a4"></script>
+<script src="docview.js?v=20261023a4"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1191,7 +1192,7 @@ function goFolder(name,key){ // jump to a folder on the main page: open it (and 
   render(false);
   for(let i=1;i<=parts.length;i++){const d=document.querySelector('#list details.fold[data-f="'+CSS.escape(parts.slice(0,i).join('/'))+'"]');if(d)d.open=true}   // render() skips when nothing but the open set changed, so open the folders (and the ones above) in the page itself
   setTimeout(()=>{const el=(key&&document.querySelector('#list [data-k="'+CSS.escape(key)+'"]'))||document.querySelector('#list details.fold[data-f="'+(window.CSS&&CSS.escape?CSS.escape(name):name)+'"]');if(!el)return;
-    el.scrollIntoView({behavior:key?'auto':'smooth',block:'center'});const c=key&&el.matches('[data-k]')?'hitk':'hitf';el.classList.add(c);setTimeout(()=>el.classList.remove(c),2200)},120);
+    el.scrollIntoView({behavior:key?'auto':'smooth',block:'center'});const c=key&&el.matches('[data-k]')?'hitk':'hitf';el.classList.add(c);setTimeout(()=>el.classList.remove(c),3000)},120);
 }
 function openSearchPage(){
   try{closeModal()}catch{}   // a page opened from the dock (clipboard, shared links) must not stay underneath: back from search goes home
