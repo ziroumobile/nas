@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v9.33">
+<meta name="app-version" content="v9.34">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261023a5">
-<link rel="stylesheet" href="light.css?v=20261023a5">
+<link rel="stylesheet" href="glass.css?v=20261023a6">
+<link rel="stylesheet" href="light.css?v=20261023a6">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -206,6 +206,7 @@ body.uploading #upfab .fring{display:block}body.uploading #upfab .fic{display:bl
 #uppage{position:fixed;inset:0;z-index:96;background:#000;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 66px) 16px calc(env(safe-area-inset-bottom) + 30px)}
 #uppage[hidden]{display:none}
 #uppage h2{margin:0 4px 4px;font-size:34px;font-weight:800}
+#uppage #upcancelall[hidden]{display:none}#uppage .card .cx{color:#ff453a}
 #uppage #upsum2{white-space:pre-line;font-size:15px;line-height:1.6;margin:0 4px 12px}
 html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4){position:fixed;left:14px;top:calc(env(safe-area-inset-top) + 8px);z-index:2;width:46px;height:46px;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;background:rgba(32,34,40,.92)!important;color:#fff!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06)!important}
 #upback svg{width:24px;height:24px}
@@ -471,7 +472,7 @@ html body #setpage button.srw.sred:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color
   <div id="ups" style="margin-top:12px"></div>
 </div>
 <button id="upfab" type="button" aria-label="上傳"><svg class="fring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/><circle id="fabArc" cx="28" cy="28" r="25" fill="none" stroke="#0a84ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="157.1" stroke-dashoffset="157.1" transform="rotate(-90 28 28)"/></svg><svg class="fplus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg><svg class="fchk" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.8l4.6 4.6L19 7"/></svg><svg class="fic" viewBox="0 0 64 44"><defs><linearGradient id="fcg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#a5e0ff"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs><path d="M17 40a12 12 0 0 1-1.5-23.9A16 16 0 0 1 46 14.5 13.5 13.5 0 0 1 48 40z" fill="url(#fcg)"/><circle cx="23" cy="25" r="11" fill="#d6f1ff" opacity=".5"/></svg><span id="fabt">--min--sec</span><i id="fabbad" hidden></i></button>
-<div id="uppage" hidden><button id="upback" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>上傳進度</h2><p id="upsum2" class="sub"></p><div id="upslot"></div></div>
+<div id="uppage" hidden><button id="upback" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>上傳進度</h2><p id="upsum2" class="sub"></p><button id="upcancelall" type="button" class="ghost" style="margin:0 4px 12px;padding:8px 16px;border-radius:999px;color:#ff453a">取消全部上傳</button><div id="upslot"></div></div>
 <div id="spage" hidden><div class="sphead"><button id="spback" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><input id="spq" type="search" placeholder="搜尋檔名，例如 mov" autocomplete="off" enterkeyhint="search"></div><div id="spinfo"></div><div id="spres"></div></div>
 <div id="storage" hidden><div class="sthead"><button id="stback" class="stbtn" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>儲存空間</h2></div><div id="stbody"></div></div>
 <div id="viewer" hidden>
@@ -505,8 +506,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261023a5"></script>
-<script src="docview.js?v=20261023a5"></script>
+<script src="glass.js?v=20261023a6"></script>
+<script src="docview.js?v=20261023a6"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -1800,7 +1801,8 @@ function updateUploadUI(){
   else if(was){$('#fabt').textContent='完成';document.body.classList.add('upfin');clearTimeout(finT);finT=setTimeout(()=>document.body.classList.remove('upfin'),2300)}   // done: a blue check with 完成 under it for a moment, then the + again
   upsum.hidden=true;
   fab.hidden=false;
-  if(!cs){eta.t=0;releaseAwake();if(!$('#uppage').hidden)$('#upsum2').textContent='全部上傳完成 ✓';return}
+  $('#upcancelall').hidden=!cs;
+  if(!cs){eta.t=0;releaseAwake();if(!$('#uppage').hidden)$('#upsum2').textContent=window.__upCancelled?'已取消上傳':'全部上傳完成 ✓';return}
   const f=[...$('#ups').querySelectorAll('.rt')].filter(b=>!b.hidden).length;
   let got=batch.done;for(const j of allJobs)got+=j.loaded||0;
   const pct=batch.bytes?Math.min(100,Math.round(got/batch.bytes*100)):0;
@@ -1821,7 +1823,7 @@ function closeUps(fromPop){
   if(!fromPop&&history.state&&history.state.ups)history.back();
 }
 {const fb=$('#upfab');fb.addEventListener('dragover',e=>{e.preventDefault();fb.classList.add('dropover')});fb.addEventListener('dragleave',()=>fb.classList.remove('dropover'));fb.addEventListener('drop',e=>{e.preventDefault();fb.classList.remove('dropover');dropItems(e.dataTransfer)})}
-$('#upfab').onclick=e=>{if(document.body.classList.contains('uploading'))return openUps();addMenu(e)};$('#upback').onclick=()=>closeUps();addEventListener('popstate',()=>closeUps(true));
+$('#upfab').onclick=e=>{if(document.body.classList.contains('uploading'))return openUps();addMenu(e)};$('#upback').onclick=()=>closeUps();$('#upcancelall').onclick=cancelAllUploads;addEventListener('popstate',()=>closeUps(true));
 setInterval(updateUploadUI,500);
 const queue=[];let running=0;const MAX_PAR=10,MAX_TRY=3;
 const allJobs=new Set(),batch={bytes:0,done:0,files:0,doneFiles:0}; // everything still to upload / the totals of the current batch (drives the progress ring)
@@ -1852,13 +1854,31 @@ function refreshAfterUpload(){
 }
 function enqueue(file,folder,keep){
   const d=document.createElement('div');d.className='card';d.style.marginBottom='8px';
-  d.innerHTML=`<div>${esc(file.name)} → ${esc(folder)} <small class="s">等待中</small> <button class="ghost rt" hidden style="padding:2px 8px">重試</button></div><div class="prog"><i></i></div>`;
+  d.innerHTML=`<div>${esc(file.name)} → ${esc(folder)} <small class="s">等待中</small> <button class="ghost rt" hidden style="padding:2px 8px">重試</button> <button class="ghost cx" type="button" style="padding:2px 8px;float:right">取消</button></div><div class="prog"><i></i></div>`;
   $('#ups').prepend(d);
   const job={file,folder,d,tries:0,keep,loaded:0};
   if(!allJobs.size){batch.bytes=0;batch.done=0;batch.files=0;batch.doneFiles=0}
   allJobs.add(job);batch.bytes+=file.size;batch.files++;keepAwake();
   d.querySelector('.rt').onclick=()=>{d.querySelector('.rt').hidden=true;job.tries=0;queue.push(job);pump()};
+  d.querySelector('.cx').onclick=()=>cancelJob(job);
+  window.__upCancelled=false;
   queue.push(job);pump();
+}
+// cancel one upload (waiting, uploading or failed): stop the request, forget it, and tell the PC to delete the part that already arrived
+function cancelJob(j,quiet){
+  if(j.cancelled)return;j.cancelled=true;
+  const i=queue.indexOf(j);if(i>=0)queue.splice(i,1);
+  try{if(j.xhr)j.xhr.abort()}catch{}
+  if(allJobs.delete(j)){batch.bytes-=j.file.size;batch.files--}
+  j.d.remove();
+  if(j.id&&(j.offset>0||j.loaded>0))api('/api/upload-chunk?folder='+encodeURIComponent(j.folder)+'&id='+j.id,{method:'DELETE'}).catch(()=>{});
+  if(!quiet){if(!allJobs.size){window.__upCancelled=true;batch.bytes=batch.done=batch.files=batch.doneFiles=0}releaseAwake();updateUploadUI();if(allJobs.size===0&&!$('#uppage').hidden)$('#upsum2').textContent='已取消上傳'}
+}
+function cancelAllUploads(){
+  const n=allJobs.size;if(!n)return;
+  if(!confirm('要取消全部 '+n+' 個上傳嗎？已傳到一半的檔案會被丟掉。'))return;
+  for(const j of [...allJobs])cancelJob(j,true);
+  window.__upCancelled=true;batch.bytes=batch.done=batch.files=batch.doneFiles=0;releaseAwake();updateUploadUI();if(!$('#uppage').hidden)$('#upsum2').textContent='已取消上傳';
 }
 function pump(){while(running<MAX_PAR&&queue.length){running++;runJob(queue.shift()).finally(()=>{running--;pump()})}}
 // Files go up in 48MB pieces (stays under Cloudflare's per-request size cap); a dropped connection resumes from the last byte the PC has.
@@ -1867,12 +1887,12 @@ const newId=()=>[...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toStrin
 async function sendChunk(j,offset,onprog){
   if(!API)await findApi();const t=await token();
   return new Promise(res=>{
-    const x=new XMLHttpRequest();
+    const x=new XMLHttpRequest();j.xhr=x;
     x.open('PUT',`${API}/api/upload-chunk?folder=${encodeURIComponent(j.folder)}&name=${encodeURIComponent(j.file.name)}&id=${j.id}&offset=${offset}&total=${j.file.size}&mtime=${j.file.lastModified||0}`);
     x.setRequestHeader('Authorization','Bearer '+t);x.setRequestHeader('X-NAS-Device',encodeURIComponent(device));
     x.upload.onprogress=e=>onprog(e.loaded);
     x.onload=()=>{let b={};try{b=JSON.parse(x.responseText)}catch{}res({status:x.status,body:b})};
-    x.onerror=()=>res({status:0});x.ontimeout=()=>res({status:0});
+    x.onerror=()=>res({status:0});x.ontimeout=()=>res({status:0});x.onabort=()=>res({status:-1,aborted:true});
     x.send(j.file.slice(offset,Math.min(offset+CHUNK,j.file.size)));
   });
 }
@@ -1890,7 +1910,9 @@ async function heicToJpeg(file){
   return new File([blob],file.name.replace(/\.hei[cf]$/i,'.jpg'),{type:'image/jpeg',lastModified:file.lastModified});
 }
 async function runJob(j){
+  if(j.cancelled)return;
   if(!j.checked){j.checked=true;if(isHeic(j.file)&&!j.keep){const s0=j.d.querySelector('.s');s0.textContent='轉成 JPEG…';try{j.file=await heicToJpeg(j.file)}catch{}}}
+  if(j.cancelled)return;
   const s=j.d.querySelector('.s'),bar=j.d.querySelector('i'),total=j.file.size;
   j.id=j.id||newId();j.offset=j.offset||0;
   const show=(done,note)=>{j.loaded=done;const p=total?Math.min(100,done/total*100):100;bar.style.width=p+'%';s.textContent=Math.round(p)+'%'+(note||'')};
@@ -1898,7 +1920,8 @@ async function runJob(j){
   if(j.offset>0){const r=await api(`/api/upload-status?folder=${encodeURIComponent(j.folder)}&id=${j.id}`).catch(()=>null);if(r?.ok)j.offset=(await r.json()).received}
   while(true){
     show(j.offset,fails?`（重試 ${fails}/${MAX_TRY}）`:'');
-    const r=await sendChunk(j,j.offset,l=>show(j.offset+l,fails?`（重試 ${fails}/${MAX_TRY}）`:''));
+    const r=await sendChunk(j,j.offset,l=>{if(!j.cancelled)show(j.offset+l,fails?`（重試 ${fails}/${MAX_TRY}）`:'')});
+    if(j.cancelled||r.aborted)return;
     if(r.status===200&&(r.body.done||Number.isFinite(r.body.received))){
       fails=0;
       if(r.body.done){rememberFolder(j.folder);allJobs.delete(j);batch.done+=total;batch.doneFiles++;releaseAwake();j.d.remove();if(r.body.warn)alert('「'+(r.body.name||j.file.name)+'」'+r.body.warn);refreshAfterUpload();return}
@@ -1909,7 +1932,7 @@ async function runJob(j){
     const why=r.status?`伺服器回應 ${r.status}`+(r.body?.error?`（${r.body.error}）`:''):'網路中斷或連不到主機';
     if(++fails>MAX_TRY){s.textContent='失敗：'+why;break}
     s.textContent=`${why}，重試中 ${fails}/${MAX_TRY}`;
-    await new Promise(r=>setTimeout(r,2000*fails));await findApi(); // tunnel may have restarted
+    await new Promise(r=>setTimeout(r,2000*fails));if(j.cancelled)return;await findApi(); // tunnel may have restarted
     const st=await api(`/api/upload-status?folder=${encodeURIComponent(j.folder)}&id=${j.id}`).catch(()=>null);
     if(st?.ok)j.offset=(await st.json()).received; // resume from what the PC actually has
   }
