@@ -525,33 +525,35 @@ void main(){
 (() => {
   const SEL = '#pgback,#setclose,#upback,#spback,#stback,#appback,#vback,#app>header button.hb,#modal.fullpage button#vreorder,.seltop button,.selbot button,button#upfab,#viewer .vc';
   let st = null, rel = null;
-  const paint = (b, k, th, extra, size) => {                                        // k: 0 = round button, 1 = fully pulled
-    const sx = 1 + 0.32 * k, sy = 1 - 0.06 * k, shift = (sx - 1) * size / 2 + extra * k, c = Math.cos(th), s = Math.sin(th), tx = c * shift, ty = s * shift;
+  const paint = (b, k, th, extra, size, B) => {                                  // B: the press swell (the button is first enlarged, then pulled)
+    B = B || 1;                                        // k: 0 = round button, 1 = fully pulled
+    const sx = 1 + 0.2 * k, sy = 1 - 0.04 * k, shift = (sx - 1) * size / 2 + extra * k, c = Math.cos(th), s = Math.sin(th), tx = c * shift, ty = s * shift;
     const phi = th * 180 / Math.PI - 90;                                              // the button is turned so the finger is straight 'down' in its own frame
-    const top = 50 * sy / sx, bot = 50 + (100 - top - 50) * 0.35;                     // back cap: circular once stretched (so it stays round); front cap: only a little longer and narrower
+    const top = 50 * sy / sx, bot = 50 + (100 - top - 50) * 0.15;                     // back cap: circular once stretched (so it stays round); front cap: only a little longer and narrower
     b.style.setProperty('transition', 'none', 'important');
-    b.style.setProperty('transform', 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) rotate(' + phi.toFixed(2) + 'deg) scale(' + sy.toFixed(3) + ',' + sx.toFixed(3) + ')', 'important');
+    b.style.setProperty('transform', 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) rotate(' + phi.toFixed(2) + 'deg) scale(' + (sy * B).toFixed(3) + ',' + (sx * B).toFixed(3) + ')', 'important');
     b.style.setProperty('border-radius', '50% 50% 50% 50% / ' + top.toFixed(1) + '% ' + top.toFixed(1) + '% ' + bot.toFixed(1) + '% ' + bot.toFixed(1) + '%', 'important');
     for (const ch of b.children) { ch.style.setProperty('transition', 'none', 'important'); ch.style.transform = 'scale(' + (1 / sy).toFixed(3) + ',' + (1 / sx).toFixed(3) + ') rotate(' + (-phi).toFixed(2) + 'deg) translate(' + (-tx * 0.75).toFixed(2) + 'px,' + (-ty * 0.75).toFixed(2) + 'px)'; }   // the icon stays upright and (almost) where it was: it only drifts a quarter of the way with the blob
   };
   const clear = b => { b.style.removeProperty('transition'); b.style.removeProperty('transform'); b.style.removeProperty('border-radius'); for (const ch of b.children) { ch.style.removeProperty('transition'); ch.style.removeProperty('transform'); } };
   const loop = () => {                                                              // the shape trails the finger a little (heavy)
     if (!st || !st.on) return;
-    st.sx += (st.tx - st.sx) * 0.28; st.sy += (st.ty - st.sy) * 0.28;
+    st.sx += (st.tx - st.sx) * 0.16; st.sy += (st.ty - st.sy) * 0.16; st.bs += (1.12 - st.bs) * 0.22;
     const r = st.rect, size = Math.min(r.width, r.height), vx = st.sx - (r.left + r.width / 2), vy = st.sy - (r.top + r.height / 2), d = Math.hypot(vx, vy);
-    const k = 1 - Math.exp(-Math.max(0, d - size * 0.45) / (size * 1.7));            // resistance: the further the finger, the less each extra pixel pulls
-    st.last = { k, th: Math.atan2(vy, vx), extra: k > 0.02 ? Math.min(d * 0.02, 3) / k : 0, size };
-    paint(st.b, k, st.last.th, st.last.extra, size);
+    const k = 1 - Math.exp(-Math.max(0, d - size * 0.6) / (size * 3.2));            // resistance: the further the finger, the less each extra pixel pulls
+    st.last = { k, th: Math.atan2(vy, vx), extra: k > 0.02 ? Math.min(d * 0.02, 3) / k : 0, size, B: st.bs };
+    paint(st.b, k, st.last.th, st.last.extra, size, st.bs);
     requestAnimationFrame(loop);
   };
   const spring = (b, L) => {                                                        // back to a round button: a damped spring on k, the direction stays fixed so nothing turns
-    let k = L.k, v = 0, last = performance.now(); const me = rel = { b };
+    let k = L.k, v = 0, B = L.B, bv = 0, last = performance.now(); const me = rel = { b };
     const frame = now => {
       if (rel !== me) return;
       const dt = Math.min(0.034, Math.max(0.001, (now - last) / 1000)); last = now;
       const a = 240 * (0 - k) - 15 * v; v += a * dt; k += v * dt;
-      if (Math.abs(k) < 0.003 && Math.abs(v) < 0.05) { clear(b); rel = null; return; }
-      paint(b, k, L.th, L.extra, L.size); requestAnimationFrame(frame);
+      const ab = 240 * (1 - B) - 15 * bv; bv += ab * dt; B += bv * dt;
+      if (Math.abs(k) < 0.003 && Math.abs(v) < 0.05 && Math.abs(B - 1) < 0.002 && Math.abs(bv) < 0.05) { clear(b); rel = null; return; }
+      paint(b, k, L.th, L.extra, L.size, B); requestAnimationFrame(frame);
     };
     requestAnimationFrame(frame);
   };
@@ -564,7 +566,7 @@ void main(){
   document.addEventListener('pointerdown', e => {
     if (e.button > 0) return; const b = e.target.closest && e.target.closest(SEL); if (!b) return;
     if (rel && rel.b === b) { clear(b); rel = null; }
-    const r = b.getBoundingClientRect(); st = { b, id: e.pointerId, x0: e.clientX, y0: e.clientY, rect: r, on: false, sx: r.left + r.width / 2, sy: r.top + r.height / 2, tx: e.clientX, ty: e.clientY };
+    const r = b.getBoundingClientRect(); st = { b, id: e.pointerId, x0: e.clientX, y0: e.clientY, rect: r, on: false, sx: r.left + r.width / 2, sy: r.top + r.height / 2, tx: e.clientX, ty: e.clientY, bs: 1 };
   }, true);
   document.addEventListener('pointermove', e => {
     if (!st || e.pointerId !== st.id) return;
