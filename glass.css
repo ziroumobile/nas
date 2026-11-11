@@ -1131,3 +1131,8 @@ html:not(.android):not([data-theme="light"]) body #dock::before{background:rgba(
 
 /* dock: blur 2px */
 html:not(.android):not([data-theme="light"]) body #dock::before{-webkit-backdrop-filter:blur(2px) saturate(175%)!important;backdrop-filter:blur(2px) saturate(175%)!important}
+
+/* Android dock = the same as iPhone (tint 10%, blur 2px, same rim, capsule and held colour) */
+html:not([data-theme="light"]).android body #dock::before{background:rgba(140,140,146,.10)!important;-webkit-backdrop-filter:blur(2px) saturate(175%)!important;backdrop-filter:blur(2px) saturate(175%)!important;box-shadow:inset 0 .5px 0 rgba(255,255,255,.22),inset 0 -.5px 0 rgba(255,255,255,.08),0 6px 16px rgba(0,0,0,.35)!important}
+html:not([data-theme="light"]).android body #dock.pressing::before{background:rgba(170,170,176,.28)!important}
+html:not([data-theme="light"]).android body #dock .seg-pill{background:rgba(0,0,0,.55)!important;box-shadow:inset 0 .5px 0 rgba(255,255,255,.06)!important}
