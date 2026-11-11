@@ -519,35 +519,45 @@ void main(){
   }, true);
 })();
 
-// round glass buttons: press and drag away from the button and it stretches toward the finger (a blob pulled along, the icon stays upright);
-// let go and it springs back. A press that stays on the button keeps the normal press animation, and a drag never counts as a tap.
+// round glass buttons: press and drag away from the button and it is pulled toward the finger like a drop of jelly: HEAVY (the button gives only a fraction of how far
+// the finger goes, and lags a little behind it), and egg-shaped: the end toward the finger is the narrower, pointier one, the end it came from stays round and wide.
+// Let go and it springs back. A press that stays on the button keeps the normal press animation, and a drag never counts as a tap.
 (() => {
   const SEL = '#pgback,#setclose,#upback,#spback,#stback,#appback,#vback,#app>header button.hb,#modal.fullpage button#vreorder,.seltop button,.selbot button,button#upfab,#viewer .vc';
   let st = null;
-  const apply = (b, e) => {
-    const r = st.rect, cx = r.left + r.width / 2, cy = r.top + r.height / 2, size = Math.min(r.width, r.height);
-    const vx = e.clientX - cx, vy = e.clientY - cy, d = Math.hypot(vx, vy), th = Math.atan2(vy, vx);
-    const k = 1 - Math.exp(-Math.max(0, d - size * 0.35) / (size * 1.0));                 // 0 on the button, towards 1 the further the finger goes
-    const sx = 1 + 0.9 * k, sy = 1 - 0.16 * k, shift = (sx - 1) * size / 2 + Math.min(d * 0.05, 8), c = Math.cos(th), s = Math.sin(th), deg = th * 180 / Math.PI;
+  const paint = b => {
+    const r = st.rect, size = Math.min(r.width, r.height), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const vx = st.sx - cx, vy = st.sy - cy, d = Math.hypot(vx, vy), th = Math.atan2(vy, vx);
+    const k = 1 - Math.exp(-Math.max(0, d - size * 0.45) / (size * 1.7));            // resistance: the further the finger, the less each extra pixel pulls
+    const sx = 1 + 0.6 * k, sy = 1 - 0.12 * k, shift = (sx - 1) * size / 2 + Math.min(d * 0.03, 5), c = Math.cos(th), s = Math.sin(th);
+    const phi = th * 180 / Math.PI - 90;                                              // the button is turned so the finger is straight 'down' in its own frame
+    const top = 50 + 11 * k, bot = 50 - 11 * k;                                       // egg: round, wide top; narrower, pointier bottom (toward the finger)
     b.style.setProperty('transition', 'none', 'important');
-    b.style.setProperty('transform', 'translate(' + (c * shift).toFixed(2) + 'px,' + (s * shift).toFixed(2) + 'px) rotate(' + deg.toFixed(2) + 'deg) scale(' + sx.toFixed(3) + ',' + sy.toFixed(3) + ') rotate(' + (-deg).toFixed(2) + 'deg)', 'important');
-    for (const ch of b.children) { ch.style.setProperty('transition', 'none', 'important'); ch.style.transform = 'rotate(' + deg.toFixed(2) + 'deg) scale(' + (1 / sx).toFixed(3) + ',' + (1 / sy).toFixed(3) + ') rotate(' + (-deg).toFixed(2) + 'deg)'; }
+    b.style.setProperty('transform', 'translate(' + (c * shift).toFixed(2) + 'px,' + (s * shift).toFixed(2) + 'px) rotate(' + phi.toFixed(2) + 'deg) scale(' + sy.toFixed(3) + ',' + sx.toFixed(3) + ')', 'important');
+    b.style.setProperty('border-radius', '50% 50% 50% 50% / ' + top.toFixed(1) + '% ' + top.toFixed(1) + '% ' + bot.toFixed(1) + '% ' + bot.toFixed(1) + '%', 'important');
+    for (const ch of b.children) { ch.style.setProperty('transition', 'none', 'important'); ch.style.transform = 'scale(' + (1 / sy).toFixed(3) + ',' + (1 / sx).toFixed(3) + ') rotate(' + (-phi).toFixed(2) + 'deg)'; }   // the icon stays upright
+  };
+  const loop = () => {                                                              // the shape trails the finger a little (heavy)
+    if (!st || !st.on) return;
+    st.sx += (st.tx - st.sx) * 0.28; st.sy += (st.ty - st.sy) * 0.28; paint(st.b);
+    requestAnimationFrame(loop);
   };
   const release = () => {
     if (!st) return; const b = st.b, was = st.on; st = null;
     if (!was) return;
     window.__glDragUntil = Date.now() + 700;                                         // the lift after a drag is not a tap
-    b.style.removeProperty('transition'); b.style.removeProperty('transform');       // the stylesheet's springy transition brings it back
-    for (const ch of b.children) { ch.style.transition = 'transform .5s cubic-bezier(.3,1.7,.5,1)'; ch.style.transform = ''; setTimeout(() => { ch.style.transition = ''; }, 600); }
+    b.style.setProperty('transition', 'transform .55s cubic-bezier(.3,1.7,.5,1), border-radius .4s ease', 'important'); b.style.removeProperty('transform'); b.style.removeProperty('border-radius');
+    for (const ch of b.children) { ch.style.setProperty('transition', 'transform .55s cubic-bezier(.3,1.7,.5,1)', 'important'); ch.style.transform = ''; }
+    setTimeout(() => { b.style.removeProperty('transition'); for (const ch of b.children) ch.style.removeProperty('transition'); }, 700);
   };
   document.addEventListener('pointerdown', e => {
     if (e.button > 0) return; const b = e.target.closest && e.target.closest(SEL); if (!b) return;
-    st = { b, id: e.pointerId, x0: e.clientX, y0: e.clientY, rect: b.getBoundingClientRect(), on: false };
+    const r = b.getBoundingClientRect(); st = { b, id: e.pointerId, x0: e.clientX, y0: e.clientY, rect: r, on: false, sx: r.left + r.width / 2, sy: r.top + r.height / 2, tx: e.clientX, ty: e.clientY };
   }, true);
   document.addEventListener('pointermove', e => {
     if (!st || e.pointerId !== st.id) return;
-    if (!st.on) { if (Math.hypot(e.clientX - st.x0, e.clientY - st.y0) < 9) return; st.on = true; try { st.b.setPointerCapture(e.pointerId); } catch { } }
-    apply(st.b, e);
+    st.tx = e.clientX; st.ty = e.clientY;
+    if (!st.on) { if (Math.hypot(e.clientX - st.x0, e.clientY - st.y0) < 9) return; st.on = true; try { st.b.setPointerCapture(e.pointerId); } catch { } requestAnimationFrame(loop); }
   }, true);
   document.addEventListener('pointerup', release, true); document.addEventListener('pointercancel', release, true);
   document.addEventListener('click', e => { if (Date.now() < (window.__glDragUntil || 0) && e.target.closest && e.target.closest(SEL)) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
