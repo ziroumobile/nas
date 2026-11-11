@@ -461,3 +461,6 @@ html[data-theme="light"]:not(.android):not(#nx1) body #dock .seg-pill,html[data-
 
 /* light dock: a tapped button gets no dark disc of its own (only the capsule moves, as in dark mode) */
 html[data-theme="light"] body #dock button:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):is(:active,.gpress,.act),html[data-theme="light"] body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):is(:active,.gpress){background:transparent!important;box-shadow:none!important}
+
+/* light: same, the tapped tab draws no frame of its own */
+html[data-theme="light"] body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(.seg button){box-shadow:none!important;background:transparent!important;border:0!important}

@@ -1118,3 +1118,6 @@ html:not(.android):not([data-theme="light"]) body #dock .seg-pill{background:rgb
 
 /* while the capsule is driven by a keyframe animation its CSS transition must be off, or the transition's tail shows as a blink when the animation ends (the transition rule below is !important, so this one must be too) */
 html body .seg-pill.noanim{transition:none!important}
+
+/* the tab you tap gets `.on` at once, while the capsule is still on its way: that button must not draw a frame of its own (it showed as an empty ellipse outline before the capsule arrived) */
+html body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(.seg button){box-shadow:none!important;background:transparent!important;border:0!important}
