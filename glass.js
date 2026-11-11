@@ -422,7 +422,7 @@ void main(){
     const end = e => {
       const d = s.drag; if (!d || (e && e.pointerId !== d.id)) return;
       clearTimeout(s.pressT); s.drag = null; if (!s.lens) bounce(s, false);
-      if (!d.started) { if (e && e.type === 'pointerup') { const rect = seg.getBoundingClientRect(), k = nearest(e.clientX - rect.left - seg.clientLeft); if (k === selected(s)) pulsePill(s); } return; }   // a plain tap: the button's own click does the work
+      if (!d.started) { if (e && e.type === 'pointerup') { const rect = seg.getBoundingClientRect(), k = nearest(e.clientX - rect.left - seg.clientLeft); if (k === selected(s)) pulsePill(s); else if (!(e.target.closest && e.target.closest('button'))) { const sc = s.suppressClick; s.suppressClick = false; s.btns[k].click(); s.suppressClick = sc; } } return; }   // a plain tap: the button's own click does the work
       const rect = seg.getBoundingClientRect();
       const k = e && e.type === 'pointerup' ? nearest(e.clientX - rect.left - seg.clientLeft) : (s.hot >= 0 ? s.hot : selected(s));   // a cancelled touch (iOS does this) still counts as a tap on the option under the lens
       const wait = s.gl && s.lens ? Math.max(0, 260 - (Date.now() - d.t0)) : 0;   // a quick tap still shows the lens swelling before it lands
@@ -526,13 +526,13 @@ void main(){
   const SEL = '#pgback,#setclose,#upback,#spback,#stback,#appback,#vback,#app>header button.hb,#modal.fullpage button#vreorder,.seltop button,.selbot button,button#upfab,#viewer .vc';
   let st = null, rel = null;
   const paint = (b, k, th, extra, size) => {                                        // k: 0 = round button, 1 = fully pulled
-    const sx = 1 + 0.6 * k, sy = 1 - 0.12 * k, shift = (sx - 1) * size / 2 + extra * k, c = Math.cos(th), s = Math.sin(th);
+    const sx = 1 + 0.32 * k, sy = 1 - 0.06 * k, shift = (sx - 1) * size / 2 + extra * k, c = Math.cos(th), s = Math.sin(th), tx = c * shift, ty = s * shift;
     const phi = th * 180 / Math.PI - 90;                                              // the button is turned so the finger is straight 'down' in its own frame
-    const top = 50 * sy / sx, bot = 50 + (100 - top - 50) * 0.9;                      // back cap: circular once stretched (so it stays round); front cap: longer and narrower (the point)
+    const top = 50 * sy / sx, bot = 50 + (100 - top - 50) * 0.35;                     // back cap: circular once stretched (so it stays round); front cap: only a little longer and narrower
     b.style.setProperty('transition', 'none', 'important');
-    b.style.setProperty('transform', 'translate(' + (c * shift).toFixed(2) + 'px,' + (s * shift).toFixed(2) + 'px) rotate(' + phi.toFixed(2) + 'deg) scale(' + sy.toFixed(3) + ',' + sx.toFixed(3) + ')', 'important');
+    b.style.setProperty('transform', 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) rotate(' + phi.toFixed(2) + 'deg) scale(' + sy.toFixed(3) + ',' + sx.toFixed(3) + ')', 'important');
     b.style.setProperty('border-radius', '50% 50% 50% 50% / ' + top.toFixed(1) + '% ' + top.toFixed(1) + '% ' + bot.toFixed(1) + '% ' + bot.toFixed(1) + '%', 'important');
-    for (const ch of b.children) { ch.style.setProperty('transition', 'none', 'important'); ch.style.transform = 'scale(' + (1 / sy).toFixed(3) + ',' + (1 / sx).toFixed(3) + ') rotate(' + (-phi).toFixed(2) + 'deg)'; }   // the icon stays upright
+    for (const ch of b.children) { ch.style.setProperty('transition', 'none', 'important'); ch.style.transform = 'scale(' + (1 / sy).toFixed(3) + ',' + (1 / sx).toFixed(3) + ') rotate(' + (-phi).toFixed(2) + 'deg) translate(' + (-tx * 0.75).toFixed(2) + 'px,' + (-ty * 0.75).toFixed(2) + 'px)'; }   // the icon stays upright and (almost) where it was: it only drifts a quarter of the way with the blob
   };
   const clear = b => { b.style.removeProperty('transition'); b.style.removeProperty('transform'); b.style.removeProperty('border-radius'); for (const ch of b.children) { ch.style.removeProperty('transition'); ch.style.removeProperty('transform'); } };
   const loop = () => {                                                              // the shape trails the finger a little (heavy)
@@ -540,7 +540,7 @@ void main(){
     st.sx += (st.tx - st.sx) * 0.28; st.sy += (st.ty - st.sy) * 0.28;
     const r = st.rect, size = Math.min(r.width, r.height), vx = st.sx - (r.left + r.width / 2), vy = st.sy - (r.top + r.height / 2), d = Math.hypot(vx, vy);
     const k = 1 - Math.exp(-Math.max(0, d - size * 0.45) / (size * 1.7));            // resistance: the further the finger, the less each extra pixel pulls
-    st.last = { k, th: Math.atan2(vy, vx), extra: k > 0.02 ? Math.min(d * 0.03, 5) / k : 0, size };
+    st.last = { k, th: Math.atan2(vy, vx), extra: k > 0.02 ? Math.min(d * 0.02, 3) / k : 0, size };
     paint(st.b, k, st.last.th, st.last.extra, size);
     requestAnimationFrame(loop);
   };
