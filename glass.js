@@ -531,24 +531,23 @@ void main(){
   const mark = b => { const bb = b.getBoundingClientRect(); for (const ch of b.children) { const cb = ch.getBoundingClientRect(); ch._ox = bb.left + bb.width / 2 - cb.left; ch._oy = bb.top + bb.height / 2 - cb.top; } };
   const paint = (b, k, th, extra, size, B) => {                                        // k: 0 = round button, 1 = fully pulled; B: the swell
     B = B || 1;
-    const sx = 1 + 0.2 * k, sy = 1, shift = (sx - 1) * size / 2 + extra * k, c = Math.cos(th), s = Math.sin(th), tx = c * shift, ty = s * shift;   // (no pinch: it is never narrower than the swollen button)
-    const phi = th * 180 / Math.PI - 90;                                                // turned so the finger is straight 'down' in its own frame
-    const top = 50 * sy / sx, bot = 50 + (100 - top - 50) * 0.15;                       // back cap: circular; front cap: a little longer
+    const sx = 1 + 0.2 * k, e = sx - 1, c = Math.cos(th), sn = Math.sin(th), shift = e * size / 2 + extra * k, tx = c * shift, ty = sn * shift;
+    // stretch by sx along the finger's direction as ONE symmetric matrix (no rotate() at all), and the icon gets its exact inverse: it cannot turn
+    const ma = 1 + e * c * c, mb = e * c * sn, md = 1 + e * sn * sn, det = ma * md - mb * mb;
     b.style.setProperty('transition', 'none', 'important');
-    b.style.setProperty('transform', 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) rotate(' + phi.toFixed(2) + 'deg) scale(' + (sy * B).toFixed(3) + ',' + (sx * B).toFixed(3) + ')', 'important');
-    b.style.setProperty('border-radius', '50% 50% 50% 50% / ' + top.toFixed(1) + '% ' + top.toFixed(1) + '% ' + bot.toFixed(1) + '% ' + bot.toFixed(1) + '%', 'important');
-    for (const ch of b.children) { ch.style.setProperty('transition', 'none', 'important'); ch.style.transform = 'scale(' + (1 / sy).toFixed(3) + ',' + (1 / sx).toFixed(3) + ') rotate(' + (-phi).toFixed(2) + 'deg) translate(' + (-tx * 0.75).toFixed(2) + 'px,' + (-ty * 0.75).toFixed(2) + 'px)'; }
+    b.style.setProperty('transform', 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) matrix(' + [ma, mb, mb, md, 0, 0].map(v => v.toFixed(4)).join(',') + ') scale(' + B.toFixed(3) + ')', 'important');
+    for (const ch of b.children) { ch.style.setProperty('transition', 'none', 'important'); ch.style.transform = 'matrix(' + [md / det, -mb / det, -mb / det, ma / det, 0, 0].map(v => v.toFixed(4)).join(',') + ') translate(' + (-tx * 0.75).toFixed(2) + 'px,' + (-ty * 0.75).toFixed(2) + 'px)'; }
   };
-  const clear = b => { b.style.removeProperty('transition'); b.style.removeProperty('transform'); b.style.removeProperty('border-radius'); for (const ch of b.children) { ch.style.removeProperty('transition'); ch.style.removeProperty('transform'); ch.style.removeProperty('transform-origin'); ch.style.removeProperty('transform-box'); } };
+  const clear = b => { b.style.removeProperty('transition'); b.style.removeProperty('transform'); for (const ch of b.children) { ch.style.removeProperty('transition'); ch.style.removeProperty('transform'); ch.style.removeProperty('transform-origin'); ch.style.removeProperty('transform-box'); } };
   // ---- the neck between two buttons ----
-  const bridge = (b, n) => { let el = st.bridge; if (!el) { el = st.bridge = document.createElement('div'); el.className = 'glbond'; el.style.cssText = 'position:fixed;pointer-events:none;margin:0;padding:0;border:0;z-index:0'; b.parentElement.insertBefore(el, b.parentElement.firstChild); const cs = getComputedStyle(b); el.style.background = cs.backgroundColor; el.style.webkitBackdropFilter = el.style.backdropFilter = cs.backdropFilter === 'none' ? '' : cs.backdropFilter; el.style.boxShadow = 'none'; } return el; };
-  const drawBridge = (b, ax, ay, ar, bx, by, br, bond) => {                           // from centre A to centre B; wide at both ends, thin in the middle, thinner the less they are bonded
+  const bridge = (b, n) => { let el = st.bridge; if (!el) { el = st.bridge = document.createElement('div'); el.className = 'glbond'; el.style.cssText = 'position:fixed;pointer-events:none;margin:0;padding:0;border:0;z-index:0'; b.parentElement.insertBefore(el, b.parentElement.firstChild); const cs = getComputedStyle(b); el.style.webkitBackdropFilter = el.style.backdropFilter = cs.backdropFilter === 'none' ? '' : cs.backdropFilter; el.style.boxShadow = 'none'; } return el; };
+  const drawBridge = (b, ax, ay, ar, bx, by, br, bond, colA, colB) => {                           // from centre A to centre B; wide at both ends, thin in the middle, thinner the less they are bonded
     const el = bridge(b); if (bond <= 0.01) { el.style.display = 'none'; return; } el.style.display = '';
     const L = Math.hypot(bx - ax, by - ay), th = Math.atan2(by - ay, bx - ax), hEnd = Math.min(ar, br) * 0.92, hMid = hEnd * (0.12 + 0.5 * bond), N = 14, pts = [];
     const H = hEnd * 2; el.style.width = L + 'px'; el.style.height = H + 'px'; el.style.left = (ax + bx) / 2 - L / 2 + 'px'; el.style.top = (ay + by) / 2 - H / 2 + 'px'; el.style.transform = 'rotate(' + th + 'rad)';
     for (let j = 0; j <= N; j++) { const u = j / N, w = Math.pow(Math.abs(2 * u - 1), 2), h = hMid + (hEnd - hMid) * w; pts.push((u * 100).toFixed(1) + '% ' + (50 - h / H * 100).toFixed(1) + '%'); }
     for (let j = N; j >= 0; j--) { const u = j / N, w = Math.pow(Math.abs(2 * u - 1), 2), h = hMid + (hEnd - hMid) * w; pts.push((u * 100).toFixed(1) + '% ' + (50 + h / H * 100).toFixed(1) + '%'); }
-    el.style.clipPath = 'polygon(' + pts.join(',') + ')'; el.style.webkitClipPath = el.style.clipPath;
+    el.style.background = 'linear-gradient(90deg,' + colA + ' 0%,' + colA + ' 30%,' + colB + ' 70%,' + colB + ' 100%)'; el.style.clipPath = 'polygon(' + pts.join(',') + ')'; el.style.webkitClipPath = el.style.clipPath;
   };
   const neighbour = (b, cx, cy, th) => {                                                // the closest other round button in the direction of the finger
     let best = null, bd = 1e9;
@@ -574,14 +573,11 @@ void main(){
       const sx2 = 1 + 0.2 * k, shift = (sx2 - 1) * size / 2 + extra * k, ax = cx + Math.cos(th) * shift, ay = cy + Math.sin(th) * shift;     // where the dragged button is now (centre)
       const ar = size / 2 * st.bs, ang = Math.atan2(nb.oy - ay, nb.ox - ax), br = Math.abs(Math.cos(ang)) * nb.r.width / 2 + Math.abs(Math.sin(ang)) * nb.r.height / 2;
       const gap = Math.hypot(nb.ox - ax, nb.oy - ay) - (ar + (sx2 - 1) * size / 2 * st.bs) - br, bond = Math.max(0, Math.min(1, 1 - gap / 46));
-      st.bond += (bond - st.bond) * 0.25; drawBridge(st.b, ax, ay, ar, nb.ox, nb.oy, Math.min(nb.r.width, nb.r.height) / 2, st.bond);
-      if (st.nb && st.nb.o !== nb.o) { springBack(st.nb.o, st.nb.last); st.nb = null; }
-      if (!st.nb) { st.nb = { o: nb.o, last: null }; mark(nb.o); org(nb.o); const prev = rel.get(nb.o); if (prev) { rel.delete(nb.o); } }
-      const k2 = 0.55 * st.bond, th2 = Math.atan2(ay - nb.oy, ax - nb.ox);                                                              // the other button leans toward the dragged one
-      st.nb.last = { k: k2, th: th2, extra: 0, size: Math.min(nb.r.width, nb.r.height), B: 1 + (SWELL - 1) * 0.5 * st.bond }; paint(nb.o, k2, th2, 0, st.nb.last.size, st.nb.last.B);
+      st.bond += (bond - st.bond) * 0.25; drawBridge(st.b, ax, ay, ar, nb.ox, nb.oy, Math.min(nb.r.width, nb.r.height) / 2, st.bond, getComputedStyle(st.b).backgroundColor, st.nbColor);
+      if (st.nb && st.nb.o !== nb.o) st.nb = null;
+      if (!st.nb) st.nb = { o: nb.o, last: null }; st.nbColor = getComputedStyle(nb.o).backgroundColor;
     } else {
-      if (st.bridge) st.bridge.style.display = 'none'; st.bond *= 0.7;
-      if (st.nb) { springBack(st.nb.o, st.nb.last); st.nb = null; }
+      if (st.bridge) st.bridge.style.display = 'none'; st.bond *= 0.7; st.nb = null;
     }
     requestAnimationFrame(loop);
   };
@@ -602,7 +598,6 @@ void main(){
     if (!S.on) return;
     window.__glDragUntil = Date.now() + 700;                                           // the lift after a drag is not a tap
     if (S.bridge) { const el = S.bridge; el.style.transition = 'opacity .25s'; el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }
-    if (S.nb) springBack(S.nb.o, S.nb.last);
     springBack(S.b, S.last);
   };
   document.addEventListener('pointerdown', e => {
