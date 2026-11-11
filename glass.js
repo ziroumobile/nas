@@ -520,38 +520,50 @@ void main(){
 })();
 
 // round glass buttons: press and drag away from the button and it is pulled toward the finger like a drop of jelly: HEAVY (the button gives only a fraction of how far
-// the finger goes, and lags a little behind it), and egg-shaped: the end toward the finger is the narrower, pointier one, the end it came from stays round and wide.
-// Let go and it springs back. A press that stays on the button keeps the normal press animation, and a drag never counts as a tap.
+// the finger goes, and lags a little behind it), and egg-shaped: the end toward the finger is the narrower, pointier one, the end it came from stays a plain round cap.
+// Let go and it springs back (computed frame by frame, so the icon never turns). A press that stays on the button keeps the normal press animation, and a drag never counts as a tap.
 (() => {
   const SEL = '#pgback,#setclose,#upback,#spback,#stback,#appback,#vback,#app>header button.hb,#modal.fullpage button#vreorder,.seltop button,.selbot button,button#upfab,#viewer .vc';
-  let st = null;
-  const paint = b => {
-    const r = st.rect, size = Math.min(r.width, r.height), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-    const vx = st.sx - cx, vy = st.sy - cy, d = Math.hypot(vx, vy), th = Math.atan2(vy, vx);
-    const k = 1 - Math.exp(-Math.max(0, d - size * 0.45) / (size * 1.7));            // resistance: the further the finger, the less each extra pixel pulls
-    const sx = 1 + 0.6 * k, sy = 1 - 0.12 * k, shift = (sx - 1) * size / 2 + Math.min(d * 0.03, 5), c = Math.cos(th), s = Math.sin(th);
+  let st = null, rel = null;
+  const paint = (b, k, th, extra, size) => {                                        // k: 0 = round button, 1 = fully pulled
+    const sx = 1 + 0.6 * k, sy = 1 - 0.12 * k, shift = (sx - 1) * size / 2 + extra * k, c = Math.cos(th), s = Math.sin(th);
     const phi = th * 180 / Math.PI - 90;                                              // the button is turned so the finger is straight 'down' in its own frame
-    const top = 50 + 11 * k, bot = 50 - 11 * k;                                       // egg: round, wide top; narrower, pointier bottom (toward the finger)
+    const top = 50 * sy / sx, bot = 50 + (100 - top - 50) * 0.9;                      // back cap: circular once stretched (so it stays round); front cap: longer and narrower (the point)
     b.style.setProperty('transition', 'none', 'important');
     b.style.setProperty('transform', 'translate(' + (c * shift).toFixed(2) + 'px,' + (s * shift).toFixed(2) + 'px) rotate(' + phi.toFixed(2) + 'deg) scale(' + sy.toFixed(3) + ',' + sx.toFixed(3) + ')', 'important');
     b.style.setProperty('border-radius', '50% 50% 50% 50% / ' + top.toFixed(1) + '% ' + top.toFixed(1) + '% ' + bot.toFixed(1) + '% ' + bot.toFixed(1) + '%', 'important');
     for (const ch of b.children) { ch.style.setProperty('transition', 'none', 'important'); ch.style.transform = 'scale(' + (1 / sy).toFixed(3) + ',' + (1 / sx).toFixed(3) + ') rotate(' + (-phi).toFixed(2) + 'deg)'; }   // the icon stays upright
   };
+  const clear = b => { b.style.removeProperty('transition'); b.style.removeProperty('transform'); b.style.removeProperty('border-radius'); for (const ch of b.children) { ch.style.removeProperty('transition'); ch.style.removeProperty('transform'); } };
   const loop = () => {                                                              // the shape trails the finger a little (heavy)
     if (!st || !st.on) return;
-    st.sx += (st.tx - st.sx) * 0.28; st.sy += (st.ty - st.sy) * 0.28; paint(st.b);
+    st.sx += (st.tx - st.sx) * 0.28; st.sy += (st.ty - st.sy) * 0.28;
+    const r = st.rect, size = Math.min(r.width, r.height), vx = st.sx - (r.left + r.width / 2), vy = st.sy - (r.top + r.height / 2), d = Math.hypot(vx, vy);
+    const k = 1 - Math.exp(-Math.max(0, d - size * 0.45) / (size * 1.7));            // resistance: the further the finger, the less each extra pixel pulls
+    st.last = { k, th: Math.atan2(vy, vx), extra: k > 0.02 ? Math.min(d * 0.03, 5) / k : 0, size };
+    paint(st.b, k, st.last.th, st.last.extra, size);
     requestAnimationFrame(loop);
   };
+  const spring = (b, L) => {                                                        // back to a round button: a damped spring on k, the direction stays fixed so nothing turns
+    let k = L.k, v = 0, last = performance.now(); const me = rel = { b };
+    const frame = now => {
+      if (rel !== me) return;
+      const dt = Math.min(0.034, Math.max(0.001, (now - last) / 1000)); last = now;
+      const a = 240 * (0 - k) - 15 * v; v += a * dt; k += v * dt;
+      if (Math.abs(k) < 0.003 && Math.abs(v) < 0.05) { clear(b); rel = null; return; }
+      paint(b, k, L.th, L.extra, L.size); requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  };
   const release = () => {
-    if (!st) return; const b = st.b, was = st.on; st = null;
+    if (!st) return; const b = st.b, was = st.on, L = st.last; st = null;
     if (!was) return;
     window.__glDragUntil = Date.now() + 700;                                         // the lift after a drag is not a tap
-    b.style.setProperty('transition', 'transform .55s cubic-bezier(.3,1.7,.5,1), border-radius .4s ease', 'important'); b.style.removeProperty('transform'); b.style.removeProperty('border-radius');
-    for (const ch of b.children) { ch.style.setProperty('transition', 'transform .55s cubic-bezier(.3,1.7,.5,1)', 'important'); ch.style.transform = ''; }
-    setTimeout(() => { b.style.removeProperty('transition'); for (const ch of b.children) ch.style.removeProperty('transition'); }, 700);
+    if (L) spring(b, L); else clear(b);
   };
   document.addEventListener('pointerdown', e => {
     if (e.button > 0) return; const b = e.target.closest && e.target.closest(SEL); if (!b) return;
+    if (rel && rel.b === b) { clear(b); rel = null; }
     const r = b.getBoundingClientRect(); st = { b, id: e.pointerId, x0: e.clientX, y0: e.clientY, rect: r, on: false, sx: r.left + r.width / 2, sy: r.top + r.height / 2, tx: e.clientX, ty: e.clientY };
   }, true);
   document.addEventListener('pointermove', e => {
