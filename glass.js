@@ -198,14 +198,14 @@ void main(){
   }
 
   // draw the lens for the current state (cx = centre x, w = width, grow = extra size while held, mag, lift = strength 0..1)
-  function draw(s) {
-    const g = s.gl, L = s.lens; if (!g || !L) return;
-    const r = geom(s)[selected(s)], hg = Math.max(0, L.grow), H = r.h + hg, t = r.t - hg / 2, segW = s.seg.clientWidth, segH = s.seg.clientHeight;   // the lens height follows the spring too: it swells (and wobbles) instead of appearing at full size
+  function draw(s, LL) {
+    const g = s.gl, L = LL || s.lens; if (!g || !L) return;
+    const r = geom(s)[selected(s)], hg = Math.max(0, L.grow), H = L.rh != null ? L.rh : r.h + hg, t = L.rh != null ? L.rcy - L.rh / 2 : r.t - hg / 2, segW = s.seg.clientWidth, segH = s.seg.clientHeight;   // the lens height follows the spring too: it swells (and wobbles) instead of appearing at full size
     const tmax = r.t - gr(s) * 0.8, Hmax = r.h + gr(s) * 1.6;
     const ox = -SPAD, oy = Math.min(tmax, 0) - SPAD, cssW = Math.ceil(segW + 2 * SPAD), cssH = Math.ceil(Math.max(tmax + Hmax, segH) - Math.min(tmax, 0) + 2 * SPAD);   // fixed canvas over the whole bar
     const cv = s.canvas;
     if (cv.width !== Math.round(cssW * DPR) || cv.height !== Math.round(cssH * DPR)) { cv.width = Math.round(cssW * DPR); cv.height = Math.round(cssH * DPR); cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px'; }
-    const st = Math.max(0, L.st || 0), lw = s.dock ? L.w + L.grow + st : Math.min(L.w + L.grow, Math.max(H * 1.45, (s.labW || 0) * MAG + 2 * BEZEL * Math.min(1, H / 80) + 6)) + st;
+    const st = Math.max(0, L.st || 0), lw = L.rw != null ? L.rw : s.dock ? L.w + L.grow + st : Math.min(L.w + L.grow, Math.max(H * 1.45, (s.labW || 0) * MAG + 2 * BEZEL * Math.min(1, H / 80) + 6)) + st;
     cv.style.transform = `translate(${ox}px,${oy}px)`;
     const { gl, u } = g;
     gl.viewport(0, 0, cv.width, cv.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
@@ -218,7 +218,7 @@ void main(){
     gl.uniform1f(u.u_dark, 1); gl.uniform1f(u.u_clear, 1); gl.uniform1f(u.u_sh, document.documentElement.getAttribute('data-theme') === 'light' ? 0.09 : 0.30);   // the lens's drop shadow is much fainter on a light page
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, g.tex); gl.uniform1i(u.u_tex, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    dent(s, L, segW, segH);
+    if (!LL) dent(s, L, segW, segH);
   }
   // the bar's glass is pushed in a little at the top and bottom where the lens sits on it (a notch cut out of its ::before layer; the shadow around it stays)
   function dent(s, L, W, Hs) {
@@ -259,7 +259,24 @@ void main(){
     const an = p.animate(kf, { duration: ms, easing: 'linear' }); p._anim = an; p._fn = fn; p._ms = ms; p._t0 = performance.now();
     const clear = () => { if (p._anim === an) { p._anim = null; p._fn = null; p.classList.remove('noanim'); } };
     an.onfinish = clear; an.oncancel = () => { if (p._anim === an) { p._anim = null; p._fn = null; } };
+    glassOnCapsule(s, an, fn, ms);
   };
+  function glassOnCapsule(s, an, fn, ms) {                           // the long-press lens's colouring (labels bent and split into colour, glass edge), drawn over the moving capsule
+    if (!s.gl || !s.dock || s.active) return;
+    const p = s.pill, t0 = p._t0; s._glassRun = an;
+    try { makeTexture(s); } catch { return; }
+    s.canvas.classList.add('on'); s.seg.classList.add('lensing');
+    const done = () => { if (s._glassRun !== an) return; s._glassRun = null; if (s.active) return; s.canvas.classList.remove('on'); s.seg.classList.remove('lensing'); try { const g = s.gl.gl; g.clearColor(0, 0, 0, 0); g.clear(g.COLOR_BUFFER_BIT); } catch { } };
+    const frame = now => {
+      if (s._glassRun !== an) return;
+      if (s.active) { s._glassRun = null; return; }                  // a long press took over: the real lens is in charge now
+      const u = (now - t0) / ms; if (u >= 1 || p._anim !== an) return done();
+      const v = fn(u), lift = Math.pow(Math.sin(Math.PI * u), 0.8);   // 0 at both ends (the resting capsule is plain), strongest half way
+      try { draw(s, { cx: v.cx, w: v.w, grow: gr(s) * 0.7 * lift, mag: 1 + 0.12 * lift, rw: v.w, rh: v.h, rcy: v.cy }); } catch { return done(); }
+      raf(frame);
+    };
+    raf(frame);
+  }
   function placePill(s, i, animate) {
     const r = geom(s)[i]; if (!r || !r.w) return;
     const p = s.pill, prev = s._pp;
@@ -425,12 +442,13 @@ void main(){
       if (!s.lens) placePill(s, selected(s), true);
     };
     seg.addEventListener('pointerup', end); seg.addEventListener('pointercancel', end);
-    setInterval(() => { if (!s.active && !s.drag) seg.classList.remove('lensing'); }, 400);   // safety net: a hidden icon can never stay hidden
+    setInterval(() => { if (!s.active && !s.drag && !s._glassRun) seg.classList.remove('lensing'); }, 400);   // safety net: a hidden icon can never stay hidden
     seg.addEventListener('click', e => { if (s.suppressClick) { e.stopPropagation(); e.preventDefault(); } }, true);
   }
 
   // called by the page whenever the selected option changed (a tap, or any other code)
   window.glassThemeChanged = () => switches.forEach(s => { s.tc = null; s.seg.querySelectorAll('button').forEach(b => { b._ic = null; }); if (!s.active) { placePill(s, selected(s), false); makeTexture(s); } });   // label colours come from --seg-fg: repaint
+  window.glassDebugDraw = (s, L) => { s.canvas.classList.add('on'); s.seg.classList.add('lensing'); makeTexture(s); draw(s, L); };   // (for testing only)
   window.glassBuild = x => { try { return build(x); } catch (e) {} };   // for a .seg created after the page loaded (the conversions page)
   window.glassSegSync = () => switches.forEach(s => { if (s.active) return; placePill(s, selected(s), true); makeTexture(s); });
 
