@@ -541,10 +541,12 @@ void main(){
   const clear = b => { b.style.removeProperty('transition'); b.style.removeProperty('transform'); for (const ch of b.children) { ch.style.removeProperty('transition'); ch.style.removeProperty('transform'); ch.style.removeProperty('transform-origin'); ch.style.removeProperty('transform-box'); } };
   // ---- the neck between two buttons ----
   const bridge = (b, n) => { let el = st.bridge; if (!el) { el = st.bridge = document.createElement('div'); el.className = 'glbond'; el.style.cssText = 'position:fixed;pointer-events:none;margin:0;padding:0;border:0;z-index:0'; b.parentElement.insertBefore(el, b.parentElement.firstChild); const cs = getComputedStyle(b); el.style.webkitBackdropFilter = el.style.backdropFilter = cs.backdropFilter === 'none' ? '' : cs.backdropFilter; el.style.boxShadow = 'none'; } return el; };
-  const drawBridge = (b, ax, ay, ar, bx, by, br, bond, colA, colB) => {                           // from centre A to centre B; wide at both ends, thin in the middle, thinner the less they are bonded
+  const drawBridge = (b, ax, ay, ar, bx, by, brEdge, bond, colA, colB, thick) => {  // the neck covers only the GAP between the two buttons (a few px under each, so it joins them without doubling the tint under a see-through button)
     const el = bridge(b); if (bond <= 0.01) { el.style.display = 'none'; return; } el.style.display = '';
-    const L = Math.hypot(bx - ax, by - ay), th = Math.atan2(by - ay, bx - ax), hEnd = Math.min(ar, br) * 0.92, hMid = hEnd * (0.12 + 0.5 * bond), N = 14, pts = [];
-    const H = hEnd * 2; el.style.width = L + 'px'; el.style.height = H + 'px'; el.style.left = (ax + bx) / 2 - L / 2 + 'px'; el.style.top = (ay + by) / 2 - H / 2 + 'px'; el.style.transform = 'rotate(' + th + 'rad)';
+    const dx = bx - ax, dy = by - ay, D = Math.hypot(dx, dy) || 1, ux = dx / D, uy = dy / D, th = Math.atan2(dy, dx);
+    const x0 = ax + ux * (ar - 8), y0 = ay + uy * (ar - 8), x1 = bx - ux * (brEdge - 8), y1 = by - uy * (brEdge - 8), L = Math.max(10, Math.hypot(x1 - x0, y1 - y0));
+    const hEnd = thick * 0.5, hMid = hEnd * (0.45 + 0.5 * bond), N = 14, pts = [], H = hEnd * 2, mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
+    el.style.width = L + 'px'; el.style.height = H + 'px'; el.style.left = mx - L / 2 + 'px'; el.style.top = my - H / 2 + 'px'; el.style.transform = 'rotate(' + th + 'rad)';
     for (let j = 0; j <= N; j++) { const u = j / N, w = Math.pow(Math.abs(2 * u - 1), 2), h = hMid + (hEnd - hMid) * w; pts.push((u * 100).toFixed(1) + '% ' + (50 - h / H * 100).toFixed(1) + '%'); }
     for (let j = N; j >= 0; j--) { const u = j / N, w = Math.pow(Math.abs(2 * u - 1), 2), h = hMid + (hEnd - hMid) * w; pts.push((u * 100).toFixed(1) + '% ' + (50 + h / H * 100).toFixed(1) + '%'); }
     el.style.background = 'linear-gradient(90deg,' + colA + ' 0%,' + colA + ' 30%,' + colB + ' 70%,' + colB + ' 100%)'; el.style.clipPath = 'polygon(' + pts.join(',') + ')'; el.style.webkitClipPath = el.style.clipPath;
@@ -573,7 +575,7 @@ void main(){
       const sx2 = 1 + 0.2 * k, shift = (sx2 - 1) * size / 2 + extra * k, ax = cx + Math.cos(th) * shift, ay = cy + Math.sin(th) * shift;     // where the dragged button is now (centre)
       const ar = size / 2 * st.bs, ang = Math.atan2(nb.oy - ay, nb.ox - ax), br = Math.abs(Math.cos(ang)) * nb.r.width / 2 + Math.abs(Math.sin(ang)) * nb.r.height / 2;
       const gap = Math.hypot(nb.ox - ax, nb.oy - ay) - (ar + (sx2 - 1) * size / 2 * st.bs) - br, bond = Math.max(0, Math.min(1, 1 - gap / 46));
-      st.bond += (bond - st.bond) * 0.25; drawBridge(st.b, ax, ay, ar, nb.ox, nb.oy, Math.min(nb.r.width, nb.r.height) / 2, st.bond, getComputedStyle(st.b).backgroundColor, st.nbColor);
+      st.bond += (bond - st.bond) * 0.25; drawBridge(st.b, ax, ay, ar + (sx2 - 1) * size / 2 * st.bs, nb.ox, nb.oy, br, st.bond, getComputedStyle(st.b).backgroundColor, st.nbColor, Math.min(size, Math.min(nb.r.width, nb.r.height)) * 0.78);
       if (st.nb && st.nb.o !== nb.o) st.nb = null;
       if (!st.nb) st.nb = { o: nb.o, last: null }; st.nbColor = getComputedStyle(nb.o).backgroundColor;
     } else {
