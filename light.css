@@ -483,3 +483,6 @@ html[data-theme="light"].android body #dock .seg-pill,html[data-theme="light"].a
 
 /* light: the capsule's colour treatment (a little more vivid behind it), nothing else changed */
 html[data-theme="light"]:not(#nx1):not(#nx2) body #dock .seg-pill{-webkit-backdrop-filter:blur(1px) saturate(150%)!important;backdrop-filter:blur(1px) saturate(150%)!important}
+
+/* light dock held (long press): half the white */
+html[data-theme="light"]:not(.android):not(#nx1) body #dock.pressing::before,html[data-theme="light"].android body #dock.pressing::before{background:rgba(235,235,240,.17)!important}
