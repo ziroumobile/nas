@@ -1139,3 +1139,6 @@ html:not([data-theme="light"]).android body #dock .seg-pill{background:rgba(0,0,
 
 /* the selected capsule keeps its old look; it only gets the lens's colour treatment (what is behind it comes out a little lighter and more vivid, like inside the long-press lens) */
 html:not([data-theme="light"]):not(#nx1):not(#nx2) body #dock .seg-pill{-webkit-backdrop-filter:blur(1px) saturate(160%) brightness(1.25)!important;backdrop-filter:blur(1px) saturate(160%) brightness(1.25)!important}
+
+/* the round glass buttons can be pulled by dragging (glass.js): no browser scroll / zoom may start from them */
+#pgback,#setclose,#upback,#spback,#stback,#appback,#vback,#app>header button.hb,#modal.fullpage button#vreorder,.seltop button,.selbot button,button#upfab,#viewer .vc{touch-action:none}

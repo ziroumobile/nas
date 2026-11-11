@@ -518,3 +518,37 @@ void main(){
     setTimeout(() => { b.classList.remove('gpress'); b.__go = true; try { b.click(); } finally { b.__go = false; } }, 100);
   }, true);
 })();
+
+// round glass buttons: press and drag away from the button and it stretches toward the finger (a blob pulled along, the icon stays upright);
+// let go and it springs back. A press that stays on the button keeps the normal press animation, and a drag never counts as a tap.
+(() => {
+  const SEL = '#pgback,#setclose,#upback,#spback,#stback,#appback,#vback,#app>header button.hb,#modal.fullpage button#vreorder,.seltop button,.selbot button,button#upfab,#viewer .vc';
+  let st = null;
+  const apply = (b, e) => {
+    const r = st.rect, cx = r.left + r.width / 2, cy = r.top + r.height / 2, size = Math.min(r.width, r.height);
+    const vx = e.clientX - cx, vy = e.clientY - cy, d = Math.hypot(vx, vy), th = Math.atan2(vy, vx);
+    const k = 1 - Math.exp(-Math.max(0, d - size * 0.35) / (size * 1.0));                 // 0 on the button, towards 1 the further the finger goes
+    const sx = 1 + 0.9 * k, sy = 1 - 0.16 * k, shift = (sx - 1) * size / 2 + Math.min(d * 0.05, 8), c = Math.cos(th), s = Math.sin(th), deg = th * 180 / Math.PI;
+    b.style.setProperty('transition', 'none', 'important');
+    b.style.setProperty('transform', 'translate(' + (c * shift).toFixed(2) + 'px,' + (s * shift).toFixed(2) + 'px) rotate(' + deg.toFixed(2) + 'deg) scale(' + sx.toFixed(3) + ',' + sy.toFixed(3) + ') rotate(' + (-deg).toFixed(2) + 'deg)', 'important');
+    for (const ch of b.children) { ch.style.setProperty('transition', 'none', 'important'); ch.style.transform = 'rotate(' + deg.toFixed(2) + 'deg) scale(' + (1 / sx).toFixed(3) + ',' + (1 / sy).toFixed(3) + ') rotate(' + (-deg).toFixed(2) + 'deg)'; }
+  };
+  const release = () => {
+    if (!st) return; const b = st.b, was = st.on; st = null;
+    if (!was) return;
+    window.__glDragUntil = Date.now() + 700;                                         // the lift after a drag is not a tap
+    b.style.removeProperty('transition'); b.style.removeProperty('transform');       // the stylesheet's springy transition brings it back
+    for (const ch of b.children) { ch.style.transition = 'transform .5s cubic-bezier(.3,1.7,.5,1)'; ch.style.transform = ''; setTimeout(() => { ch.style.transition = ''; }, 600); }
+  };
+  document.addEventListener('pointerdown', e => {
+    if (e.button > 0) return; const b = e.target.closest && e.target.closest(SEL); if (!b) return;
+    st = { b, id: e.pointerId, x0: e.clientX, y0: e.clientY, rect: b.getBoundingClientRect(), on: false };
+  }, true);
+  document.addEventListener('pointermove', e => {
+    if (!st || e.pointerId !== st.id) return;
+    if (!st.on) { if (Math.hypot(e.clientX - st.x0, e.clientY - st.y0) < 9) return; st.on = true; try { st.b.setPointerCapture(e.pointerId); } catch { } }
+    apply(st.b, e);
+  }, true);
+  document.addEventListener('pointerup', release, true); document.addEventListener('pointercancel', release, true);
+  document.addEventListener('click', e => { if (Date.now() < (window.__glDragUntil || 0) && e.target.closest && e.target.closest(SEL)) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+})();
