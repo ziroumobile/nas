@@ -1148,3 +1148,6 @@ html:not([data-theme="light"]) body :is(#app>header button.hb,#appback,#modal.fu
 
 /* white icons on the header / back / + / preview round buttons (the person button's blue and the delete red stay where they carry meaning) */
 html body :is(#app>header button.hb:not(#dset),#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button#vreorder,button#upfab,#viewer .vc:not(.del)):not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6){color:#fff!important}
+
+/* the storage line on the home page ("19.55 GB / 375.54 GB 已使用") is gone; the storage page is still reachable from the settings */
+#disk{display:none!important}

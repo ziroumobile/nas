@@ -521,7 +521,7 @@ void main(){
 
 // round glass buttons: press and drag away from the button. It first swells (like the normal press), then is pulled toward the finger like a drop of jelly: HEAVY
 // (it follows only a fraction of the finger's distance, a little behind it) and only slightly egg-shaped. Near another button the two BOND: a neck grows between them
-// and the other button leans toward the dragged one. Let go and everything springs back (computed frame by frame, the icon never turns).
+// Let go and everything springs back (computed frame by frame, the icon never turns).
 // A press that stays on the button keeps the normal press animation, and a drag never counts as a tap.
 (() => {
   const SEL = '#pgback,#setclose,#upback,#spback,#stback,#appback,#vback,#app>header button.hb,#modal.fullpage button#vreorder,.seltop button,.selbot button,button#upfab,#viewer .vc';
@@ -539,30 +539,6 @@ void main(){
     for (const ch of b.children) { ch.style.setProperty('transition', 'none', 'important'); ch.style.transform = 'matrix(' + [md / det, -mb / det, -mb / det, ma / det, 0, 0].map(v => v.toFixed(4)).join(',') + ') translate(' + (-tx * 0.75).toFixed(2) + 'px,' + (-ty * 0.75).toFixed(2) + 'px)'; }
   };
   const clear = b => { b.style.removeProperty('transition'); b.style.removeProperty('transform'); for (const ch of b.children) { ch.style.removeProperty('transition'); ch.style.removeProperty('transform'); ch.style.removeProperty('transform-origin'); ch.style.removeProperty('transform-box'); } };
-  // ---- the neck between two buttons ----
-  const bridge = (b, n) => { let el = st.bridge; if (!el) { el = st.bridge = document.createElement('div'); el.className = 'glbond'; el.style.cssText = 'position:fixed;pointer-events:none;margin:0;padding:0;border:0;z-index:0'; b.parentElement.insertBefore(el, b.parentElement.firstChild); const cs = getComputedStyle(b); el.style.webkitBackdropFilter = el.style.backdropFilter = cs.backdropFilter === 'none' ? '' : cs.backdropFilter; el.style.boxShadow = 'none'; } return el; };
-  const drawBridge = (b, ax, ay, ar, bx, by, brEdge, gr, colA, colB, thick) => {   // the neck GROWS OUT OF THE NEARBY button toward the dragged one (gr: 0 -> 1), and joins both when it gets there
-    const el = bridge(b); if (gr <= 0.02) { el.style.display = 'none'; return; } el.style.display = '';
-    const dx = bx - ax, dy = by - ay, D = Math.hypot(dx, dy) || 1, ux = dx / D, uy = dy / D, th = Math.atan2(dy, dx);
-    const x0 = ax + ux * (ar - 3), y0 = ay + uy * (ar - 3), x1 = bx - ux * (brEdge - 6), y1 = by - uy * (brEdge - 6), Lfull = Math.max(12, Math.hypot(x1 - x0, y1 - y0));
-    const L = Math.max(6, Lfull * gr), cxn = x1 - ux * L / 2, cyn = y1 - uy * L / 2;               // the base stays on the neighbour, the tip reaches toward the dragged button
-    const hBase = thick * 0.42, hTip = hBase * (0.5 + 0.2 * gr), hMid = hBase * 0.6, N = 18, pts = [], H = hBase * 2.1;
-    const prof = u => { const asym = hTip + (hBase - hTip) * Math.pow(u, 2.2), sym = hMid + (hBase - hMid) * Math.pow(Math.abs(2 * u - 1), 2), h = asym + (sym - asym) * Math.max(0, (gr - 0.7) / 0.3), cap = 0.22; return u < cap ? h * Math.sqrt(Math.max(0, 1 - Math.pow((cap - u) / cap, 2))) : h; };   // (the free tip is a round cap)   // wide at the neighbour, tapering to the tip; once joined it is a neck, wide at both ends
-    el.style.width = L + 'px'; el.style.height = H + 'px'; el.style.left = cxn - L / 2 + 'px'; el.style.top = cyn - H / 2 + 'px'; el.style.transform = 'rotate(' + th + 'rad)';
-    for (let j = 0; j <= N; j++) { const u = j / N; pts.push((u * 100).toFixed(1) + '% ' + (50 - prof(u) / H * 100).toFixed(1) + '%'); }
-    for (let j = N; j >= 0; j--) { const u = j / N; pts.push((u * 100).toFixed(1) + '% ' + (50 + prof(u) / H * 100).toFixed(1) + '%'); }
-    el.style.background = colB;   // it is the NEIGHBOUR's own colour: it reads as a bulge of that button el.style.clipPath = 'polygon(' + pts.join(',') + ')'; el.style.webkitClipPath = el.style.clipPath;
-  };
-  const neighbour = (b, cx, cy, th) => {                                                // the closest other round button in the direction of the finger
-    let best = null, bd = 1e9;
-    for (const o of document.querySelectorAll(SEL)) {
-      if (o === b || !o.offsetWidth) continue; const r = o.getBoundingClientRect(); if (Math.abs(r.width - r.height) > 8 || r.width > 70) continue;
-      const ox = r.left + r.width / 2, oy = r.top + r.height / 2, d = Math.hypot(ox - cx, oy - cy); if (d > 170) continue;
-      const ang = Math.atan2(oy - cy, ox - cx); let da = Math.abs(ang - th); if (da > Math.PI) da = 2 * Math.PI - da; if (da > 1.0) continue;   // within ~57 degrees of the drag
-      if (d < bd) { bd = d; best = { o, r, ox, oy }; }
-    }
-    return best;
-  };
   const loop = () => {                                                                  // the shape trails the finger a little (heavy)
     if (!st || !st.on) return;
     st.sx += (st.tx - st.sx) * 0.16; st.sy += (st.ty - st.sy) * 0.16; st.bs += (SWELL - st.bs) * 0.22;
@@ -571,18 +547,6 @@ void main(){
     const extra = k > 0.02 ? Math.min(d * 0.02, 3) / k : 0;
     st.last = { k, th, extra, size, B: st.bs };
     paint(st.b, k, th, extra, size, st.bs);
-    // bonding with a neighbour
-    const nb = neighbour(st.b, cx, cy, th);
-    if (nb) {
-      const sx2 = 1 + 0.2 * k, shift = (sx2 - 1) * size / 2 + extra * k, ax = cx + Math.cos(th) * shift, ay = cy + Math.sin(th) * shift;     // where the dragged button is now (centre)
-      const ar = size / 2 * st.bs, ang = Math.atan2(nb.oy - ay, nb.ox - ax), br = Math.abs(Math.cos(ang)) * nb.r.width / 2 + Math.abs(Math.sin(ang)) * nb.r.height / 2;
-      const gap = Math.hypot(nb.ox - ax, nb.oy - ay) - (ar + (sx2 - 1) * size / 2 * st.bs) - br, bond = Math.max(0, Math.min(1, 1 - gap / 46));
-      st.bond += (bond - st.bond) * 0.25; st.gr += ((st.bond > 0.15 ? 1 : 0) - st.gr) * 0.14; drawBridge(st.b, ax, ay, ar + (sx2 - 1) * size / 2 * st.bs, nb.ox, nb.oy, br, st.gr, getComputedStyle(st.b).backgroundColor, st.nbColor, Math.min(size, Math.min(nb.r.width, nb.r.height)) * 0.78);
-      if (st.nb && st.nb.o !== nb.o) st.nb = null;
-      if (!st.nb) st.nb = { o: nb.o, last: null }; st.nbColor = getComputedStyle(nb.o).backgroundColor;
-    } else {
-      st.bond *= 0.7; st.gr *= 0.6; if (st.bridge) { if (st.gr < 0.02) st.bridge.style.display = 'none'; } st.nb = null;
-    }
     requestAnimationFrame(loop);
   };
   const springBack = (b, L) => {                                                        // back to a round button: a damped spring, the direction stays fixed so nothing turns
@@ -601,13 +565,12 @@ void main(){
     if (!st) return; const S = st; st = null;
     if (!S.on) return;
     window.__glDragUntil = Date.now() + 700;                                           // the lift after a drag is not a tap
-    if (S.bridge) { const el = S.bridge; el.style.transition = 'opacity .25s'; el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }
     springBack(S.b, S.last);
   };
   document.addEventListener('pointerdown', e => {
     if (e.button > 0) return; const b = e.target.closest && e.target.closest(SEL); if (!b) return;
     if (rel.has(b)) { rel.delete(b); clear(b); }
-    const r = b.getBoundingClientRect(); mark(b); st = { b, id: e.pointerId, x0: e.clientX, y0: e.clientY, rect: r, on: false, sx: r.left + r.width / 2, sy: r.top + r.height / 2, tx: e.clientX, ty: e.clientY, bs: 1, bond: 0, gr: 0, nb: null, bridge: null, last: null };
+    const r = b.getBoundingClientRect(); mark(b); st = { b, id: e.pointerId, x0: e.clientX, y0: e.clientY, rect: r, on: false, sx: r.left + r.width / 2, sy: r.top + r.height / 2, tx: e.clientX, ty: e.clientY, bs: 1, last: null };
   }, true);
   document.addEventListener('pointermove', e => {
     if (!st || e.pointerId !== st.id) return;
