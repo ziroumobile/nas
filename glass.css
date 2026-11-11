@@ -1125,3 +1125,6 @@ html body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(
 /* dock transparency re-measured from the recording: the tint is only ~22% (a light grey that lifts black to #1f1f1f) with a lighter blur, so what is under the bar shows through clearly */
 html:not(.android):not([data-theme="light"]) body #dock::before{background:rgba(140,140,146,.22)!important;-webkit-backdrop-filter:blur(10px) saturate(175%)!important;backdrop-filter:blur(10px) saturate(175%)!important}
 html:not(.android):not([data-theme="light"]) body #dock.pressing::before{background:rgba(170,170,176,.28)!important}
+
+/* dock: tint 10%, blur 5px */
+html:not(.android):not([data-theme="light"]) body #dock::before{background:rgba(140,140,146,.10)!important;-webkit-backdrop-filter:blur(5px) saturate(175%)!important;backdrop-filter:blur(5px) saturate(175%)!important}

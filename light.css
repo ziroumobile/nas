@@ -468,3 +468,6 @@ html[data-theme="light"] body #dock button.on:not(#nx1):not(#nx2):not(#nx3):not(
 /* light dock re-measured: white at ~22% (a green icon behind it is lifted by that much) and a lighter blur */
 html[data-theme="light"]:not(.android):not(#nx1) body #dock::before{background:rgba(255,255,255,.22)!important;-webkit-backdrop-filter:blur(10px) saturate(175%)!important;backdrop-filter:blur(10px) saturate(175%)!important}
 html[data-theme="light"]:not(.android):not(#nx1) body #dock.pressing::before{background:rgba(235,235,240,.34)!important}
+
+/* light dock: white 10%, blur 5px */
+html[data-theme="light"]:not(.android):not(#nx1) body #dock::before{background:rgba(255,255,255,.10)!important;-webkit-backdrop-filter:blur(5px) saturate(175%)!important;backdrop-filter:blur(5px) saturate(175%)!important}
