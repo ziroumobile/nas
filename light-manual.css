@@ -208,3 +208,6 @@ html[data-theme="light"] body :is(#app>header button.hb:not(#dset),#appback,#mod
 
 /* light theme: the glass buttons are lighter (a soft grey glass, not near-black) */
 html[data-theme="light"] body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button#vreorder,.seltop button,.selbot button,button#upfab,#viewer .vc):not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8){background:rgba(120,120,128,.26)!important}
+
+/* light theme glass buttons: a little darker */
+html[data-theme="light"] body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button#vreorder,.seltop button,.selbot button,button#upfab,#viewer .vc):not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9){background:rgba(82,82,90,.34)!important}

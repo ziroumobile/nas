@@ -544,15 +544,14 @@ void main(){
   const drawBridge = (b, ax, ay, ar, bx, by, brEdge, gr, colA, colB, thick) => {   // the neck GROWS OUT OF THE NEARBY button toward the dragged one (gr: 0 -> 1), and joins both when it gets there
     const el = bridge(b); if (gr <= 0.02) { el.style.display = 'none'; return; } el.style.display = '';
     const dx = bx - ax, dy = by - ay, D = Math.hypot(dx, dy) || 1, ux = dx / D, uy = dy / D, th = Math.atan2(dy, dx);
-    const x0 = ax + ux * (ar - 8), y0 = ay + uy * (ar - 8), x1 = bx - ux * (brEdge - 8), y1 = by - uy * (brEdge - 8), Lfull = Math.max(12, Math.hypot(x1 - x0, y1 - y0));
+    const x0 = ax + ux * (ar - 3), y0 = ay + uy * (ar - 3), x1 = bx - ux * (brEdge - 6), y1 = by - uy * (brEdge - 6), Lfull = Math.max(12, Math.hypot(x1 - x0, y1 - y0));
     const L = Math.max(6, Lfull * gr), cxn = x1 - ux * L / 2, cyn = y1 - uy * L / 2;               // the base stays on the neighbour, the tip reaches toward the dragged button
-    const hBase = thick * 0.5, hTip = hBase * (0.3 + 0.2 * gr), hMid = hBase * 0.6, N = 14, pts = [], H = hBase * 2;
-    const prof = u => { const asym = hTip + (hBase - hTip) * u * u, sym = hMid + (hBase - hMid) * Math.pow(Math.abs(2 * u - 1), 2); return asym + (sym - asym) * Math.max(0, (gr - 0.7) / 0.3); };   // wide at the neighbour, tapering to the tip; once joined it is a neck, wide at both ends
+    const hBase = thick * 0.42, hTip = hBase * (0.5 + 0.2 * gr), hMid = hBase * 0.6, N = 18, pts = [], H = hBase * 2.1;
+    const prof = u => { const asym = hTip + (hBase - hTip) * Math.pow(u, 2.2), sym = hMid + (hBase - hMid) * Math.pow(Math.abs(2 * u - 1), 2), h = asym + (sym - asym) * Math.max(0, (gr - 0.7) / 0.3), cap = 0.22; return u < cap ? h * Math.sqrt(Math.max(0, 1 - Math.pow((cap - u) / cap, 2))) : h; };   // (the free tip is a round cap)   // wide at the neighbour, tapering to the tip; once joined it is a neck, wide at both ends
     el.style.width = L + 'px'; el.style.height = H + 'px'; el.style.left = cxn - L / 2 + 'px'; el.style.top = cyn - H / 2 + 'px'; el.style.transform = 'rotate(' + th + 'rad)';
     for (let j = 0; j <= N; j++) { const u = j / N; pts.push((u * 100).toFixed(1) + '% ' + (50 - prof(u) / H * 100).toFixed(1) + '%'); }
     for (let j = N; j >= 0; j--) { const u = j / N; pts.push((u * 100).toFixed(1) + '% ' + (50 + prof(u) / H * 100).toFixed(1) + '%'); }
-    const tip = gr > 0.85 ? colA : colB;
-    el.style.background = 'linear-gradient(90deg,' + tip + ' 0%,' + tip + ' 25%,' + colB + ' 75%,' + colB + ' 100%)'; el.style.clipPath = 'polygon(' + pts.join(',') + ')'; el.style.webkitClipPath = el.style.clipPath;
+    el.style.background = colB;   // it is the NEIGHBOUR's own colour: it reads as a bulge of that button el.style.clipPath = 'polygon(' + pts.join(',') + ')'; el.style.webkitClipPath = el.style.clipPath;
   };
   const neighbour = (b, cx, cy, th) => {                                                // the closest other round button in the direction of the finger
     let best = null, bd = 1e9;
