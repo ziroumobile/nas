@@ -541,15 +541,18 @@ void main(){
   const clear = b => { b.style.removeProperty('transition'); b.style.removeProperty('transform'); for (const ch of b.children) { ch.style.removeProperty('transition'); ch.style.removeProperty('transform'); ch.style.removeProperty('transform-origin'); ch.style.removeProperty('transform-box'); } };
   // ---- the neck between two buttons ----
   const bridge = (b, n) => { let el = st.bridge; if (!el) { el = st.bridge = document.createElement('div'); el.className = 'glbond'; el.style.cssText = 'position:fixed;pointer-events:none;margin:0;padding:0;border:0;z-index:0'; b.parentElement.insertBefore(el, b.parentElement.firstChild); const cs = getComputedStyle(b); el.style.webkitBackdropFilter = el.style.backdropFilter = cs.backdropFilter === 'none' ? '' : cs.backdropFilter; el.style.boxShadow = 'none'; } return el; };
-  const drawBridge = (b, ax, ay, ar, bx, by, brEdge, bond, colA, colB, thick) => {  // the neck covers only the GAP between the two buttons (a few px under each, so it joins them without doubling the tint under a see-through button)
-    const el = bridge(b); if (bond <= 0.01) { el.style.display = 'none'; return; } el.style.display = '';
+  const drawBridge = (b, ax, ay, ar, bx, by, brEdge, gr, colA, colB, thick) => {   // the neck GROWS OUT OF THE NEARBY button toward the dragged one (gr: 0 -> 1), and joins both when it gets there
+    const el = bridge(b); if (gr <= 0.02) { el.style.display = 'none'; return; } el.style.display = '';
     const dx = bx - ax, dy = by - ay, D = Math.hypot(dx, dy) || 1, ux = dx / D, uy = dy / D, th = Math.atan2(dy, dx);
-    const x0 = ax + ux * (ar - 8), y0 = ay + uy * (ar - 8), x1 = bx - ux * (brEdge - 8), y1 = by - uy * (brEdge - 8), L = Math.max(10, Math.hypot(x1 - x0, y1 - y0));
-    const hEnd = thick * 0.5, hMid = hEnd * (0.45 + 0.5 * bond), N = 14, pts = [], H = hEnd * 2, mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
-    el.style.width = L + 'px'; el.style.height = H + 'px'; el.style.left = mx - L / 2 + 'px'; el.style.top = my - H / 2 + 'px'; el.style.transform = 'rotate(' + th + 'rad)';
-    for (let j = 0; j <= N; j++) { const u = j / N, w = Math.pow(Math.abs(2 * u - 1), 2), h = hMid + (hEnd - hMid) * w; pts.push((u * 100).toFixed(1) + '% ' + (50 - h / H * 100).toFixed(1) + '%'); }
-    for (let j = N; j >= 0; j--) { const u = j / N, w = Math.pow(Math.abs(2 * u - 1), 2), h = hMid + (hEnd - hMid) * w; pts.push((u * 100).toFixed(1) + '% ' + (50 + h / H * 100).toFixed(1) + '%'); }
-    el.style.background = 'linear-gradient(90deg,' + colA + ' 0%,' + colA + ' 30%,' + colB + ' 70%,' + colB + ' 100%)'; el.style.clipPath = 'polygon(' + pts.join(',') + ')'; el.style.webkitClipPath = el.style.clipPath;
+    const x0 = ax + ux * (ar - 8), y0 = ay + uy * (ar - 8), x1 = bx - ux * (brEdge - 8), y1 = by - uy * (brEdge - 8), Lfull = Math.max(12, Math.hypot(x1 - x0, y1 - y0));
+    const L = Math.max(6, Lfull * gr), cxn = x1 - ux * L / 2, cyn = y1 - uy * L / 2;               // the base stays on the neighbour, the tip reaches toward the dragged button
+    const hBase = thick * 0.5, hTip = hBase * (0.3 + 0.2 * gr), hMid = hBase * 0.6, N = 14, pts = [], H = hBase * 2;
+    const prof = u => { const asym = hTip + (hBase - hTip) * u * u, sym = hMid + (hBase - hMid) * Math.pow(Math.abs(2 * u - 1), 2); return asym + (sym - asym) * Math.max(0, (gr - 0.7) / 0.3); };   // wide at the neighbour, tapering to the tip; once joined it is a neck, wide at both ends
+    el.style.width = L + 'px'; el.style.height = H + 'px'; el.style.left = cxn - L / 2 + 'px'; el.style.top = cyn - H / 2 + 'px'; el.style.transform = 'rotate(' + th + 'rad)';
+    for (let j = 0; j <= N; j++) { const u = j / N; pts.push((u * 100).toFixed(1) + '% ' + (50 - prof(u) / H * 100).toFixed(1) + '%'); }
+    for (let j = N; j >= 0; j--) { const u = j / N; pts.push((u * 100).toFixed(1) + '% ' + (50 + prof(u) / H * 100).toFixed(1) + '%'); }
+    const tip = gr > 0.85 ? colA : colB;
+    el.style.background = 'linear-gradient(90deg,' + tip + ' 0%,' + tip + ' 25%,' + colB + ' 75%,' + colB + ' 100%)'; el.style.clipPath = 'polygon(' + pts.join(',') + ')'; el.style.webkitClipPath = el.style.clipPath;
   };
   const neighbour = (b, cx, cy, th) => {                                                // the closest other round button in the direction of the finger
     let best = null, bd = 1e9;
@@ -575,11 +578,11 @@ void main(){
       const sx2 = 1 + 0.2 * k, shift = (sx2 - 1) * size / 2 + extra * k, ax = cx + Math.cos(th) * shift, ay = cy + Math.sin(th) * shift;     // where the dragged button is now (centre)
       const ar = size / 2 * st.bs, ang = Math.atan2(nb.oy - ay, nb.ox - ax), br = Math.abs(Math.cos(ang)) * nb.r.width / 2 + Math.abs(Math.sin(ang)) * nb.r.height / 2;
       const gap = Math.hypot(nb.ox - ax, nb.oy - ay) - (ar + (sx2 - 1) * size / 2 * st.bs) - br, bond = Math.max(0, Math.min(1, 1 - gap / 46));
-      st.bond += (bond - st.bond) * 0.25; drawBridge(st.b, ax, ay, ar + (sx2 - 1) * size / 2 * st.bs, nb.ox, nb.oy, br, st.bond, getComputedStyle(st.b).backgroundColor, st.nbColor, Math.min(size, Math.min(nb.r.width, nb.r.height)) * 0.78);
+      st.bond += (bond - st.bond) * 0.25; st.gr += ((st.bond > 0.15 ? 1 : 0) - st.gr) * 0.14; drawBridge(st.b, ax, ay, ar + (sx2 - 1) * size / 2 * st.bs, nb.ox, nb.oy, br, st.gr, getComputedStyle(st.b).backgroundColor, st.nbColor, Math.min(size, Math.min(nb.r.width, nb.r.height)) * 0.78);
       if (st.nb && st.nb.o !== nb.o) st.nb = null;
       if (!st.nb) st.nb = { o: nb.o, last: null }; st.nbColor = getComputedStyle(nb.o).backgroundColor;
     } else {
-      if (st.bridge) st.bridge.style.display = 'none'; st.bond *= 0.7; st.nb = null;
+      st.bond *= 0.7; st.gr *= 0.6; if (st.bridge) { if (st.gr < 0.02) st.bridge.style.display = 'none'; } st.nb = null;
     }
     requestAnimationFrame(loop);
   };
@@ -605,7 +608,7 @@ void main(){
   document.addEventListener('pointerdown', e => {
     if (e.button > 0) return; const b = e.target.closest && e.target.closest(SEL); if (!b) return;
     if (rel.has(b)) { rel.delete(b); clear(b); }
-    const r = b.getBoundingClientRect(); mark(b); st = { b, id: e.pointerId, x0: e.clientX, y0: e.clientY, rect: r, on: false, sx: r.left + r.width / 2, sy: r.top + r.height / 2, tx: e.clientX, ty: e.clientY, bs: 1, bond: 0, nb: null, bridge: null, last: null };
+    const r = b.getBoundingClientRect(); mark(b); st = { b, id: e.pointerId, x0: e.clientX, y0: e.clientY, rect: r, on: false, sx: r.left + r.width / 2, sy: r.top + r.height / 2, tx: e.clientX, ty: e.clientY, bs: 1, bond: 0, gr: 0, nb: null, bridge: null, last: null };
   }, true);
   document.addEventListener('pointermove', e => {
     if (!st || e.pointerId !== st.id) return;
