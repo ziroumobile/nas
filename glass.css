@@ -1128,3 +1128,6 @@ html:not(.android):not([data-theme="light"]) body #dock.pressing::before{backgro
 
 /* dock: tint 10%, blur 5px */
 html:not(.android):not([data-theme="light"]) body #dock::before{background:rgba(140,140,146,.10)!important;-webkit-backdrop-filter:blur(5px) saturate(175%)!important;backdrop-filter:blur(5px) saturate(175%)!important}
+
+/* dock: blur 2px */
+html:not(.android):not([data-theme="light"]) body #dock::before{-webkit-backdrop-filter:blur(2px) saturate(175%)!important;backdrop-filter:blur(2px) saturate(175%)!important}

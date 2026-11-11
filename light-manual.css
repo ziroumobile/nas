@@ -186,3 +186,6 @@ html[data-theme="light"]:not(.android):not(#nx1) body #dock.pressing::before{bac
 
 /* light dock: white 10%, blur 5px */
 html[data-theme="light"]:not(.android):not(#nx1) body #dock::before{background:rgba(255,255,255,.10)!important;-webkit-backdrop-filter:blur(5px) saturate(175%)!important;backdrop-filter:blur(5px) saturate(175%)!important}
+
+/* light dock: blur 2px */
+html[data-theme="light"]:not(.android):not(#nx1) body #dock::before{-webkit-backdrop-filter:blur(2px) saturate(175%)!important;backdrop-filter:blur(2px) saturate(175%)!important}
