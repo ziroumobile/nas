@@ -57,11 +57,11 @@ void main(){
   if(u_clear>.5){   // clear glass (dock / switch): a transparent body. The colour comes from the labels themselves being bent and split into R/G/B by the curved edge (like the reference)
     // spectral dispersion: five taps, each bent a little more than the last and tinted red -> blue, so a white label smears into soft colour bands
     float mk=1.-smoothstep(.55,.80,abs(g.y));   // colour only on the sides of the lens: beyond ~45 deg towards the top / bottom there is none
-    vec4 s0=tex4(mp+refr*.85),s1=tex4(mp+refr*(1.+.05*mk)),s2=tex4(mp+refr*(1.+.25*mk)),s3=tex4(mp+refr*(1.+.45*mk)),s4=tex4(mp+refr*(1.+.65*mk));
+    vec4 s0=tex4(mp+refr*.85),s1=tex4(mp+refr*(1.+.02*mk)),s2=tex4(mp+refr*(1.+.08*mk)),s3=tex4(mp+refr*(1.+.14*mk)),s4=tex4(mp+refr*(1.+.20*mk));
     vec3 w0=vec3(1.,.1,.1),w1=vec3(.9,.8,.1),w2=vec3(.2,1.,.3),w3=vec3(.1,.8,1.),w4=vec3(.5,.2,1.);
     vec3 wsum=w0+w1+w2+w3+w4;
     vec3 body=(s0.a*w0+s1.a*w1+s2.a*w2+s3.a*w3+s4.a*w4)/wsum;   // alpha only: the labels inside the lens are always blue, whatever colour the bar's own labels have (white in dark mode, dark in light mode)
-    body=mix(body*vec3(.04,.52,1.),body*vec3(.35,.8,1.),.35*clamp(s*1.6,0.,1.))+body*vec3(.10,0.,.18)*s;   // inside the lens every label turns blue; near the bevel the colour split pulls it towards cyan / violet
+    body=mix(body*vec3(.04,.52,1.),body*vec3(.35,.8,1.),.35*clamp(s*1.6,0.,1.))+body*vec3(.04,0.,.07)*s;   // inside the lens every label turns blue; near the bevel the colour split pulls it towards cyan / violet
     float ca=max(max(s0.a,s1.a),max(max(s2.a,s3.a),s4.a));
     body*=mix(1.,ca/max(max(body.r,max(body.g,body.b)),1e-3),.6);   // the colour must be as strong as the coverage: where only some of the five taps hit a label the weighted average is weaker than ca, and a premultiplied colour below its alpha reads as a dark / black fringe
     float topbot=abs(g.y);
@@ -70,7 +70,7 @@ void main(){
     float edgeL=(1.-smoothstep(0.,1.2,-d))*(.5+.5*lightDir0)*u_lift*.06*mk;          // hairline of light
     float dep=max(-d,0.);
     vec3 rb=.5+.5*cos(6.2831*(vec3(0.,.33,.67)+dep*.08+.22*sin(p.x*.085)));
-    float tint=pow(s,2.8)*topbot*u_lift*.07*mk;                                    // a faint green/violet cast along the top and bottom, as on the reference
+    float tint=pow(s,2.8)*topbot*u_lift*.03*mk;                                    // a faint green/violet cast along the top and bottom, as on the reference
     vec3 pr=rb*tint+vec3(edgeL);
     float oa=clamp(ca+tint+edgeL+darkA*(1.-ca)+outline*(1.-ca),0.,1.);
     body=body+pr;
