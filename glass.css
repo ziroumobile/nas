@@ -1162,3 +1162,5 @@ html body #modal .mbtns button.sgl#scancel:not(#nx1):not(#nx2):not(#nx3):not(#nx
 /* iPhone / iPad: the first folder card sat partly under the fixed toolbar; start the list a little lower */
 html.ios:not(.android) .wrap{padding-top:calc(env(safe-area-inset-top) + 54px)}
 html.ios:not(.android) body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 68px)}
+/* iPhone / iPad: full pages (shared links, clipboard, ...) start a little lower so the first block is not tucked under the status bar */
+html.ios:not(.android) body #modal.fullpage #mbox:not(#nx1){padding-top:calc(env(safe-area-inset-top) + 80px)!important}
