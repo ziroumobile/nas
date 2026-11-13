@@ -70,7 +70,7 @@ void main(){
     float edgeL=(1.-smoothstep(0.,1.2,-d))*(.5+.5*lightDir0)*u_lift*.06*mk*step(.2,u_sh);   // the white hairline only on a dark page: on the light theme it showed as a white ring following the pill          // hairline of light
     float dep=max(-d,0.);
     vec3 rb=.5+.5*cos(6.2831*(vec3(0.,.33,.67)+dep*.08+.22*sin(p.x*.085)));
-    float tint=pow(s,2.8)*topbot*u_lift*.03*mk;                                    // a faint green/violet cast along the top and bottom, as on the reference
+    float tint=pow(s,2.8)*topbot*u_lift*.03*mk*step(.2,u_sh);   // light theme: no pale cast either, it read as a white halo around the moving pill                                    // a faint green/violet cast along the top and bottom, as on the reference
     vec3 pr=rb*tint+vec3(edgeL);
     float oa=clamp(ca+tint+edgeL+darkA*(1.-ca)+outline*(1.-ca),0.,1.);
     body=body+pr;
@@ -528,7 +528,7 @@ void main(){
 // A press that stays on the button keeps the normal press animation, and a drag never counts as a tap.
 (() => {
   const SEL = '#pgback,#setclose,#upback,#spback,#stback,#appback,#vback,#app>header button.hb,#modal.fullpage button#vreorder,.seltop button,.selbot button,button#upfab,#viewer .vc';
-  const SWELL = 1.14;
+  const SWELL = 1.168;
   let st = null; const rel = new Map();
   const org = b => { for (const ch of b.children) { ch.style.setProperty('transform-box', 'border-box'); ch.style.setProperty('transform-origin', ch._ox + 'px ' + ch._oy + 'px'); } };   // pivot of the icon's counter-transform = the BUTTON's centre, so it cancels the button's transform exactly
   const mark = b => { const bb = b.getBoundingClientRect(); for (const ch of b.children) { const cb = ch.getBoundingClientRect(); ch._ox = bb.left + bb.width / 2 - cb.left; ch._oy = bb.top + bb.height / 2 - cb.top; } };

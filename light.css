@@ -507,3 +507,6 @@ html[data-theme="light"] body details.fold .ftools button:not(.del):not(#nx1):no
 
 /* Android, light theme: the dock's selection pill is a light black (not white) */
 html[data-theme="light"].android body #dock #dockpill.rest:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html[data-theme="light"].android body #dock #dockpill.on:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html[data-theme="light"].android body #dock .seg-pill:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12){background:rgba(0,0,0,.13)!important;box-shadow:inset 0 .5px 0 rgba(0,0,0,.06)!important}
+
+/* iOS light: the moving dock pill has no backdrop filter (on a moving layer it lags and shows as a white shape trailing behind it) */
+html[data-theme="light"].ios body #dock .seg-pill:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12){-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
