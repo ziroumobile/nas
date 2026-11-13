@@ -64,7 +64,7 @@ void main(){
     float ca=max(max(s0.a,s1.a),max(max(s2.a,s3.a),s4.a));
     float topbot=abs(g.y);
     float darkA=0.;   // no painted dark crescents: the dark at the top / bottom comes only from the notch cut out of the bar
-    float outline=(1.-smoothstep(0.,1.2,-d))*.34*u_lift*step(.2,u_sh);   // thin dark outline (dark mode only: on a light page it would read as a black fringe, the refraction there is coloured only)
+    float outline=(1.-smoothstep(0.,1.2,-d))*.0*u_lift*step(.2,u_sh);   // thin dark outline (dark mode only: on a light page it would read as a black fringe, the refraction there is coloured only)
     float edgeL=(1.-smoothstep(0.,1.2,-d))*(.5+.5*lightDir0)*u_lift*.10;          // hairline of light
     float dep=max(-d,0.);
     vec3 rb=.5+.5*cos(6.2831*(vec3(0.,.33,.67)+dep*.08+.22*sin(p.x*.085)));
@@ -86,7 +86,7 @@ void main(){
   }else{
     float lit=max(lightDir,0.),shade=max(-lightDir,0.),r3=pow(s,3.);                     // light page: white highlight on the lit side, a soft shade on the other
     col=col*(1.-.22*r3*shade*u_lift-.03*s*u_lift)+vec3(r3*lit*.60*u_lift+edge*lit*.35*u_lift);
-    col-=vec3(.10)*(1.-smoothstep(0.,1.3,-d))*u_lift;                                    // hairline so the lens reads against a white page
+    col-=vec3(.0)*(1.-smoothstep(0.,1.3,-d))*u_lift;                                    // hairline so the lens reads against a white page
   }
   gl_FragColor=vec4(col*inside+vec3(0.)*shadow,inside+shadow);
 }`.replace('SPADCUT', (SPAD * 0.95).toFixed(1));
