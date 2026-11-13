@@ -62,6 +62,7 @@ void main(){
     vec3 body=(s0.a*w0+s1.a*w1+s2.a*w2+s3.a*w3+s4.a*w4)/wsum;   // alpha only: the labels inside the lens are always blue, whatever colour the bar's own labels have (white in dark mode, dark in light mode)
     body=mix(body*vec3(.04,.52,1.),body*vec3(.35,.8,1.),.35*clamp(s*1.6,0.,1.))+body*vec3(.10,0.,.18)*s;   // inside the lens every label turns blue; near the bevel the colour split pulls it towards cyan / violet
     float ca=max(max(s0.a,s1.a),max(max(s2.a,s3.a),s4.a));
+    body*=ca/max(max(body.r,max(body.g,body.b)),1e-3);   // the colour must be as strong as the coverage: where only some of the five taps hit a label the weighted average is weaker than ca, and a premultiplied colour below its alpha reads as a dark / black fringe
     float topbot=abs(g.y);
     float darkA=0.;   // no painted dark crescents: the dark at the top / bottom comes only from the notch cut out of the bar
     float outline=(1.-smoothstep(0.,1.2,-d))*.0*u_lift*step(.2,u_sh);   // thin dark outline (dark mode only: on a light page it would read as a black fringe, the refraction there is coloured only)
