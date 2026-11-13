@@ -33,7 +33,7 @@ void main(){
   vec2 p=px-c;float d=sdRR(p,hs,r);                                         // signed distance to the lens shape (<0 inside)
   float aa=1./u_dpr;
   float inside=1.-smoothstep(-aa,aa,d);
-  float shadow=exp(-max(d,0.)/8.)*u_sh*u_lift*(1.-inside);                   // soft drop shadow outside the lens
+  float shadow=exp(-max(d,0.)/8.)*u_sh*u_lift*(1.-inside)*step(.2,u_sh);   // light theme: no shadow (it showed as a pale blob following the lens)                   // soft drop shadow outside the lens
   vec4 b4=tex4(u_org+px);vec4 basePre=vec4(b4.rgb*b4.a,b4.a);                // the bar's own labels, drawn here while the lens is up (the DOM ones are hidden)
   if(d>SPADCUT){gl_FragColor=basePre;return;}
   vec2 e=vec2(.75,0.);
