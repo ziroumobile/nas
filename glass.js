@@ -67,7 +67,7 @@ void main(){
     float topbot=abs(g.y);
     float darkA=0.;   // no painted dark crescents: the dark at the top / bottom comes only from the notch cut out of the bar
     float outline=(1.-smoothstep(0.,1.2,-d))*.0*u_lift*step(.2,u_sh);   // thin dark outline (dark mode only: on a light page it would read as a black fringe, the refraction there is coloured only)
-    float edgeL=(1.-smoothstep(0.,1.2,-d))*(.5+.5*lightDir0)*u_lift*.06*mk;          // hairline of light
+    float edgeL=(1.-smoothstep(0.,1.2,-d))*(.5+.5*lightDir0)*u_lift*.06*mk*step(.2,u_sh);   // the white hairline only on a dark page: on the light theme it showed as a white ring following the pill          // hairline of light
     float dep=max(-d,0.);
     vec3 rb=.5+.5*cos(6.2831*(vec3(0.,.33,.67)+dep*.08+.22*sin(p.x*.085)));
     float tint=pow(s,2.8)*topbot*u_lift*.03*mk;                                    // a faint green/violet cast along the top and bottom, as on the reference
