@@ -507,14 +507,12 @@ html body #setpage button.setdone:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
 html body #storage button.stbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
 html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
 html body #viewer .vc:not(#nx1):not(#nx2):not(#nx3):not(#nx4),
-html body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4){transition:background-color .14s ease,box-shadow .14s ease,transform .14s ease}
 html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress),
 html body #modal.fullpage button#pgback:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress),
 html body #setpage button.setdone:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress),
 html body #storage button.stbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress),
 html body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress),
 html body #viewer .vc:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress),
-html body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){background:rgba(235,235,245,.30)!important;box-shadow:inset 0 0 9px rgba(255,255,255,.30)!important;transform:scale(.94)!important;-webkit-backdrop-filter:blur(10px) brightness(1.25)!important;backdrop-filter:blur(10px) brightness(1.25)!important}
 html body #dock button:is(:active,.gpress){background:rgba(235,235,245,.22)!important;border-radius:999px!important}
 
 /* the same press effect on every other button (not the long view switch, the dock, the settings rows): lighter grey-white body, a soft glow along the INSIDE of the edge, a slight shrink */
@@ -635,7 +633,6 @@ html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4){backgrou
 html body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4):is(:active,.gpress){background:rgba(235,235,245,.30)!important;box-shadow:inset 0 0 9px rgba(255,255,255,.30)!important;transform:scale(.94)!important;-webkit-backdrop-filter:blur(10px) brightness(1.25)!important;backdrop-filter:blur(10px) brightness(1.25)!important}
 html body #app>header button.hb.act:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:#0a84ff!important}
 /* the "+" never starts a scroll / selection / callout when pressed */
-html body button#upfab{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 /* Windows / desktop: a longer dock cut into equal quarters, labels never wrap or collide */
 html:not(.ios) body #dock{width:min(92vw,620px);gap:0;justify-content:stretch;padding:7px}
 html:not(.ios) body #dock button{flex:1 1 0;width:auto;min-width:0;padding:0 10px;gap:8px;white-space:nowrap}
@@ -979,7 +976,6 @@ html body #modal button.trrestico:not(#nx1):not(#nx2):not(#nx3):not(#nx4){color:
 
 /* header "..." menu (select / reorder) */
 html body #app>header button.hb.inmore:not(#nx1):not(#nx2):not(#nx3):not(#nx4){display:none!important}
-html body button#upfab.dropover:not(#nx1):not(#nx2):not(#nx3):not(#nx4){transform:scale(1.2)!important;box-shadow:0 0 0 3px #0a84ff!important}
 #morepop{position:fixed;z-index:85;right:16px;top:calc(env(safe-area-inset-top) + 62px);width:190px;padding:6px;border-radius:22px;background:rgba(44,46,52,.97);box-shadow:0 20px 50px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.12)}
 #morepop[hidden]{display:none}
 #morepop .mpi{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;border:0;background:none;color:#fff;font-size:15px;font-weight:600;text-align:left;border-radius:16px}
@@ -1156,13 +1152,12 @@ html body :is(#app>header button.hb:not(#dset),#appback,#modal.fullpage button#p
 html.android body details.fold .ftools button:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5){background:rgba(18,19,24,.30)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border:0!important;box-shadow:inset 0 .5px 0 rgba(255,255,255,.34),inset 0 -.5px 0 rgba(255,255,255,.16)!important}
 
 /* all platforms, dark: round header buttons + folder card buttons share one clear glass (light translucent fill, blur, bright hairline rim) */
-html:not([data-theme="light"]) body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #appback:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #modal.fullpage button#pgback:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #setpage button.setdone:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #storage button.stbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #spage button#spback:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #modal.fullpage button#vreorder:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body details.fold .ftools button:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12){background:rgba(255,255,255,.14)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border-color:transparent!important;box-shadow:inset 0 .5px 0 rgba(255,255,255,.38),inset 0 -.5px 0 rgba(255,255,255,.14)!important}
+html:not([data-theme="light"]) body #app>header button.hb:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #appback:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #modal.fullpage button#pgback:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #setpage button.setdone:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #storage button.stbtn:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #uppage button#upback:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #spage button#spback:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body #modal.fullpage button#vreorder:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12),html:not([data-theme="light"]) body details.fold .ftools button:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12){background:rgba(255,255,255,.14)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border-color:transparent!important;box-shadow:inset 0 .5px 0 rgba(255,255,255,.38),inset 0 -.5px 0 rgba(255,255,255,.14)!important}
 
-/* theme switch: colours fade between light and dark instead of jumping */
-html.theme-fade,html.theme-fade *,html.theme-fade *::before,html.theme-fade *::after{transition:background-color .45s ease,color .45s ease,border-color .45s ease,fill .45s ease,stroke .45s ease,box-shadow .45s ease!important}
 /* the share-created dialog buttons (all platforms): a framed neutral glass */
 html body #modal .mbtns button.sgl:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12){background:rgba(120,120,128,.14)!important;border:1px solid rgba(120,120,128,.38)!important;border-radius:999px!important;box-shadow:none!important}
 html body #modal .mbtns button.sgl#scopy:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12){color:#0a84ff!important}
-/* the + (upload) button blurs what is behind it again */
-html body button#upfab:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12){-webkit-backdrop-filter:blur(12px)!important;backdrop-filter:blur(12px)!important}
 html body #modal .mbtns button.sgl#scancel:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12){color:#ff453a!important}
+
+/* theme switch: one cross-fade of the whole page (View Transitions) */
+::view-transition-old(root),::view-transition-new(root){animation-duration:.4s}
