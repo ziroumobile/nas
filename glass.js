@@ -294,8 +294,8 @@ void main(){
     // one smooth run from A to B (ease in-out); half way it is squashed into a flat ellipse, at B it is the resting capsule again
     const c1 = r.l + r.w / 2, y1 = r.t + r.h / 2, dist = Math.abs(c1 - from.cx), io = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
     runPill(s, u => { const e = io(u), sh = Math.sin(Math.PI * u);
-      const gentle = !document.documentElement.classList.contains('ios');   // desktop / Android: a long glide must not pull the pill into a long thin oval, it only swells a little
-      return { cx: from.cx + (c1 - from.cx) * e, cy: from.cy + (y1 - from.cy) * e, w: from.w + (r.w - from.w) * e + (gentle ? Math.min(dist * 0.06, r.w * 0.18) : Math.min(dist * 0.35, r.w * 0.7)) * sh, h: (from.h + (r.h - from.h) * e) * (1 - (gentle ? 0.08 : 0.22) * sh) };
+      const gentle = !document.documentElement.classList.contains('ios');   // desktop / Android: a long glide must not pull the pill into a long thin oval, it still squashes flat but is capped in length
+      return { cx: from.cx + (c1 - from.cx) * e, cy: from.cy + (y1 - from.cy) * e, w: from.w + (r.w - from.w) * e + Math.min(dist * 0.35, r.w * (gentle ? 0.3 : 0.7)) * sh, h: (from.h + (r.h - from.h) * e) * (1 - 0.22 * sh) };
     }, PILL_MS, 36);
   }
   function pulsePill(s) {                                            // a tap on the option that is already selected: the capsule squashes into a flat ellipse and springs back
