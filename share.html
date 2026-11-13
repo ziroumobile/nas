@@ -8,8 +8,8 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.trycloudflare.com; img-src https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
-<link rel="stylesheet" href="glass.css?v=20261113q">
-<link rel="stylesheet" href="light.css?v=20261113q">
+<link rel="stylesheet" href="glass.css?v=20261113r">
+<link rel="stylesheet" href="light.css?v=20261113r">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <title>檔案分享</title>
@@ -183,8 +183,8 @@ html.ios body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#
   <button id="seldl">下載選取</button>
   <button class="ghost" id="selexit">完成</button>
 </div>
-<script src="glass.js?v=20261113q"></script>
-<script src="docview.js?v=20261113q"></script>
+<script src="glass.js?v=20261113r"></script>
+<script src="docview.js?v=20261113r"></script>
 <script>
 // Nothing is stored in this browser: the password is used once to open the share and is not kept anywhere.
 const $=s=>document.querySelector(s);
@@ -221,7 +221,8 @@ else{$('#go').onclick=submitPw;$('#pw').onkeydown=e=>{if(e.key==='Enter')submitP
 let view='small',sortBy='date',asc=false,selMode=false;const selected=new Set();
 const cmpName=(a,b)=>a.name.localeCompare(b.name,'zh-Hant',{numeric:true});
 const CMP={name:cmpName,date:(a,b)=>a.mtime-b.mtime,size:(a,b)=>a.size-b.size};
-const sorted=()=>[...files].sort((a,b)=>(asc?1:-1)*CMP[sortBy](a,b)||cmpName(a,b));
+const subOf=x=>x.sub||'';
+const sorted=()=>[...files].sort((a,b)=>subOf(a).localeCompare(subOf(b),'zh-Hant',{numeric:true})||(asc?1:-1)*CMP[sortBy](a,b)||cmpName(a,b));   // top level first, then each sub-folder in turn
 function syncToolbar(){for(const[v,i]of[['list','#vlist'],['nine','#vnine'],['small','#vsmall']])$(i).classList.toggle('on',view===v);$('#sort').value=sortBy;$('#order').textContent=asc?'↑ 由小到大':'↓ 由大到小';$('#selmode').classList.toggle('on',selMode);if(window.glassSegSync)glassSegSync()}
 const ICON={image:'🖼',video:'🎬',file:'📄'};
 function thumbErr(img){const d=document.createElement('div');d.className='ico';d.textContent=img.dataset.k==='video'?'🎬':img.dataset.k==='file'?'📄':'🖼';img.replaceWith(d)}
@@ -254,10 +255,12 @@ function media(x,i){
 function render(){
   syncToolbar();document.body.classList.toggle('selecting',selMode);
   const list=sorted();vlist=list;
+  let lastSub=null;
   const items=list.map((x,i)=>{
     const sel=selected.has(x.url)?' sel':'';
-    if(view!=='list')return `<div class="cell${sel}" data-i="${i}" title="${esc(x.name)}"><span class="chk"></span>${media(x,i)}<div class="cn">${esc(x.name)}</div></div>`;
-    return `<div class="row${sel}" data-i="${i}"><span class="chk"></span>${media(x,i)}<div class="info"><a href="${API+x.url}" data-open="${i}">${esc(x.name)}</a><small>${fmt(x.size)} · 更新 ${new Date(x.mtime).toLocaleDateString()}</small></div><a class="btn dlrow" href="${API+x.url}&dl=1" style="padding:4px 10px">下載</a></div>`}).join('');
+    const head=(subOf(x)!==lastSub&&(lastSub!==null||subOf(x)))?'<div class="subhead" style="grid-column:1/-1;width:100%;font-weight:600;margin:14px 0 6px;font-size:15px">📁 '+esc(subOf(x)||'（這個資料夾）')+'</div>':'';lastSub=subOf(x);
+    if(view!=='list')return head+`<div class="cell${sel}" data-i="${i}" title="${esc(x.name)}"><span class="chk"></span>${media(x,i)}<div class="cn">${esc(x.name)}</div></div>`;
+    return head+`<div class="row${sel}" data-i="${i}"><span class="chk"></span>${media(x,i)}<div class="info"><a href="${API+x.url}" data-open="${i}">${esc(x.name)}</a><small>${fmt(x.size)} · 更新 ${new Date(x.mtime).toLocaleDateString()}</small></div><a class="btn dlrow" href="${API+x.url}&dl=1" style="padding:4px 10px">下載</a></div>`}).join('');
   $('#list').innerHTML=view==='list'?items:`<div class="nine${view==='small'?' small':''}">${items}</div>`;
   tqPump();
   $('#selbar').hidden=!selMode;$('#selcount').textContent='已選 '+selected.size+' 個';$('#seldl').disabled=$('#selnone').disabled=!selected.size;$('#selall').disabled=!files.length||selected.size>=files.length;
