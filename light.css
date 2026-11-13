@@ -496,3 +496,6 @@ html[data-theme="light"] body :is(#app>header button.hb,#appback,#modal.fullpage
 
 /* light theme glass buttons: a little darker */
 html[data-theme="light"] body :is(#app>header button.hb,#appback,#modal.fullpage button#pgback,#setpage button.setdone,#storage button.stbtn,#uppage button#upback,#spage button#spback,#modal.fullpage button#vreorder,.seltop button,.selbot button,button#upfab,#viewer .vc):not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9){background:rgba(82,82,90,.34)!important}
+
+/* Android, light theme: the same dock-style glass on the folder card buttons */
+html[data-theme="light"].android body details.fold .ftools button:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5){background:rgba(255,255,255,.34)!important;-webkit-backdrop-filter:blur(9px)!important;backdrop-filter:blur(9px)!important;border:0!important;box-shadow:inset 0 .5px 0 rgba(255,255,255,.95),inset 0 -.5px 0 rgba(0,0,0,.16),inset 0 0 0 .5px rgba(0,0,0,.07)!important}
