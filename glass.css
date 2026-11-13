@@ -1159,5 +1159,6 @@ html body #modal .mbtns button.sgl:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#
 html body #modal .mbtns button.sgl#scopy:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12){color:#0a84ff!important}
 html body #modal .mbtns button.sgl#scancel:not(#nx1):not(#nx2):not(#nx3):not(#nx4):not(#nx5):not(#nx6):not(#nx7):not(#nx8):not(#nx9):not(#nx10):not(#nx11):not(#nx12){color:#ff453a!important}
 
-/* theme switch: one cross-fade of the whole page (View Transitions) */
-::view-transition-old(root),::view-transition-new(root){animation-duration:.4s}
+/* iPhone / iPad: the first folder card sat partly under the fixed toolbar; start the list a little lower */
+html.ios:not(.android) .wrap{padding-top:calc(env(safe-area-inset-top) + 54px)}
+html.ios:not(.android) body.selecting .wrap{padding-top:calc(env(safe-area-inset-top) + 68px)}
