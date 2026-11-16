@@ -3,14 +3,14 @@
 <meta name="color-scheme" content="dark light">
 <meta name="darkreader-lock">
 <meta name="supported-color-schemes" content="dark light">
-<meta name="app-version" content="v10.44">
+<meta name="app-version" content="v10.45">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://eehcyvnyjzhmeuueqjvk.supabase.co https://*.trycloudflare.com; img-src 'self' https://*.trycloudflare.com data:; media-src https://*.trycloudflare.com; frame-src https://*.trycloudflare.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="glass.css?v=20261116e">
-<link rel="stylesheet" href="light.css?v=20261116e">
+<link rel="stylesheet" href="glass.css?v=20261116f">
+<link rel="stylesheet" href="light.css?v=20261116f">
 <script>try{if(localStorage.getItem('nas_theme')==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.background='#f2f2f7';var tc2=document.querySelector('meta[name=theme-color]');if(tc2)tc2.setAttribute('content','#f2f2f7')}}catch(e){}</script>
 <script>try{var ua=navigator.userAgent;if(/iPad|iPhone|iPod|Android/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){document.documentElement.classList.add('ios');if(/Android/.test(ua))document.documentElement.classList.add('android');if(true){var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.setAttribute('content','#000000')}}}catch(e){}</script>
 <link rel="icon" href="icons/icon-192.png">
@@ -526,8 +526,8 @@ clearTimeout(tm);var sec=full?Math.max(.05,(performance.now()-t0)/1000):2;if(got
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script src="config.js"></script>
-<script src="glass.js?v=20261116e"></script>
-<script src="docview.js?v=20261116e"></script>
+<script src="glass.js?v=20261116f"></script>
+<script src="docview.js?v=20261116f"></script>
 <script>
 const $=s=>document.querySelector(s);let me=null,API='',folders=[];
 // thumbnails: 480p on phones / tablets (iOS, Android), 720p on Windows / Mac
@@ -745,8 +745,8 @@ function stPoll(){
 }
 $('#bgmrow').onclick=function bgmPage(){   // take sounds out of a video / audio file that is already in the NAS (runs on the NAS computer, one job at a time; the result is saved next to the original)
   const MEDIA=/\.(mp4|mkv|mov|m4v|webm|avi|flv|ts|wmv|mp3|wav|flac|m4a|aac|ogg|opus|wma)$/i;
-  const MODES=[['1','去 BGM，保留人聲','去掉配樂和音效，只留說話或唱歌的聲音。'],['2','去人聲，保留配樂','去掉說話和歌聲，留下配樂（卡拉 OK 伴奏）。'],['3','去雜音','去掉底噪、嘶聲等雜音。適合以說話為主的錄音，配樂可能會被削弱。'],['4','只留乾淨人聲（去 BGM + 去雜音）','先去配樂，再去雜音，適合收音不好的影片。'],['5','自訂：選擇要消除的聲音','勾選要消除的聲音，其餘保留。吉他和鋼琴的分離效果比較有限。']];
-  const REM=[['vocals','人聲'],['drums','鼓'],['bass','貝斯'],['guitar','吉他'],['piano','鋼琴'],['other','其他樂器'],['noise','雜音']];
+  const MODES=[['1','去 BGM，保留人聲','去掉配樂和音效，只留說話或唱歌的聲音。'],['2','去人聲，保留配樂','去掉說話和歌聲，留下配樂（卡拉 OK 伴奏）。'],['3','去雜音','去掉底噪、嘶聲等雜音。適合以說話為主的錄音，配樂可能會被削弱。'],['4','只留乾淨人聲（去 BGM + 去雜音）','先去配樂，再去雜音，適合收音不好的影片。'],['5','自訂：選擇要消除的聲音','勾選要消除的聲音，其餘保留。吉他和鋼琴的分離效果比較有限。'],['6','演唱會：去觀眾聲（尖叫、歡呼、拍手）','用專門辨識觀眾聲的模型去掉尖叫、歡呼和拍手，歌聲和音樂都保留。'],['7','演唱會：只留歌聲（去觀眾 + 去音樂）','先去觀眾聲，再去音樂，只留台上的歌聲。']];
+  const REM=[['vocals','人聲'],['drums','鼓'],['bass','貝斯'],['guitar','吉他'],['piano','鋼琴'],['other','其他樂器'],['noise','雜音'],['crowd','觀眾聲']];
   const FMT=[['orig','原檔格式（不轉檔，最快）'],['h264','MP4（H.264）'],['av1','MP4（AV1）'],['mp3','MP3（只有聲音）']],HS=[['0','原始'],['2160','2160p（4K）'],['1440','1440p'],['1080','1080p'],['720','720p'],['480','480p'],['360','360p']];
   const S=window.__bgm||(window.__bgm={src:'nas',up:null,folder:'',name:'',mode:'1',remove:[],fmt:'orig',height:'0',rate:'',fps:''});   // kept while the page stays loaded, so reopening shows the same choices
   if(!S.src)S.src='nas';
@@ -1540,7 +1540,7 @@ const setDock=id=>{document.querySelectorAll('#dock button').forEach(b=>b.classL
 const closeModal=()=>{document.body.classList.remove('dockover');setDock('dhome');$('#modal').hidden=true;$('#modal').classList.remove('top','fullpage');$('#mbox').innerHTML=''}; // also drops any password fields from the page
 $('#modal').onclick=e=>{if(e.target.id==='modal')closeModal()};
 async function showQR(url,box){   // draws a QR code for url into box (white plate so it scans in dark mode too); qrcode.js is loaded on first use
-  if(!window.qrcode)await new Promise((ok,no)=>{const s=document.createElement('script');s.src='qrcode.js?v=20261116e';s.onload=ok;s.onerror=no;document.head.append(s)}).catch(()=>{});
+  if(!window.qrcode)await new Promise((ok,no)=>{const s=document.createElement('script');s.src='qrcode.js?v=20261116f';s.onload=ok;s.onerror=no;document.head.append(s)}).catch(()=>{});
   if(!window.qrcode)return alert('QR code 載入失敗');
   const q=window.qrcode(0,'M');q.addData(url);q.make();box.innerHTML='<div style="display:inline-block;background:#fff;padding:10px;border-radius:12px;line-height:0">'+q.createSvgTag({cellSize:5,margin:0,scalable:false})+'</div>';box.hidden=false}
 async function copyText(text,btn){
@@ -1587,7 +1587,7 @@ function shareDialog(label,payload){
     $('#slink').onfocus=e=>e.target.select();
     $('#scopy').onclick=e=>copyText(url,e.target);$('#sdone').onclick=closeModal;
     $('#sqr').onclick=async()=>{const box=$('#sqrbox');if(!box.hidden){box.hidden=true;return}
-      if(!window.qrcode)await new Promise((ok,no)=>{const s=document.createElement('script');s.src='qrcode.js?v=20261116e';s.onload=ok;s.onerror=no;document.head.append(s)}).catch(()=>{});
+      if(!window.qrcode)await new Promise((ok,no)=>{const s=document.createElement('script');s.src='qrcode.js?v=20261116f';s.onload=ok;s.onerror=no;document.head.append(s)}).catch(()=>{});
       if(!window.qrcode)return alert('QR code 載入失敗');
       const q=window.qrcode(0,'M');q.addData(url);q.make();box.innerHTML='<div style=\"display:inline-block;background:#fff;padding:10px;border-radius:12px;line-height:0\">'+q.createSvgTag({cellSize:5,margin:0,scalable:false})+'</div>';box.hidden=false};
     $('#scancel').onclick=async()=>{const r=await api('/api/share?id='+encodeURIComponent(j.id),{method:'DELETE'});if(!r.ok)return alert((await r.json().catch(()=>({}))).error||'取消失敗');try{window.__sharesCache=(window.__sharesCache||[]).filter(x=>x.id!==j.id);setShareBadge(window.__sharesCache.length)}catch{}closeModal()};
